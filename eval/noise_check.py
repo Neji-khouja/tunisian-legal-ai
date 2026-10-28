@@ -1,13 +1,18 @@
 """Stability check: the full agent graph run 3 times on 4 dev questions (calls Groq, loads the models).
 
     python eval/noise_check.py            -> prints the report, saves results/noise_check.json
+    python eval/noise_check.py --extra    -> the same 4 questions + 2 Arabic + 2 English, saves results/noise_check_extra.json
+    python eval/noise_check.py [--extra] --list   -> only prints the selected questions (no model, no LLM)
 
 Questions: the first dev question (eval/questions.json order) of each of the first 4 concepts met.
+--extra adds, in the same order, the first Arabic question of each further concept until 2 are taken, then the
+first English question of each further concept until 2 are taken (concepts never repeat).
 Each run uses a fresh thread_id, so no state is shared between runs.
 """
 import sys
 import json
 import time
+import argparse
 from pathlib import Path
 from itertools import combinations
 
@@ -15,21 +20,33 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "agent"))
 from evaluate import load_questions
-from agent_graph import app
 
 RUNS = 3
 N_QUESTIONS = 4
+EXTRA = (("ar", 2), ("en", 2))
 OUT = ROOT / "results" / "noise_check.json"
+OUT_EXTRA = ROOT / "results" / "noise_check_extra.json"
 
 
-def pick_questions() -> list[dict]:
+def pick_questions(extra: bool = False) -> list[dict]:
+    dev = load_questions("dev")
     seen, out = set(), []
-    for q in load_questions("dev"):
+    for q in dev:
         if q["concept_id"] not in seen:
             seen.add(q["concept_id"])
             out.append(q)
         if len(out) == N_QUESTIONS:
             break
+    if extra:
+        for lang, n in EXTRA:
+            taken = 0
+            for q in dev:
+                if taken == n:
+                    break
+                if q["language"] == lang and q["concept_id"] not in seen:
+                    seen.add(q["concept_id"])
+                    out.append(q)
+                    taken += 1
     return out
 
 
@@ -45,10 +62,21 @@ def temperature_lines() -> list[str]:
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--extra", action="store_true", help="add 2 Arabic and 2 English dev questions (other concepts)")
+    ap.add_argument("--list", action="store_true", help="print the selected questions and stop (no model, no LLM)")
+    args = ap.parse_args()
+    out_path = OUT_EXTRA if args.extra else OUT
+    questions = pick_questions(args.extra)
+    if args.list:
+        for q in questions:
+            print(f"{q['id']:<6}{q['language']:<4}{q['concept_id']:<34}{q['question']}")
+        print(f"{len(questions)} questions x {RUNS} runs; would save {out_path.relative_to(ROOT)}")
+        return
+    from agent_graph import app
     print("Shared llm temperature (quoted, read-only):")
     for l in temperature_lines():
         print("  " + l)
-    questions = pick_questions()
     data = {"runs_per_question": RUNS, "temperature_lines": temperature_lines(), "questions": []}
     stopped = None
     for q in questions:
@@ -67,7 +95,7 @@ def main():
                          "degraded": s.get("degraded"), "seconds": round(time.time() - t0, 1)})
         data["questions"].append({"id": q["id"], "concept_id": q["concept_id"], "language": q["language"],
                                   "question": q["question"], "runs": runs})
-        OUT.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")   # saved after each question
+        out_path.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")   # saved after each question
         if stopped:
             break
 
@@ -95,8 +123,8 @@ def main():
     if stopped:
         data["stopped"] = stopped
         print(f"\nSTOPPED: {stopped}")
-    OUT.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(f"Saved {OUT.relative_to(ROOT)}")
+    out_path.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"Saved {out_path.relative_to(ROOT)}")
     sys.exit(1 if stopped else 0)
 
 
