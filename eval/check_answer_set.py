@@ -1,7 +1,9 @@
 """Validate eval/answer_set.json and print counts. Loads no model: the corpus (source, article) pairs are read
-directly from the Chroma SQLite metadata of the index.
+directly from the Chroma SQLite metadata of the index. Gold articles are also checked against the PDF text
+(eval/pdf_truth.py, pypdf) when the source is verified; otherwise a "pdf unverified" warning is printed.
 
     python eval/check_answer_set.py
+    python eval/check_answer_set.py --show a001        # PDF text of the gold articles of one question
 
 Entry format:
     {"id": "...", "question": "...", "language": "ar|fr|en", "expected": "answer|clarify|refuse",
@@ -17,7 +19,9 @@ from collections import Counter
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "eval"))
 from config import DB_DIR
+import pdf_truth
 
 SET_PATH = ROOT / "eval" / "answer_set.json"
 LANGS = {"ar", "fr", "en"}
@@ -43,10 +47,11 @@ def corpus_index():
     return pairs, law
 
 
-def check(entries, pairs) -> list[str]:
-    errors, seen = [], set()
+def check(entries, pairs) -> tuple[list[str], list[str]]:
+    """-> (errors, warnings)."""
+    errors, warnings, seen = [], [], set()
     if not isinstance(entries, list):
-        return ["the file must contain a JSON list"]
+        return ["the file must contain a JSON list"], []
     for k, e in enumerate(entries):
         where = f"entry {k} (id={e.get('id') if isinstance(e, dict) else '?'})"
         if not isinstance(e, dict):
@@ -69,8 +74,13 @@ def check(entries, pairs) -> list[str]:
                 for g in gold:
                     if not (isinstance(g, dict) and g.get("source") and g.get("article")):
                         errors.append(f"{where}: gold item {g!r} needs 'source' and 'article'")
-                    elif pairs is not None and (g["source"], str(g["article"])) not in pairs:
-                        errors.append(f"{where}: gold ({g['source']}, {g['article']}) not found in the corpus index")
+                    else:
+                        if pairs is not None and (g["source"], str(g["article"])) not in pairs:
+                            errors.append(f"{where}: gold ({g['source']}, {g['article']}) not found in the corpus index")
+                        if not pdf_truth.is_verified(g["source"]):
+                            warnings.append(f"{where}: gold ({g['source']}, {g['article']}): pdf unverified")
+                        elif str(g["article"]) not in pdf_truth.load()[pdf_truth.source_stem(g["source"])]["articles"]:
+                            errors.append(f"{where}: gold ({g['source']}, {g['article']}) not found in the PDF text")
             rp = e.get("reference_points")
             if not (isinstance(rp, list) and rp and all(isinstance(x, str) and x.strip() for x in rp)):
                 errors.append(f"{where}: answer needs a non-empty reference_points list of strings")
@@ -79,18 +89,51 @@ def check(entries, pairs) -> list[str]:
                 errors.append(f"{where}: {exp} must have an empty gold list")
             if not (isinstance(e.get("reason"), str) and e["reason"].strip()):
                 errors.append(f"{where}: {exp} needs a non-empty 'reason'")
-    return errors
+    return errors, warnings
+
+
+def show(entries, qid):
+    """Print the PDF text of every gold article of one question, to check the gold by eye."""
+    e = next((x for x in entries if isinstance(x, dict) and x.get("id") == qid), None)
+    if e is None:
+        sys.exit(f"no entry with id {qid!r}")
+    print(f"[{qid}] ({e.get('language')}, expected {e.get('expected')}) {e.get('question')}")
+    for p in e.get("reference_points") or []:
+        print(f"  reference point: {p}")
+    for g in e.get("gold") or []:
+        stem, label = pdf_truth.source_stem(g["source"]), str(g["article"])
+        print(f"\n--- gold {stem} article {label}")
+        if not pdf_truth.is_verified(stem):
+            print("    pdf unverified: no ground-truth text")
+            continue
+        occ = pdf_truth.load()[stem]["articles"].get(label, [])
+        if not occ:
+            print("    not found in the PDF text")
+        for sec, text in occ:
+            print(f"    (PDF section {sec})\n{text}")
 
 
 def main():
-    entries = json.loads(SET_PATH.read_text(encoding="utf-8"))
+    import argparse
+    ap = argparse.ArgumentParser(description="Validate eval/answer_set.json (or --set FILE).")
+    ap.add_argument("--set", default=str(SET_PATH))
+    ap.add_argument("--show", metavar="ID", help="print the PDF text of the gold articles of one question")
+    args = ap.parse_args()
+    entries = json.loads(Path(args.set).read_text(encoding="utf-8"))
+    if args.show:
+        show(entries, args.show)
+        return
     pairs, law = corpus_index()
+    db_rel = Path(DB_DIR).relative_to(ROOT)
     if pairs is None:
-        print(f"WARNING: no index at {DB_DIR}; the gold-exists-in-corpus check is SKIPPED.")
+        print(f"WARNING: no index at {db_rel}; the gold-exists-in-corpus check is SKIPPED.")
     else:
-        print(f"Corpus index: {len(law)} sources, {len(pairs)} (source, article) keys, read from {DB_DIR}")
+        print(f"Corpus index: {len(law)} sources, {len(pairs)} (source, article) keys, read from {db_rel}")
+    pdf_states = {s: d["status"] for s, d in pdf_truth.load().items()}
+    print(f"PDF text (pypdf): {sum(v == 'verified' for v in pdf_states.values())} verified sources, "
+          f"unverified: {[s for s, v in pdf_states.items() if v != 'verified'] or 'none'}")
 
-    errors = check(entries, pairs)
+    errors, warnings = check(entries, pairs)
     ok = entries if isinstance(entries, list) else []
     print(f"\nTotal entries: {len(ok)}")
     print("By expected:", dict(Counter(e.get("expected") for e in ok if isinstance(e, dict))) or "{}")
@@ -107,6 +150,8 @@ def main():
             n = per_code[code]
             print(f"  {code:<28}{n:>4}{'   WARNING: no question' if n == 0 else ''}")
 
+    for msg in warnings:
+        print("WARNING:", msg)
     if errors:
         print(f"\nINVALID: {len(errors)} problem(s)")
         for msg in errors:
