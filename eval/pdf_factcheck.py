@@ -6,6 +6,11 @@ the PDF text of at least one article it cites.
 Numbers are compared as integers: digits ("1000d", "1.200", "20%") and number words ("quinze", "dix-huit",
 "deux mille"; English words too, since answers can be in English). "un"/"une"/"one"/"a" are not counted: in a
 sentence they are mostly articles. Unavailable PDF text (unverified source, ambiguous label) -> None = unverifiable.
+
+Implicit references: a number N that the claim writes as "article N" and that is missing from the cited text is
+accepted, and reported apart as "implicit reference ok", when the cited article's PDF text says "article
+précédent(e)" / "ci-dessus" (N = the cited article's number - 1; for a suffixed label like 220-bis, N = 220) or
+"article suivant(e)" / "ci-après" (N = number + 1). Every other missing number still fails.
 """
 import re
 import sys
@@ -28,6 +33,8 @@ UNITS = {
 }
 SCALES = {"cent": 100, "cents": 100, "hundred": 100, "mille": 1000, "thousand": 1000}
 JOINERS = {"and"}           # not French "et": "deux et trois" are two numbers ("vingt et un" ends in "un", not counted)
+ART_REF = re.compile(r"\b(?:articles?|art\.)\s+(\d+)\b", re.I)               # "article 260" in a claim
+IMPLICIT = re.compile(r"\barticles?\s+(?:(pr[ée]c[ée]dente?s?|ci-dessus)|(suivante?s?|ci-apr[èe]s))(?!\w)", re.I)
 WORD = "|".join(sorted(list(UNITS) + list(SCALES), key=len, reverse=True))
 WORD_RUN = re.compile(rf"\b(?:{WORD})(?:(?:[\s-]+(?:and[\s-]+)?)(?:{WORD}))*\b", re.I)
 DIGITS = re.compile(r"\d{1,3}(?:[.  ]\d{3})+(?!\d)|\d+(?:,\d+)?")
@@ -73,38 +80,73 @@ def claim_numbers_ok(claim_text: str, cited_pdf_texts: list):
     return not missing, nums, missing
 
 
+def implicit_reference_numbers(claim_text: str, missing: set, cited_ids: list, cited_texts: list) -> set:
+    """The numbers of `missing` that the claim writes as "article N" and that a cited article designates implicitly
+    ("article précédent" = its number - 1, "article suivant" = its number + 1)."""
+    refs = {str(int(m.group(1))) for m in ART_REF.finditer(normalize(claim_text))}
+    accepted = set()
+    for cid, text in zip(cited_ids, cited_texts):
+        if not text:
+            continue
+        label = cid.split("/")[-1].split("~")[0]
+        base, plain = int(label.split("-")[0]), "-" not in label
+        neighbours = {(base - 1 if plain else base) if m.group(1) else base + 1
+                      for m in IMPLICIT.finditer(normalize(text))}
+        accepted |= {n for n in missing & refs if int(n) in neighbours}
+    return accepted
+
+
 def check_claim(claim: dict):
     texts = [from_chunk_id(cid) for cid in claim.get("cited_ids", [])]
     ok, nums, missing = claim_numbers_ok(claim["text"], texts)
     return ok, nums, missing, texts
 
 
+def claim_status(claim: dict):
+    """(status, numbers, missing, implicit, texts); status: ok | implicit_reference_ok | missing | unverifiable |
+    no_numbers. `implicit` = missing numbers accepted as implicit references (status implicit_reference_ok only if
+    that covers every missing number)."""
+    ok, nums, missing, texts = check_claim(claim)
+    implicit = implicit_reference_numbers(claim["text"], missing, claim.get("cited_ids", []), texts) if ok is False else set()
+    if ok is None:
+        status = "unverifiable"
+    elif not nums:
+        status = "no_numbers"
+    elif ok:
+        status = "ok"
+    else:
+        status = "implicit_reference_ok" if implicit == missing else "missing"
+    return status, nums, missing, implicit, texts
+
+
 def main():
     if len(sys.argv) != 2:
         sys.exit("usage: python eval/pdf_factcheck.py results/noise_check.json")
     data = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
-    totals = {"claims": 0, "with_numbers": 0, "numbers_ok": 0, "numbers_missing": 0, "unverifiable": 0, "no_numbers": 0}
+    totals = {"claims": 0, "with_numbers": 0, "numbers_ok": 0, "implicit_reference_ok": 0, "numbers_missing": 0,
+              "unverifiable": 0, "no_numbers": 0}
+    key = {"ok": "numbers_ok", "implicit_reference_ok": "implicit_reference_ok", "missing": "numbers_missing"}
+    shown = {"ok": "ok", "implicit_reference_ok": "IMPLICIT REFERENCE OK", "missing": "MISSING",
+             "unverifiable": "UNVERIFIABLE", "no_numbers": "ok"}
     for q in data.get("questions", []):
         for k, run in enumerate(q.get("runs", []), 1):
             for claim in run.get("claims") or []:
-                ok, nums, missing, texts = check_claim(claim)
+                status, nums, missing, implicit, texts = claim_status(claim)
                 totals["claims"] += 1
-                if ok is None:
-                    totals["unverifiable"] += 1
-                elif not nums:
-                    totals["no_numbers"] += 1
-                else:
+                if status in key:
                     totals["with_numbers"] += 1
-                    totals["numbers_ok" if ok else "numbers_missing"] += 1
-                state = "UNVERIFIABLE" if ok is None else ("ok" if ok else "MISSING")
-                print(f"\n[{q['id']} run {k}] {state}  claim: {claim['text']}")
+                    totals[key[status]] += 1
+                else:
+                    totals[status] += 1
+                print(f"\n[{q['id']} run {k}] {shown[status]}  claim: {claim['text']}")
                 print(f"    cites: {claim.get('cited_ids')}")
                 print(f"    numbers in claim: {sorted(nums, key=lambda x: (len(x), x))}   missing from cited PDF text: "
-                      f"{sorted(missing, key=lambda x: (len(x), x)) or '-'}")
+                      f"{sorted(missing, key=lambda x: (len(x), x)) or '-'}"
+                      + (f"   accepted as implicit reference: {sorted(implicit)}" if implicit else ""))
                 for cid, t in zip(claim.get("cited_ids", []), texts):
                     print(f"    PDF {cid}: {normalize(t)[:600] if t else '(no PDF text: unverified source or ambiguous label)'}")
     print("\nTOTALS: " + ", ".join(f"{k} {v}" for k, v in totals.items()))
-    print("  (numbers_ok / numbers_missing count claims that contain at least one number and whose cited PDF text is available)")
+    print("  (numbers_ok / implicit_reference_ok / numbers_missing count claims that contain at least one number and whose cited PDF text is available)")
 
 
 if __name__ == "__main__":
