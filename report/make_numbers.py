@@ -413,15 +413,16 @@ def noise():
     write_table("t_noise", ["Question (dev)", "Langue", "Exécutions", "6 preuves identiques", "Jaccard moyen (citées)",
                             "Reprises"], rows, "Stabilité : graphe complet exécuté plusieurs fois par question.", "tab:noise")
     # PDF numeric fact-check of the noise-check claims
-    from pdf_factcheck import check_claim
+    from pdf_factcheck import claim_status
     tot = Counter()
+    short = {"no_numbers": "nonum", "implicit_reference_ok": "implicit"}
     for q in qs:
         for r in q["runs"]:
             for cl in r.get("claims") or []:
-                ok, nums, missing, _ = check_claim(cl)
+                status = claim_status(cl)[0]
                 tot["claims"] += 1
-                tot["unverifiable" if ok is None else ("nonum" if not nums else ("ok" if ok else "missing"))] += 1
-    for k in ("claims", "ok", "missing", "unverifiable", "nonum"):
+                tot[short.get(status, status)] += 1
+    for k in ("claims", "ok", "implicit", "missing", "unverifiable", "nonum"):
         put(tot[k], "factcheck", k)
 
 
@@ -454,11 +455,23 @@ def answer_eval():
 
 def quotes_and_example():
     from pdf_truth import pdf_article_text
+    from show_article import index_chunks
+    # quote the index chunk (PyMuPDF) when it equals the pypdf text once all whitespace is removed: pypdf splits
+    # some words ("ju illet"); otherwise quote pypdf and say so in a footnote
     for art in ("218", "219", "220"):
         t = pdf_article_text("PenalFr", art, 2)
-        (REP / "tables" / f"quote_penal_{art}.tex").write_text(
-            (r"\begin{quote}\small " + tex_escape(t) + r"\end{quote}") if t else r"\textit{Texte du PDF non disponible.}",
-            encoding="utf-8")
+        chunk = dict(index_chunks("PenalFr", art)).get(f"PenalFr/s02/{art}")
+        same = bool(t and chunk) and re.sub(r"\s", "", chunk) == re.sub(r"\s", "", t)
+        if not t:
+            body, how = r"\textit{Texte du PDF non disponible.}", "no PDF text"
+        elif same:
+            body, how = r"\begin{quote}\small " + tex_escape(chunk) + r"\end{quote}", "index chunk (equal to pypdf without whitespace)"
+        else:
+            body = (r"\begin{quote}\small " + tex_escape(t) + r"\footnote{Citation tirée de l'extraction indépendante "
+                    r"(pypdf) ; elle peut contenir des artefacts d'extraction.}\end{quote}")
+            how = "pypdf text + footnote (index chunk " + ("absent" if not chunk else "differs beyond whitespace") + ")"
+        (REP / "tables" / f"quote_penal_{art}.tex").write_text(body, encoding="utf-8")
+        print(f"quote PenalFr {art}: {how}")
     demo = RES / "answer_eval_answer_set_demo_v2.jsonl"
     rec = None
     if demo.exists():

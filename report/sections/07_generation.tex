@@ -37,14 +37,18 @@ articles par type, les bornes basses des intervalles restent éloignées de 100~
 \subsection{Contrôle numérique contre les PDF}
 Indépendamment de tout LLM, \texttt{eval/pdf\_factcheck.py} extrait les nombres de chaque affirmation (chiffres et nombres
 écrits en lettres) et vérifie qu'ils figurent dans le texte PDF des articles cités. Sur les \NFactcheckClaims{} affirmations
-produites lors du contrôle de stabilité (section~\ref{sec:stabilite}), \NFactcheckOk{} passent, \NFactcheckMissing{} ont un
-nombre absent des articles cités, \NFactcheckNonum{} ne contiennent aucun nombre et \NFactcheckUnverifiable{} ne sont pas
-vérifiables. Les écarts relevés correspondent à une affirmation qui nomme « l'article 260 » alors que l'article cité dit
-« l'article précédent » : le contrôle est strict et ne résout pas ces renvois.
+produites lors du contrôle de stabilité (section~\ref{sec:stabilite}), \NFactcheckOk{} passent, \NFactcheckImplicit{}
+passent par un renvoi implicite, \NFactcheckMissing{} ont un nombre absent des articles cités, \NFactcheckNonum{} ne
+contiennent aucun nombre et \NFactcheckUnverifiable{} ne sont pas vérifiables. Un renvoi implicite est compté à part : le
+nombre manquant est écrit « article~$N$ » dans l'affirmation, et l'article cité désigne l'article voisin $N$ par « article
+précédent » ou « ci-dessus » (ou « article suivant », « ci-après »). C'est le cas d'une affirmation qui nomme
+« l'article 260 » alors que l'article 261 cité dit « l'article précédent ». En dehors de ces renvois, le contrôle reste
+strict.
 
 \subsection{Exemple de bout en bout}
 Question : « Que risque-t-on si on frappe quelqu'un ? » (question du développement). Les articles centraux du code pénal,
-tels qu'ils figurent dans le PDF (extraction indépendante), sont les suivants.
+sont les suivants. Le texte cité est celui de l'index lorsqu'il est identique, aux espaces près, à l'extraction
+indépendante du PDF (pypdf) ; sinon c'est le texte pypdf, signalé par une note.
 
 \noindent\textbf{Code pénal, article 218} :
 \input{tables/quote_penal_218}
