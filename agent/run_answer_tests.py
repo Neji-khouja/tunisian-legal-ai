@@ -14,8 +14,9 @@ evidence_by_name = {}
 passed = 0
 
 
-def stem_art(e):
-    return (Path(str(e["source"])).stem, str(e["article"]))
+def key(cid):
+    """chunk id "PenalFr/s02/220" -> ("PenalFr", "220"); "220-bis" stays distinct from "220"."""
+    return (cid.split("/")[0], cid.split("/")[-1])
 
 
 for t in tests:
@@ -38,8 +39,8 @@ for t in tests:
                 continue
             evidence_by_name[t["name"]] = state["evidence"]
             gold = {(t["gold_source"], a) for a in t["gold_articles"]}
-            in_evidence = any(stem_art(e) in gold for e in state["evidence"].values())
-            cited = {stem_art(state["evidence"][i]) for i in state["cited"] if i in state["evidence"]}
+            in_evidence = any(key(cid) in gold for cid in state["evidence"])
+            cited = {key(cid) for cid in state["cited"] if cid in state["evidence"]}
             ok = state["problems"] == [] and bool(cited & gold)
             print(f"  retries: {state.get('retries')}")
             print(f"  tried: {state.get('tried')}")
