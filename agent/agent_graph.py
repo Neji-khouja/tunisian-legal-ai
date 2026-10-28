@@ -29,12 +29,15 @@ class AgentState(TypedDict):
     problems: list[str]
     cited: list[str]
     full_question: str
+    degraded: list[str]
 def analyze_node(state: AgentState) -> dict:
- 
+
     if state.get("status") == "clarify" and state.get("original_question"):
         full_question = state["original_question"] + f"\nUser's answer: {state['question']}"
+        degraded = list(state.get("degraded") or [])      # same question, keep earlier events
     else:
         full_question = state["question"]
+        degraded = []                                     # new question: reset
     try:
         hint = state.get("language") if state.get("clarify_count", 0) > 0 else None
         r = analyze(full_question, hint)
@@ -44,6 +47,7 @@ def analyze_node(state: AgentState) -> dict:
             "target_codes": r.target_codes,
             "clarification_question": r.clarification_question,
             "full_question": full_question,
+            "degraded": degraded,
         }
     except Exception as e:
         print("Analyze failed:", e)
@@ -53,6 +57,7 @@ def analyze_node(state: AgentState) -> dict:
             "target_codes": [],
             "clarification_question": None,
             "full_question": full_question,
+            "degraded": degraded + [f"analyze_failed: {type(e).__name__}"],
         }
 
 def clarify(state: AgentState) -> dict:
@@ -101,12 +106,12 @@ def retrieve_more_node(state: AgentState) -> dict:
 def answer_node(state: AgentState) -> dict:
     if not state["evidence"]:                 # nothing retrieved: do not ask the LLM to answer from nothing
         return {"text": "No relevant article was found in the codes I cover.",
-                "problems": [], "cited": [], "status": "done"}
+                "problems": [], "cited": [], "status": "done", "degraded": state.get("degraded", [])}
     ans = make_answer(state["full_question"], state["language"], state["evidence"])
     problems = check_answer(ans, state["evidence"])
     cited = sorted({i for c in ans.claims for i in c.cited_ids})
     return {"text": render(ans, state["evidence"], state["language"]),
-            "problems": problems, "cited": cited, "status": "done"}
+            "problems": problems, "cited": cited, "status": "done", "degraded": state.get("degraded", [])}
 
 def route_after_analyze(state: AgentState) -> str:
     if state["intent"] == "out_of_scope":

@@ -46,6 +46,7 @@ for t in tests:
             print(f"  gold in evidence: {in_evidence}")
             print(f"  gold cited: {bool(cited & gold)}   cited: {sorted(cited)}")
             print(f"  problems: {state['problems']}")
+            print(f"  degraded: {state.get('degraded')}")
             print(state["text"])
         print(f"  -> {'PASS' if ok else 'FAIL'}")
         passed += ok
