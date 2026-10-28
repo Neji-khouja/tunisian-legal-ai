@@ -1,0 +1,46 @@
+\section{Méthodologie d'évaluation}\label{sec:methodo}
+
+\subsection{Découpage développement / test par concept}
+Une question existe souvent en trois langues (la même règle demandée en français, en arabe et en anglais). Ces versions
+forment un \emph{concept}. Découper par question laisserait la version française dans le développement et la version
+arabe dans le test : le test ne serait plus indépendant. Nous découpons donc par concept : \NConceptsDev{} concepts
+(\NQDev{} questions) pour le développement, \NConceptsTest{} concepts (\NQTest{} questions) pour le test. Le découpage est
+tiré au hasard avec la graine \NSeed{} parmi des découpages équilibrés par domaine, langue et catégorie
+(\texttt{eval/make\_split.py}). Tous les réglages ont été faits sur le développement.
+
+\subsection{Métriques de récupération}
+Pour chaque question, les six premiers articles renvoyés sont comparés aux articles de référence.
+\begin{itemize}
+  \item \textbf{Hit@6} : au moins un article de référence figure parmi les six.
+  \item \textbf{Hit@1} : le premier article est un article de référence.
+  \item \textbf{Rappel} : part des articles de référence trouvés parmi les six.
+  \item \textbf{MRR} : moyenne de $1/r$, où $r$ est le rang du premier article de référence (0 s'il est absent).
+\end{itemize}
+
+\paragraph{Appariement strict.} Un article compte seulement si la source \emph{et} l'article correspondent, au niveau de
+l'identifiant du \term{chunk} quand l'étiquette de référence le fournit. Le seul numéro d'article ne suffit pas : l'article 12
+existe dans presque tous les codes, et l'article 220 \emph{bis} n'est pas l'article 220 (section~\ref{sec:corpus}).
+
+\subsection{Pré-enregistrement des hypothèses}
+Avant chaque expérience sur l'agent, l'attente est écrite dans \texttt{agent/LEARNING.md}, puis le résultat est noté
+à côté, qu'il confirme l'attente ou non. Par exemple, avant l'expérience de la boucle (section~\ref{sec:recup}), l'attente
+écrite était : la boucle dépasse A2 d'au moins 3 points de Hit@6, sans concept dégradé.
+
+\subsection{Provenance et hachages des prompts}
+Chaque exécution enregistre la branche, \texttt{git describe} et une empreinte SHA-1 (12 caractères) de chaque prompt.
+Les prompts gelés de l'agent ont pour empreintes : Analyse \NHashAnalyze, Plan \NHashPlan, descriptions des codes \NHashCodes{}
+(empreinte combinée \NHashCombined), Évaluer \NHashGrade, Reformuler \NHashReformulate, Vérifier \NHashVerify. Les réponses
+LLM mises en cache sont réutilisées seulement si leur empreinte correspond aux prompts courants ; les entrées anciennes, sans
+empreinte, sont signalées comme non vérifiées.
+
+\subsection{Environnement unique}
+Toutes les expériences tournent dans un seul environnement conda, figé dans \texttt{requirements.lock.txt}. Un écart de
+résultats observé au cours du projet a été attribué à une exécution hors de cet environnement \averifier{}
+(annexe~\ref{sec:incidents}).
+
+\subsection{Incertitude}
+Les questions d'un même concept ne sont pas indépendantes : si l'agent réussit la version française d'une règle, il réussit
+probablement la version anglaise. Les intervalles de confiance sont donc obtenus par \emph{bootstrap} en rééchantillonnant
+les concepts, non les questions (\NBoot{} tirages, graine \NSeed). Pour comparer deux variantes, nous rééchantillonnons les
+mêmes concepts pour les deux (bootstrap apparié) et rapportons l'intervalle de l'écart. Avec \NConceptsDev{} concepts de
+développement, ces intervalles sont larges ; une seule question vaut 1/\NQDev{} du Hit@6.

@@ -1,0 +1,73 @@
+% Rapport (français). Les nombres viennent de numbers.tex et tables/*.tex, générés par build_report.py.
+% Compile sur Overleaf tel quel (pdflatex).
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,babel}   % babel: french makes ; : ! ? active
+\usepackage{float}
+\usepackage{caption}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!50!black,citecolor=blue!50!black}
+\lstset{basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible,frame=single}
+
+% ---- éditable
+\newcommand{\auteur}{Neji Khouja\\ EPI Sousse, 4\textsuperscript{e} année Ingénierie IA et Data Science}
+\newcommand{\titre}{Chercheur juridique agentique : un RAG sur les codes tunisiens}
+
+% ---- marques visibles
+\newcommand{\averifier}{\textbf{\textcolor{red!70!black}{[à vérifier]}}}
+\newcommand{\acompleter}{\textit{à compléter}}
+\newcommand{\term}[1]{\textit{#1}}   % termes techniques : RAG, reranker, chunk, embedding
+
+% ---- figure générée, ou cadre « Figure à générer » si le fichier manque
+\newcommand{\figfile}[3]{%
+  \begin{figure}[H]\centering
+  \IfFileExists{figures/#1.pdf}{\includegraphics[width=14cm]{figures/#1.pdf}}{\fbox{\parbox{12cm}{\centering\vspace{1cm}Figure à générer (\texttt{figures/#1.pdf})\vspace{1cm}}}}
+  \caption{#2}\label{#3}
+  \end{figure}}
+
+\input{numbers.tex}
+
+\title{\titre}
+\author{\auteur}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Nous décrivons la construction et l'évaluation d'un assistant de recherche juridique sur quatorze codes tunisiens, interrogeable
+en arabe, en français et en anglais. Partant d'un système de \term{RAG} existant (v1), nous avons d'abord corrigé la récupération
+(v1.1), puis construit un agent (v2) qui analyse la question, récupère des articles, juge si les preuves suffisent, reformule
+au besoin, et rédige une réponse dont chaque affirmation cite un article. Tous les nombres de ce rapport sont produits par des
+scripts à partir des fichiers de résultats du dépôt ; les valeurs absentes sont signalées comme \acompleter. Les résultats négatifs
+sont rapportés au même titre que les résultats positifs.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\input{sections/01_introduction}
+\input{sections/02_corpus}
+\input{sections/03_v1_v11}
+\input{sections/04_methodologie}
+\input{sections/05_architecture}
+\input{sections/06_recuperation}
+\input{sections/07_generation}
+\input{sections/08_stabilite}
+\input{sections/09_evaluation_finale}
+\input{sections/10_menaces}
+\input{sections/11_conclusion}
+
+\appendix
+\input{sections/annexes}
+
+\end{document}

@@ -1,0 +1,56 @@
+\section{Reproduction}\label{sec:repro}
+
+\paragraph{Version.} Ce rapport a été généré sur la branche \NGitBranch{} au commit \NGitHead. Étiquettes du dépôt :
+\NGitTags.
+
+\paragraph{Empreintes des prompts.} Analyse \NHashAnalyze, Plan \NHashPlan, \texttt{codes.py} \NHashCodes{} (combinée
+\NHashCombined), Évaluer \NHashGrade, Reformuler \NHashReformulate, Vérifier \NHashVerify.
+
+\paragraph{Environnement.} Un seul environnement conda, dont les versions exactes sont figées dans
+\texttt{requirements.lock.txt}. Les figures sont dessinées par un interpréteur disposant de matplotlib (variable
+\texttt{FIG\_PYTHON}), à partir de \texttt{report/data.json} uniquement.
+
+\paragraph{Commandes.}
+\begin{lstlisting}
+python evaluate.py --split dev --temperature 0
+python agent/eval_plan_vs_raw.py --split dev
+python agent/eval_loop.py --split dev
+python agent/eval_loop.py --split dev --start g
+python eval/pdf_truth.py
+python eval/audit_chunks.py
+python eval/show_article.py PenalFr 218
+python eval/verifier_calibration.py --n 24
+python eval/noise_check.py
+python eval/pdf_factcheck.py results/noise_check.json
+python report/build_report.py
+\end{lstlisting}
+
+\section{Incidents et leçons}\label{sec:incidents}
+
+\paragraph{Écart d'environnement.} Une exécution du script de comparaison a donné, pour la variante A1 sur le
+développement, 77,1~\% de Hit@6 au lieu des \NVoneoneDevHitsix~\% attendus \averifier. Avec le code engagé et
+l'environnement figé, la valeur attendue a été reproduite à l'identique, question par question. La cause de l'écart n'a
+pas pu être établie à partir des fichiers ; l'hypothèse retenue est une exécution dans un autre environnement \averifier.
+Leçon : figer l'environnement et enregistrer la provenance de chaque exécution.
+
+\paragraph{HEAD détaché et paramètre perdu.} Un passage sur un commit ancien en HEAD détaché a remplacé le fichier de
+récupération (perte du paramètre de filtre doux) et les prompts gelés par leurs versions antérieures, puis une étiquette
+a été posée sur ce commit. L'état a été récupéré en revenant sur la branche de travail et en y reportant la seule
+modification utile ; le commit détaché est conservé dans la branche \NGitRescue{} et l'étiquette a été déplacée.
+Leçon : vérifier la branche avant chaque commit, et dater les résultats par l'empreinte de leurs prompts.
+
+\paragraph{Jeu de test vu deux fois.} Le jeu de test a servi à la mesure finale de v1.1, puis à la comparaison des
+variantes de planification (\texttt{agent/LEARNING.md}). Il ne peut plus confirmer les résultats de l'agent.
+
+\paragraph{Hypothèse sur l'arabe.} Une hypothèse sur l'avantage de certaines langues a été formulée puis retirée faute de
+mesure suffisante \averifier.
+
+\section{Structure du dépôt}
+Fichiers et dossiers suivis à la racine :
+\input{tables/repo_tree}
+\begin{itemize}
+  \item \texttt{agent/} : nœuds de l'agent, graphe, scripts d'expériences ;
+  \item \texttt{eval/} : questions, découpage, vérité de terrain PDF, audit, étalonnage, harnais d'évaluation ;
+  \item \texttt{results/} : sorties des exécutions (source de tous les nombres) ;
+  \item \texttt{report/} : ce rapport et ses scripts de génération.
+\end{itemize}

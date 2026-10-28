@@ -1,0 +1,41 @@
+\section{Évaluation finale sur 100 questions}\label{sec:finale}
+
+\textbf{Statut : \acompleter.} Le jeu de cent questions (\texttt{eval/answer\_set.json}) est volontairement vide à ce stade :
+ses questions et ses points de référence sont rédigés à la main, après le gel des prompts, pour qu'aucun réglage n'ait pu
+s'appuyer sur eux. Les résultats ci-dessous seront remplis automatiquement à partir de \texttt{results/answer\_eval\_*}.
+
+\input{tables/t_final}
+
+\figfile{f10_final_eval}{Évaluation finale : part des réponses correctes et des réponses contenant une hallucination, par
+système.}{fig:final}
+\figfile{f11_latency_calls}{Temps et appels LLM par question, par système.}{fig:latence}
+
+\subsection{Protocole}
+Chaque élément du jeu indique la réponse attendue : \emph{répondre} (avec les articles de référence et des points de
+référence rédigés par un juriste), \emph{clarifier} ou \emph{refuser}. Pour chaque système, le harnais
+\texttt{eval/run\_answer\_eval.py} enregistre la réponse, les preuves, les citations, le temps et le nombre d'appels LLM, puis
+calcule sans LLM : présence de l'article de référence parmi les preuves et parmi les citations, identifiants cités absents
+des preuves, contrôle numérique contre les PDF, et justesse des décisions de clarifier ou de refuser. Un juge LLM
+\emph{distinct} du générateur (variable \texttt{JUDGE\_MODEL}, température 0) indique quels points de référence la réponse
+couvre, si elle les contredit, et quelles affirmations ne sont pas appuyées par les articles cités. Les intervalles sont
+obtenus par \emph{bootstrap} sur les questions ; deux systèmes sont comparés question par question. Un échantillon de
+réponses est exporté pour un contrôle humain du juge (accord et kappa de Cohen, \texttt{eval/audit\_agreement.py}).
+
+\subsection{Commandes}
+\begin{lstlisting}
+python eval/check_answer_set.py
+python eval/run_answer_eval.py --system v2 --dry-run
+python eval/run_answer_eval.py --system v2
+python eval/run_answer_eval.py --system v1.1
+python eval/run_answer_eval.py --system v1 --v1-worktree <dossier>
+python eval/run_answer_eval.py --summarize results/answer_eval_answer_set_v1.jsonl results/answer_eval_answer_set_v1.1.jsonl results/answer_eval_answer_set_v2.jsonl
+python eval/run_answer_eval.py --system v2 --export-audit 20
+python eval/audit_agreement.py results/audit_sample_v2.csv
+\end{lstlisting}
+Le système v1 tourne dans un \texttt{git worktree} de l'étiquette \texttt{v1-baseline-runnable}, avec son ancien index ; le
+harnais affiche les commandes de préparation et ne les exécute pas lui-même.
+
+\subsection{Attentes pré-enregistrées}
+Le journal \texttt{agent/LEARNING.md} fixe le but de cette évaluation (mesurer v1, v1.1 et v2 : exactitude, taux de fausses
+citations, taux d'affirmations non appuyées, qualité des refus, comparaison des langues) mais ne contient pas encore
+d'attente chiffrée pour elle. \averifier{} Une attente chiffrée devrait y être écrite avant de lancer l'évaluation.

@@ -1,0 +1,333 @@
+{
+ "f2": {
+  "v1": {
+   "n": 52,
+   "hit": 0.5769230769230769,
+   "hit1": 0.3269230769230769,
+   "recall": 0.3439102564102564,
+   "mrr": 0.40480769230769226
+  },
+  "v11": {
+   "n": 52,
+   "hit": 0.8076923076923077,
+   "hit1": 0.5961538461538461,
+   "recall": 0.5044871794871795,
+   "mrr": 0.6865384615384615
+  }
+ },
+ "steps": [
+  [
+   "v1 (étiquettes finales)",
+   0.5714285714285714
+  ],
+  [
+   "1. Découpage aux vrais intitulés, identifiants stables",
+   0.7142857142857143
+  ],
+  [
+   "2. Question brute d'abord (traduction AR/EN seulement)",
+   0.8857142857142857
+  ],
+  [
+   "3. Suppression de la table de synonymes (fuite)",
+   0.8571428571428571
+  ],
+  [
+   "4. Reranker : correction, réserve de 20, int8",
+   0.8571428571428571
+  ],
+  [
+   "5. Fusion par rang réciproque (RRF)",
+   0.8857142857142857
+  ],
+  [
+   "6. Texte de contexte avant l'\\emph{embedding}",
+   0.8285714285714286
+  ],
+  [
+   "7. bge-m3 au lieu de Solon",
+   0.8285714285714286
+  ]
+ ],
+ "f3": {
+  "dev": {
+   "A2": 0.7142857142857143,
+   "D": 0.7714285714285715
+  },
+  "test": {
+   "A2": 0.75,
+   "D": 0.7307692307692307
+  },
+  "n": {
+   "dev": 35,
+   "test": 52
+  }
+ },
+ "f4": {
+  "A2": {
+   "hit": 0.7142857142857143,
+   "ci": [
+    0.46875,
+    0.9166666666666666
+   ]
+  },
+  "G": {
+   "hit": 0.8,
+   "ci": [
+    0.5769230769230769,
+    0.96875
+   ],
+   "diff": 0.08571428571428574,
+   "diff_ci": [
+    0.0,
+    0.23529411764705876
+   ]
+  },
+  "Boucle depuis A2": {
+   "hit": 0.8,
+   "ci": [
+    0.6071428571428571,
+    0.9545454545454546
+   ],
+   "diff": 0.08571428571428574,
+   "diff_ci": [
+    0.0,
+    0.23076923076923073
+   ]
+  },
+  "Boucle depuis G": {
+   "hit": 0.8571428571428571,
+   "ci": [
+    0.6875,
+    1.0
+   ],
+   "diff": 0.1428571428571428,
+   "diff_ci": [
+    0.02941176470588236,
+    0.3076923076923077
+   ]
+  },
+  "A1 (oracle)": {
+   "hit": 0.8857142857142857,
+   "ci": [
+    0.7428571428571429,
+    1.0
+   ],
+   "diff": 0.17142857142857137,
+   "diff_ci": [
+    0.03125,
+    0.34615384615384626
+   ]
+  }
+ },
+ "f5": {
+  "by_lang": {
+   "A2": {
+    "fr": 0.7368421052631579,
+    "ar": 0.625,
+    "en": 0.75
+   },
+   "G": {
+    "fr": 0.8421052631578947,
+    "ar": 0.625,
+    "en": 0.875
+   },
+   "Boucle depuis A2": {
+    "fr": 0.7894736842105263,
+    "ar": 0.75,
+    "en": 0.875
+   },
+   "Boucle depuis G": {
+    "fr": 0.8947368421052632,
+    "ar": 0.75,
+    "en": 0.875
+   },
+   "A1 (oracle)": {
+    "fr": 0.8947368421052632,
+    "ar": 0.75,
+    "en": 1.0
+   }
+  },
+  "n": {
+   "fr": 19,
+   "ar": 8,
+   "en": 8
+  }
+ },
+ "f6": {
+  "A2": {
+   "enough|True": 25,
+   "enough|False": 4,
+   "weak|True": 0,
+   "weak|False": 6
+  },
+  "G": {
+   "enough|True": 21,
+   "enough|False": 4,
+   "weak|True": 7,
+   "weak|False": 3
+  }
+ },
+ "f7": {
+  "A2": {
+   "retries": {
+    "0": 29,
+    "2": 5,
+    "1": 1
+   },
+   "llm_requests": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    4,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    4,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    4,
+    1,
+    1,
+    1,
+    1,
+    1,
+    4,
+    1,
+    1,
+    4,
+    1
+   ]
+  },
+  "G": {
+   "retries": {
+    "2": 6,
+    "0": 25,
+    "1": 4
+   },
+   "llm_requests": [
+    4,
+    1,
+    1,
+    1,
+    1,
+    1,
+    4,
+    4,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    4,
+    3,
+    3,
+    1,
+    1,
+    1,
+    1,
+    4,
+    3,
+    1,
+    1,
+    1,
+    1,
+    4,
+    1,
+    1,
+    1,
+    1
+   ]
+  }
+ },
+ "f8": {
+  "good": {
+   "rate": 0.0,
+   "ci": [
+    0.0,
+    0.13798057582897535
+   ],
+   "n": 24
+  },
+  "number_changed": {
+   "rate": 0.9583333333333334,
+   "ci": [
+    0.7975777375115778,
+    0.992606734645195
+   ],
+   "n": 24
+  },
+  "wrong_article": {
+   "rate": 1.0,
+   "ci": [
+    0.8620194241710247,
+    1.0
+   ],
+   "n": 24
+  },
+  "added_condition": {
+   "rate": 1.0,
+   "ci": [
+    0.8620194241710247,
+    1.0
+   ],
+   "n": 24
+  }
+ },
+ "calib_misses": [
+  {
+   "type": "number_changed",
+   "cid": "ProcedurepenaleFr/s02/166",
+   "stem": "ProcedurepenaleFr",
+   "label": "166",
+   "cited": [
+    "ProcedurepenaleFr/s02/166"
+   ],
+   "claim": "Lorsqu'un des magistrats ayant participé à ces jugements se trouve dans l'impossibilité de les signer après le prononcé, ces jugements sont signés par les trois autres magistrats et mention y est faite de cette circonstance.",
+   "position": 2,
+   "verdict": "supported",
+   "problem": ""
+  }
+ ],
+ "f9": [
+  {
+   "id": "q001",
+   "jaccard": 1.0,
+   "same": true
+  },
+  {
+   "id": "q006",
+   "jaccard": 1.0,
+   "same": true
+  },
+  {
+   "id": "q010",
+   "jaccard": 1.0,
+   "same": true
+  },
+  {
+   "id": "q011",
+   "jaccard": 1.0,
+   "same": true
+  }
+ ],
+ "final_eval": null
+}

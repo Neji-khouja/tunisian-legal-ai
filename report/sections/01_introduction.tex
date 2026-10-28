@@ -1,0 +1,29 @@
+\section{Introduction}
+
+\paragraph{Problème.} Retrouver la règle applicable dans les codes tunisiens demande de savoir dans quel code chercher,
+sous quel terme juridique la règle est formulée, et dans quel article précis elle figure. Les codes sont publiés en
+français ; les questions des usagers arrivent en arabe, en français ou en anglais, souvent dans un vocabulaire courant
+(« frapper quelqu'un ») éloigné de celui du texte (« coups et blessures volontaires »). Un système de génération augmentée
+par récupération (\term{RAG}) répond à ce besoin en récupérant des articles puis en rédigeant une réponse à partir d'eux.
+Son point faible est double : il peut ne pas trouver le bon article, et il peut affirmer ce que les articles ne disent pas.
+
+\paragraph{Objectifs.} Nous poursuivons trois objectifs, dans cet ordre :
+\begin{enumerate}
+  \item mesurer et corriger la récupération du système existant (v1), pour obtenir une référence honnête (v1.1) ;
+  \item construire un agent (v2) qui décide lui-même quand chercher davantage, et dont chaque affirmation cite un article
+        vérifiable ;
+  \item évaluer v1, v1.1 et v2 sur les mêmes critères, en séparant strictement les données de mise au point et
+        les données de test.
+\end{enumerate}
+
+\paragraph{Périmètre.} Le corpus comprend \NCorpusPdfs{} codes tunisiens au format PDF (\NCorpusPages{} pages,
+\NCorpusChunks{} \term{chunks} dans l'index). Le jeu de questions de récupération compte \NQTotal{} questions
+(\NQLangFr{} en français, \NQLangAr{} en arabe, \NQLangEn{} en anglais), groupées en \NConceptsTotal{} concepts juridiques.
+Nous évaluons la récupération (l'article de référence est-il trouvé ?) et, pour l'agent, la génération (la réponse
+est-elle exacte et appuyée par les articles cités ?). L'évaluation au niveau de la réponse sur un jeu de cent questions
+n'est pas encore réalisée ; la section~\ref{sec:finale} en donne le protocole.
+
+\paragraph{Plan.} La section~\ref{sec:corpus} décrit le corpus et la vérification des \term{chunks} contre les PDF ;
+la section~\ref{sec:v11} le passage de v1 à v1.1 ; la section~\ref{sec:methodo} la méthodologie d'évaluation ;
+la section~\ref{sec:archi} l'architecture de l'agent ; les sections~\ref{sec:recup} à~\ref{sec:stabilite} les expériences ;
+la section~\ref{sec:menaces} les menaces à la validité.

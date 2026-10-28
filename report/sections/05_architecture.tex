@@ -1,0 +1,69 @@
+\section{Architecture de l'agent}\label{sec:archi}
+
+L'agent est un graphe LangGraph (\texttt{agent/agent\_graph.py}). Chaque nœud lit l'état partagé et ne renvoie que les champs
+qu'il modifie. La figure~\ref{fig:graphe} montre les nœuds et les transitions.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  node distance=7mm and 9mm,
+  box/.style={draw, rounded corners=2pt, minimum width=22mm, minimum height=8mm, align=center, font=\small},
+  llm/.style={box, fill=blue!8},
+  code/.style={box, fill=gray!10},
+  todo/.style={box, dashed, fill=white},
+  arr/.style={-{Stealth[length=2mm]}, thick},
+  lab/.style={font=\scriptsize, fill=white, inner sep=1pt}]
+  \node[llm]  (an)  {Analyse};
+  \node[code, above right=4mm and 12mm of an] (cl) {Clarifier\\{\scriptsize (au plus 2 fois)}};
+  \node[code, below right=4mm and 12mm of an] (re) {Refuser};
+  \node[code, right=34mm of an] (rt) {Récupérer\\{\scriptsize (G)}};
+  \node[llm, right=of rt] (gr) {Évaluer};
+  \node[llm, below=12mm of gr] (rf) {Reformuler};
+  \node[code, left=of rf] (rm) {Récupérer+};
+  \node[llm, right=of gr] (aw) {Répondre};
+  \node[todo, below=12mm of aw] (vf) {Vérifier\\{\scriptsize (hors graphe)}};
+  \draw[arr] (an) -- node[lab, above, sloped] {ambiguë} (cl);
+  \draw[arr] (an) -- node[lab, below, sloped] {hors champ} (re);
+  \draw[arr] (an) -- node[lab, above] {claire} (rt);
+  \draw[arr] (rt) -- (gr);
+  \draw[arr] (gr) -- node[lab, above] {suffisant} (aw);
+  \draw[arr] (gr) -- node[lab, right] {faible} (rf);
+  \draw[arr] (rf) -- (rm);
+  \draw[arr] (rm) -- node[lab, left] {reprises $<2$} (gr);
+  \draw[arr] (rm.south) -- ++(0,-5mm) -| node[lab, pos=0.25, below] {reprises $=2$ (sans réévaluer)} (aw.south east);
+  \draw[arr, dashed] (aw) -- (vf);
+\end{tikzpicture}
+\caption{Graphe de l'agent. En bleu, les nœuds qui appellent le LLM ; en gris, le code déterministe ; en pointillés, le
+vérificateur de support, étalonné (section~\ref{sec:generation}) mais pas encore branché dans le graphe.}
+\label{fig:graphe}
+\end{figure}
+
+\subsection{Les nœuds}
+\begin{description}
+  \item[Analyse.] Le LLM détecte la langue, classe l'intention (claire, ambiguë, hors champ) et liste les codes qui
+        peuvent s'appliquer. Le prompt contient une description d'une ligne de chacun des quatorze codes, rédigée à
+        partir de la structure des PDF (tables des matières, titres et chapitres).
+  \item[Clarifier / Refuser.] Une question ambiguë reçoit une question de précision ; la réponse de l'usager repasse par
+        l'Analyse avec toute la transcription. Une question hors champ est refusée sans recherche.
+  \item[Récupérer (G).] La récupération de v1.1 sur la question brute (A2), fusionnée par rang réciproque avec la même
+        recherche filtrée sur le code proposé par l'Analyse lorsque celle-ci n'en propose qu'un. Le code est donc un
+        indice « doux » : il ne peut pas faire disparaître les résultats non filtrés.
+  \item[Évaluer.] Le LLM lit les six articles (500 premiers caractères de chacun) et juge si l'un d'eux énonce la règle
+        demandée ; sinon il nomme, en français juridique, la règle manquante.
+  \item[Reformuler et Récupérer+.] Le LLM écrit une à trois nouvelles requêtes en français, différentes des précédentes et
+        réutilisant les termes vus dans les articles ; les nouveaux résultats sont fusionnés avec les anciens.
+  \item[Répondre.] Le LLM écrit de une à six affirmations ; chacune est une phrase qui cite les identifiants des articles
+        qui l'énoncent. Un contrôle en code vérifie que chaque identifiant cité figure bien dans les preuves.
+\end{description}
+
+\subsection{L'état}
+L'état transporte la question et le texte complet de la conversation (\texttt{full\_question}, utilisé par tous les nœuds
+après une clarification), la langue, l'intention, les codes, les six documents et les preuves (texte des articles indexé
+par identifiant), le nombre de reprises, les requêtes déjà essayées, le texte de la règle manquante, les affirmations
+structurées, les identifiants cités, les problèmes détectés et une liste \texttt{degraded} qui enregistre les replis
+silencieux (par exemple une Analyse en échec).
+
+\subsection{Boucles bornées}
+Deux boucles existent et toutes deux ont une borne dans l'état, non dans la bibliothèque : au plus deux reprises de
+recherche, et au plus deux questions de précision. Après la dernière reformulation, le graphe répond sans réévaluer :
+une évaluation de plus ne pourrait plus rien changer et coûterait un appel LLM.

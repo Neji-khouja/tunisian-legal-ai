@@ -1,0 +1,30 @@
+\section{Menaces à la validité et limites}\label{sec:menaces}
+
+\paragraph{Sur-ajustement au développement.} Toutes les variantes de l'agent ont été choisies sur les mêmes \NQDev{}
+questions du développement. L'exemple du Plan (section~\ref{sec:recup}) montre qu'un gain sur ce jeu peut disparaître sur
+le test. Les descriptions de codes ont en outre été écrites après avoir vu des échecs du développement.
+
+\paragraph{Jeu de test consommé.} Le jeu de test a servi une fois pour v1.1, puis une seconde fois pour comparer les
+variantes de planification. Il n'est plus un test indépendant pour l'agent ; c'est pourquoi les résultats de la boucle
+restent non confirmés jusqu'à l'évaluation sur un jeu neuf.
+
+\paragraph{Juge LLM et circularité.} Un LLM qui juge les réponses d'un LLM peut partager ses biais. Nous imposons un modèle
+juge distinct du générateur, nous l'alimentons avec le texte des PDF plutôt qu'avec nos \term{chunks}, et nous prévoyons un
+contrôle humain d'un échantillon (accord et kappa de Cohen). Le vérificateur de support, lui, utilise le même modèle que le
+générateur ; son étalonnage par mutations mesure ce qu'il détecte, pas ce qu'il manquerait sur des erreurs plus subtiles.
+
+\paragraph{Taille d'échantillon et regroupement.} Avec \NConceptsDev{} concepts de développement, une question déplace le
+Hit@6 de 1/\NQDev{} et les intervalles par concept sont larges. Les versions d'une même question dans trois langues ne sont
+pas indépendantes ; traiter les questions comme indépendantes surestimerait la précision.
+
+\paragraph{Non-déterminisme.} Le contrôle de stabilité porte sur peu de questions, toutes en français et du même code
+(section~\ref{sec:stabilite}). Les quotas de l'API (erreurs 429 réessayées) ralentissent les exécutions sans changer leur
+résultat, mais une limite journalière peut interrompre une évaluation ; les réponses sont mises en cache pour la reprendre.
+
+\paragraph{Qualité d'extraction des PDF.} Notre vérité de terrain repose sur une seconde extraction (pypdf) qui a ses propres
+défauts : mots coupés, notes de bas de page en arabe illisibles, numérotation des sections différente dans un PDF regroupé.
+L'audit (section~\ref{sec:corpus}) chiffre ces écarts plutôt que de les supposer nuls.
+
+\paragraph{Langues.} Les codes sont en français ; les questions arabes et anglaises passent par une traduction. Les effectifs
+par langue sont trop petits pour conclure qu'une langue est mieux servie qu'une autre. Aucun texte arabe n'est reproduit
+dans ce rapport.

@@ -1,0 +1,18 @@
+\section{Conclusion et perspectives}
+
+Corriger la récupération a apporté le gain le plus net et le mieux établi : sur le jeu de test, Hit@6 passe de
+\NVoneTestHitsix~\% à \NVoneoneTestHitsix~\% et le temps par question baisse fortement. Sur l'agent, nos résultats sont plus
+prudents. La planification systématique des requêtes ne bat pas nettement la question brute : c'est un résultat négatif,
+obtenu en confrontant au test une variante qui brillait sur le développement. La combinaison d'un indice de code doux et
+d'une boucle Évaluer → Reformuler atteint \NLoopLoopGHitsix~\% sur le développement contre \NLoopAtwoHitsix~\% pour A2, mais
+ce gain repose sur peu de concepts et n'est pas confirmé. Le vérificateur de support détecte la plupart des affirmations
+fausses construites par mutation, et un contrôle numérique sans LLM contre les PDF complète ce dispositif.
+
+\paragraph{Perspectives.}
+\begin{itemize}
+  \item Rédiger le jeu de cent questions, écrire les attentes chiffrées, puis mesurer v1, v1.1 et v2 une seule fois.
+  \item Brancher le vérificateur dans le graphe, avec une réparation au plus.
+  \item Corriger les défauts de l'index relevés par l'audit (pied de page resté dans des \term{chunks}, sections).
+  \item Étendre le contrôle de stabilité à l'arabe, à l'anglais et aux questions qui demandent une clarification.
+  \item Faire valider un échantillon des étiquettes et des réponses par un juriste.
+\end{itemize}
