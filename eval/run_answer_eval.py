@@ -1,13 +1,16 @@
 """Answer-level evaluation harness (v2 = agent graph, v1.1 = baseline pipeline, v1 = original pipeline).
 
     python eval/run_answer_eval.py --system v2 --dry-run                     # plan + LLM-call estimate, no call
-    python eval/run_answer_eval.py --system v2 [--limit N] [--only-ids a001,a002] [--skip-judge]
+    python eval/run_answer_eval.py --system v2 [--limit N] [--only-ids a001,a002] [--skip-judge] [--min-gap SECONDS]
     python eval/run_answer_eval.py --summarize results/answer_eval_answer_set_v2.jsonl [more.jsonl ...]
     python eval/run_answer_eval.py --system v2 --export-audit 20             # CSV for a human check of the judge
 
 Items (eval/answer_set.json, see eval/check_answer_set.py): id, question, language, expected (answer|clarify|refuse),
 gold [{source, article}], reference_points [str], reason. Results are appended to
 results/answer_eval_<setname>_<system>.jsonl; items already there are skipped (resume).
+Timing per item: seconds (system only), elapsed_total (system + metrics + judge; the --min-gap sleep is outside),
+n_429 (rate-limited Groq responses the client retried) and waited_seconds (sum of the retry waits the Groq client
+announced); n_429 and waited_seconds are None for v1, whose LLM calls run in a subprocess.
 
 Judge: a model different from the generator (env JUDGE_MODEL or --judge-model; a Groq model id), temperature 0,
 own prompt, structured output. Never guessed: without a judge model the run stops unless --skip-judge.
@@ -36,7 +39,10 @@ SEED = 20261022
 N_BOOT = 5000
 GENERATOR_MODEL = "openai/gpt-oss-120b"        # config.LLM_MODEL and agent/analyze.py
 V1_TAG = "v1-baseline-runnable"
-CALLS = {"n": 0}                               # successful Groq requests seen by httpx in this process
+# successful Groq requests (n), rate-limited responses (n429) seen by httpx in this process, and the retry waits
+# the Groq client announced ("Retrying request to ... in X seconds", logger groq._base_client; 429s and
+# connection errors alike). Only the Groq client in this process is seen: not the v1 subprocess.
+CALLS = {"n": 0, "n429": 0, "waited": 0.0}
 
 
 class _CountGroq(logging.Handler):
@@ -44,11 +50,22 @@ class _CountGroq(logging.Handler):
         msg = record.getMessage()
         if "api.groq.com" in msg and " 200 " in msg:       # retried 429s are not LLM calls
             CALLS["n"] += 1
+        elif "api.groq.com" in msg and " 429 " in msg:
+            CALLS["n429"] += 1
+
+
+class _GroqWaits(logging.Handler):
+    def emit(self, record):
+        if record.msg.startswith("Retrying request to") and len(record.args or ()) == 2:
+            CALLS["waited"] += float(record.args[1])
 
 
 logging.getLogger("httpx").setLevel(logging.INFO)
 logging.getLogger("httpx").addHandler(_CountGroq())
 logging.getLogger("httpx").propagate = False
+logging.getLogger("groq._base_client").setLevel(logging.INFO)
+logging.getLogger("groq._base_client").addHandler(_GroqWaits())
+logging.getLogger("groq._base_client").propagate = False
 
 
 # ---------------------------------------------------------------- helpers
@@ -234,6 +251,9 @@ def metric_values(rows) -> dict:
         vals["numeric check ok (claim share)"].append(sum(claims) / len(claims) if claims else None)
         vals["seconds"].append(r["seconds"])
         vals["LLM calls"].append(r["llm_calls"])
+        vals["elapsed total (s)"].append(r.get("elapsed_total"))          # absent in rows written before these fields
+        vals["429 responses"].append(r.get("n_429"))
+        vals["client retry waits (s)"].append(r.get("waited_seconds"))
         v = j.get("verdict") if j else None
         for name in ("correct", "partial", "incorrect"):
             vals[name].append(None if v is None else int(v == name))
@@ -324,6 +344,7 @@ def main():
     ap.add_argument("--skip-judge", action="store_true")
     ap.add_argument("--judge-model", default=os.environ.get("JUDGE_MODEL"))
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--min-gap", type=float, default=0, metavar="SECONDS", help="sleep between questions")
     ap.add_argument("--summarize", nargs="+", metavar="JSONL")
     ap.add_argument("--export-audit", type=int, metavar="N")
     ap.add_argument("--v1-worktree", help=f"git worktree of {V1_TAG} with the old index in db/ (for --system v1)")
@@ -366,8 +387,11 @@ def main():
     run = {"v2": run_v2, "v1.1": run_v11}.get(args.system) or runner.run
     out.parent.mkdir(parents=True, exist_ok=True)
     for k, item in enumerate(todo, 1):
+        if k > 1 and args.min_gap:
+            time.sleep(args.min_gap)
         print(f"[{k}/{len(todo)}] {item['id']} ...", file=sys.stderr, flush=True)
         c0, t0 = CALLS["n"], time.time()
+        r0, w0 = CALLS["n429"], CALLS["waited"]
         try:
             rec = run(item)
         except Exception as e:
@@ -384,8 +408,12 @@ def main():
                 sys.exit(f"STOPPED: judge failed on {item['id']}: {type(e).__name__}: {e}\nRe-run to resume.")
             jd["llm_calls"] = CALLS["n"] - c1
         rec.pop("_evidence_text", None)
+        v1 = args.system == "v1"                    # its LLM calls run in the subprocess: 429s and waits not seen
         row = {"id": item["id"], "question": item["question"], "language": item.get("language"),
                "expected": item["expected"], "system": args.system, **rec, "seconds": seconds, "llm_calls": calls,
+               "elapsed_total": round(time.time() - t0, 1),               # system + deterministic metrics + judge
+               "n_429": None if v1 else CALLS["n429"] - r0,              # system + judge
+               "waited_seconds": None if v1 else round(CALLS["waited"] - w0, 1),
                "metrics": m, "judge": jd}
         row["hallucinated"] = hallucinated(rec, m, jd)
         with out.open("a", encoding="utf-8") as f:
