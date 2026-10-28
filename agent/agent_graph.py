@@ -7,6 +7,7 @@ from retriever import _fuse
 from retrieve_g import retrieve_g
 from grade import grade
 from reformulate import reformulate
+from answer import make_answer, check_answer, render
 
 class AgentState(TypedDict):
     question: str
@@ -25,6 +26,8 @@ class AgentState(TypedDict):
     tried: list[str]
     missing: str
     enough: bool
+    problems: list[str]
+    cited: list[str]
 def analyze_node(state: AgentState) -> dict:
  
     if state.get("status") == "clarify" and state.get("original_question"):
@@ -92,8 +95,12 @@ def retrieve_more_node(state: AgentState) -> dict:
     docs = _fuse([state["docs"], extra])[:6]
     return {"docs": docs, "evidence": to_evidence(docs), "retries": state["retries"] + 1}
 
-def answer_stub(state: AgentState) -> dict:
-    return {"status": "done"}   # placeholder until the Answer node exists
+def answer_node(state: AgentState) -> dict:
+    ans = make_answer(state["question"], state["language"], state["evidence"])
+    problems = check_answer(ans, state["evidence"])
+    cited = sorted({i for c in ans.claims for i in c.cited_ids})
+    return {"text": render(ans, state["evidence"], state["language"]),
+            "problems": problems, "cited": cited, "status": "done"}
 
 def route_after_analyze(state: AgentState) -> str:
     if state["intent"] == "out_of_scope":
@@ -120,7 +127,7 @@ builder.add_node("retrieve", retrieve_node)
 builder.add_node("grade", grade_node)
 builder.add_node("reformulate", reformulate_node)
 builder.add_node("retrieve_more", retrieve_more_node)
-builder.add_node("answer", answer_stub)
+builder.add_node("answer", answer_node)
 
 builder.add_edge(START, "analyze")
 builder.add_conditional_edges("analyze", route_after_analyze,
