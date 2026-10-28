@@ -28,6 +28,7 @@ class AgentState(TypedDict):
     enough: bool
     problems: list[str]
     cited: list[str]
+    full_question: str
 def analyze_node(state: AgentState) -> dict:
  
     if state.get("status") == "clarify" and state.get("original_question"):
@@ -42,6 +43,7 @@ def analyze_node(state: AgentState) -> dict:
             "intent": r.intent,
             "target_codes": r.target_codes,
             "clarification_question": r.clarification_question,
+            "full_question": full_question,
         }
     except Exception as e:
         print("Analyze failed:", e)
@@ -50,6 +52,7 @@ def analyze_node(state: AgentState) -> dict:
             "intent": "clear",
             "target_codes": [],
             "clarification_question": None,
+            "full_question": full_question,
         }
 
 def clarify(state: AgentState) -> dict:
@@ -75,18 +78,18 @@ def to_evidence(docs) -> dict:
     }
 
 def retrieve_node(state: AgentState) -> dict:
-    docs = retrieve_g(state["question"], state["target_codes"])
+    docs = retrieve_g(state["full_question"], state["target_codes"])
     evidence = to_evidence(docs)
     return {"docs": docs, "evidence": evidence, "retries": 0, "tried": [], "missing": "",
             "status": "answer", "text": "[stub] evidence: " + ", ".join(evidence),
             "clarify_count": 0, "original_question": None}
 
 def grade_node(state: AgentState) -> dict:
-    g = grade(state["question"], state["evidence"])
+    g = grade(state["full_question"], state["evidence"])
     return {"enough": g.enough, "missing": g.missing}
 
 def reformulate_node(state: AgentState) -> dict:
-    r = reformulate(state["question"], state["language"], state["tried"], state["evidence"], state["missing"])
+    r = reformulate(state["full_question"], state["language"], state["tried"], state["evidence"], state["missing"])
     return {"sub_queries": [(s.text, s.code) for s in r.sub_queries],
             "tried": state["tried"] + [s.text for s in r.sub_queries]}
 
@@ -99,7 +102,7 @@ def answer_node(state: AgentState) -> dict:
     if not state["evidence"]:                 # nothing retrieved: do not ask the LLM to answer from nothing
         return {"text": "No relevant article was found in the codes I cover.",
                 "problems": [], "cited": [], "status": "done"}
-    ans = make_answer(state["question"], state["language"], state["evidence"])
+    ans = make_answer(state["full_question"], state["language"], state["evidence"])
     problems = check_answer(ans, state["evidence"])
     cited = sorted({i for c in ans.claims for i in c.cited_ids})
     return {"text": render(ans, state["evidence"], state["language"]),
