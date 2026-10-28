@@ -127,7 +127,8 @@ def route_after_more(state: AgentState) -> str:
     return "answer" if state["retries"] >= 2 else "grade"   # no grade after the last reformulation (as loop_core)
 
 def refuse(state):
-    return {"status": "refuse", "text": "This is outside the Tunisian legal codes I cover.", "clarify_count": 0, "original_question": None}
+    return {"status": "refuse", "text": "This is outside the Tunisian legal codes I cover.", "clarify_count": 0, "original_question": None,
+            "evidence": {}, "cited": [], "problems": [], "retries": 0, "tried": []}
 
 builder = StateGraph(AgentState)
 
