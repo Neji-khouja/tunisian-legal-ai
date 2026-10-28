@@ -34,10 +34,10 @@ if id220 is None:
     sys.exit("article 220 is not in the evidence for this question; pick another mutation base")
 other = next(cid for cid in evidence if cid != id220)
 
-good = Claim(text="Participer à une rixe au cours de laquelle sont portés des coups et blessures entraîne "
-                  "un emprisonnement de six mois pour ce seul fait.", cited_ids=[id220])
-wrong_number = Claim(text="Participer à une rixe au cours de laquelle sont portés des coups et blessures "
-                          "entraîne un emprisonnement de deux ans pour ce seul fait.", cited_ids=[id220])
+good = Claim(text="Les individus ayant participé à une rixe au cours de laquelle ont été portés des coups et blessures "
+                  "de la nature de ceux prévus aux articles 218 et 219 encourent un emprisonnement de six mois "
+                  "pour ce seul fait.", cited_ids=[id220])
+wrong_number = Claim(text=good.text.replace("six mois", "deux ans"), cited_ids=[id220])
 wrong_article = Claim(text=good.text, cited_ids=[other])
 invented = Claim(text="Celui qui frappe quelqu'un est puni d'une amende de cent dinars.", cited_ids=[id220])
 
