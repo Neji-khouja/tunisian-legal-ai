@@ -30,6 +30,8 @@ class AgentState(TypedDict):
     cited: list[str]
     full_question: str
     degraded: list[str]
+    claims: list[dict]
+    caveat: str
 def analyze_node(state: AgentState) -> dict:
 
     if state.get("status") == "clarify" and state.get("original_question"):
@@ -111,7 +113,8 @@ def answer_node(state: AgentState) -> dict:
     problems = check_answer(ans, state["evidence"])
     cited = sorted({i for c in ans.claims for i in c.cited_ids})
     return {"text": render(ans, state["evidence"], state["language"]),
-            "problems": problems, "cited": cited, "status": "done", "degraded": state.get("degraded", [])}
+            "problems": problems, "cited": cited, "status": "done", "degraded": state.get("degraded", []),
+            "claims": [c.model_dump() for c in ans.claims], "caveat": ans.caveat}
 
 def route_after_analyze(state: AgentState) -> str:
     if state["intent"] == "out_of_scope":
