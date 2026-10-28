@@ -29,7 +29,7 @@ def show(answer, v):
 # ---- Part 1: known-bad claims must NOT come back "supported" ----
 q = "Que risque-t-on si on frappe quelqu'un ?"
 evidence = get_evidence(q)
-id220 = next((cid for cid, e in evidence.items() if str(e["article"]) == "220"), None)
+id220 = next((cid for cid in evidence if cid.startswith("PenalFr/") and cid.endswith("/220")), None)  # not 220-bis
 if id220 is None:
     sys.exit("article 220 is not in the evidence for this question; pick another mutation base")
 other = next(cid for cid in evidence if cid != id220)

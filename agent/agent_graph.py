@@ -96,6 +96,9 @@ def retrieve_more_node(state: AgentState) -> dict:
     return {"docs": docs, "evidence": to_evidence(docs), "retries": state["retries"] + 1}
 
 def answer_node(state: AgentState) -> dict:
+    if not state["evidence"]:                 # nothing retrieved: do not ask the LLM to answer from nothing
+        return {"text": "No relevant article was found in the codes I cover.",
+                "problems": [], "cited": [], "status": "done"}
     ans = make_answer(state["question"], state["language"], state["evidence"])
     problems = check_answer(ans, state["evidence"])
     cited = sorted({i for c in ans.claims for i in c.cited_ids})

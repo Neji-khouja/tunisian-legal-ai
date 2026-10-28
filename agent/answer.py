@@ -9,7 +9,7 @@ from pathlib import Path
 
 from pydantic import BaseModel,Field
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent))   # agent/, for analyze
 from analyze import llm # same shared Groq model object as plan.py
 
 ANSWER_CHARS = 1500                          # max characters of each article shown to the model
