@@ -33,7 +33,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "agent"))
 sys.path.insert(0, str(ROOT / "eval"))
 from pdf_truth import from_chunk_id, pdf_article_text, source_stem, normalize
-from pdf_factcheck import claim_numbers_ok
+from pdf_factcheck import claim_numbers_ok, implicit_reference_numbers
 
 SEED = 20261022
 N_BOOT = 5000
@@ -149,6 +149,18 @@ def pdf_text(cid: str):
 
 # ---------------------------------------------------------------- deterministic metrics
 
+def numeric_check(text: str, cids: list) -> dict:
+    """eval/pdf_factcheck.py rule: every number of the text in the cited PDF texts. A missing "article N" that a
+    cited article designates as "article précédent/suivant" (ci-dessus/ci-après) is accepted and listed in
+    `implicit`: ok is then True (not a hallucination), and the answer is also counted under "implicit reference"."""
+    texts = [pdf_text(c) for c in cids]
+    ok, nums, missing = claim_numbers_ok(text, texts)
+    implicit = implicit_reference_numbers(text, missing, cids, texts) if ok is False else set()
+    if ok is False and implicit == missing:
+        ok = True
+    return {"ok": ok, "numbers": sorted(nums), "missing": sorted(missing - implicit), "implicit": sorted(implicit)}
+
+
 def deterministic(item, rec) -> dict:
     gold = gold_set(item)
     ev = rec.get("evidence_ids") or []
@@ -156,17 +168,13 @@ def deterministic(item, rec) -> dict:
          "gold_cited": (any(key(c) in gold for c in rec["cited"]) if gold else None) if rec.get("cited") is not None else None}
     if rec.get("claims") is not None:                       # v2: structured claims
         m["cited_not_in_evidence"] = sorted({c for cl in rec["claims"] for c in cl["cited_ids"] if c not in ev})
-        per_claim = []
-        for cl in rec["claims"]:
-            ok, nums, missing = claim_numbers_ok(cl["text"], [pdf_text(c) for c in cl["cited_ids"]])
-            per_claim.append({"ok": ok, "numbers": sorted(nums), "missing": sorted(missing)})
-        m["pdf_numeric_claims"] = per_claim
+        m["pdf_numeric_claims"] = [numeric_check(cl["text"], cl["cited_ids"]) for cl in rec["claims"]]
     else:                                                   # v1 / v1.1: the answer text as one block vs the 6 docs
         m["cited_not_in_evidence"] = None
-        ok, nums, missing = claim_numbers_ok(rec.get("text") or "", [pdf_text(c) for c in ev])
-        m["pdf_numeric_claims"] = [{"ok": ok, "numbers": sorted(nums), "missing": sorted(missing), "block": True}]
+        m["pdf_numeric_claims"] = [numeric_check(rec.get("text") or "", ev) | {"block": True}]
     oks = [c["ok"] for c in m["pdf_numeric_claims"]]
     m["pdf_numeric_ok"] = False if False in oks else (None if all(o is None for o in oks) else True)
+    m["pdf_numeric_implicit"] = any(c.get("implicit") for c in m["pdf_numeric_claims"])
     exp, st = item["expected"], rec.get("status")
     m["gate_correct"] = (st == exp) if exp in ("clarify", "refuse") else None
     m["false_clarify"] = (st == "clarify") if exp == "answer" else None
@@ -247,6 +255,8 @@ def metric_values(rows) -> dict:
         vals["false refuse"].append(int(m["false_refuse"]))
         vals["numeric check ok (answer)"].append(None if m["pdf_numeric_ok"] is None else int(m["pdf_numeric_ok"]))
         vals["numeric check unverifiable (answer)"].append(int(m["pdf_numeric_ok"] is None))
+        vals["numeric implicit reference (answer)"].append(          # absent in rows written before this rule
+            None if "pdf_numeric_implicit" not in m else int(m["pdf_numeric_implicit"]))
         claims = [c["ok"] for c in m["pdf_numeric_claims"] if c["ok"] is not None]
         vals["numeric check ok (claim share)"].append(sum(claims) / len(claims) if claims else None)
         vals["seconds"].append(r["seconds"])
