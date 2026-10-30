@@ -43,7 +43,7 @@ def _claims_block(answer: Answer, evidence: dict) -> str:
             if e is None:
                 parts.append(f"  Cited [{cid}]: (not in evidence)")
             else:
-                parts.append(f"  Cited [{cid}] article {e['article']}: {str(e['text'])[:VERIFY_CHARS]}")
+                parts.append(f"  Cited [{cid}] article {cid.split('/')[-1]}: {str(e['text'])[:VERIFY_CHARS]}")
         parts.append("")
     return "\n".join(parts)
 

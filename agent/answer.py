@@ -45,7 +45,7 @@ def _user_block(question, language, evidence):
              "",
              "Articles:"]
     for cid, e in evidence.items():
-        parts.append(f"[{cid}] {Path(str(e['source'])).stem}, article {e['article']}")
+        parts.append(f"[{cid}] {Path(str(e['source'])).stem}, article {cid.split('/')[-1]}")
         parts.append(str(e["text"])[:ANSWER_CHARS])
         parts.append("")
     return "\n".join(parts)
@@ -74,7 +74,7 @@ def check_answer(answer: Answer, evidence: dict) -> list[str]:
 
 def _label(cid, evidence):
     e = evidence[cid]
-    return f"{Path(str(e['source'])).stem} art. {e['article']}"
+    return f"{Path(str(e['source'])).stem} art. {cid.split('/')[-1]}"     # label from the chunk id: 13-bis, not 13
 
 
 def render(answer: Answer, evidence: dict, language: str = "fr") -> str:
