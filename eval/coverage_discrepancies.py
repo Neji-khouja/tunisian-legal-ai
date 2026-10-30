@@ -119,13 +119,18 @@ def main():
             else:
                 cls = "unclassified"
             rec["class"] = cls
-            print(f"  CLASS ({cls})")
+            rec["label_in_pdf_split"] = label in pdf[stem]["articles"]
+            print(f"  CLASS ({cls})   label now in the PDF split: {rec['label_in_pdf_split']}")
             out.append(rec)
 
     print("\n=== SUMMARY")
     for rec in out:
         print(f"  {rec['side']:<11}{rec['source']:<20}{rec['label']:<10}({rec['class']})  found in: {rec['found_in'] or '-'}"
-              + (f"  [{rec['note']}]" if rec.get("note") else ""))
+              + (f"  [{rec['note']}]" if rec.get("note") else "")
+              + (f"  [label in PDF split: {rec['label_in_pdf_split']}]" if "label_in_pdf_split" in rec else ""))
+    idx = [r for r in out if r["side"] == "only_index"]
+    print(f"\n  labels listed as 'only in index': {len(idx)}; still absent from the PDF split: "
+          f"{sum(not r['label_in_pdf_split'] for r in idx)} {[r['source'] + ' ' + r['label'] for r in idx if not r['label_in_pdf_split']]}")
     OUT.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"\nSaved {OUT.relative_to(ROOT)}")
 

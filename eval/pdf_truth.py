@@ -24,10 +24,12 @@ CACHE = ROOT / "eval" / "pdf_articles.json"
 
 # the corpus also spells some suffixes "quarter", "quinter", "sexties", "sexis", "septiès"; two can follow ("ter bis")
 SUFFIXES = r"bis|ter|quater|quarter|quinquies|quinquiès|quinter|sexies|sexties|sexis|septies|septiès|octies|nonies|decies"
+# "Art" may have no dot or a spaced one ("Art 192", "Art .135", "Art . 27"); a dash may precede the suffix
+# ("Article 376 - ter", "Article 385 – bis")
 HEADING = re.compile(
-    rf"^[ \t]*(?:Article|ARTICLE|Art\.|ART\.)[ \t]*(premier|Premier|PREMIER|1er|\d+)"
+    rf"^[ \t]*(?:Article|Art(?:[ \t]*\.)?)[ \t]*(premier|Premier|PREMIER|1er|\d+)"
     rf"(?:[ \t]*[-–][ \t]*(\d+)(?!\d))?"
-    rf"(?:[ \t]*[\"«(]?[ \t]*((?:{SUFFIXES})(?:[ \t]+(?:{SUFFIXES}))?)\b[ \t]*[\"»)]?)?"
+    rf"(?:[ \t]*(?:[-–][ \t]*)?[\"«(]?[ \t]*((?:{SUFFIXES})(?:[ \t]+(?:{SUFFIXES}))?)\b[ \t]*[\"»)]?)?"
     rf"(?=[ \t]*(?:[.(\-–—:]|$))",
     re.M | re.I,
 )
