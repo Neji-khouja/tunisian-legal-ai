@@ -12,7 +12,7 @@ from pydantic import BaseModel,Field
 sys.path.insert(0, str(Path(__file__).resolve().parent))   # agent/, for analyze
 from analyze import llm # same shared Groq model object as plan.py
 
-ANSWER_CHARS = 1500                          # max characters of each article shown to the model
+ANSWER_CHARS = 3000                          # max characters of each article shown to the model
 LANG_NAMES = {"fr": "French", "en": "English", "ar": "Arabic"}
 NOTE_WORD = {"fr": "Remarque", "en": "Note", "ar": "ملاحظة"}
 

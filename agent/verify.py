@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from analyze import llm
 from answer import Answer
 
-VERIFY_CHARS = 1500
+VERIFY_CHARS = 3000
 
 
 class ClaimVerdict(BaseModel):
