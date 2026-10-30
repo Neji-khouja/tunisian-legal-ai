@@ -1,0 +1,71 @@
+[
+ {"id": "g01", "question": "Quelle majorité est nécessaire pour décider ?", "language": "fr", "gold": "ambiguous",
+  "readings": [
+   {"reading": "vote of a company general meeting (ordinary / extraordinary)", "code": "societes"},
+   {"reading": "vote of Parliament on a law or a constitutional revision", "code": "constitution"},
+   {"reading": "decision of an arbitral tribunal with several arbitrators", "code": "arbitrage"}]},
+ {"id": "g02", "question": "Quel tribunal est compétent ?", "language": "fr", "gold": "ambiguous",
+  "readings": [
+   {"reading": "civil or commercial dispute", "code": "procedure_civile"},
+   {"reading": "criminal offence", "code": "procedure_penale"},
+   {"reading": "dispute with a foreign element (international jurisdiction)", "code": "droit_international_prive"},
+   {"reading": "individual labour dispute (conseil de prud'hommes)", "code": "travail"}]},
+ {"id": "g03", "question": "Puis-je récupérer ma caution ?", "language": "fr", "gold": "ambiguous",
+  "readings": [
+   {"reading": "security deposited for provisional release in a criminal case (cautionnement, liberté provisoire)", "code": "procedure_penale"},
+   {"reading": "guarantee / surety given under a contract (cautionnement)", "code": "obligations_contrats"}]},
+ {"id": "g04", "question": "Qui doit payer les frais ?", "language": "fr", "gold": "ambiguous",
+  "readings": [
+   {"reading": "costs of a court case (dépens)", "code": "procedure_civile"},
+   {"reading": "costs of an arbitration", "code": "arbitrage"},
+   {"reading": "costs of the deed of a sale", "code": "obligations_contrats"}]},
+ {"id": "g05", "question": "How long does the notice period last?", "language": "en", "gold": "ambiguous",
+  "readings": [
+   {"reading": "termination of an employment contract (préavis)", "code": "travail"},
+   {"reading": "termination of a commercial contract, e.g. commercial agency", "code": "commerce"}]},
+ {"id": "g06", "question": "Is it a crime if I don't pay?", "language": "en", "gold": "ambiguous",
+  "readings": [
+   {"reading": "a cheque without sufficient funds", "code": "commerce"},
+   {"reading": "maintenance owed to a spouse or children (abandon de famille)", "code": "statut_personnel"},
+   {"reading": "an ordinary contractual debt (civil, not a crime)", "code": "obligations_contrats"}]},
+ {"id": "g07", "question": "How much compensation can I get?", "language": "en", "gold": "ambiguous",
+  "readings": [
+   {"reading": "after a dismissal", "code": "travail"},
+   {"reading": "damages for harm caused by another person or a breach of contract", "code": "obligations_contrats"},
+   {"reading": "as the victim of an offence (partie civile)", "code": "procedure_penale"}]},
+ {"id": "g08", "question": "ما هي مسؤولية الشريك؟", "language": "ar", "gold": "ambiguous",
+  "readings": [
+   {"reading": "partner / shareholder in a company (associé)", "code": "societes"},
+   {"reading": "co-owner of undivided property (indivision)", "code": "droits_reels"},
+   {"reading": "accomplice in an offence (complice)", "code": "penal"}]},
+ {"id": "g09", "question": "كم يجب أن يكون عمري؟", "language": "ar", "gold": "ambiguous",
+  "readings": [
+   {"reading": "minimum age to marry", "code": "statut_personnel"},
+   {"reading": "minimum age to work", "code": "travail"},
+   {"reading": "age of criminal responsibility", "code": "penal"}]},
+ {"id": "g10", "question": "هل يمكن إلغاء الحكم؟", "language": "ar", "gold": "ambiguous",
+  "readings": [
+   {"reading": "an arbitral award (recours en annulation)", "code": "arbitrage"},
+   {"reading": "a civil or commercial judgment (appeal, cassation)", "code": "procedure_civile"},
+   {"reading": "a criminal judgment (opposition, appeal)", "code": "procedure_penale"}]},
+ {"id": "g11", "question": "Quelle est la peine pour l'émission d'un chèque sans provision ?", "language": "fr", "gold": "clear",
+  "code": "commerce", "where": "CommerceFr art. 411"},
+ {"id": "g12", "question": "Quelle est la peine pour outrage à un fonctionnaire public ?", "language": "fr", "gold": "clear",
+  "code": "penal", "where": "PenalFr art. 125"},
+ {"id": "g13", "question": "What is the penalty for counterfeiting money?", "language": "en", "gold": "clear",
+  "code": "penal", "where": "PenalFr art. 185-187 (contrefaçon et altération de monnaies)"},
+ {"id": "g14", "question": "What is the penalty for begging?", "language": "en", "gold": "clear",
+  "code": "penal", "where": "PenalFr art. 171"},
+ {"id": "g15", "question": "ما هي عقوبة شهادة الزور؟", "language": "ar", "gold": "clear",
+  "code": "penal", "where": "PenalFr art. 241-244 (faux témoignage)"},
+ {"id": "g16", "question": "ما هو السن الأدنى لتشغيل الأطفال؟", "language": "ar", "gold": "clear",
+  "code": "travail", "where": "travailFr art. 53 (âge minimum)"},
+ {"id": "g17", "question": "Quel est le taux de TVA appliqué aux restaurants ?", "language": "fr", "gold": "out_of_scope",
+  "why": "tax law, not in the 14 sources", "corpus_check": "no hit: 'TVA', 'valeur ajoutée'"},
+ {"id": "g18", "question": "What is the speed limit on Tunisian motorways?", "language": "en", "gold": "out_of_scope",
+  "why": "traffic code, not in the 14 sources (only cited by name in PenalFr art. 15-bis)", "corpus_check": "no hit: 'vitesse', 'autoroute', 'permis de conduire'"},
+ {"id": "g19", "question": "كيف أحصل على تأشيرة شنغن؟", "language": "ar", "gold": "out_of_scope",
+  "why": "foreign (EU) visa rules", "corpus_check": "no hit: 'Schengen'; 'visa' hits are endorsements (visa of a deed), not travel visas"},
+ {"id": "g20", "question": "ما هي أفضل طريقة لتعلم البرمجة؟", "language": "ar", "gold": "out_of_scope",
+  "why": "not a legal question", "corpus_check": "no hit: 'programmation'"}
+]
