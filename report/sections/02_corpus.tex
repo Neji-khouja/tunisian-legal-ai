@@ -21,8 +21,9 @@ outil (pypdf, alors que l'index utilise PyMuPDF) et un découpage indépendant p
 
 \begin{itemize}
   \item \textbf{Couverture.} \NAuditOnlypdf{} étiquettes d'articles n'apparaissent que dans le PDF et \NAuditOnlyindex{}
-        que dans l'index (tableau~\ref{tab:audit}). Une partie de ces écarts vient de notre propre expression régulière
-        (intitulés atypiques), une autre de l'index.
+        que dans l'index (tableau~\ref{tab:audit}). Le script \texttt{eval/coverage\_discrepancies.py} examine chaque
+        écart : pour \NCoverageMerged{} articles, le texte figure dans l'index, mais à l'intérieur du \term{chunk} d'un
+        article précédent, sans \term{chunk} propre (annexe~\ref{sec:limites}).
   \item \textbf{Fidélité.} Sur \NAuditN{} \term{chunks} tirés au hasard (graine \NSeed), \NAuditChecked{} ont pu être
         comparés ; \NAuditMismatch{} ne correspondent pas au texte du PDF (\NAuditRate~\%), et \NAuditNopdf{} n'ont pas
         d'article PDF correspondant (numérotation des sections différente). Les écarts observés sont des marques de notes

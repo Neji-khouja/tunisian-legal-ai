@@ -1,7 +1,8 @@
 \section{Génération et vérification}\label{sec:generation}
 
 \subsection{Le nœud Répondre}
-Le nœud Répondre reçoit la question et les six articles (au plus 1500 caractères chacun) et produit une sortie structurée :
+Le nœud Répondre reçoit la question et les six articles (au plus \NCharsAnswer{} caractères chacun, précédés de leur
+identifiant et de l'étiquette complète de l'article, par exemple 13-bis) et produit une sortie structurée :
 une liste d'affirmations, chacune d'une phrase et accompagnée des identifiants des articles qui l'énoncent, plus une réserve
 lorsque les articles ne répondent qu'en partie. Les règles du prompt interdisent toute connaissance extérieure, imposent une
 affirmation par cas quand un article distingue plusieurs cas (infraction simple, aggravée), et demandent de recopier les
@@ -9,7 +10,8 @@ nombres tels qu'ils figurent dans l'article.
 
 \subsection{Vérification d'existence}
 Un contrôle déterministe vérifie que chaque identifiant cité figure parmi les preuves récupérées. Un identifiant inventé ou
-recopié avec des crochets est ainsi détecté sans appel LLM.
+recopié avec des crochets est ainsi détecté sans appel LLM. Le même contrôle signale une affirmation ou une réserve
+contenant une séquence d'encodage corrompu (« â€ », « Ã© », caractère U+FFFD).
 
 \subsection{Vérificateur de support et étalonnage par mutations}
 Le vérificateur (\texttt{agent/verify.py}) reçoit chaque affirmation et le texte des articles qu'elle cite, et rend un verdict
@@ -22,13 +24,16 @@ tirés des PDF, nous prenons une phrase contenant un nombre et construisons quat
   \item \textbf{mauvais article} : la phrase exacte, mais citant un autre article du même code ;
   \item \textbf{condition ajoutée} : la phrase suivie de « à condition que la personne concernée soit mineure ».
 \end{itemize}
-Le vérificateur voit le texte des \term{chunks} de l'index, c'est-à-dire ce que voit réellement le système.
+Le vérificateur voit le texte des \term{chunks} de l'index (au plus \NCharsVerify{} caractères par article), c'est-à-dire
+ce que voit réellement le système.
 
-Le tableau~\ref{tab:calib} et la figure~\ref{fig:calib} donnent les taux. Le vérificateur n'a signalé aucune affirmation
-correcte (\NCalibGoodRate~\% de fausses alarmes, intervalle de Wilson [\NCalibGoodLo{} ; \NCalibGoodHi]~\%). Il a signalé
-\NCalibNumberRate~\% des nombres modifiés, \NCalibWrongRate~\% des mauvais articles et \NCalibCondRate~\% des conditions
-ajoutées. Il y a eu \NCalibMisses{} erreur au total : une affirmation au nombre modifié jugée appuyée. Avec \NCalibN{}
-articles par type, les bornes basses des intervalles restent éloignées de 100~\%.
+Le tableau~\ref{tab:calib} et la figure~\ref{fig:calib} donnent les taux. Le vérificateur a signalé \NCalibGoodFlagged{}
+affirmation(s) correcte(s) sur \NCalibN{} (\NCalibGoodRate~\% de fausses alarmes, intervalle de Wilson
+[\NCalibGoodLo{} ; \NCalibGoodHi]~\%). Il a signalé \NCalibNumberRate~\% des nombres modifiés, \NCalibWrongRate~\% des
+mauvais articles et \NCalibCondRate~\% des conditions ajoutées. Le nombre total d'erreurs (affirmation correcte signalée
+ou affirmation modifiée jugée appuyée) est de \NCalibMisses{} ; chacune est listée dans
+\texttt{results/verifier\_calibration.json}. Avec \NCalibN{} articles par type, la borne basse de l'intervalle de Wilson
+d'un taux de détection de 100~\% est \NCalibWrongLo~\%.
 
 \input{tables/t_calib}
 \figfile{f8_calibration}{Étalonnage du vérificateur : part des affirmations signalées par type, avec intervalles de Wilson à

@@ -18,12 +18,28 @@ python agent/eval_loop.py --split dev
 python agent/eval_loop.py --split dev --start g
 python eval/pdf_truth.py
 python eval/audit_chunks.py
+python eval/coverage_discrepancies.py
+python eval/mojibake_scan.py
 python eval/show_article.py PenalFr 218
 python eval/verifier_calibration.py --n 24
 python eval/noise_check.py
 python eval/pdf_factcheck.py results/noise_check.json
+python eval/clarify_check.py
 python report/build_report.py
 \end{lstlisting}
+\texttt{eval/coverage\_discrepancies.py} examine un à un les écarts de couverture entre le PDF et l'index ;
+\texttt{eval/mojibake\_scan.py} recherche des séquences d'encodage corrompu (« â€ », « Ã© », caractère U+FFFD) dans
+l'index et dans les deux extractions des PDF ; \texttt{eval/clarify\_check.py} rejoue une question ambiguë puis la
+réponse de l'utilisateur dans le même fil de conversation et enregistre les requêtes passées à la récupération et au
+\term{reranker}.
+
+\section{Limites connues}\label{sec:limites}
+
+\paragraph{Articles sans \emph{chunk} propre.} \NCoverageMerged{} articles présents dans les PDF n'ont pas de
+\term{chunk} à leur numéro : leur texte est contenu dans le \term{chunk} d'un article précédent, dont l'intitulé n'a pas
+été reconnu par le découpage de l'index. Il s'agit de : \NCoverageMergedList. Une recherche de ces articles par leur
+étiquette échoue, et une citation de leur contenu porte l'identifiant de l'article précédent. L'index n'a pas été
+modifié.
 
 \section{Incidents et leçons}\label{sec:incidents}
 

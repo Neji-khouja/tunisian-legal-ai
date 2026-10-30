@@ -268,10 +268,10 @@
    "n": 24
   },
   "number_changed": {
-   "rate": 0.9583333333333334,
+   "rate": 1.0,
    "ci": [
-    0.7975777375115778,
-    0.992606734645195
+    0.8620194241710247,
+    1.0
    ],
    "n": 24
   },
@@ -292,21 +292,7 @@
    "n": 24
   }
  },
- "calib_misses": [
-  {
-   "type": "number_changed",
-   "cid": "ProcedurepenaleFr/s02/166",
-   "stem": "ProcedurepenaleFr",
-   "label": "166",
-   "cited": [
-    "ProcedurepenaleFr/s02/166"
-   ],
-   "claim": "Lorsqu'un des magistrats ayant participé à ces jugements se trouve dans l'impossibilité de les signer après le prononcé, ces jugements sont signés par les trois autres magistrats et mention y est faite de cette circonstance.",
-   "position": 2,
-   "verdict": "supported",
-   "problem": ""
-  }
- ],
+ "calib_misses": [],
  "f9": [
   {
    "id": "q001",

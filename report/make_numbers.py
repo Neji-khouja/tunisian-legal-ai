@@ -379,6 +379,12 @@ def audit():
     cov = a["coverage"]
     put(sum(len(c["only_pdf"]) for c in cov.values()), "audit", "onlypdf")
     put(sum(len(c["only_index"]) for c in cov.values()), "audit", "onlyindex")
+    # eval/coverage_discrepancies.py: "only in PDF" labels whose text sits in the chunk of a preceding article
+    d = load("coverage_discrepancies.json")
+    merged = [r for r in d or [] if r["side"] == "only_pdf" and r.get("note")]
+    put(len(merged) if d else None, "coverage", "merged")
+    put(", ".join(f"{tex_escape(r['source'])} {r['label']} (dans \\texttt{{{tex_escape(r['found_in'][0])}}})"
+                  for r in merged) if d else None, "coverage", "merged", "list")
     rows = []
     for stem, c in cov.items():
         fs = a["fidelity"]["by_source"].get(stem, {})
@@ -524,6 +530,10 @@ def corpus():
 
 
 def misc():
+    # character limits of the articles shown to the Answer and Verify LLM calls, read from the code
+    for name, f, const in (("answer", "answer.py", "ANSWER_CHARS"), ("verify", "verify.py", "VERIFY_CHARS")):
+        m = re.search(rf"^{const}\s*=\s*(\d+)", (ROOT / "agent" / f).read_text(encoding="utf-8"), re.M)
+        put(int(m.group(1)) if m else None, "chars", name)
     n = load("noise_check.json")
     lines = (n or {}).get("temperature_lines") or []
     (REP / "tables" / "temperature.tex").write_text(
