@@ -15,6 +15,7 @@ from analyze import llm # same shared Groq model object as plan.py
 ANSWER_CHARS = 3000                          # max characters of each article shown to the model
 LANG_NAMES = {"fr": "French", "en": "English", "ar": "Arabic"}
 NOTE_WORD = {"fr": "Remarque", "en": "Note", "ar": "ملاحظة"}
+MOJIBAKE = ("â€", "Ã©", "Ã¨", "Ã ", "Â", "�")     # UTF-8 read as cp1252, or the replacement character
 
 class Claim(BaseModel):
     text :str# one sentence, in the user's language
@@ -70,6 +71,10 @@ def check_answer(answer: Answer, evidence: dict) -> list[str]:
         for cid in c.cited_ids:
             if cid not in evidence:
                 problems.append(f"claim {i}: cited id {cid!r} is not in the evidence")
+        if any(m in c.text for m in MOJIBAKE):
+            problems.append(f"claim {i}: mojibake")
+    if any(m in answer.caveat for m in MOJIBAKE):
+        problems.append("caveat: mojibake")
     return problems
 
 def _label(cid, evidence):
