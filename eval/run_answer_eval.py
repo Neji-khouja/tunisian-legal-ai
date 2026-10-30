@@ -11,8 +11,8 @@ results/answer_eval_<setname>_<system>.jsonl; items already there are skipped (r
 Timing per item: seconds (system only), elapsed_total (system + metrics + judge; the --min-gap sleep is outside),
 n_429 (rate-limited Groq responses the client retried) and waited_seconds (sum of the retry waits the Groq client
 announced); n_429 and waited_seconds are None for v1, whose LLM calls run in a subprocess.
-v2 rows also keep the verifier loop: verdicts (last pass), repairs, dropped, draft_claims / draft_text (the first,
-unverified answer). A v2 item whose `degraded` list is not empty (a node fell back) is stored with status "degraded"
+v2 rows also keep the verifier loop: verdicts (last pass), first_verdicts (first pass), repairs, dropped,
+draft_claims / draft_text (the first, unverified answer). A v2 item whose `degraded` list is not empty (a node fell back) is stored with status "degraded"
 (graph status in graph_status), gets no metrics and no judge, and is run again on resume.
 
 Judge: a model different from the generator (env JUDGE_MODEL or --judge-model; a Groq model id), temperature 0,
@@ -101,7 +101,8 @@ def run_v2(item) -> dict:
            "evidence_ids": list(ev), "cited": s.get("cited") or [], "claims": s.get("claims") or [],
            "caveat": s.get("caveat"), "text": s.get("text"), "degraded": s.get("degraded"),
            "verdicts": s.get("verdicts") or [], "repairs": s.get("repairs"), "dropped": s.get("dropped"),
-           "draft_claims": s.get("draft_claims") or [], "draft_text": s.get("draft_text") or ""}
+           "draft_claims": s.get("draft_claims") or [], "draft_text": s.get("draft_text") or "",
+           "first_verdicts": s.get("first_verdicts") or []}
     if s.get("status") == "clarify":
         rec["clarification_question"] = s.get("text")
     rec["_evidence_text"] = {cid: e["text"] for cid, e in ev.items()}
@@ -285,10 +286,14 @@ def metric_values(rows) -> dict:
         n_claims = len(r.get("claims") or [])
         vals["hallucination (claim-level, judge)"].append(
             None if v is None or not n_claims else min(len(j["unsupported_statements"]), n_claims) / n_claims)
-        # verifier loop (v2 rows with a first draft, i.e. the verifier ran). The graph keeps only the last pass's
-        # verdicts; route_after_verify repairs exactly when the first pass flags a claim, so "flagged" = repairs >= 1.
+        # verifier loop (v2 rows with a first draft, i.e. the verifier ran). Claim-level share of draft claims not
+        # judged "supported" on the first pass (a claim without a verdict counts as flagged, as verify.bad_claims).
         drafted = bool(r.get("draft_claims"))
-        vals["verifier flagged a claim (1st pass)"].append(int(r["repairs"] >= 1) if drafted else None)
+        first = {v["claim_index"]: v["verdict"] for v in r.get("first_verdicts") or []}
+        n_draft = len(r.get("draft_claims") or [])
+        vals["claims flagged on 1st pass"].append(
+            sum(first.get(i) != "supported" for i in range(1, n_draft + 1)) / n_draft
+            if drafted and r.get("first_verdicts") else None)
         vals["repaired (repairs == 1)"].append(int(r["repairs"] == 1) if drafted else None)
         vals["dropped claims (mean)"].append(r["dropped"] if drafted else None)
         vals["no supported claim left"].append(int(not r.get("claims")) if drafted else None)
@@ -356,14 +361,18 @@ def export_audit(path: Path, system: str, n: int):
     out = ROOT / "results" / f"audit_sample_{system}.csv"
     with out.open("w", encoding="utf-8-sig", newline="") as f:
         w = csv.writer(f)
+        per_claim = [h for k in range(1, 7) for h in (f"claim_{k}", f"claim_{k}_relevant_to_question (y/n)")]
         w.writerow(["id", "question", "answer", "cited_article_pdf_text", "judge_verdict", "judge_hallucination",
-                    "human_correct", "human_hallucination"])
+                    "human_correct", "human_hallucination"] + per_claim)
         for r in pick:
             cited = r.get("cited") if r.get("cited") is not None else r.get("evidence_ids") or []
             texts = " || ".join(f"{c}: {normalize(pdf_text(c) or '(no PDF text)')[:600]}" for c in cited)
             j = r.get("judge") or {}
+            claims = [c["text"] for c in r.get("claims") or []][:6]          # Answer allows at most 6 claims
+            claims += [""] * (6 - len(claims))
             w.writerow([r["id"], r["question"], r.get("text"), texts, j.get("verdict", ""),
-                        "" if r.get("hallucinated") is None else int(r["hallucinated"]), "", ""])
+                        "" if r.get("hallucinated") is None else int(r["hallucinated"]), "", ""]
+                       + [x for c in claims for x in (c, "")])
     print(f"wrote {out.relative_to(ROOT)} ({len(pick)} rows); fill human_correct / human_hallucination with 1 or 0, "
           f"then run: python eval/audit_agreement.py {out.relative_to(ROOT)}")
 

@@ -50,6 +50,8 @@ for lang in ("fr", "en", "ar"):
     expected = g.NO_SUPPORT[lang] + " [PenalFr art. 218, PenalFr art. 219, PenalFr art. 220]"
     check(f"finalize {lang} all bad: text {r['text']!r}", r["text"] == expected)
     check(f"finalize {lang} all bad: claims [] and dropped 3", r["claims"] == [] and r["dropped"] == 3)
+r = g.finalize_node(final_state([1, 2, 3], "fr") | {"caveat": "Les articles ne couvrent pas tout."})
+check("finalize all bad: caveat cleared", r.get("caveat") == "")
 
 # 6. nothing dropped
 r = g.finalize_node(final_state([], "fr"))
@@ -82,6 +84,27 @@ print("verify_node with failing verify:", r)
 check("verify_node failure: bad [] and verdicts []", r["bad"] == [] and r["verdicts"] == [])
 check("verify_node failure: degraded has verify_failed: RuntimeError", "verify_failed: RuntimeError" in r["degraded"])
 
+# 8b. first_verdicts: set by the first verify, not overwritten by the verify after a repair
+from verify import Verification, ClaimVerdict
+passes = iter([[("supported", ""), ("unsupported", "x"), ("supported", "")],
+               [("supported", ""), ("supported", ""), ("supported", "")]])
+g.verify = lambda ans, ev: Verification(verdicts=[ClaimVerdict(claim_index=i, verdict=v, problem=p)
+                                                  for i, (v, p) in enumerate(next(passes), 1)])
+try:
+    s = {"claims": CLAIMS, "caveat": "", "evidence": EVIDENCE, "degraded": [], "repairs": 0}
+    out1 = g.verify_node(s)
+    s.update(out1)
+    s["repairs"] = 1                                     # as repair_node would set
+    out2 = g.verify_node(s)
+    s.update(out2)                                       # LangGraph merges node returns the same way
+finally:
+    g.verify = real_verify
+check("first verify: first_verdicts == verdicts, bad [2]", out1.get("first_verdicts") == out1["verdicts"] and out1["bad"] == [2])
+check("verify after a repair: no first_verdicts key in its return", "first_verdicts" not in out2)
+check("after the repair: state first_verdicts still has claim 2 unsupported",
+      [v["verdict"] for v in s["first_verdicts"]] == ["supported", "unsupported", "supported"]
+      and [v["verdict"] for v in s["verdicts"]] == ["supported"] * 3)
+
 # 9. fresh_state shares nothing
 a, b = g.fresh_state(), g.fresh_state()
 a["claims"].append("x"); a["evidence"]["k"] = 1; a["tried"].append("q")
@@ -94,7 +117,8 @@ stale = {"question": "Quelle est la peine ?", "language": "fr", "status": "done"
          "clarification_question": "Quel code ?", "original_question": None, "clarify_count": 0,
          "claims": CLAIMS, "caveat": "c", "evidence": EVIDENCE, "verdicts": [{"claim_index": 1}],
          "bad": [2], "repairs": 1, "dropped": 2, "draft_claims": CLAIMS, "draft_text": "old",
-         "retries": 2, "tried": ["q"], "degraded": ["x"]}
+         "retries": 2, "tried": ["q"], "degraded": ["x"], "text": "old answer",
+         "first_verdicts": [{"claim_index": 1, "verdict": "partly", "problem": "p"}]}
 r = g.refuse(stale)
 print("refuse(stale) returns:", r)
 check("refuse returns only status/text/clarify_count/original_question",
@@ -111,11 +135,15 @@ g.analyze = lambda q, hint=None: SimpleNamespace(language="fr", intent="clear", 
                                                  clarification_question=None)
 try:
     r = g.analyze_node(stale)
+    r_clar = g.analyze_node(stale | {"status": "clarify", "question": "Le code pénal.",
+                                     "original_question": "User: Quelle est la peine ?\nAgent asked: Quel code ?"})
 finally:
     g.analyze = real_analyze
+check(f"analyze_node reads status 'clarify' before the reset: full_question {r_clar['full_question']!r}",
+      r_clar["full_question"].endswith("\nUser's answer: Le code pénal.") and r_clar["status"] == "")
 print("analyze_node(stale) return keys:", sorted(r))
 for k in ("evidence", "claims", "verdicts", "bad", "repairs", "dropped", "draft_claims", "draft_text",
-          "retries", "tried"):
+          "retries", "tried", "text", "status", "first_verdicts"):
     check(f"analyze_node resets {k} -> {r[k]!r}", r[k] == g.fresh_state()[k])
 check("analyze_node does not return original_question or clarify_count",
       "original_question" not in r and "clarify_count" not in r)

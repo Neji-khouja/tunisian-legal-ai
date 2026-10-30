@@ -14,7 +14,8 @@ from verify import verify, bad_claims
 def fresh_state() -> dict:
     return {"evidence": {}, "docs": [], "claims": [], "caveat": "", "cited": [], "problems": [],
             "verdicts": [], "bad": [], "repairs": 0, "dropped": 0, "draft_claims": [], "draft_text": "",
-            "retries": 0, "tried": [], "missing": "", "enough": False, "sub_queries": []}
+            "retries": 0, "tried": [], "missing": "", "enough": False, "sub_queries": [],
+            "text": "", "status": "", "first_verdicts": []}
 
 REFUSE = {"fr": "Cette question sort du cadre des codes tunisiens que je couvre.",
           "en": "This is outside the Tunisian legal codes I cover.",
@@ -54,6 +55,7 @@ class AgentState(TypedDict):
     dropped: int
     draft_claims: list[dict]
     draft_text: str
+    first_verdicts: list[dict]
 def analyze_node(state: AgentState) -> dict:
     if state.get("status") == "clarify" and state.get("original_question"):
         full_question = state["original_question"] + f"\nUser's answer: {state['question']}"
@@ -175,7 +177,10 @@ def verify_node(state):
     except Exception as e:                       # visible fallback, never silent
         return {"verdicts": [], "bad": [],
                 "degraded": state["degraded"] + [f"verify_failed: {type(e).__name__}"]}
-    return {"verdicts": [x.model_dump() for x in v.verdicts], "bad": bad_claims(ans, v)}
+    out = {"verdicts": [x.model_dump() for x in v.verdicts], "bad": bad_claims(ans, v)}
+    if state["repairs"] == 0:                    # first pass: kept, a repair's verify does not overwrite it
+        out["first_verdicts"] = out["verdicts"]
+    return out
 
 def feedback_from(state):
     lines = []
@@ -200,7 +205,7 @@ def finalize_node(state):
         seen = ", ".join(cid.split("/")[0] + " art. " + cid.split("/")[-1]
                          for cid in list(state["evidence"])[:3])
         return {"text": NO_SUPPORT.get(lang, NO_SUPPORT["fr"]) + f" [{seen}]",
-                "claims": [], "cited": [], "dropped": len(bad), "status": "done"}
+                "claims": [], "caveat": "", "cited": [], "dropped": len(bad), "status": "done"}
     text = render(Answer(claims=kept, caveat=state["caveat"]), state["evidence"], lang)
     if bad:
         text += "\n\n" + DROPPED.get(lang, DROPPED["fr"]).format(n=len(bad))
@@ -260,5 +265,6 @@ def run(thread, turns):
 
 if __name__ == "__main__":
     run("clear", ["What is the penalty for theft?"])
-    run("ambig", ["Can I break my contract?", "It is my employment contract, I want to resign"])
+    run("ambig", ["ما هي مدة الاحتفاظ؟", "أقصد الاحتفاظ بالمشتبه فيه لدى الضابطة العدلية"])
     run("off",   ["What is the capital of France?"])
+    run("gate-miss", ["Can I break my contract?"])
