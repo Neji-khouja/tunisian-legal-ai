@@ -21,6 +21,8 @@ import math
 import random
 import sqlite3
 import hashlib
+import time
+import logging
 import argparse
 from pathlib import Path
 from collections import Counter, defaultdict
@@ -32,6 +34,37 @@ import re
 from pdf_truth import load, normalize, ROOT as _R
 from answer import Answer, Claim
 import verify
+
+WAITS = (10, 30, 60)                 # retries of transient errors (connection, timeout, 429) left after the client's
+HTTP = {"200": 0, "429": 0, "other": 0}
+
+
+class _CountGroq(logging.Handler):
+    def emit(self, record):
+        msg = record.getMessage()
+        if "api.groq.com" in msg:
+            HTTP["200" if " 200 " in msg else "429" if " 429 " in msg else "other"] += 1
+
+
+logging.getLogger("httpx").setLevel(logging.INFO)
+logging.getLogger("httpx").addHandler(_CountGroq())
+logging.getLogger("httpx").propagate = False
+
+
+def transient(e: Exception) -> bool:
+    s = f"{type(e).__name__} {e}"
+    return any(k in s for k in ("RateLimit", "429", "APIConnection", "Connect", "Timeout", "RemoteProtocol"))
+
+
+def verify_retry(answer, evidence):
+    for attempt in range(len(WAITS) + 1):
+        try:
+            return verify.verify(answer, evidence)
+        except Exception as e:
+            if not transient(e) or attempt == len(WAITS):
+                raise
+            print(f"  transient error ({type(e).__name__}); retry in {WAITS[attempt]} s", file=sys.stderr, flush=True)
+            time.sleep(WAITS[attempt])
 
 SEED = 20261022
 DB = ROOT / "db_v1_1" / "chroma.sqlite3"
@@ -164,9 +197,9 @@ def main():
         evidence = {c: chunks[c] for c in (s["cid"], s["other"])}
         print(f"  [{k}/{len(sample)}] {s['cid']}", file=sys.stderr, flush=True)
         try:
-            v = verify.verify(Answer(claims=[claims[t] for t in order]), evidence)
+            v = verify_retry(Answer(claims=[claims[t] for t in order]), evidence)
         except Exception as e:
-            print(f"\nSTOPPED: verify() failed on {s['cid']} after the client's retries: {type(e).__name__}: {e}")
+            print(f"\nSTOPPED: verify() failed on {s['cid']} after the client's retries and 3 more: {type(e).__name__}: {e}")
             break
         by_index = {x.claim_index: x for x in v.verdicts}
         for pos, t in enumerate(order, 1):
@@ -196,7 +229,9 @@ def main():
         print(f"  - {r['type']:<16} {r['stem']} art. {r['label']} (cites {', '.join(r['cited'])})  verdict={r['verdict']}"
               f"\n      claim:   {r['claim']}\n      problem: {r['problem'] or '-'}")
 
+    print(f"\nGroq HTTP responses: {HTTP}   (verify.VERIFY_CHARS = {verify.VERIFY_CHARS})")
     OUT.write_text(json.dumps({"seed": SEED, "n": args.n, "verify_prompt_sha1": prompt_sha,
+                               "verify_chars": verify.VERIFY_CHARS, "http": HTTP,
                                "chunk_mismatch": chunk_mismatch, "no_eligible_sentence": no_sentence,
                                "sample": sample, "rows": rows, "summary": summary}, ensure_ascii=False, indent=1),
                    encoding="utf-8")
