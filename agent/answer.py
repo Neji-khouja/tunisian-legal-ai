@@ -51,11 +51,16 @@ def _user_block(question, language, evidence):
         parts.append("")
     return "\n".join(parts)
 
-def make_answer(question, language, evidence) -> Answer:
+def make_answer(question, language, evidence, feedback="") -> Answer:
     structured = llm.with_structured_output(Answer, method="json_schema")
-    ans = structured.invoke([("system", SYSTEM_PROMPT),
-                             ("human", _user_block(question, language, evidence))])
-    for c in ans.claims:                      # tolerate "[id]" written with brackets
+    block = _user_block(question, language, evidence)
+    if feedback:
+        block += ("\n\nA previous draft of your answer was checked against the articles and these "
+                  "problems were found:\n" + feedback +
+                  "\nWrite a new answer that fixes them. Use only what the articles state; "
+                  "remove or correct any claim they do not support.")
+    ans = structured.invoke([("system", SYSTEM_PROMPT), ("human", block)])
+    for c in ans.claims:
         c.cited_ids = [i.strip().strip("[]").strip() for i in c.cited_ids]
     return ans
 

@@ -8,7 +8,23 @@ from retrieve_g import retrieve_g
 from grade import grade
 from reformulate import reformulate
 from answer import make_answer, check_answer, render
+from answer import Answer, Claim
+from verify import verify, bad_claims
 
+def fresh_state() -> dict:
+    return {"evidence": {}, "docs": [], "claims": [], "caveat": "", "cited": [], "problems": [],
+            "verdicts": [], "bad": [], "repairs": 0, "dropped": 0, "draft_claims": [], "draft_text": "",
+            "retries": 0, "tried": [], "missing": "", "enough": False, "sub_queries": []}
+
+REFUSE = {"fr": "Cette question sort du cadre des codes tunisiens que je couvre.",
+          "en": "This is outside the Tunisian legal codes I cover.",
+          "ar": "هذا السؤال خارج نطاق القوانين التونسية التي أغطيها."}
+NO_ARTICLE = {"fr": "Aucun article pertinent n'a été trouvé dans les codes que je couvre.",
+              "en": "No relevant article was found in the codes I cover.",
+              "ar": "لم يتم العثور على مادة ذات صلة في القوانين التي أغطيها."}
+CLARIFY_FALLBACK = {"fr": "Pouvez-vous préciser votre question ?",
+                    "en": "Could you give more details?",
+                    "ar": "هل يمكنك توضيح سؤالك أكثر؟"}
 class AgentState(TypedDict):
     question: str
     language: str
@@ -32,8 +48,13 @@ class AgentState(TypedDict):
     degraded: list[str]
     claims: list[dict]
     caveat: str
+    repairs: int
+    verdicts: list[dict]
+    bad: list[int]
+    dropped: int
+    draft_claims: list[dict]
+    draft_text: str
 def analyze_node(state: AgentState) -> dict:
-
     if state.get("status") == "clarify" and state.get("original_question"):
         full_question = state["original_question"] + f"\nUser's answer: {state['question']}"
         degraded = list(state.get("degraded") or [])      # same question, keep earlier events
@@ -44,6 +65,7 @@ def analyze_node(state: AgentState) -> dict:
         hint = state.get("language") if state.get("clarify_count", 0) > 0 else None
         r = analyze(full_question, hint)
         return {
+            **fresh_state(),
             "language": r.language,
             "intent": r.intent,
             "target_codes": r.target_codes,
@@ -54,6 +76,7 @@ def analyze_node(state: AgentState) -> dict:
     except Exception as e:
         print("Analyze failed:", e)
         return {
+            **fresh_state(),
             "language": "en",
             "intent": "clear",
             "target_codes": [],
@@ -68,7 +91,7 @@ def clarify(state: AgentState) -> dict:
     count = state.get("clarify_count", 0)
     return {
         "status": "clarify",
-        "text": state["clarification_question"] or "Could you give more details?",
+        "text": state["clarification_question"] or CLARIFY_FALLBACK.get(state.get("language"), CLARIFY_FALLBACK["fr"]),
         "original_question": transcript.strip(),
         "clarify_count": count + 1,
     }
@@ -88,8 +111,7 @@ def retrieve_node(state: AgentState) -> dict:
     docs = retrieve_g(state["full_question"], state["target_codes"])
     evidence = to_evidence(docs)
     return {"docs": docs, "evidence": evidence, "retries": 0, "tried": [], "missing": "",
-            "status": "answer", "text": "[stub] evidence: " + ", ".join(evidence),
-            "clarify_count": 0, "original_question": None}
+            "status": "answer", "clarify_count": 0, "original_question": None}
 
 def grade_node(state: AgentState) -> dict:
     g = grade(state["full_question"], state["evidence"])
@@ -107,14 +129,19 @@ def retrieve_more_node(state: AgentState) -> dict:
 
 def answer_node(state: AgentState) -> dict:
     if not state["evidence"]:                 # nothing retrieved: do not ask the LLM to answer from nothing
-        return {"text": "No relevant article was found in the codes I cover.",
-                "problems": [], "cited": [], "status": "done", "degraded": state.get("degraded", [])}
+        return {"text": NO_ARTICLE.get(state.get("language"), NO_ARTICLE["fr"]),
+                "problems": [], "cited": [], "status": "done", "degraded": state.get("degraded", []),
+                "claims": [], "caveat": ""}
     ans = make_answer(state["full_question"], state["language"], state["evidence"])
     problems = check_answer(ans, state["evidence"])
     cited = sorted({i for c in ans.claims for i in c.cited_ids})
-    return {"text": render(ans, state["evidence"], state["language"]),
+    text = render(ans, state["evidence"], state["language"])
+    claims = [c.model_dump() for c in ans.claims]
+    return {"text": text,
             "problems": problems, "cited": cited, "status": "done", "degraded": state.get("degraded", []),
-            "claims": [c.model_dump() for c in ans.claims], "caveat": ans.caveat}
+            "claims": claims, "caveat": ans.caveat,
+            "draft_claims": claims, "draft_text": text,
+            "repairs": 0, "verdicts": [], "bad": [], "dropped": 0}
 
 def route_after_analyze(state: AgentState) -> str:
     if state["intent"] == "out_of_scope":
@@ -130,8 +157,66 @@ def route_after_more(state: AgentState) -> str:
     return "answer" if state["retries"] >= 2 else "grade"   # no grade after the last reformulation (as loop_core)
 
 def refuse(state):
-    return {"status": "refuse", "text": "This is outside the Tunisian legal codes I cover.", "clarify_count": 0, "original_question": None,
-            "evidence": {}, "cited": [], "problems": [], "retries": 0, "tried": []}
+    return {"status": "refuse", "text": REFUSE.get(state.get("language"), REFUSE["fr"]),
+            "clarify_count": 0, "original_question": None}
+
+
+NO_SUPPORT = {"fr": "Je n'ai pas trouvé de réponse que les articles retrouvés permettent de vérifier.",
+              "en": "I could not find an answer that the retrieved articles let me verify.",
+              "ar": "لم أجد إجابة يمكن التحقق منها من المواد المسترجعة."}
+DROPPED = {"fr": "{n} affirmation(s) retirée(s) car non confirmée(s) par les articles cités.",
+           "en": "{n} claim(s) removed because the cited articles do not confirm them.",
+           "ar": "تم حذف {n} من الادعاءات لأن المواد المستشهد بها لا تؤكدها."}
+
+def verify_node(state):
+    ans = Answer(claims=[Claim(**c) for c in state["claims"]], caveat=state["caveat"])
+    try:
+        v = verify(ans, state["evidence"])
+    except Exception as e:                       # visible fallback, never silent
+        return {"verdicts": [], "bad": [],
+                "degraded": state["degraded"] + [f"verify_failed: {type(e).__name__}"]}
+    return {"verdicts": [x.model_dump() for x in v.verdicts], "bad": bad_claims(ans, v)}
+
+def feedback_from(state):
+    lines = []
+    for v in state["verdicts"]:
+        i = v["claim_index"]
+        if v["verdict"] != "supported" and 1 <= i <= len(state["claims"]):
+            lines.append(f'- "{state["claims"][i-1]["text"]}" -> {v["verdict"]}: {v["problem"]}')
+    return "\n".join(lines)
+
+def repair_node(state):
+    ans = make_answer(state["full_question"], state["language"], state["evidence"],
+                      feedback=feedback_from(state))
+    return {"claims": [c.model_dump() for c in ans.claims], "caveat": ans.caveat,
+            "problems": check_answer(ans, state["evidence"]), "repairs": state["repairs"] + 1}
+
+def finalize_node(state):
+    lang = state["language"]
+    claims = [Claim(**c) for c in state["claims"]]
+    bad = set(state["bad"])
+    kept = [c for i, c in enumerate(claims, 1) if i not in bad]
+    if not kept:
+        seen = ", ".join(cid.split("/")[0] + " art. " + cid.split("/")[-1]
+                         for cid in list(state["evidence"])[:3])
+        return {"text": NO_SUPPORT.get(lang, NO_SUPPORT["fr"]) + f" [{seen}]",
+                "claims": [], "cited": [], "dropped": len(bad), "status": "done"}
+    text = render(Answer(claims=kept, caveat=state["caveat"]), state["evidence"], lang)
+    if bad:
+        text += "\n\n" + DROPPED.get(lang, DROPPED["fr"]).format(n=len(bad))
+    return {"text": text, "claims": [c.model_dump() for c in kept],
+            "cited": sorted({i for c in kept for i in c.cited_ids}),
+            "dropped": len(bad), "status": "done"}
+
+def route_after_answer(state):
+    return "verify" if state["claims"] else "end"
+
+def route_after_verify(state):
+    return "repair" if state["bad"] and state["repairs"] == 0 else "finalize"
+
+
+
+
 
 builder = StateGraph(AgentState)
 
@@ -143,8 +228,14 @@ builder.add_node("grade", grade_node)
 builder.add_node("reformulate", reformulate_node)
 builder.add_node("retrieve_more", retrieve_more_node)
 builder.add_node("answer", answer_node)
+builder.add_node("verify", verify_node)
+builder.add_node("repair", repair_node)
+builder.add_node("finalize", finalize_node)
+
 
 builder.add_edge(START, "analyze")
+builder.add_conditional_edges("answer", route_after_answer, {"verify": "verify", "end": END})
+builder.add_conditional_edges("verify", route_after_verify, {"repair": "repair", "finalize": "finalize"})
 builder.add_conditional_edges("analyze", route_after_analyze,
                               {"refuse": "refuse", "clarify": "clarify", "retrieve": "retrieve"})
 builder.add_edge("clarify", END)
@@ -153,7 +244,8 @@ builder.add_edge("retrieve", "grade")
 builder.add_conditional_edges("grade", route_after_grade, {"answer": "answer", "reformulate": "reformulate"})
 builder.add_edge("reformulate", "retrieve_more")
 builder.add_conditional_edges("retrieve_more", route_after_more, {"answer": "answer", "grade": "grade"})
-builder.add_edge("answer", END)
+builder.add_edge("repair", "verify")
+builder.add_edge("finalize", END)
 
 app = builder.compile(checkpointer=MemorySaver())
 def run(thread, turns):
@@ -164,6 +256,7 @@ def run(thread, turns):
         print("   text:", r["text"])
         if r.get("sub_queries"):
             print("   queries:", r["sub_queries"])
+        print(f"   repairs: {r.get('repairs')}, dropped: {r.get('dropped')}, degraded: {r.get('degraded')}")
 
 if __name__ == "__main__":
     run("clear", ["What is the penalty for theft?"])
