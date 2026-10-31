@@ -21,6 +21,8 @@
 (q) crash isolation: a parse error once (recovers in the same run), on both tries (error row, the run goes on), in 3
     runs (failed: final, "system failure" in --summarize); a quota error still exits 75
 (s) clarify behaviour metrics on the clarify items without a scripted reply; "clarify then answer" on the reply items
+(t) judge thinking auto (minimal -> low on a 400, kept), retry on json_validate_failed / parser errors, judge_check
+    --candidates order, stop at the first passing, log, --min-gap, error texts
 (r) system fingerprint: a harness (eval/) or agent test file change keeps it, an agent file or index change does not;
     --judge-only ignores provenance
 """
@@ -614,6 +616,112 @@ def test_fingerprint():
               f"{str(code)[:200]}")
 
 
+def test_judge_thinking_retry():
+    import judge_check as jc
+    levels = []
+    unsupported = RuntimeError("400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'Thinking level MINIMAL is not "
+                               "supported for this model.', 'status': 'INVALID_ARGUMENT'}}")
+
+    def factory(provider, model, kind="answer"):
+        levels.append(rae.thinking_level())
+
+        class LLM:
+            def invoke(self, messages):
+                if rae.thinking_level() == "minimal":
+                    raise unsupported
+                return SimpleNamespace(**JUDGED)
+        return LLM()
+    rae.JUDGE_FACTORY = factory
+    rec = {"text": "t", "cited": [], "_evidence_text": {}}
+    rae.set_thinking("auto")
+    j1 = rae.judge(ITEMS[0], rec, "gemini-3.8-flash", "gemini")
+    j2 = rae.judge(ITEMS[0], rec, "gemini-3.8-flash", "gemini")
+    check("(t) thinking auto: minimal -> 400 not supported -> once with low, kept; effective level in the judgement",
+          levels == ["minimal", "low", "low"] and j1["thinking"] == j2["thinking"] == {"thinking_level": "low"}
+          and j1["verdict"] == "correct", f"{levels} {j1.get('thinking')}")
+    rae.set_thinking("minimal")
+    try:
+        rae.judge(ITEMS[0], rec, "gemini-3.8-flash", "gemini")
+        raised = False
+    except RuntimeError:
+        raised = True
+    check("(t) thinking minimal (not auto): the 400 is not retried with low", raised and rae.thinking_level() == "minimal")
+    rae.set_thinking("auto")
+    check("(t) groq: thinking n/a (None)", rae.effective_thinking("groq", "openai/gpt-oss-20b") is None)
+
+    bad_json = RuntimeError("Error code: 400 - {'error': {'message': 'Failed to validate JSON. Please adjust your "
+                            "prompt.', 'type': 'invalid_request_error', 'code': 'json_validate_failed'}}")
+
+    class Flaky:
+        def __init__(self, n_bad, err=bad_json):
+            self.n, self.n_bad, self.err = 0, n_bad, err
+
+        def invoke(self, messages):
+            self.n += 1
+            if self.n <= self.n_bad:
+                raise self.err
+            return "ok"
+    f2, f3 = Flaky(2), Flaky(3)
+    out = rae.invoke_judge(f2, [], "groq")
+    try:
+        rae.invoke_judge(f3, [], "groq")
+        raised = False
+    except RuntimeError:
+        raised = True
+    from langchain_core.exceptions import OutputParserException
+    fp = Flaky(1, OutputParserException("Invalid json output: {"))
+    fq = Flaky(1, RuntimeError(DAILY))
+    try:
+        rae.invoke_judge(fq, [], "groq")
+        quota = False
+    except hc.QuotaExhausted:
+        quota = True
+    check("(t) json_validate_failed: retried up to 2 more times (3 calls), then an error; parser error retried; "
+          "a daily quota still stops at once",
+          out == "ok" and f2.n == 3 and raised and f3.n == 3 and rae.invoke_judge(fp, [], "gemini") == "ok" and fp.n == 2
+          and quota and fq.n == 1, f"{f2.n} {f3.n} {fp.n} {fq.n}")
+
+    class ByModel:
+        def __init__(self):
+            self.models = []
+
+        def __call__(self, provider, model, kind="answer"):
+            stub = self
+            stub.models.append(model)
+
+            class LLM:
+                def invoke(self, messages):
+                    if model == "bad":
+                        raise RuntimeError(MINUTE)
+                    good = "cinq ans d'emprisonnement" in messages[1][1].split("Answer:")[1].split("Cited articles:")[0]
+                    return SimpleNamespace(covered=[good, good], contradiction=not good, unsupported_statements=[])
+            return LLM()
+    with tempfile.TemporaryDirectory() as d:
+        log = Path(d) / "judge_check_log.json"
+        bm, slept = ByModel(), []
+        rae.JUDGE_FACTORY = bm
+        ticks = iter(range(0, 10000, 3))
+        buf, code = io.StringIO(), None
+        with contextlib.redirect_stdout(buf):
+            try:
+                jc.main(["--candidates", "groq:bad,groq:good,groq:never", "--log", str(log)], sleep=slept.append,
+                        clock=lambda: next(ticks))
+            except SystemExit as e:
+                code = e.code
+        o, L = buf.getvalue(), json.loads(log.read_text(encoding="utf-8"))
+        check("(t) --candidates: in order, stops at the first meeting the rule (never not called)",
+              code is None and "SELECTED: groq:good" in o and set(bm.models) == {"bad", "good"}
+              and bm.models.index("good") > bm.models.index("bad"), f"{code!r} {sorted(set(bm.models))}")
+        check("(t) log: every attempt (candidate, thinking, time, results, error texts) and the earlier attempts as note",
+              [a["candidate"] for a in L["attempts"]] == ["groq:bad", "groq:good"] and L["note"] == jc.EARLIER
+              and all(k in L["attempts"][0] for k in ("thinking_effective", "time", "results", "errors"))
+              and "TPM" in L["attempts"][0]["errors"]["RuntimeError 429"], json.dumps(L)[:400])
+        check("(t) --min-gap 4 s (default) between calls: 5 sleeps per candidate", slept == [4.0] * 10, str(slept))
+        check("(t) the first full error text per type, 429 period / limit / retry delay",
+              "first error of type RuntimeError 429" in o
+              and "429 looks per-minute; quota metric not stated; limit 8000; retry delay 1.5 s" in o, o[-600:])
+
+
 def test_judge_check():
     import judge_check as jc
     from pdf_truth import from_chunk_id
@@ -622,7 +730,7 @@ def test_judge_check():
         def __init__(self, fail=0):
             self.fail = fail
 
-        def __call__(self, provider, model):
+        def __call__(self, provider, model, kind="answer"):
             stub = self
 
             class LLM:
@@ -738,7 +846,7 @@ def test_usage_in_graph():
 if __name__ == "__main__":
     for t in (test_quota_and_resume, test_per_minute_retry, test_changed_exam, test_other_set, test_judge_only,
               test_judge_errors, test_gate_judge, test_clarify_subsets, test_reply_gold, test_run_batch, test_crash_isolation, test_fingerprint,
-              test_judge_check,
+              test_judge_thinking_retry, test_judge_check,
               test_wait_and_budget,
               test_classes, test_usage_in_graph):
         t()

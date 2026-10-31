@@ -125,7 +125,7 @@ def main():
           f"{', '.join(hc.FINGERPRINT_FILES)}; index {fp['index']['path']}, {fp['index']['chunks']} chunks)")
     think = rae.gemini_thinking(jm or "") if args.judge_provider == "gemini" else None
     print(f"INFO  judge: provider {args.judge_provider}, model {jm or 'unset'}, thinking "
-          f"{think if think is not None else 'n/a (groq)'}; prompts {rae.JUDGE_PROMPT_SHA} (answer), "
+          f"{'auto (default): starts as ' + str(think) + ', low if minimal is not supported' if think is not None else 'n/a (groq)'}; prompts {rae.JUDGE_PROMPT_SHA} (answer), "
           f"{rae.GATE_PROMPT_SHA} (clarify/refuse)")
 
     n_fail = sum(not ok for _, ok in RESULTS)

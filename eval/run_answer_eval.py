@@ -329,24 +329,43 @@ Judge only from the response text."""
 GATE_PROMPT_SHA = hashlib.sha1(GATE_PROMPT.encode("utf-8")).hexdigest()[:12]
 
 
-JUDGE_THINKING = "minimal"         # --judge-thinking (Gemini only)
+# --judge-thinking (Gemini only): minimal | low | medium | high | default | auto. "auto" starts at minimal and, on a 400
+# saying the thinking level is not supported, moves to low for the rest of the run (call_judge).
+JUDGE_THINKING = {"level": "auto", "auto": "minimal"}
+UNSUPPORTED_LEVEL = re.compile(r"thinking.{0,80}(not supported|unsupported|not available|invalid)|"
+                               r"(not supported|unsupported|invalid).{0,80}thinking", re.I | re.S)
+
+
+def thinking_level() -> str:
+    """The effective --judge-thinking level ("auto" resolved)."""
+    return JUDGE_THINKING["auto"] if JUDGE_THINKING["level"] == "auto" else JUDGE_THINKING["level"]
+
+
+def set_thinking(level: str):
+    JUDGE_THINKING.update(level=level, auto="minimal")
 
 
 def gemini_thinking(model: str, level: str = "minimal") -> dict:
     """Thinking arguments of ChatGoogleGenerativeAI (langchain-google-genai 4.4.2): Gemini 3+ take thinking_level (alias
     of reasoning_effort: minimal | low | medium | high; 'minimal' is the lowest, support varies by model); Gemini 2.5
-    take thinking_budget (0 = off; Flash and Flash-Lite only). level 'default': nothing is passed (model default)."""
+    take thinking_budget (0 = off; Flash and Flash-Lite only; passed for minimal). level 'default': nothing is passed
+    (model default)."""
     m = re.search(r"gemini-(\d+)", model)
     if level == "default" or not m:
         return {}
     if int(m.group(1)) >= 3:
-        return {"thinking_level": "minimal"}
-    return {"thinking_budget": 0} if "2.5-flash" in model else {}
+        return {"thinking_level": level}
+    return {"thinking_budget": 0} if "2.5-flash" in model and level == "minimal" else {}
+
+
+def effective_thinking(provider: str, model: str) -> dict | None:
+    """Recorded in every judgement: the thinking arguments actually passed (None for groq)."""
+    return gemini_thinking(model or "", thinking_level()) if provider == "gemini" else None
 
 
 def judge_llm(provider: str, model: str, kind: str = "answer"):
     """Structured-output judge (kind "answer": JUDGE_PROMPT schema; "gate": GATE_PROMPT schema). groq: ChatGroq; gemini:
-    langchain-google-genai, key from GOOGLE_API_KEY, thinking set by JUDGE_THINKING (gemini_thinking)."""
+    langchain-google-genai, key from GOOGLE_API_KEY, thinking from the effective --judge-thinking level."""
     from typing import List
     from pydantic import BaseModel
 
@@ -365,7 +384,7 @@ def judge_llm(provider: str, model: str, kind: str = "answer"):
         from langchain_google_genai import ChatGoogleGenerativeAI
         return ChatGoogleGenerativeAI(model=model, temperature=0, timeout=120, max_retries=0,   # retries: invoke_judge
                                       google_api_key=os.environ.get("GOOGLE_API_KEY"),
-                                      **gemini_thinking(model, JUDGE_THINKING)).with_structured_output(Judgement)
+                                      **gemini_thinking(model, thinking_level())).with_structured_output(Judgement)
     from langchain_groq import ChatGroq
     return ChatGroq(model=model, temperature=0).with_structured_output(Judgement, method="json_schema")
 
@@ -373,20 +392,44 @@ def judge_llm(provider: str, model: str, kind: str = "answer"):
 JUDGE_FACTORY = judge_llm          # tests replace it with a stub
 
 
+BAD_OUTPUT = re.compile(r"json_validate_failed|OutputParserException|Invalid json output|Failed to parse", re.I)
+
+
 def invoke_judge(llm, messages, provider: str, sleep=time.sleep):
-    """A daily-quota 429 -> QuotaExhausted(who='judge'), never retried. Gemini per-minute 429 or a temporary server
-    error (503 'high demand', ...): up to 5 retries with backoff (the stated delay + 1 s, else 5, 10, 20, 40, 80 s; at
-    most 120 s). Groq: the client's own retries."""
-    for attempt in range(6):
+    """A daily-quota 429 -> QuotaExhausted(who='judge'), never retried. Malformed output (Groq json_validate_failed 400,
+    an output parser error): the same call up to 2 more times. Gemini per-minute 429 or a temporary server error (503
+    'high demand', ...): up to 5 retries with backoff (the stated delay + 1 s, else 5, 10, 20, 40, 80 s; at most
+    120 s). Groq 429s: the client's own retries."""
+    waits = bad = 0
+    while True:
         try:
             return llm.invoke(messages)
         except Exception as e:
             msg = hc.full_message(e)
             if hc.is_daily_quota(msg):
                 raise hc.QuotaExhausted(msg[:600], hc.parse_retry_after(msg), "judge") from e
-            if provider != "gemini" or not (hc.is_rate_limit(msg) or hc.is_transient(msg)) or attempt == 5:
+            if BAD_OUTPUT.search(msg) and bad < 2:
+                bad += 1
+                continue
+            if provider != "gemini" or not (hc.is_rate_limit(msg) or hc.is_transient(msg)) or waits == 5:
                 raise
-            sleep(min((hc.parse_retry_after(msg) or 5 * 2 ** attempt) + 1, 120))
+            sleep(min((hc.parse_retry_after(msg) or 5 * 2 ** waits) + 1, 120))
+            waits += 1
+
+
+def call_judge(provider: str, model: str, kind: str, messages):
+    """JUDGE_FACTORY + invoke_judge. --judge-thinking auto: a 400 saying the thinking level is not supported while at
+    minimal -> the call once more with low, which is kept for the rest of the run."""
+    try:
+        return invoke_judge(JUDGE_FACTORY(provider, model, kind), messages, provider)
+    except Exception as e:
+        msg = hc.full_message(e)
+        if not (provider == "gemini" and JUDGE_THINKING["level"] == "auto" and JUDGE_THINKING["auto"] == "minimal"
+                and re.search(r"\b400\b|INVALID_ARGUMENT", msg) and UNSUPPORTED_LEVEL.search(msg)):
+            raise
+        JUDGE_THINKING["auto"] = "low"
+        print(f"judge thinking auto: {model} does not support minimal; low from now on", file=sys.stderr)
+        return invoke_judge(JUDGE_FACTORY(provider, model, kind), messages, provider)
 
 
 _INDEX = {}
@@ -420,9 +463,10 @@ def judge(item, rec, model: str, provider: str = "groq") -> dict:
     human = (f"Question: {item['question']}\n\nReference points:\n" + "\n".join(f"{i}. {p}" for i, p in enumerate(rp, 1))
              + f"\n\nAnswer:\n{rec.get('text') or ''}\n\nCited articles:\n" + ("\n\n".join(arts) or "(none)"))
     with usage_callback() as cb:
-        j = invoke_judge(JUDGE_FACTORY(provider, model), [("system", JUDGE_PROMPT), ("human", human)], provider)
+        j = call_judge(provider, model, "answer", [("system", JUDGE_PROMPT), ("human", human)])
     out = {"covered": j.covered, "contradiction": j.contradiction, "unsupported_statements": j.unsupported_statements,
            "fallback_articles": sum("FALLBACK" in a for a in arts), "provider": provider, "model": model,
+           "thinking": effective_thinking(provider, model),
            "prompt_sha": JUDGE_PROMPT_SHA, "tokens": token_record(cb.usage_metadata, None, model=model)}
     if len(j.covered) != len(rp):
         out["error"] = f"covered has {len(j.covered)} values for {len(rp)} reference points"
@@ -440,10 +484,11 @@ def gate_judge(item, rec, model: str, provider: str = "groq") -> dict:
     q = item["question"] if first else rec.get("asked") or item["question"]
     human = f"Message: {q}\n\nResponse:\n{(rec.get('first_text') if first else rec.get('text')) or ''}"
     with usage_callback() as cb:
-        j = invoke_judge(JUDGE_FACTORY(provider, model, "gate"), [("system", GATE_PROMPT), ("human", human)], provider)
+        j = call_judge(provider, model, "gate", [("system", GATE_PROMPT), ("human", human)])
     return {"gives_substantive_answer": bool(j.gives_substantive_answer),
             "enumerates_alternatives": bool(j.enumerates_alternatives), "turn": "first" if first else "only",
-            "provider": provider, "model": model, "prompt_sha": GATE_PROMPT_SHA,
+            "provider": provider, "model": model, "thinking": effective_thinking(provider, model),
+            "prompt_sha": GATE_PROMPT_SHA,
             "tokens": token_record(cb.usage_metadata, None, model=model)}
 
 
@@ -451,9 +496,9 @@ def check_judge(args, judge_state):
     """One small judge call before any agent call, so a wrong judge model or key stops the run before agent tokens are
     spent. A daily quota here turns judging off (rows get judge_pending), as during the run."""
     try:
-        invoke_judge(JUDGE_FACTORY(args.judge_provider, args.judge_model),
-                     [("system", JUDGE_PROMPT), ("human", "Question: ping ?\n\nReference points:\n1. ping\n\nAnswer:\n"
-                                                          "ping\n\nCited articles:\n(none)")], args.judge_provider)
+        call_judge(args.judge_provider, args.judge_model, "answer",
+                   [("system", JUDGE_PROMPT), ("human", "Question: ping ?\n\nReference points:\n1. ping\n\nAnswer:\n"
+                                                        "ping\n\nCited articles:\n(none)")])
         print(f"judge check: {args.judge_provider} {args.judge_model} answered")
     except Exception as e:
         q = hc.classify(e, "judge")
@@ -684,11 +729,13 @@ def provenance(args, exam_hashes: dict) -> dict:
             "exam_hashes": exam_hashes,
             "judge": None if args.skip_judge else {"provider": args.judge_provider, "model": args.judge_model,
                                                    "prompt_sha": JUDGE_PROMPT_SHA, "gate_prompt_sha": GATE_PROMPT_SHA,
-                                                   "thinking": judge_thinking(args)}}
+                                                   "thinking_requested": args.judge_thinking
+                                                   if args.judge_provider == "gemini" else None}}
+    # the effective thinking (after an auto fallback) is in every judgement: row["judge"/"gate_judge"]["thinking"]
 
 
 def judge_thinking(args) -> dict | None:
-    return gemini_thinking(args.judge_model or "", args.judge_thinking) if args.judge_provider == "gemini" else None
+    return effective_thinking(args.judge_provider, args.judge_model)
 
 
 def probe_agent() -> bool:
@@ -903,8 +950,9 @@ def parse_args(argv=None):
     ap.add_argument("--judge-only", action="store_true", help="judge saved answers that have no judgement yet")
     ap.add_argument("--judge-provider", choices=["groq", "gemini"], default="groq")
     ap.add_argument("--judge-model", default=os.environ.get("JUDGE_MODEL"))
-    ap.add_argument("--judge-thinking", choices=["minimal", "default"], default="minimal",
-                    help="gemini judge: minimal thinking (see gemini_thinking) or the model default")
+    ap.add_argument("--judge-thinking", choices=["minimal", "low", "medium", "high", "default", "auto"], default="auto",
+                    help="gemini judge thinking level; auto: minimal, else low if minimal is not supported; default: "
+                         "the model default")
     ap.add_argument("--judge-draft", action="store_true",
                     help="v2: also judge draft_text (the unverified first answer); one more judge call when it differs")
     ap.add_argument("--dry-run", action="store_true")
@@ -921,9 +969,8 @@ def parse_args(argv=None):
 
 
 def main(argv=None):
-    global JUDGE_THINKING
     args = parse_args(argv)
-    JUDGE_THINKING = args.judge_thinking
+    set_thinking(args.judge_thinking)
     set_path, results_dir = Path(args.set), Path(args.results_dir)
     systems = SYSTEM_ORDER if args.system == "all" else args.system.split(",")
     bad = [s for s in systems if s not in SYSTEM_ORDER]
