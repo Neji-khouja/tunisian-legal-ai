@@ -23,7 +23,7 @@ def check(name, cond):
 
 
 def final_state(bad, lang):
-    return {"language": lang, "claims": CLAIMS, "caveat": "", "bad": bad, "evidence": EVIDENCE}
+    return {"language": lang, "claims": CLAIMS, "caveat": "", "bad": bad, "evidence": EVIDENCE, "full_question": "Q"}
 
 
 # 1-2. routers
@@ -147,4 +147,111 @@ for k in ("evidence", "claims", "verdicts", "bad", "repairs", "dropped", "draft_
     check(f"analyze_node resets {k} -> {r[k]!r}", r[k] == g.fresh_state()[k])
 check("analyze_node does not return original_question or clarify_count",
       "original_question" not in r and "clarify_count" not in r)
+
+# Follow-ups. condense_node with a stubbed structured llm (no Groq)
+import condense as cmod
+from condense import Standalone
+from langchain_core.documents import Document
+
+
+class FakeLLM:
+    def __init__(self, result=None, error=None):
+        self.calls, self.result, self.error = [], result, error
+
+    def invoke(self, messages):
+        self.calls.append(messages)
+        if self.error:
+            raise self.error
+        return self.result
+
+
+H1 = [{"q": "Quelle est la peine pour le vol ?", "a": "Cinq ans d'emprisonnement [PenalFr art. 264]."}]
+STANDALONE = "Quelle est la peine pour le vol commis par un mineur ?"
+real_llm = cmod.structured_llm
+cmod.structured_llm = fake = FakeLLM(Standalone(question=STANDALONE, is_followup=True))
+try:
+    r = g.condense_node({"question": "Et pour les mineurs ?", "status": "done"})          # no history key at all
+    check("condense: no history key -> 0 llm calls, question unchanged", not fake.calls and "question" not in r)
+    r = g.condense_node({"question": "Et pour les mineurs ?", "status": "done", "history": []})
+    check("condense: empty history -> 0 llm calls, question unchanged", not fake.calls and "question" not in r)
+    r = g.condense_node({"question": "Le code pénal.", "status": "clarify", "history": H1, "degraded": ["x"]})
+    check("condense: previous status clarify -> 0 llm calls, question and degraded untouched",
+          not fake.calls and "question" not in r and "degraded" not in r)
+    r = g.condense_node({"question": "Et pour les mineurs ?", "status": "done", "history": H1, "degraded": ["old"]})
+    human = fake.calls[-1][1][1]
+    print("condense human message:\n" + human)
+    check("condense: history present -> 1 llm call", len(fake.calls) == 1)
+    check(f"condense: question replaced -> {r['question']!r}", r["question"] == STANDALONE)
+    check("condense: condensed_from keeps the raw message, is_followup True",
+          r["condensed_from"] == "Et pour les mineurs ?" and r["is_followup"] is True)
+    check("condense: degraded reset for the new question", r["degraded"] == [])
+    check("condense: prompt has the earlier turn and the new message",
+          H1[0]["q"] in human and H1[0]["a"] in human and human.endswith("New message: Et pour les mineurs ?"))
+    g.condense_node({"question": "x", "status": "done", "history": [{"q": f"q{i}", "a": f"a{i}"} for i in range(3)]})
+    human = fake.calls[-1][1][1]
+    check("condense: only the last 2 turns are sent", "q0" not in human and "q1" in human and "q2" in human)
+    cmod.structured_llm = FakeLLM(error=ValueError("bad json"))
+    r = g.condense_node({"question": "Et pour les mineurs ?", "status": "done", "history": H1, "degraded": []})
+    print("condense_node with failing llm:", r)
+    check("condense failure: raw message kept (no question key)", "question" not in r and r["condensed_from"] == "")
+    check("condense failure: degraded has condense_failed: ValueError", r["degraded"] == ["condense_failed: ValueError"])
+finally:
+    cmod.structured_llm = real_llm
+g.analyze = lambda q, hint=None: SimpleNamespace(language="fr", intent="clear", target_codes=["penal"],
+                                                 clarification_question=None)
+try:
+    r = g.analyze_node(stale | {"status": "", "degraded": ["condense_failed: ValueError"], "history": H1})
+finally:
+    g.analyze = real_analyze
+check("analyze_node keeps condense_failed from condense_node", r["degraded"] == ["condense_failed: ValueError"])
+check("fresh_state and analyze_node do not reset history", "history" not in g.fresh_state() and "history" not in r)
+
+# history: finalize and the no-evidence answer append, refuse and clarify do not, at most 2 turns
+r = g.finalize_node(final_state([], "fr"))                                              # no history key
+check("finalize appends {q: full_question, a: text}", r["history"] == [{"q": "Q", "a": r["text"][:600]}])
+two = [{"q": "q1", "a": "a1"}, {"q": "q2", "a": "a2"}]
+r = g.finalize_node(final_state([1, 2, 3], "fr") | {"history": two})
+check("finalize (all dropped) appends and keeps the last 2 turns", [t["q"] for t in r["history"]] == ["q2", "Q"])
+r = g.answer_node({"evidence": {}, "language": "en", "full_question": "Q3", "degraded": [], "history": two})
+check("answer_node without evidence appends", r["history"] == [two[1], {"q": "Q3", "a": g.NO_ARTICLE["en"]}])
+check("answer text cut to 600 chars", len(g.remember({"full_question": "Q", "history": []}, "x" * 1000)[0]["a"]) == 600)
+check("refuse and clarify do not touch history", "history" not in g.refuse(stale) and "history" not in g.clarify(stale))
+
+# whole graph, every model stubbed: a follow-up is condensed, history stays at 2, a clarification reply is not
+seen = []
+real = {k: getattr(g, k) for k in ("analyze", "retrieve_g", "grade", "make_answer", "verify", "bad_claims")}
+intents = iter(["clear", "clear", "clear", "ambiguous", "clear"])
+g.analyze = lambda q, hint=None: (seen.append(("analyze", q)), SimpleNamespace(
+    language="fr", intent=next(intents), target_codes=["penal"], clarification_question="Quel code ?"))[1]
+g.retrieve_g = lambda q, codes: [Document(page_content="...", metadata={"chunk_id": "PenalFr/s02/264",
+                                 "source": "PenalFr.pdf", "article": "264", "law_type": "penal"})]
+g.grade = lambda q, ev: SimpleNamespace(enough=True, missing="")
+g.make_answer = lambda q, lang, ev, feedback="": g.Answer(claims=[g.Claim(text="x", cited_ids=["PenalFr/s02/264"])], caveat="")
+g.verify = lambda ans, ev: SimpleNamespace(verdicts=[])
+g.bad_claims = lambda ans, v: []
+cmod.structured_llm = fake = FakeLLM(Standalone(question=STANDALONE, is_followup=True))
+try:
+    cfg = {"configurable": {"thread_id": "followup-offline"}}
+    states = [g.app.invoke({"question": q}, cfg) for q in
+              ["Quelle est la peine pour le vol ?", "Et pour les mineurs ?", "Et la tentative ?",
+               "Quelle est la peine ?", "Le code pénal."]]
+finally:
+    cmod.structured_llm = real_llm
+    for k, v in real.items():
+        setattr(g, k, v)
+print("graph run, Analyze inputs:", [q for _, q in seen])
+check("graph turn 1: empty history -> 0 condense calls", states[0]["condensed_from"] == "")
+check("graph turn 2: Analyze gets the standalone question", seen[1] == ("analyze", STANDALONE)
+      and states[1]["condensed_from"] == "Et pour les mineurs ?")
+check("graph: history never exceeds 2 turns", [len(s["history"]) for s in states] == [1, 2, 2, 2, 2])
+check("graph turn 4 clarify: history not appended", states[3]["status"] == "clarify"
+      and states[3]["history"] == states[2]["history"])
+check("graph turn 5 (reply to the clarification): no condense call, merged by analyze_node",
+      len(fake.calls) == 3 and seen[4][1].endswith("User's answer: Le code pénal."))
+
+# the evaluation harness starts a new thread for every item, so history is empty and condense makes no call
+line = next(l for l in (Path(__file__).resolve().parent.parent / "eval" / "run_answer_eval.py")
+            .read_text(encoding="utf-8").splitlines() if '"thread_id":' in l)
+print("eval/run_answer_eval.py:", line.strip())
+check("run_answer_eval: thread_id per item (id + time_ns)", "item['id']" in line and "time_ns()" in line)
 print("all checks passed")

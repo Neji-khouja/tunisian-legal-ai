@@ -10,6 +10,7 @@ from reformulate import reformulate
 from answer import make_answer, check_answer, render
 from answer import Answer, Claim
 from verify import verify, bad_claims
+from condense import condense
 
 def fresh_state() -> dict:
     return {"evidence": {}, "docs": [], "claims": [], "caveat": "", "cited": [], "problems": [],
@@ -56,13 +57,33 @@ class AgentState(TypedDict):
     draft_claims: list[dict]
     draft_text: str
     first_verdicts: list[dict]
+    history: list[dict]          # last 2 answered turns {"q": standalone question, "a": answer text[:600]}
+    condensed_from: str          # the raw message when condense rewrote it, else ""
+    is_followup: bool
+
+def remember(state, text) -> list[dict]:
+    return (state.get("history", []) + [{"q": state["full_question"], "a": text[:600]}])[-2:]
+
+def condense_node(state: AgentState) -> dict:
+    if state.get("status") == "clarify":            # a reply to a clarification: analyze_node merges it
+        return {"condensed_from": "", "is_followup": False}
+    out = {"condensed_from": "", "is_followup": False, "degraded": []}     # new question: reset
+    history = state.get("history", [])
+    if not history:
+        return out
+    try:
+        s = condense(history[-2:], state["question"])
+    except Exception as e:                          # visible fallback: keep the raw message
+        return out | {"degraded": [f"condense_failed: {type(e).__name__}"]}
+    return out | {"question": s.question, "condensed_from": state["question"], "is_followup": s.is_followup}
+
 def analyze_node(state: AgentState) -> dict:
     if state.get("status") == "clarify" and state.get("original_question"):
         full_question = state["original_question"] + f"\nUser's answer: {state['question']}"
         degraded = list(state.get("degraded") or [])      # same question, keep earlier events
     else:
         full_question = state["question"]
-        degraded = []                                     # new question: reset
+        degraded = list(state.get("degraded") or [])      # new question: condense_node reset it
     try:
         hint = state.get("language") if state.get("clarify_count", 0) > 0 else None
         r = analyze(full_question, hint)
@@ -131,9 +152,10 @@ def retrieve_more_node(state: AgentState) -> dict:
 
 def answer_node(state: AgentState) -> dict:
     if not state["evidence"]:                 # nothing retrieved: do not ask the LLM to answer from nothing
-        return {"text": NO_ARTICLE.get(state.get("language"), NO_ARTICLE["fr"]),
+        text = NO_ARTICLE.get(state.get("language"), NO_ARTICLE["fr"])
+        return {"text": text,
                 "problems": [], "cited": [], "status": "done", "degraded": state.get("degraded", []),
-                "claims": [], "caveat": ""}
+                "claims": [], "caveat": "", "history": remember(state, text)}
     ans = make_answer(state["full_question"], state["language"], state["evidence"])
     problems = check_answer(ans, state["evidence"])
     cited = sorted({i for c in ans.claims for i in c.cited_ids})
@@ -204,14 +226,15 @@ def finalize_node(state):
     if not kept:
         seen = ", ".join(cid.split("/")[0] + " art. " + cid.split("/")[-1]
                          for cid in list(state["evidence"])[:3])
-        return {"text": NO_SUPPORT.get(lang, NO_SUPPORT["fr"]) + f" [{seen}]",
-                "claims": [], "caveat": "", "cited": [], "dropped": len(bad), "status": "done"}
+        text = NO_SUPPORT.get(lang, NO_SUPPORT["fr"]) + f" [{seen}]"
+        return {"text": text, "claims": [], "caveat": "", "cited": [], "dropped": len(bad), "status": "done",
+                "history": remember(state, text)}
     text = render(Answer(claims=kept, caveat=state["caveat"]), state["evidence"], lang)
     if bad:
         text += "\n\n" + DROPPED.get(lang, DROPPED["fr"]).format(n=len(bad))
     return {"text": text, "claims": [c.model_dump() for c in kept],
             "cited": sorted({i for c in kept for i in c.cited_ids}),
-            "dropped": len(bad), "status": "done"}
+            "dropped": len(bad), "status": "done", "history": remember(state, text)}
 
 def route_after_answer(state):
     return "verify" if state["claims"] else "end"
@@ -225,6 +248,7 @@ def route_after_verify(state):
 
 builder = StateGraph(AgentState)
 
+builder.add_node("condense", condense_node)
 builder.add_node("analyze", analyze_node)
 builder.add_node("clarify", clarify)
 builder.add_node("refuse", refuse)
@@ -238,7 +262,8 @@ builder.add_node("repair", repair_node)
 builder.add_node("finalize", finalize_node)
 
 
-builder.add_edge(START, "analyze")
+builder.add_edge(START, "condense")
+builder.add_edge("condense", "analyze")
 builder.add_conditional_edges("answer", route_after_answer, {"verify": "verify", "end": END})
 builder.add_conditional_edges("verify", route_after_verify, {"repair": "repair", "finalize": "finalize"})
 builder.add_conditional_edges("analyze", route_after_analyze,
@@ -258,6 +283,8 @@ def run(thread, turns):
     for q in turns:
         r = app.invoke({"question": q}, cfg)
         print(f"[{thread}] {q!r} -> {r['status']}")
+        if r.get("condensed_from"):
+            print("   standalone:", r["question"])
         print("   text:", r["text"])
         if r.get("sub_queries"):
             print("   queries:", r["sub_queries"])

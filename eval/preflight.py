@@ -63,6 +63,8 @@ def main():
     got["combined"] = sha(got["analyze"] + got["plan"] + got["codes"])
     for k, want in EXPECTED_HASHES.items():
         record(f"hash {k}", got[k] == want, f"{got[k]} (expected {want})")
+    import condense
+    print(f"INFO  hash condense: {sha(condense.CONDENSE_PROMPT)} (printed only, not checked)")
 
     # 4. answer set (eval/check_answer_set.py rules: duplicate ids, gold articles in the index and the PDF text)
     sys.path.insert(0, str(ROOT / "eval"))
