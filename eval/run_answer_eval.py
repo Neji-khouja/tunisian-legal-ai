@@ -383,6 +383,24 @@ def judge(item, rec, model: str, provider: str = "groq") -> dict:
     return out
 
 
+def check_judge(args, judge_state):
+    """One small judge call before any agent call, so a wrong judge model or key stops the run before agent tokens are
+    spent. A daily quota here turns judging off (rows get judge_pending), as during the run."""
+    try:
+        invoke_judge(JUDGE_FACTORY(args.judge_provider, args.judge_model),
+                     [("system", JUDGE_PROMPT), ("human", "Question: ping ?\n\nReference points:\n1. ping\n\nAnswer:\n"
+                                                          "ping\n\nCited articles:\n(none)")], args.judge_provider)
+        print(f"judge check: {args.judge_provider} {args.judge_model} answered")
+    except Exception as e:
+        q = hc.classify(e, "judge")
+        if not q:
+            sys.exit(f"STOPPED before any agent call: judge check failed ({args.judge_provider} {args.judge_model}): "
+                     f"{type(e).__name__}: {str(e)[:600]}")
+        judge_state.update(on=False, quota=q)
+        print(f"JUDGE QUOTA EXHAUSTED at the judge check: judging is off; rows are saved with judge_pending.",
+              file=sys.stderr)
+
+
 def hallucinated(rec, m, j) -> bool | None:
     if j is None or "verdict" not in j:
         return None
@@ -618,14 +636,13 @@ def run_one(item, system, run, args, judge_state, stage, prov) -> dict:
                     jdd = judge(item, rec | {"text": rec["draft_text"], "cited": d_cited}, args.judge_model,
                                 args.judge_provider)
             jd["llm_calls"] = CALLS["n"] - c1
-        except Exception as e:
-            q = hc.classify(e, "judge")
-            if not q:
-                sys.exit(f"STOPPED: judge failed on {item['id']}: {type(e).__name__}: {e}\nRe-run to resume.")
-            judge_state.update(on=False, quota=q)               # the answer is kept; judge later with --judge-only
+        except Exception as e:                      # quota or any other judge error: the answer is kept (its agent
+            q = hc.classify(e, "judge")             # tokens are spent); judge later with --judge-only
+            judge_state.update(on=False, quota=q, error=None if q else f"{type(e).__name__}: {str(e)[:300]}")
             jd = jdd = None
-            print(f"JUDGE QUOTA EXHAUSTED on {item['id']} ({args.judge_provider} {args.judge_model}): judging is off "
-                  f"for the rest of this run; rows are saved with judge_pending; run --judge-only later.", file=sys.stderr)
+            print(f"JUDGE {'QUOTA EXHAUSTED' if q else 'FAILED: ' + judge_state['error']} on {item['id']} "
+                  f"({args.judge_provider} {args.judge_model}): judging is off for the rest of this run; rows are saved "
+                  f"with judge_pending; run --judge-only later.", file=sys.stderr)
     rec.pop("_evidence_text", None)
     v1 = system == "v1"                             # its LLM calls run in the subprocess: 429s and waits not seen
     row = {"id": item["id"], "question": item["question"], "language": item.get("language"),
@@ -842,7 +859,9 @@ def main(argv=None):
     if "v1" in systems and "v1" not in runners:
         v1proc = V1Process(Path(args.v1_worktree or ""))
         runners["v1"] = v1proc.run
-    judge_state = {"on": need_judge, "quota": None}
+    judge_state = {"on": need_judge, "quota": None, "error": None}
+    if need_judge and todo:
+        check_judge(args, judge_state)
     today = datetime.now().date().isoformat()
     today_tokens = lambda rs: sum(r["tokens"]["total"] for r in rs if (r.get("date") or "").startswith(today) and r.get("tokens"))
     mine = {f.path.resolve() for f in files.values()}       # agent tokens already spent today by other stage files
@@ -886,7 +905,7 @@ def main(argv=None):
     pending = sum(r.get("judge_pending", False) for f in files.values() for r in f.latest().values())
     hc.write_state(results_dir, {"reason": "completed", "stage": args.stage, "command": " ".join(sys.argv),
                                  "done": {s: len(f.finished()) for s, f in files.items()}, "remaining": {},
-                                 "judge_pending": pending})
+                                 "judge_pending": pending, "judge_error": judge_state["error"]})
     if pending:
         print(f"{pending} rows wait for the judge: run the same command with --judge-only.")
     projection(files, {})

@@ -13,6 +13,7 @@
 (i) error classes: daily vs per-minute messages (Groq, Gemini), retry-after parsing
 (j) token usage: the LangChain usage callback sees a chat model called inside a LangGraph node
 (k) another --set (plumbing): no fingerprint, own --results-dir; never in the folder of the stage results (and back)
+(l) a failing judge check stops before any agent call; a judge error mid-run keeps the answers as judge_pending
 """
 import io
 import sys
@@ -319,6 +320,53 @@ def test_judge_only():
         check("(f) a second --judge-only skips already judged rows", js.n == 9, f"calls {js.n}")
 
 
+def test_judge_errors():
+    class Failing:
+        def __init__(self, fail_from):
+            self.n, self.fail_from = 0, fail_from
+
+        def __call__(self, provider, model):
+            stub = self
+
+            class LLM:
+                def invoke(self, messages):
+                    stub.n += 1
+                    if stub.n >= stub.fail_from:
+                        raise RuntimeError("404 NOT_FOUND. models/x is no longer available to new users.")
+                    return SimpleNamespace(covered=[True, True], contradiction=False, unsupported_statements=[])
+            return LLM()
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        setup(tmp)
+        stub = Stub()
+        stub.install()
+        rae.JUDGE_FACTORY = Failing(1)
+        argv = ["--set", str(tmp / "answer_set.json"), "--stages-file", str(tmp / "stages.json"), "--hashes-file",
+                str(tmp / "exam_hashes.txt"), "--results-dir", str(tmp / "results"), "--system", "all",
+                "--judge-model", "stub-judge", "--stage", "1"]
+        buf, code = io.StringIO(), None
+        with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
+            try:
+                rae.main(argv)
+            except SystemExit as e:
+                code = e.code
+        check("(l) a failing judge check stops before any agent call", isinstance(code, str)
+              and "judge check failed" in code and stub.calls == [], f"{str(code)[:150]} calls {stub.calls[:2]}")
+        rae.JUDGE_FACTORY = Failing(3)            # check ok, a1 v1 judged, fails on a1 v1.1
+        buf, code = io.StringIO(), None
+        with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
+            try:
+                rae.main(argv)
+            except SystemExit as e:
+                code = e.code
+        rs = {s: rows(tmp, s, "1") for s in rae.SYSTEM_ORDER}
+        state = json.loads((tmp / "results" / "run_state.json").read_text(encoding="utf-8"))
+        check("(l) a judge error mid-run keeps the answers (judge_pending), the run completes",
+              code is None and all(len(r) == 3 for r in rs.values()) and rs["v1"][0]["judge"]["verdict"] == "correct"
+              and rs["v1.1"][0]["judge_pending"] and "NOT_FOUND" in (state.get("judge_error") or ""),
+              f"code {code!r} {buf.getvalue()[-300:]}")
+
+
 def test_wait_and_budget():
     with tempfile.TemporaryDirectory() as d:
         tmp = Path(d)
@@ -382,7 +430,8 @@ def test_usage_in_graph():
 
 
 if __name__ == "__main__":
-    for t in (test_quota_and_resume, test_per_minute_retry, test_changed_exam, test_other_set, test_judge_only, test_wait_and_budget,
+    for t in (test_quota_and_resume, test_per_minute_retry, test_changed_exam, test_other_set, test_judge_only,
+              test_judge_errors, test_wait_and_budget,
               test_classes, test_usage_in_graph):
         t()
     n_fail = RESULTS.count(False)
