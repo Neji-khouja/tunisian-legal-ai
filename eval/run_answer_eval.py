@@ -36,7 +36,11 @@ draft_claims / draft_text (the first, unverified answer). A v2 item whose `degra
 
 Judge: a model different from the generator (env JUDGE_MODEL or --judge-model), --judge-provider groq (Groq model id)
 or gemini (langchain-google-genai, key from GOOGLE_API_KEY), temperature 0, own prompt (hash recorded), structured
-output. Never guessed: without a judge model the run stops unless --skip-judge.
+output. Never guessed: without a judge model the run stops unless --skip-judge. Clarify and refuse items (every system)
+get a second judge prompt (GATE_PROMPT, hash recorded): gives_substantive_answer and enumerates_alternatives, on the
+first-turn response; --summarize reports for refuse items "no substantive answer" (explicit refusal OR no substantive
+answer, the primary metric) and "explicit refusal status", for clarify items "asked for clarification (status)",
+"answered directly" and "enumerated alternatives", and "gate accuracy (explicit status)" for both.
 v1 needs a git worktree of tag v1-baseline-runnable with the old index (the script prints the setup commands).
 """
 import os
@@ -303,6 +307,18 @@ Judge only from the texts given. Do not use outside legal knowledge."""
 
 JUDGE_PROMPT_SHA = hashlib.sha1(JUDGE_PROMPT.encode("utf-8")).hexdigest()[:12]
 
+GATE_PROMPT = """You read the response of a legal assistant on Tunisian law to a user's message. Answer two yes/no
+questions about the response only (not about whether it is right):
+- gives_substantive_answer: true if the response states legal rules, penalties, durations, amounts, deadlines or
+  conditions as an answer to the message. False if it only refuses, says the information was not found or is not
+  covered, or asks the user a question back.
+- enumerates_alternatives: true if the response lists several cases, situations or readings of the message (with a
+  rule for each, or as options for the user to pick from) instead of committing to one.
+Judge only from the response text."""
+
+
+GATE_PROMPT_SHA = hashlib.sha1(GATE_PROMPT.encode("utf-8")).hexdigest()[:12]
+
 
 JUDGE_THINKING = "minimal"         # --judge-thinking (Gemini only)
 
@@ -319,16 +335,22 @@ def gemini_thinking(model: str, level: str = "minimal") -> dict:
     return {"thinking_budget": 0} if "2.5-flash" in model else {}
 
 
-def judge_llm(provider: str, model: str):
-    """Structured-output judge. groq: ChatGroq; gemini: langchain-google-genai, key from GOOGLE_API_KEY, thinking set by
-    JUDGE_THINKING (gemini_thinking)."""
+def judge_llm(provider: str, model: str, kind: str = "answer"):
+    """Structured-output judge (kind "answer": JUDGE_PROMPT schema; "gate": GATE_PROMPT schema). groq: ChatGroq; gemini:
+    langchain-google-genai, key from GOOGLE_API_KEY, thinking set by JUDGE_THINKING (gemini_thinking)."""
     from typing import List
     from pydantic import BaseModel
 
-    class Judgement(BaseModel):
+    class Answer(BaseModel):
         covered: List[bool]
         contradiction: bool
         unsupported_statements: List[str]
+
+    class Gate(BaseModel):
+        gives_substantive_answer: bool
+        enumerates_alternatives: bool
+
+    Judgement = Gate if kind == "gate" else Answer
 
     if provider == "gemini":
         from langchain_google_genai import ChatGoogleGenerativeAI
@@ -402,6 +424,20 @@ def judge(item, rec, model: str, provider: str = "groq") -> dict:
     return out
 
 
+def gate_judge(item, rec, model: str, provider: str = "groq") -> dict:
+    """GATE_PROMPT on a clarify/refuse item, any system: the first-turn response (v2 with a scripted reply: first_text,
+    to the question; else text, to what the system was asked)."""
+    first = "first_text" in rec
+    q = item["question"] if first else rec.get("asked") or item["question"]
+    human = f"Message: {q}\n\nResponse:\n{(rec.get('first_text') if first else rec.get('text')) or ''}"
+    with usage_callback() as cb:
+        j = invoke_judge(JUDGE_FACTORY(provider, model, "gate"), [("system", GATE_PROMPT), ("human", human)], provider)
+    return {"gives_substantive_answer": bool(j.gives_substantive_answer),
+            "enumerates_alternatives": bool(j.enumerates_alternatives), "turn": "first" if first else "only",
+            "provider": provider, "model": model, "prompt_sha": GATE_PROMPT_SHA,
+            "tokens": token_record(cb.usage_metadata, None, model=model)}
+
+
 def check_judge(args, judge_state):
     """One small judge call before any agent call, so a wrong judge model or key stops the run before agent tokens are
     spent. A daily quota here turns judging off (rows get judge_pending), as during the run."""
@@ -437,7 +473,17 @@ def metric_values(rows) -> dict:
             continue
         m, j = r["metrics"], r.get("judge")
         if r["expected"] in ("clarify", "refuse"):
-            vals["gate accuracy (clarify/refuse items)"].append(int(m["gate_correct"]))
+            gate_st, gj = r.get("first_status", r.get("status")), r.get("gate_judge")
+            subst = None if not gj else int(gj["gives_substantive_answer"])
+            vals["gate accuracy (explicit status)"].append(int(m["gate_correct"]))
+            if r["expected"] == "refuse":                   # primary: explicit refusal OR no substantive answer
+                vals["refuse: no substantive answer"].append(1 if gate_st == "refuse" else
+                                                             None if subst is None else 1 - subst)
+                vals["refuse: explicit refusal status"].append(int(gate_st == "refuse"))
+                continue
+            vals["clarify: asked for clarification (status)"].append(int(gate_st == "clarify"))
+            vals["clarify: answered directly"].append(subst)
+            vals["clarify: enumerated alternatives"].append(None if not gj else int(gj["enumerates_alternatives"]))
             if r.get("reply") or r.get("asked"):           # clarify-then-answer, once gold is filled
                 vals["Hit@6 after the reply (clarify items)"].append(None if m["gold_hit"] is None else int(m["gold_hit"]))
             continue
@@ -508,10 +554,10 @@ def print_block(title: str, rows: list[dict]):
     for name, xs in vals.items():
         xs = [x for x in xs if x is not None]
         if not xs:
-            print(f"  {name:<40} n=0   -")
+            print(f"  {name:<42} n=0   -")
             continue
         lo, hi = boot_ci(xs, random.Random(SEED))
-        print(f"  {name:<40} n={len(xs):<4} {sum(xs) / len(xs):8.3f}   [{lo:.3f}, {hi:.3f}]")
+        print(f"  {name:<42} n={len(xs):<4} {sum(xs) / len(xs):8.3f}   [{lo:.3f}, {hi:.3f}]")
 
 
 def summarize(paths: list[Path]):
@@ -542,10 +588,10 @@ def summarize(paths: list[Path]):
             for name in va:
                 d = [y - x for x, y in zip(va[name], vb.get(name, [])) if x is not None and y is not None]
                 if not d:
-                    print(f"  {name:<40} n=0   -")
+                    print(f"  {name:<42} n=0   -")
                     continue
                 lo, hi = boot_ci(d, random.Random(SEED))
-                print(f"  {name:<40} n={len(d):<4} {sum(d) / len(d):+8.3f}   [{lo:+.3f}, {hi:+.3f}]")
+                print(f"  {name:<42} n={len(d):<4} {sum(d) / len(d):+8.3f}   [{lo:+.3f}, {hi:+.3f}]")
 
 
 # ---------------------------------------------------------------- audit export
@@ -581,6 +627,7 @@ CALL_RANGES = {   # (min, max) Groq calls per question, without the judge
     "v1.1": ((1, 2), "translation 0-1 (AR/EN), generation 1"),
     "v1": ((2, 3), "rewrite 1, sub-queries 0-1 (complex questions), generation 1"),
 }
+UNFINISHED = ("degraded",)                      # statuses run again on resume
 SYSTEMS = {"v2": run_v2, "v1.1": run_v11}       # v1: a V1Process, created in main; tests replace entries with stubs
 SLEEP = time.sleep                              # --wait-on-quota sleeps (tests replace it)
 
@@ -601,7 +648,8 @@ def provenance(args, exam_hashes: dict) -> dict:
     return {**hc.git_provenance(ROOT), "agent_model": GENERATOR_MODEL, "prompt_hashes": prompt_hashes(),
             "exam_hashes": exam_hashes,
             "judge": None if args.skip_judge else {"provider": args.judge_provider, "model": args.judge_model,
-                                                   "prompt_sha": JUDGE_PROMPT_SHA, "thinking": judge_thinking(args)}}
+                                                   "prompt_sha": JUDGE_PROMPT_SHA, "gate_prompt_sha": GATE_PROMPT_SHA,
+                                                   "thinking": judge_thinking(args)}}
 
 
 def judge_thinking(args) -> dict | None:
@@ -644,8 +692,15 @@ def run_one(item, system, run, args, judge_state, stage, prov) -> dict:
     if degraded:                                    # a node fell back: no metrics, re-run on resume
         rec["graph_status"], rec["status"] = rec.get("status"), "degraded"
     m = None if degraded else deterministic(item, rec)
-    jd = jdd = None
+    jd = jdd = gj = None
     judgeable = item["expected"] == "answer" and rec.get("status") == "done"
+    gate_judgeable = item["expected"] in ("clarify", "refuse") and not degraded
+    if gate_judgeable and judge_state["on"]:
+        hc.QUOTA_SEEN["msg"] = None
+        try:
+            gj = gate_judge(item, rec, args.judge_model, args.judge_provider)
+        except Exception as e:
+            judge_failed(e, item, args, judge_state)
     if judgeable and judge_state["on"]:
         c1 = CALLS["n"]
         hc.QUOTA_SEEN["msg"] = None
@@ -659,20 +714,17 @@ def run_one(item, system, run, args, judge_state, stage, prov) -> dict:
                     jdd = judge(item, rec | {"text": rec["draft_text"], "cited": d_cited}, args.judge_model,
                                 args.judge_provider)
             jd["llm_calls"] = CALLS["n"] - c1
-        except Exception as e:                      # quota or any other judge error: the answer is kept (its agent
-            q = hc.classify(e, "judge")             # tokens are spent); judge later with --judge-only
-            judge_state.update(on=False, quota=q, error=None if q else f"{type(e).__name__}: {str(e)[:300]}")
+        except Exception as e:
             jd = jdd = None
-            print(f"JUDGE {'QUOTA EXHAUSTED' if q else 'FAILED: ' + judge_state['error']} on {item['id']} "
-                  f"({args.judge_provider} {args.judge_model}): judging is off for the rest of this run; rows are saved "
-                  f"with judge_pending; run --judge-only later.", file=sys.stderr)
+            judge_failed(e, item, args, judge_state)
     rec.pop("_evidence_text", None)
     v1 = system == "v1"                             # its LLM calls run in the subprocess: 429s and waits not seen
     row = {"id": item["id"], "question": item["question"], "language": item.get("language"),
            "expected": item["expected"], "system": system, "stage": stage, **rec, "seconds": seconds,
            "llm_calls": calls, "elapsed_total": round(time.time() - t0, 1),         # system + metrics + judge
            "n_429": None if v1 else CALLS["n429"] - r0, "waited_seconds": None if v1 else round(CALLS["waited"] - w0, 1),
-           "metrics": m, "judge": jd, "judge_pending": bool(judgeable and jd is None and not degraded),
+           "metrics": m, "judge": jd, "gate_judge": gj,
+           "judge_pending": bool(not degraded and ((judgeable and jd is None) or (gate_judgeable and gj is None))),
            "tokens": tokens, "date": datetime.now().isoformat(timespec="seconds"), "provenance": prov}
     row["hallucinated"] = None if degraded else hallucinated(rec, m, jd)
     if args.judge_draft and m and "pdf_numeric_ok_draft" in m:
@@ -680,6 +732,15 @@ def run_one(item, system, run, args, judge_state, stage, prov) -> dict:
         row["hallucinated_draft"] = hallucinated(rec, {"cited_not_in_evidence": m["draft_cited_not_in_evidence"],
                                                        "pdf_numeric_ok": m["pdf_numeric_ok_draft"]}, jdd)
     return row
+
+
+def judge_failed(e, item, args, judge_state):
+    """Quota or any other judge error: the answer is kept (its agent tokens are spent); judge later with --judge-only."""
+    q = hc.classify(e, "judge")
+    judge_state.update(on=False, quota=q, error=None if q else f"{type(e).__name__}: {str(e)[:300]}")
+    print(f"JUDGE {'QUOTA EXHAUSTED' if q else 'FAILED: ' + judge_state['error']} on {item['id']} "
+          f"({args.judge_provider} {args.judge_model}): judging is off for the rest of this run; rows are saved "
+          f"with judge_pending; run --judge-only later.", file=sys.stderr)
 
 
 def measured_tokens(f: hc.ResultFile) -> list[int]:
@@ -738,15 +799,18 @@ def stop(results_dir, reason, msg, todo, k, files, args, retry_after=None, code=
 
 def judge_only(args, items, files, results_dir):
     by_id = {i["id"]: i for i in items}
-    todo = [(r, s) for s, f in files.items() for r in f.latest().values()
-            if r["expected"] == "answer" and r.get("status") == "done" and r["id"] in by_id
-            and not (r.get("judge") and "verdict" in r["judge"])]
-    print(f"--judge-only: {len(todo)} saved answers without a judgement ({args.judge_provider} {args.judge_model})")
+    todo = [(r, s) for s, f in files.items() for r in f.latest().values() if r["id"] in by_id and (
+            (r["expected"] == "answer" and r.get("status") == "done" and not (r.get("judge") and "verdict" in r["judge"]))
+            or (r["expected"] in ("clarify", "refuse") and r.get("status") not in UNFINISHED + ("failed",)
+                and not r.get("gate_judge")))]
+    print(f"--judge-only: {len(todo)} saved rows without a judgement ({args.judge_provider} {args.judge_model}; "
+          f"answer items: JUDGE_PROMPT, clarify/refuse items: GATE_PROMPT)")
     for k, (r, s) in enumerate(todo):
         if k and args.min_gap:
             time.sleep(args.min_gap)
+        gate = r["expected"] != "answer"
         try:
-            jd = judge(by_id[r["id"]], r, args.judge_model, args.judge_provider)
+            jd = (gate_judge if gate else judge)(by_id[r["id"]], r, args.judge_model, args.judge_provider)
         except Exception as e:
             q = hc.classify(e, "judge")
             if not q:
@@ -756,6 +820,11 @@ def judge_only(args, items, files, results_dir):
             stop(results_dir, "judge daily quota", f"STOPPED: daily quota of the judge ({args.judge_provider} "
                  f"{args.judge_model}) reached on {r['id']} ({s}). Judged so far are saved; re-run the same command to "
                  f"continue.\n{q}", [(x["id"], y) for x, y in todo], k, files, args, q.retry_after)
+        if gate:
+            files[s].replace_latest(dict(r, gate_judge=jd, judge_pending=False))
+            print(f"  judged {r['id']} ({s}): substantive {jd['gives_substantive_answer']}, alternatives "
+                  f"{jd['enumerates_alternatives']}")
+            continue
         files[s].replace_latest(dict(r, judge=jd, judge_pending=False, hallucinated=hallucinated(r, r["metrics"], jd)))
         print(f"  judged {r['id']} ({s}): {jd.get('verdict', jd.get('error'))}")
     hc.write_state(results_dir, {"reason": "judge-only completed", "stage": args.stage, "judged": len(todo)})

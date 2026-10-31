@@ -15,6 +15,7 @@
 (k) another --set (plumbing): no fingerprint, own --results-dir; never in the folder of the stage results (and back)
 (l) a failing judge check stops before any agent call; a judge error mid-run keeps the answers as judge_pending
 (m) eval/judge_check.py with a stub judge: verdicts, successes, the selection rule; the Gemini thinking argument
+(n) the clarify/refuse judge (GATE_PROMPT) runs on every clarify/refuse row of every system; --summarize metrics
 """
 import io
 import sys
@@ -83,17 +84,22 @@ class Stub:
         rae.SYSTEMS = {s: self.system(s) for s in rae.SYSTEM_ORDER}
 
 
+JUDGED = dict(covered=[True, True], contradiction=False, unsupported_statements=[], gives_substantive_answer=True,
+              enumerates_alternatives=False)
+
+
 class JudgeStub:
     def __init__(self):
-        self.n = 0
+        self.n, self.kinds = 0, []
 
-    def __call__(self, provider, model):
+    def __call__(self, provider, model, kind="answer"):
         stub = self
 
         class LLM:
             def invoke(self, messages):
                 stub.n += 1
-                return SimpleNamespace(covered=[True, True], contradiction=False, unsupported_statements=[])
+                stub.kinds.append(kind)
+                return SimpleNamespace(**JUDGED)
         return LLM()
 
 
@@ -312,13 +318,16 @@ def test_judge_only():
         with contextlib.redirect_stdout(io.StringIO()):
             rae.main(argv)
         judged = [r for s in rae.SYSTEM_ORDER for r in rows(tmp, s) if r.get("judge")]
-        check("(f) --judge-only judges every answered item (3 items x 3 systems)", js.n == 9 and len(judged) == 9
-              and all(r["judge"]["verdict"] == "correct" and not r["judge_pending"] for r in judged), f"calls {js.n}")
-        check("(f) clarify/refuse rows untouched", raw(tmp, "v1").count(b"\n") == before.count(b"\n")
-              and [l for l in raw(tmp, "v1").splitlines() if b'"c1"' in l] == [l for l in before.splitlines() if b'"c1"' in l])
+        gated = [r for s in rae.SYSTEM_ORDER for r in rows(tmp, s) if r.get("gate_judge")]
+        check("(f) --judge-only judges every answered item (3 items x 3 systems)", js.kinds.count("answer") == 9
+              and len(judged) == 9 and all(r["judge"]["verdict"] == "correct" and not r["judge_pending"] for r in judged),
+              f"calls {js.kinds}")
+        check("(f) --judge-only applies GATE_PROMPT to every clarify/refuse row (2 items x 3 systems), no other line",
+              js.kinds.count("gate") == 6 and len(gated) == 6 and raw(tmp, "v1").count(b"\n") == before.count(b"\n")
+              and all(r["gate_judge"]["prompt_sha"] == rae.GATE_PROMPT_SHA for r in gated), f"calls {js.kinds}")
         with contextlib.redirect_stdout(io.StringIO()):
             rae.main(argv)
-        check("(f) a second --judge-only skips already judged rows", js.n == 9, f"calls {js.n}")
+        check("(f) a second --judge-only skips already judged rows", js.n == 15, f"calls {js.n}")
 
 
 def test_judge_errors():
@@ -326,7 +335,7 @@ def test_judge_errors():
         def __init__(self, fail_from):
             self.n, self.fail_from = 0, fail_from
 
-        def __call__(self, provider, model):
+        def __call__(self, provider, model, kind="answer"):
             stub = self
 
             class LLM:
@@ -334,7 +343,7 @@ def test_judge_errors():
                     stub.n += 1
                     if stub.n >= stub.fail_from:
                         raise RuntimeError("404 NOT_FOUND. models/x is no longer available to new users.")
-                    return SimpleNamespace(covered=[True, True], contradiction=False, unsupported_statements=[])
+                    return SimpleNamespace(**JUDGED)
             return LLM()
     with tempfile.TemporaryDirectory() as d:
         tmp = Path(d)
@@ -366,6 +375,45 @@ def test_judge_errors():
               code is None and all(len(r) == 3 for r in rs.values()) and rs["v1"][0]["judge"]["verdict"] == "correct"
               and rs["v1.1"][0]["judge_pending"] and "NOT_FOUND" in (state.get("judge_error") or ""),
               f"code {code!r} {buf.getvalue()[-300:]}")
+
+
+def test_gate_judge():
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        setup(tmp)
+        Stub().install()
+        js = JudgeStub()
+        rae.JUDGE_FACTORY = js
+        argv = ["--set", str(tmp / "answer_set.json"), "--stages-file", str(tmp / "stages.json"), "--hashes-file",
+                str(tmp / "exam_hashes.txt"), "--results-dir", str(tmp / "results"), "--system", "all",
+                "--judge-model", "stub-judge", "--stage", "1"]
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            rae.main(argv)
+        c1 = [r for s in rae.SYSTEM_ORDER for r in rows(tmp, s, "1") if r["id"] == "c1"]
+        check("(n) a normal run applies GATE_PROMPT to the clarify row of every system", len(c1) == 3
+              and all(r["gate_judge"]["prompt_sha"] == rae.GATE_PROMPT_SHA and not r["judge_pending"] for r in c1),
+              str([r.get("gate_judge") for r in c1])[:300])
+    ref, cla = ITEMS[4], dict(ITEMS[3], reply="R ?", gold=[{"source": "PenalFr.pdf", "article": "9"}])
+
+    def row(item, status, gj, **kw):
+        rec = {"status": status, "evidence_ids": kw.pop("ev", []), "cited": None, "claims": None, "text": "t", **kw}
+        g = None if gj is None else {"gives_substantive_answer": gj[0], "enumerates_alternatives": gj[1]}
+        return {"id": item["id"], "expected": item["expected"], **rec, "metrics": rae.deterministic(item, rec),
+                "gate_judge": g}
+    vals = rae.metric_values([
+        row(ref, "done", (False, False)),        # "not found": no substantive answer, no refusal status
+        row(ref, "done", (True, False)),         # answered instead of refusing
+        row(ref, "refuse", None),                # explicit refusal (no judgement needed)
+        row(cla, "done", (True, True), asked="C1 ? (précision : R ?)", ev=["PenalFr/s01/9"]),
+        row(cla, "done", None, first_status="clarify", first_text="?", reply="R ?", ev=["PenalFr/s01/8"]),
+    ])
+    want = {"refuse: no substantive answer": [1, 0, 1], "refuse: explicit refusal status": [0, 0, 1],
+            "gate accuracy (explicit status)": [0, 0, 1, 0, 1], "clarify: asked for clarification (status)": [0, 1],
+            "clarify: answered directly": [1, None], "clarify: enumerated alternatives": [1, None],
+            "Hit@6 after the reply (clarify items)": [1, 0]}
+    got = {k: vals[k] for k in want}
+    check("(n) summary: refuse = explicit refusal OR no substantive answer; clarify status / answered / enumerated; "
+          "gate accuracy renamed", got == want and "gate accuracy (clarify/refuse items)" not in vals, str(got))
 
 
 def test_judge_check():
@@ -491,7 +539,7 @@ def test_usage_in_graph():
 
 if __name__ == "__main__":
     for t in (test_quota_and_resume, test_per_minute_retry, test_changed_exam, test_other_set, test_judge_only,
-              test_judge_errors, test_judge_check, test_wait_and_budget,
+              test_judge_errors, test_gate_judge, test_judge_check, test_wait_and_budget,
               test_classes, test_usage_in_graph):
         t()
     n_fail = RESULTS.count(False)
