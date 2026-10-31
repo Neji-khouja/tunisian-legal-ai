@@ -14,6 +14,7 @@
 (j) token usage: the LangChain usage callback sees a chat model called inside a LangGraph node
 (k) another --set (plumbing): no fingerprint, own --results-dir; never in the folder of the stage results (and back)
 (l) a failing judge check stops before any agent call; a judge error mid-run keeps the answers as judge_pending
+(m) eval/judge_check.py with a stub judge: verdicts, successes, the selection rule; the Gemini thinking argument
 """
 import io
 import sys
@@ -367,6 +368,52 @@ def test_judge_errors():
               f"code {code!r} {buf.getvalue()[-300:]}")
 
 
+def test_judge_check():
+    import judge_check as jc
+    from pdf_truth import from_chunk_id
+
+    class ByContent:
+        def __init__(self, fail=0):
+            self.fail = fail
+
+        def __call__(self, provider, model):
+            stub = self
+
+            class LLM:
+                def invoke(self, messages):
+                    if stub.fail:
+                        stub.fail -= 1
+                        raise RuntimeError("ReadTimeout: The read operation timed out")
+                    good = "cinq ans d'emprisonnement" in messages[1][1].split("Answer:")[1].split("Cited articles:")[0]
+                    return SimpleNamespace(covered=[good, good], contradiction=not good, unsupported_statements=[])
+            return LLM()
+    ticks = iter(range(0, 1000, 2))
+    clock = lambda: next(ticks)
+    rae.JUDGE_FACTORY = ByContent()
+    with contextlib.redirect_stdout(io.StringIO()):
+        s = jc.summary(jc.run_cases("groq", "stub", clock=clock))
+    check("(m) judge_check: 6/6, both canned verdicts as expected, meets the rule",
+          s["successes"] == 6 and s["verdicts_as_expected"] and s["passes"] and s["median_latency"] == 2, str(s))
+    rae.JUDGE_FACTORY = ByContent(fail=2)
+    with contextlib.redirect_stdout(io.StringIO()):
+        s = jc.summary(jc.run_cases("groq", "stub", clock=clock))
+    check("(m) judge_check: 4/6 successes does not meet the rule", s["successes"] == 4 and not s["passes"], str(s))
+    check("(m) the canned article is the verbatim PDF text of PenalFr/s02/264, not in the exam",
+          from_chunk_id(jc.CID) == jc.ARTICLE and "264" not in (ROOT / "eval" / "answer_set.json").read_text(encoding="utf-8"))
+    from langchain_google_genai import ChatGoogleGenerativeAI
+    kw = rae.gemini_thinking("gemini-3.8-flash")
+    llm = ChatGoogleGenerativeAI(model="gemini-3.8-flash", google_api_key="stub", **kw)
+    check("(m) Gemini 3+: thinking_level minimal (reasoning_effort); 2.5 Flash: thinking_budget 0; default: nothing",
+          kw == {"thinking_level": "minimal"} and llm.reasoning_effort == "minimal"
+          and rae.gemini_thinking("gemini-2.5-flash") == {"thinking_budget": 0}
+          and rae.gemini_thinking("gemini-3.8-flash", "default") == {}, str(kw))
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        jc.main(["--judge-provider", "gemini", "--judge-model", "gemini-3.8-flash", "--dry-run"])
+    check("(m) judge_check --dry-run prints the cases and the rule, no call",
+          "Selection rule" in buf.getvalue() and "no call made" in buf.getvalue() and "minimal" in buf.getvalue())
+
+
 def test_wait_and_budget():
     with tempfile.TemporaryDirectory() as d:
         tmp = Path(d)
@@ -444,7 +491,7 @@ def test_usage_in_graph():
 
 if __name__ == "__main__":
     for t in (test_quota_and_resume, test_per_minute_retry, test_changed_exam, test_other_set, test_judge_only,
-              test_judge_errors, test_wait_and_budget,
+              test_judge_errors, test_judge_check, test_wait_and_budget,
               test_classes, test_usage_in_graph):
         t()
     n_fail = RESULTS.count(False)

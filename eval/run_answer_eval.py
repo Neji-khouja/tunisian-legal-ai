@@ -40,6 +40,7 @@ output. Never guessed: without a judge model the run stops unless --skip-judge.
 v1 needs a git worktree of tag v1-baseline-runnable with the old index (the script prints the setup commands).
 """
 import os
+import re
 import sys
 import csv
 import json
@@ -303,8 +304,24 @@ Judge only from the texts given. Do not use outside legal knowledge."""
 JUDGE_PROMPT_SHA = hashlib.sha1(JUDGE_PROMPT.encode("utf-8")).hexdigest()[:12]
 
 
+JUDGE_THINKING = "minimal"         # --judge-thinking (Gemini only)
+
+
+def gemini_thinking(model: str, level: str = "minimal") -> dict:
+    """Thinking arguments of ChatGoogleGenerativeAI (langchain-google-genai 4.4.2): Gemini 3+ take thinking_level (alias
+    of reasoning_effort: minimal | low | medium | high; 'minimal' is the lowest, support varies by model); Gemini 2.5
+    take thinking_budget (0 = off; Flash and Flash-Lite only). level 'default': nothing is passed (model default)."""
+    m = re.search(r"gemini-(\d+)", model)
+    if level == "default" or not m:
+        return {}
+    if int(m.group(1)) >= 3:
+        return {"thinking_level": "minimal"}
+    return {"thinking_budget": 0} if "2.5-flash" in model else {}
+
+
 def judge_llm(provider: str, model: str):
-    """Structured-output judge. groq: ChatGroq; gemini: langchain-google-genai, key from GOOGLE_API_KEY."""
+    """Structured-output judge. groq: ChatGroq; gemini: langchain-google-genai, key from GOOGLE_API_KEY, thinking set by
+    JUDGE_THINKING (gemini_thinking)."""
     from typing import List
     from pydantic import BaseModel
 
@@ -316,7 +333,8 @@ def judge_llm(provider: str, model: str):
     if provider == "gemini":
         from langchain_google_genai import ChatGoogleGenerativeAI
         return ChatGoogleGenerativeAI(model=model, temperature=0, timeout=120, max_retries=0,   # retries: invoke_judge
-                                      google_api_key=os.environ.get("GOOGLE_API_KEY")).with_structured_output(Judgement)
+                                      google_api_key=os.environ.get("GOOGLE_API_KEY"),
+                                      **gemini_thinking(model, JUDGE_THINKING)).with_structured_output(Judgement)
     from langchain_groq import ChatGroq
     return ChatGroq(model=model, temperature=0).with_structured_output(Judgement, method="json_schema")
 
@@ -583,7 +601,11 @@ def provenance(args, exam_hashes: dict) -> dict:
     return {**hc.git_provenance(ROOT), "agent_model": GENERATOR_MODEL, "prompt_hashes": prompt_hashes(),
             "exam_hashes": exam_hashes,
             "judge": None if args.skip_judge else {"provider": args.judge_provider, "model": args.judge_model,
-                                                   "prompt_sha": JUDGE_PROMPT_SHA}}
+                                                   "prompt_sha": JUDGE_PROMPT_SHA, "thinking": judge_thinking(args)}}
+
+
+def judge_thinking(args) -> dict | None:
+    return gemini_thinking(args.judge_model or "", args.judge_thinking) if args.judge_provider == "gemini" else None
 
 
 def probe_agent() -> bool:
@@ -753,6 +775,8 @@ def parse_args(argv=None):
     ap.add_argument("--judge-only", action="store_true", help="judge saved answers that have no judgement yet")
     ap.add_argument("--judge-provider", choices=["groq", "gemini"], default="groq")
     ap.add_argument("--judge-model", default=os.environ.get("JUDGE_MODEL"))
+    ap.add_argument("--judge-thinking", choices=["minimal", "default"], default="minimal",
+                    help="gemini judge: minimal thinking (see gemini_thinking) or the model default")
     ap.add_argument("--judge-draft", action="store_true",
                     help="v2: also judge draft_text (the unverified first answer); one more judge call when it differs")
     ap.add_argument("--dry-run", action="store_true")
@@ -769,7 +793,9 @@ def parse_args(argv=None):
 
 
 def main(argv=None):
+    global JUDGE_THINKING
     args = parse_args(argv)
+    JUDGE_THINKING = args.judge_thinking
     set_path, results_dir = Path(args.set), Path(args.results_dir)
     systems = SYSTEM_ORDER if args.system == "all" else args.system.split(",")
     bad = [s for s in systems if s not in SYSTEM_ORDER]
@@ -832,7 +858,8 @@ def main(argv=None):
         todo_by_system[s] += 1
     need_judge = not args.skip_judge
     j = 0 if args.skip_judge else 1
-    judge_desc = "skipped" if args.skip_judge else f"{args.judge_provider} {args.judge_model or 'NOT SET'}"
+    judge_desc = "skipped" if args.skip_judge else (f"{args.judge_provider} {args.judge_model or 'NOT SET'}"
+                                                    + (f", thinking {judge_thinking(args)}" if judge_thinking(args) is not None else ""))
     print(f"set {set_path.name}, stage {args.stage}: {len(items)} items; systems {systems} (question-major order); "
           f"{len(todo)} (item, system) runs to do; judge: {judge_desc}")
     for s in systems:
