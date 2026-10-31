@@ -528,5 +528,5 @@
   }
  ],
  "overall_mean_jaccard_cited": 0.548611111111111,
- "stopped": "q017 run 2: LLMRateLimitError: Grade: Groq rate limit (429) after 0 retries: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kpgszrv8fe9rn2xq00psn3xp` service tier `on_demand` on tokens per day (TPD): Limit 200\nRe-run the same command, completed items are cached."
+ "stopped": "q017 run 2: LLMRateLimitError: Grade: Groq rate limit (429) after 0 retries: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_REDACTED` service tier `on_demand` on tokens per day (TPD): Limit 200\nRe-run the same command, completed items are cached."
 }
