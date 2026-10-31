@@ -398,6 +398,19 @@ def test_classes():
           and abs(g.retry_after - 39.7) < 1e-6)
     check("(i) Gemini PerMinute 429 -> not QuotaExhausted; retry_delay parsed",
           hc.classify(RuntimeError(GEMINI_MIN)) is None and hc.parse_retry_after(GEMINI_MIN) == 12.0)
+    busy = RuntimeError("503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high "
+                        "demand. Spikes in demand are usually temporary. Please try again later.'}}")
+    tries, waits = [], []
+
+    class Busy:
+        def invoke(self, messages):
+            tries.append(1)
+            if len(tries) < 3:
+                raise busy
+            return "ok"
+    out = rae.invoke_judge(Busy(), [], "gemini", sleep=waits.append)
+    check("(i) Gemini 503 'high demand': not quota, retried with backoff, then answers",
+          hc.classify(busy) is None and out == "ok" and waits == [6, 11], f"waits {waits}")
     wrapped = RuntimeError("verify: Groq rate limit (429) after 0 retries")
     wrapped.__cause__ = RuntimeError(DAILY)
     check("(i) a wrapped error is classified through its cause", hc.classify(wrapped) is not None)

@@ -43,6 +43,14 @@ def is_rate_limit(msg: str) -> bool:
         or "resourceexhausted" in m or "quota" in m
 
 
+TRANSIENT = re.compile(r"\b(500|502|503|504)\b|UNAVAILABLE|DEADLINE_EXCEEDED|overloaded|high demand|try again later", re.I)
+
+
+def is_transient(msg: str) -> bool:
+    """A temporary server error (Gemini 503 'high demand' and the like): retried with backoff like a per-minute 429."""
+    return bool(TRANSIENT.search(msg))
+
+
 def is_daily_quota(msg: str) -> bool:
     return is_rate_limit(msg) and bool(DAILY.search(msg))
 

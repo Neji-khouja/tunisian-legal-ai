@@ -325,8 +325,9 @@ JUDGE_FACTORY = judge_llm          # tests replace it with a stub
 
 
 def invoke_judge(llm, messages, provider: str, sleep=time.sleep):
-    """A daily-quota 429 -> QuotaExhausted(who='judge'), never retried. Gemini per-minute 429: up to 5 retries with
-    backoff (the stated delay + 1 s, else 5, 10, 20, 40, 80 s; at most 120 s). Groq: the client's own retries."""
+    """A daily-quota 429 -> QuotaExhausted(who='judge'), never retried. Gemini per-minute 429 or a temporary server
+    error (503 'high demand', ...): up to 5 retries with backoff (the stated delay + 1 s, else 5, 10, 20, 40, 80 s; at
+    most 120 s). Groq: the client's own retries."""
     for attempt in range(6):
         try:
             return llm.invoke(messages)
@@ -334,7 +335,7 @@ def invoke_judge(llm, messages, provider: str, sleep=time.sleep):
             msg = hc.full_message(e)
             if hc.is_daily_quota(msg):
                 raise hc.QuotaExhausted(msg[:600], hc.parse_retry_after(msg), "judge") from e
-            if provider != "gemini" or not hc.is_rate_limit(msg) or attempt == 5:
+            if provider != "gemini" or not (hc.is_rate_limit(msg) or hc.is_transient(msg)) or attempt == 5:
                 raise
             sleep(min((hc.parse_retry_after(msg) or 5 * 2 ** attempt) + 1, 120))
 
