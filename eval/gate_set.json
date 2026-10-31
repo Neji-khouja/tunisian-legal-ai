@@ -2,7 +2,6 @@
  {"id": "g01", "question": "Quelle majorité est nécessaire pour décider ?", "language": "fr", "gold": "ambiguous",
   "readings": [
    {"reading": "vote of a company general meeting (ordinary / extraordinary)", "code": "societes"},
-   {"reading": "vote of Parliament on a law or a constitutional revision", "code": "constitution"},
    {"reading": "decision of an arbitral tribunal with several arbitrators", "code": "arbitrage"}]},
  {"id": "g02", "question": "Quel tribunal est compétent ?", "language": "fr", "gold": "ambiguous",
   "readings": [
@@ -19,14 +18,15 @@
    {"reading": "costs of a court case (dépens)", "code": "procedure_civile"},
    {"reading": "costs of an arbitration", "code": "arbitrage"},
    {"reading": "costs of the deed of a sale", "code": "obligations_contrats"}]},
- {"id": "g05", "question": "How long does the notice period last?", "language": "en", "gold": "ambiguous",
+ {"id": "g05", "question": "How long do I have to appeal?", "language": "en", "gold": "ambiguous",
   "readings": [
-   {"reading": "termination of an employment contract (préavis)", "code": "travail"},
-   {"reading": "termination of a commercial contract, e.g. commercial agency", "code": "commerce"}]},
+   {"reading": "a civil or commercial judgment (20 days from notification, Procedurecivilecom art. 141)", "code": "procedure_civile"},
+   {"reading": "a criminal judgment (10 days, ProcedurepenaleFr art. 213)", "code": "procedure_penale"},
+   {"reading": "a labour-court judgment (the time limits of the ordinary courts, travailFr art. 222)", "code": "travail"}]},
  {"id": "g06", "question": "Is it a crime if I don't pay?", "language": "en", "gold": "ambiguous",
   "readings": [
    {"reading": "a cheque without sufficient funds", "code": "commerce"},
-   {"reading": "maintenance owed to a spouse or children (abandon de famille)", "code": "statut_personnel"},
+   {"reading": "maintenance owed to a spouse or children (abandon de famille, Statutpersonnel art. 53 bis)", "code": "statut_personnel"},
    {"reading": "an ordinary contractual debt (civil, not a crime)", "code": "obligations_contrats"}]},
  {"id": "g07", "question": "How much compensation can I get?", "language": "en", "gold": "ambiguous",
   "readings": [
