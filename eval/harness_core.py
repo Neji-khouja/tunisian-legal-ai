@@ -118,8 +118,8 @@ def install_groq_patches():
 # ---------------------------------------------------------------- result files (atomic, append-only content)
 
 class ResultFile:
-    """JSONL rows; the latest row per id wins (a resume re-runs degraded rows by appending). Earlier lines are kept
-    byte for byte; every write goes to a temp file, then os.replace."""
+    """JSONL rows; the latest row per id wins (a resume re-runs "degraded" and "error" rows by appending; "failed" is
+    final). Earlier lines are kept byte for byte; every write goes to a temp file, then os.replace."""
 
     def __init__(self, path: Path):
         self.path = Path(path)
@@ -134,7 +134,7 @@ class ResultFile:
         return {r["id"]: r for r in self.rows()}
 
     def finished(self) -> set:
-        return {i for i, r in self.latest().items() if r.get("status") != "degraded"}
+        return {i for i, r in self.latest().items() if r.get("status") not in ("degraded", "error")}
 
     def _write(self):
         self.path.parent.mkdir(parents=True, exist_ok=True)

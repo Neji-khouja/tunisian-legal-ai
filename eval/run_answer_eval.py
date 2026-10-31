@@ -12,7 +12,11 @@ Run mechanics (eval/harness_core.py): question-major order (for each question: v
 and system (results/answer_eval_answer_set_stage<k>_<system>.jsonl), rewritten atomically after each finished
 (item, system); the same command resumes (finished pairs skipped, degraded ones redone). A 429 naming a per-day limit
 (TPD/RPD) is QuotaExhausted: never retried, the pair in progress is discarded (not saved, not degraded), results/run_state.json
-and results/run_log.jsonl are written, exit code 75. --daily-budget-tokens stops (exit 75) before a pair that would pass
+and results/run_log.jsonl are written, exit code 75. Any other exception of one (item, system) is tried again once in
+the same run (v2: a new thread id on every call); a second failure saves a row with status "error" (exception type and
+short message, attempt k) and the run goes on; resumes run "error" rows again, and the 3rd failed attempt (run) saves
+status "failed": final, no answer, shown by --summarize as "system failure" and counted as incorrect in a
+sensitivity line. --daily-budget-tokens stops (exit 75) before a pair that would pass
 N agent-model tokens today (estimate: mean of the measured rows of that system, else DEFAULT_TOKENS). --wait-on-quota
 sleeps and probes instead of stopping, for at most --max-wait-hours. Every row records date, provenance (git commit, tags,
 agent model, prompt hashes, exam hashes, judge) and tokens; a file holding rows of another commit is refused unless
@@ -466,10 +470,10 @@ def hallucinated(rec, m, j) -> bool | None:
 
 def metric_values(rows) -> dict:
     """metric -> list of per-item values (0/1 or float), None = not applicable; expected=answer items unless noted.
-    Degraded rows are left out."""
+    Degraded, error and failed rows are left out."""
     vals = defaultdict(list)
     for r in rows:
-        if r.get("status") == "degraded":
+        if r.get("status") in NO_ANSWER:
             continue
         m, j = r["metrics"], r.get("judge")
         if r["expected"] in ("clarify", "refuse"):
@@ -543,11 +547,14 @@ def boot_ci(xs, rng) -> tuple:
 
 def print_block(title: str, rows: list[dict]):
     n_deg = sum(r.get("status") == "degraded" for r in rows)
-    rows = [r for r in rows if r.get("status") != "degraded"]
+    n_err = sum(r.get("status") == "error" for r in rows)
+    failed = [r for r in rows if r.get("status") == "failed"]
+    rows = [r for r in rows if r.get("status") not in NO_ANSWER]
     vals = metric_values(rows)
     print(f"\n=== {title}: {len(rows)} items (answer: {sum(r['expected'] == 'answer' for r in rows)}, "
           f"clarify/refuse: {sum(r['expected'] != 'answer' for r in rows)}); degraded (excluded, re-run on resume): "
-          f"{n_deg}; 95% bootstrap CI over questions, {N_BOOT} resamples, seed {SEED}")
+          f"{n_deg}; error (excluded, re-run on resume): {n_err}; system failure (no answer, excluded): {len(failed)}; "
+          f"95% bootstrap CI over questions, {N_BOOT} resamples, seed {SEED}")
     versions = sorted({(r.get("provenance") or {}).get("commit", "?")[:10] + " " +
                        ",".join((r.get("provenance") or {}).get("tags") or []) for r in rows})
     print(f"  commits/tags in these rows: {versions}")
@@ -558,6 +565,15 @@ def print_block(title: str, rows: list[dict]):
             continue
         lo, hi = boot_ci(xs, random.Random(SEED))
         print(f"  {name:<42} n={len(xs):<4} {sum(xs) / len(xs):8.3f}   [{lo:.3f}, {hi:.3f}]")
+    n_fail = {"answer": sum(r["expected"] == "answer" for r in failed)}
+    n_fail["gate"] = len(failed) - n_fail["answer"]
+    print(f"  {'system failure (no answer)':<42} answer items {n_fail['answer']}, clarify/refuse items {n_fail['gate']}")
+    for name, kind in (("correct", "answer"), ("gate accuracy (explicit status)", "gate")):
+        xs = [x for x in vals.get(name, []) if x is not None] + [0] * n_fail[kind]
+        if n_fail[kind] and xs:
+            lo, hi = boot_ci(xs, random.Random(SEED))
+            print(f"  {'sensitivity: ' + name + ', failures = 0':<42} n={len(xs):<4} {sum(xs) / len(xs):8.3f}   "
+                  f"[{lo:.3f}, {hi:.3f}]")
 
 
 def summarize(paths: list[Path]):
@@ -579,7 +595,7 @@ def summarize(paths: list[Path]):
     for a in range(len(names)):
         for b in range(a + 1, len(names)):
             A, B = runs[names[a]], runs[names[b]]
-            ids = sorted(i for i in set(A) & set(B) if "degraded" not in (A[i].get("status"), B[i].get("status")))
+            ids = sorted(i for i in set(A) & set(B) if not {A[i].get("status"), B[i].get("status")} & set(NO_ANSWER))
             if not ids:
                 continue
             print(f"\n=== paired difference {names[b]} - {names[a]} on {len(ids)} common items")
@@ -598,7 +614,7 @@ def summarize(paths: list[Path]):
 
 def export_audit(path: Path, system: str, n: int):
     rows = [r for r in {r["id"]: r for r in read_jsonl(path)}.values()
-            if r["expected"] == "answer" and r.get("status") != "degraded"]
+            if r["expected"] == "answer" and r.get("status") not in NO_ANSWER]
     pick = random.Random(SEED).sample(rows, min(n, len(rows)))
     out = ROOT / "results" / f"audit_sample_{system}.csv"
     with out.open("w", encoding="utf-8-sig", newline="") as f:
@@ -627,7 +643,9 @@ CALL_RANGES = {   # (min, max) Groq calls per question, without the judge
     "v1.1": ((1, 2), "translation 0-1 (AR/EN), generation 1"),
     "v1": ((2, 3), "rewrite 1, sub-queries 0-1 (complex questions), generation 1"),
 }
-UNFINISHED = ("degraded",)                      # statuses run again on resume
+UNFINISHED = ("degraded", "error")             # statuses run again on resume ("failed" is final)
+NO_ANSWER = UNFINISHED + ("failed",)            # rows left out of the metrics
+TRIES_PER_RUN, MAX_ATTEMPTS = 2, 3
 SYSTEMS = {"v2": run_v2, "v1.1": run_v11}       # v1: a V1Process, created in main; tests replace entries with stubs
 SLEEP = time.sleep                              # --wait-on-quota sleeps (tests replace it)
 
@@ -743,6 +761,30 @@ def judge_failed(e, item, args, judge_state):
           f"with judge_pending; run --judge-only later.", file=sys.stderr)
 
 
+def run_isolated(item, system, run, args, judge_state, stage, prov, prev) -> dict:
+    """run_one, tried TRIES_PER_RUN times in this run (v2: run_v2 opens a new thread id on every call). A non-quota
+    exception on every try -> a row with status "error" (attempt k, re-run on resume) or, at attempt MAX_ATTEMPTS,
+    "failed" (final). QuotaExhausted is raised to the caller (exit 75)."""
+    errors = []
+    for _ in range(TRIES_PER_RUN):
+        try:
+            return run_one(item, system, run, args, judge_state, stage, prov)
+        except hc.QuotaExhausted:
+            raise
+        except Exception as e:
+            errors.append(f"{type(e).__name__}: {str(e)[:300]}")
+            print(f"  {item['id']} {system} failed: {errors[-1]}", file=sys.stderr)
+    attempt = ((prev or {}).get("attempt", 0) if (prev or {}).get("status") == "error" else 0) + 1
+    status = "failed" if attempt >= MAX_ATTEMPTS else "error"
+    print(f"  {item['id']} {system}: saved as {status} (attempt {attempt} of {MAX_ATTEMPTS}); the run goes on",
+          file=sys.stderr)
+    return {"id": item["id"], "question": item["question"], "language": item.get("language"),
+            "expected": item["expected"], "system": system, "stage": stage, "status": status, "error": errors[-1],
+            "errors": errors, "attempt": attempt, "metrics": None, "judge": None, "gate_judge": None,
+            "judge_pending": False, "hallucinated": None, "tokens": None,
+            "date": datetime.now().isoformat(timespec="seconds"), "provenance": prov}
+
+
 def measured_tokens(f: hc.ResultFile) -> list[int]:
     return [r["tokens"]["total"] for r in f.latest().values() if (r.get("tokens") or {}).get("source") not in (None, "none")]
 
@@ -801,7 +843,7 @@ def judge_only(args, items, files, results_dir):
     by_id = {i["id"]: i for i in items}
     todo = [(r, s) for s, f in files.items() for r in f.latest().values() if r["id"] in by_id and (
             (r["expected"] == "answer" and r.get("status") == "done" and not (r.get("judge") and "verdict" in r["judge"]))
-            or (r["expected"] in ("clarify", "refuse") and r.get("status") not in UNFINISHED + ("failed",)
+            or (r["expected"] in ("clarify", "refuse") and r.get("status") not in NO_ANSWER
                 and not r.get("gate_judge")))]
     print(f"--judge-only: {len(todo)} saved rows without a judgement ({args.judge_provider} {args.judge_model}; "
           f"answer items: JUDGE_PROMPT, clarify/refuse items: GATE_PROMPT)")
@@ -981,7 +1023,7 @@ def main(argv=None):
             time.sleep(args.min_gap)
         print(f"[{k + 1}/{len(todo)}] {item['id']} {s} ...", file=sys.stderr, flush=True)
         try:
-            row = run_one(item, s, runners[s], args, judge_state, args.stage, prov)
+            row = run_isolated(item, s, runners[s], args, judge_state, args.stage, prov, files[s].latest().get(item["id"]))
         except hc.QuotaExhausted as q:
             if args.wait_on_quota is not None:
                 ok, waited = hc.wait_for_quota(probe_agent, args.wait_on_quota, args.max_wait_hours, q.retry_after,
@@ -992,11 +1034,6 @@ def main(argv=None):
                  f"discarded (not saved, not degraded). Finished pairs are saved. Re-run the same command to continue"
                  + (f" (about {q.retry_after / 60:.0f} min from now)" if q.retry_after else "") + f".\n{str(q)[:400]}",
                  [(i["id"], x) for i, x in todo], k, files, args, q.retry_after)
-        except SystemExit:
-            raise
-        except Exception as e:
-            stop(results_dir, "error", f"STOPPED on {item['id']} ({s}): {type(e).__name__}: {e}\nFinished pairs are "
-                 f"saved; re-run to resume.", [(i["id"], x) for i, x in todo], k, files, args, code=1)
         files[s].append(row)
         k += 1
     if v1proc:

@@ -18,6 +18,8 @@
 (n) the clarify/refuse judge (GATE_PROMPT) runs on every clarify/refuse row of every system; --summarize metrics
 (o) the 5 exam clarify items with a scripted reply have gold: "Hit@6 after the reply" is computed on them (n = 5)
 (p) eval/run_batch.py with a stub runner: next K ids, one process per system, exit 75 forwarded, other failures go on
+(q) crash isolation: a parse error once (recovers in the same run), on both tries (error row, the run goes on), in 3
+    runs (failed: final, "system failure" in --summarize); a quota error still exits 75
 """
 import io
 import sys
@@ -479,6 +481,55 @@ def test_run_batch():
               str(calls))
 
 
+def test_crash_isolation():
+    from langchain_core.exceptions import OutputParserException
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        setup(tmp)
+        stub = Stub(raise_on={1: OutputParserException("Invalid json output: {'description': ...}")})
+        stub.install()
+        code, out = run(tmp, "--stage", "1")
+        a1 = {r["id"]: r for r in rows(tmp, "v1", "1")}["a1"]
+        check("(q) a parse error once: tried again in the same run, row done", code is None and a1["status"] == "done"
+              and stub.calls[:2] == [("a1", "v1"), ("a1", "v1")], f"{code!r} {stub.calls[:3]}")
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        setup(tmp)
+        good = Stub().system("v1")
+        tries = []
+
+        def flaky(item):                                   # a1 on v1 always raises a parse error
+            if item["id"] == "a1":
+                tries.append(1)
+                raise OutputParserException("Invalid json output")
+            return good(item)
+        Stub().install()
+        rae.SYSTEMS["v1"] = flaky
+        statuses = []
+        for k in range(4):
+            code, out = run(tmp, "--stage", "1")
+            r = {r["id"]: r for r in rows(tmp, "v1", "1")}["a1"]
+            statuses.append((code, r["status"], r.get("attempt"), len(tries)))
+        n = {s: len({r["id"] for r in rows(tmp, s, "1")}) for s in rae.SYSTEM_ORDER}
+        check("(q) a parse error on both tries: error row (type + message), the run goes on",
+              statuses[0] == (None, "error", 1, 2) and n == {"v1": 3, "v1.1": 3, "v2": 3}
+              and r["error"].startswith("OutputParserException: Invalid json"), f"{statuses} {n}")
+        check("(q) resumes retry the error row; the 3rd failed attempt is final (failed), not retried after",
+              [x[1:] for x in statuses] == [("error", 1, 2), ("error", 2, 4), ("failed", 3, 6), ("failed", 3, 6)],
+              str(statuses))
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            rae.summarize([rae.out_path(tmp / "answer_set.json", "v1", "1", tmp / "results")])
+        o = buf.getvalue()
+        check("(q) --summarize: system failure shown separately, sensitivity line counts it as incorrect",
+              "system failure (no answer, excluded): 1" in o and "answer items 1, clarify/refuse items 0" in o
+              and "sensitivity: correct, failures = 0" in o, o[-700:])
+        rae.SYSTEMS["v1"] = lambda item: (_ for _ in ()).throw(hc.QuotaExhausted(DAILY, 30.0))
+        code, out = run(tmp, "--stage", "2")
+        check("(q) a quota error is not isolated: exit 75", code == 75, f"{code!r}")
+
+
 def test_judge_check():
     import judge_check as jc
     from pdf_truth import from_chunk_id
@@ -602,7 +653,8 @@ def test_usage_in_graph():
 
 if __name__ == "__main__":
     for t in (test_quota_and_resume, test_per_minute_retry, test_changed_exam, test_other_set, test_judge_only,
-              test_judge_errors, test_gate_judge, test_reply_gold, test_run_batch, test_judge_check, test_wait_and_budget,
+              test_judge_errors, test_gate_judge, test_reply_gold, test_run_batch, test_crash_isolation, test_judge_check,
+              test_wait_and_budget,
               test_classes, test_usage_in_graph):
         t()
     n_fail = RESULTS.count(False)
