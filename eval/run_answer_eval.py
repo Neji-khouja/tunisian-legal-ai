@@ -728,7 +728,9 @@ def judge_only(args, items, files, results_dir):
         except Exception as e:
             q = hc.classify(e, "judge")
             if not q:
-                raise
+                stop(results_dir, "judge error", f"STOPPED: judge failed on {r['id']} ({s}): {type(e).__name__}: "
+                     f"{str(e)[:400]}\nJudged so far are saved; re-run the same command to continue.",
+                     [(x["id"], y) for x, y in todo], k, files, args, code=1)
             stop(results_dir, "judge daily quota", f"STOPPED: daily quota of the judge ({args.judge_provider} "
                  f"{args.judge_model}) reached on {r['id']} ({s}). Judged so far are saved; re-run the same command to "
                  f"continue.\n{q}", [(x["id"], y) for x, y in todo], k, files, args, q.retry_after)
