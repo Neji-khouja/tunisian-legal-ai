@@ -12,6 +12,7 @@
 (g) --wait-on-quota: sleeps, probes, then continues    (h) --daily-budget-tokens stops before the pair, exit 75
 (i) error classes: daily vs per-minute messages (Groq, Gemini), retry-after parsing
 (j) token usage: the LangChain usage callback sees a chat model called inside a LangGraph node
+(k) another --set (plumbing): no fingerprint, own --results-dir; never in the folder of the stage results (and back)
 """
 import io
 import sys
@@ -246,6 +247,54 @@ def test_changed_exam():
               == hc.sha256(tmp / "answer_set.json"), str(code))
 
 
+def test_other_set():
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        setup(tmp)
+        Stub().install()
+        plumb = tmp / "plumbing_set.json"
+        plumb.write_text(json.dumps([ITEMS[0], ITEMS[3], ITEMS[4]], ensure_ascii=False), encoding="utf-8")
+        (tmp / "exam_hashes.txt").write_text("eval/answer_set.json 0\neval/stages.json 0\n", encoding="utf-8")  # stale
+        argv = ["--set", str(plumb), "--stages-file", str(tmp / "stages.json"), "--hashes-file", str(tmp / "exam_hashes.txt"),
+                "--system", "all", "--skip-judge"]
+
+        def go(*extra):
+            buf, code = io.StringIO(), None
+            with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
+                try:
+                    rae.main(argv + list(extra))
+                except SystemExit as e:
+                    code = e.code
+            return code, buf.getvalue()
+        code, out = go("--results-dir", str(tmp / "plumbing"))
+        made = sorted(p.name for p in (tmp / "plumbing").glob("*.jsonl"))
+        r = rae.read_jsonl(tmp / "plumbing" / "answer_eval_plumbing_set_v2.jsonl")
+        check("(k) another --set runs without the exam fingerprint, into its own --results-dir",
+              code is None and "answer_eval_plumbing_set_v1.jsonl" in made and len(r) == 3
+              and r[0]["provenance"]["exam_hashes"] == {"plumbing_set.json": hc.sha256(plumb)}, f"{code!r} {made}")
+        code, out = run(tmp, "--dry-run")
+        check("(k) the fingerprint stays enforced for the exam", isinstance(code, str) and code.startswith("REFUSED: the exam"),
+              str(code)[:200])
+        write_hashes(tmp)
+        run(tmp, "--stage", "1")
+        code, out = go("--results-dir", str(tmp / "results"))
+        check("(k) another set is refused in the folder of the stage results", isinstance(code, str)
+              and "not the exam" in code and not list((tmp / "results").glob("answer_eval_plumbing_set_*")), str(code)[:200])
+        code, out = go("--results-dir", str(rae.ROOT / "results"), "--dry-run")
+        check("(k) another set is refused in results/", isinstance(code, str) and "not the exam" in code, str(code)[:200])
+        argv[1] = str(tmp / "answer_set.json")
+        code, out = go("--results-dir", str(tmp / "plumbing"), "--stage", "1")
+        check("(k) the exam is refused in a folder holding another set", isinstance(code, str)
+              and "another set" in code, str(code)[:200])
+        argv[1] = str(plumb)
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            rae.main(argv + ["--results-dir", str(tmp / "plumbing"), "--summarize"])
+        heads = [l for l in buf.getvalue().splitlines() if l.startswith("=== ") and ".jsonl:" in l]
+        check("(k) --summarize on that folder reads the set's 3 files", len(heads) == 3
+              and all(l.startswith("=== answer_eval_plumbing_set_") for l in heads), "\n".join(heads))
+
+
 def test_judge_only():
     with tempfile.TemporaryDirectory() as d:
         tmp = Path(d)
@@ -333,7 +382,7 @@ def test_usage_in_graph():
 
 
 if __name__ == "__main__":
-    for t in (test_quota_and_resume, test_per_minute_retry, test_changed_exam, test_judge_only, test_wait_and_budget,
+    for t in (test_quota_and_resume, test_per_minute_retry, test_changed_exam, test_other_set, test_judge_only, test_wait_and_budget,
               test_classes, test_usage_in_graph):
         t()
     n_fail = RESULTS.count(False)

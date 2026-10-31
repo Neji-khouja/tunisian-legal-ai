@@ -6,6 +6,7 @@
     python eval/run_answer_eval.py --stage 1 --system all --judge-only --judge-provider gemini   # judge saved answers later
     python eval/run_answer_eval.py --summarize [results/answer_eval_answer_set_stage1_v2.jsonl ...]   # no path: all stage files
     python eval/run_answer_eval.py --stage 1 --system v2 --export-audit 20   # CSV for a human check of the judge
+    python eval/run_answer_eval.py --set eval/plumbing_set.json --system all --results-dir results/plumbing --dry-run
 
 Run mechanics (eval/harness_core.py): question-major order (for each question: v1, v1.1, v2); one result file per stage
 and system (results/answer_eval_answer_set_stage<k>_<system>.jsonl), rewritten atomically after each finished
@@ -23,7 +24,9 @@ gold [{source, article}], reference_points [str], reason; a clarify item may add
 picks one reading): v2 gets the question, then the reply, on the SAME thread_id (first-turn status in first_status,
 used for gate accuracy); v1.1 and v1 (single-turn) get one merged question "<question> (précision : <reply>)" in the
 item's language (field "asked"). Results go to the
-stage file above (another --set: results/answer_eval_<setname>_<system>.jsonl, --stage all only).
+stage file above. Another --set (e.g. eval/plumbing_set.json, a 3-item pipe check): no exam fingerprint, --stage all
+only, <results-dir>/answer_eval_<setname>_<system>.jsonl in its own --results-dir (results/ itself, or a folder holding
+stage files, is refused; the exam is refused in a folder holding another set's files).
 Timing per item: seconds (system only), elapsed_total (system + metrics + judge; the --min-gap sleep is outside),
 n_429 (rate-limited Groq responses the client retried) and waited_seconds (sum of the retry waits the Groq client
 announced); n_429 and waited_seconds are None for v1, whose LLM calls run in a subprocess.
@@ -659,6 +662,22 @@ def projection(files: dict, todo_by_system: dict):
           f"{need / TPD:.1f} day(s) at {TPD}/day")
 
 
+def mixed_folder(set_path: Path, results_dir: Path) -> str | None:
+    """Exam stage results and results of any other set never share a folder (or run_state.json / run_log.jsonl)."""
+    files = [p.name for p in Path(results_dir).glob("answer_eval_*.jsonl")]
+    if is_exam(set_path):
+        other = [n for n in files if not n.startswith("answer_eval_answer_set_")]
+        if other:
+            return (f"{results_dir} holds results of another set ({', '.join(sorted(other)[:3])}); the exam stage "
+                    f"results must not be mixed with them. Use another --results-dir.")
+        return None
+    stage_files = [n for n in files if n.startswith("answer_eval_answer_set_stage")]
+    if Path(results_dir).resolve() == (ROOT / "results").resolve() or stage_files:
+        return (f"{set_path.name} is not the exam; its results must not go to the folder of the exam stage results "
+                f"({results_dir}). Use its own folder, e.g. --results-dir results\\plumbing.")
+    return None
+
+
 def stage_ids(stages_path: Path, stage: str) -> set | None:
     if stage == "all":
         return None
@@ -738,23 +757,29 @@ def main(argv=None):
         sys.exit(f"unknown system(s) {bad}; choose from {SYSTEM_ORDER} or all")
     systems = [s for s in SYSTEM_ORDER if s in systems]                 # question-major order v1, v1.1, v2
     if args.summarize is not None:
-        paths = [Path(p) for p in args.summarize] or sorted(results_dir.glob(f"answer_eval_{set_path.stem}_stage*_*.jsonl"))
-        summarize(paths)
+        pattern = f"answer_eval_{set_path.stem}_stage*_*.jsonl" if is_exam(set_path) else f"answer_eval_{set_path.stem}_*.jsonl"
+        summarize([Path(p) for p in args.summarize] or sorted(results_dir.glob(pattern)))
         return
     if not is_exam(set_path) and args.stage != "all":
         sys.exit("--stage 1/2 applies to the exam (eval/answer_set.json) only")
+    mixing = mixed_folder(set_path, results_dir)
+    if mixing:
+        sys.exit("REFUSED: " + mixing)
     files = {s: hc.ResultFile(out_path(set_path, s, args.stage, results_dir)) for s in systems}
     if args.export_audit:
         export_audit(files[systems[0]].path, systems[0], args.export_audit)
         return
 
-    cur_hashes, diffs = hc.exam_check(set_path, args.stages_file, args.hashes_file)
     if is_exam(set_path):
+        cur_hashes, diffs = hc.exam_check(set_path, args.stages_file, args.hashes_file)
         print(f"exam fingerprint ({Path(args.hashes_file).name}): {'matches' if not diffs else 'DIFFERS'}")
         if diffs and not args.allow_changed_exam:
             sys.exit("REFUSED: the exam changed since the fingerprint:\n  " + "\n  ".join(diffs) +
                      "\nResults on a changed exam are not comparable. Re-run eval/build_exam.py and eval/make_stages.py "
                      "if the change is intended (and commit), or pass --allow-changed-exam.")
+    else:                                          # not the exam (e.g. eval/plumbing_set.json): no fingerprint required
+        cur_hashes = {set_path.name: hc.sha256(set_path)}
+        print(f"set {set_path.name} is not the exam: no fingerprint check; results in {results_dir}")
     items = json.loads(set_path.read_text(encoding="utf-8"))
     ids = stage_ids(args.stages_file, args.stage) if is_exam(set_path) else None
     if ids is not None:

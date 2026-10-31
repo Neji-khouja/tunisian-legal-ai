@@ -1,0 +1,62 @@
+[
+ {
+  "id": "pl01",
+  "status": "final",
+  "question": "Un client m'a réglé avec un chèque daté du 3 mars, tiré sur une banque de Sousse. Jusqu'à quand puis-je le déposer à ma banque pour être payé ?",
+  "language": "fr",
+  "expected": "answer",
+  "type": "single",
+  "gold": [
+   {
+    "source": "CommerceFr.pdf",
+    "article": "372",
+    "chunk_ids": [
+     "CommerceFr/s01/372"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "Le chèque émis et payable en Tunisie doit être présenté au paiement dans le délai de huit jours",
+   "Le point de départ des délais sus-indiqués est le jour porté sur le chèque comme date d'émission"
+  ],
+  "reason": "Plumbing item (not part of the exam): a cheque issued and payable in Tunisia must be presented for payment within eight days of the issue date written on it."
+ },
+ {
+  "id": "pl02",
+  "status": "final",
+  "question": "What notice period applies?",
+  "language": "en",
+  "expected": "clarify",
+  "gold": [],
+  "reason": "Plumbing item (not part of the exam). Missing fact: notice for what; employment contract, strike or lock-out, and a tenant whose landlord sold the property are covered by different articles and codes.",
+  "readings": [
+   {
+    "reading": "ending a permanent (open-ended) employment contract, travailFr 14 bis",
+    "code": "travail"
+   },
+   {
+    "reading": "strike or lock-out notice, travailFr 376 bis",
+    "code": "travail"
+   },
+   {
+    "reading": "a tenant told to leave after the leased property is sold, COC 799",
+    "code": "obligations_contrats"
+   }
+  ],
+  "reply": "I'm on a permanent contract and I want to quit my job.",
+  "candidate_gold": [
+   "travailFr/s01/14-bis"
+  ]
+ },
+ {
+  "id": "pl03",
+  "status": "final",
+  "question": "Quelle est la meilleure période de l'année pour visiter le désert autour de Douz ?",
+  "language": "fr",
+  "expected": "refuse",
+  "gold": [],
+  "reason": "Plumbing item (not part of the exam). Travel advice, not a legal question; no source covers it.",
+  "corpus_check": "no hit: 'Douz', 'désert', 'Sahara' in eval/pdf_articles.json; 'touris' only in passing (zones touristiques, ministry of tourism in committee lists)"
+ }
+]
