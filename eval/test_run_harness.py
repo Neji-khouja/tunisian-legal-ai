@@ -16,6 +16,7 @@
 (l) a failing judge check stops before any agent call; a judge error mid-run keeps the answers as judge_pending
 (m) eval/judge_check.py with a stub judge: verdicts, successes, the selection rule; the Gemini thinking argument
 (n) the clarify/refuse judge (GATE_PROMPT) runs on every clarify/refuse row of every system; --summarize metrics
+(o) the 5 exam clarify items with a scripted reply have gold: "Hit@6 after the reply" is computed on them (n = 5)
 """
 import io
 import sys
@@ -416,6 +417,20 @@ def test_gate_judge():
           "gate accuracy renamed", got == want and "gate accuracy (clarify/refuse items)" not in vals, str(got))
 
 
+def test_reply_gold():
+    exam = json.loads((ROOT / "eval" / "answer_set.json").read_text(encoding="utf-8"))
+    replies = [i for i in exam if i.get("reply")]
+    rs = []
+    for k, item in enumerate(replies):
+        cid = item["gold"][0]["chunk_ids"][0] if k % 2 == 0 else "PenalFr/s02/264"    # hit, miss, hit, miss, hit
+        rec = {"status": "done", "evidence_ids": [cid], "cited": None, "claims": None, "text": "t", "asked": rae.asked(item)}
+        rs.append({"id": item["id"], "expected": item["expected"], **rec, "metrics": rae.deterministic(item, rec)})
+    xs = rae.metric_values(rs)["Hit@6 after the reply (clarify items)"]
+    check("(o) exam: 5 reply items with gold, Hit@6 after the reply non-empty (n=5)",
+          sorted(i["id"] for i in replies if i["gold"]) == ["c01", "c03", "c06", "c11", "c15"] and xs == [1, 0, 1, 0, 1],
+          f"{[i['id'] for i in replies]} {xs}")
+
+
 def test_judge_check():
     import judge_check as jc
     from pdf_truth import from_chunk_id
@@ -539,7 +554,7 @@ def test_usage_in_graph():
 
 if __name__ == "__main__":
     for t in (test_quota_and_resume, test_per_minute_retry, test_changed_exam, test_other_set, test_judge_only,
-              test_judge_errors, test_gate_judge, test_judge_check, test_wait_and_budget,
+              test_judge_errors, test_gate_judge, test_reply_gold, test_judge_check, test_wait_and_budget,
               test_classes, test_usage_in_graph):
         t()
     n_fail = RESULTS.count(False)

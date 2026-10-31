@@ -3,7 +3,9 @@
     python eval/build_exam.py            # build + checks + eval/exam_hashes.txt
     python eval/build_exam.py --check    # checks only (the exam is not rewritten)
 
-Rule: every candidate except REJECTED_IDS, status "final"; order answerable, clarify, refuse. Nothing else is decided here.
+Rule: every candidate except REJECTED_IDS, status "final"; order answerable, clarify, refuse. The clarify items with a
+scripted reply in PROMOTE get their candidate_gold as gold ({source, article, chunk_ids, role "main"}, one entry per
+article), so "Hit@6 after the reply" is computed on them. Nothing else is decided here.
 Checks: eval/check_answer_set.py, every gold / candidate_gold chunk id in the index (chroma metadata of config.DB_DIR, the
 index the agent retrieves from) and in the PDF text (pdf_truth.from_chunk_id, as the harness reads it), duplicate
 questions, gold chunks shared by two items (reported), eval/prompt_overlap.py --extra (no pair >= 0.4).
@@ -23,6 +25,7 @@ from config import DB_DIR
 import pdf_truth
 
 REJECTED_IDS = []      # filled in by the user: ids left out of the exam
+PROMOTE = ["c01", "c03", "c06", "c11", "c15"]      # clarify items with a reply: candidate_gold -> gold
 SOURCES = [ROOT / "eval" / "answer_set_answerable_candidates.json", ROOT / "eval" / "answer_set_candidates.json"]
 EXAM = ROOT / "eval" / "answer_set.json"
 STAGES = ROOT / "eval" / "stages.json"
@@ -40,9 +43,21 @@ def write_hashes():
     print(f"wrote {HASHES.relative_to(ROOT).as_posix()}:\n" + HASHES.read_text(encoding="utf-8"))
 
 
+def promote(e: dict) -> dict:
+    """candidate_gold chunk ids -> gold [{source, article, chunk_ids, role "main"}] (one entry per article)."""
+    if e["id"] not in PROMOTE:
+        return e
+    gold = {}
+    for c in e["candidate_gold"]:
+        stem, art = c.split("/")[0], c.split("/")[-1]
+        gold.setdefault((stem, art), {"source": f"{stem}.pdf", "article": art, "chunk_ids": [], "role": "main"})
+        gold[(stem, art)]["chunk_ids"].append(c)
+    return {k: (list(gold.values()) if k == "gold" else v) for k, v in e.items() if k != "candidate_gold"}
+
+
 def build() -> list:
     items = [e for p in SOURCES for e in json.loads(p.read_text(encoding="utf-8"))]
-    kept = [dict(e, status="final") for e in items if e["id"] not in REJECTED_IDS]
+    kept = [promote(dict(e, status="final")) for e in items if e["id"] not in REJECTED_IDS]
     kept.sort(key=lambda e: ORDER[e["expected"]])                     # stable: file order inside each type
     EXAM.write_text("[\n" + ",\n".join(json.dumps(e, ensure_ascii=False) for e in kept) + "\n]\n", encoding="utf-8")
     print(f"wrote {EXAM.relative_to(ROOT).as_posix()}: {len(kept)} items ({len(items) - len(kept)} rejected: {REJECTED_IDS})")
@@ -106,7 +121,7 @@ def checks(items) -> int:
     print("  by language:", dict(Counter(e["language"] for e in items)))
     print("  by language x expected:", dict(Counter(f"{e['expected']}/{e['language']}" for e in items)))
     code = Counter()
-    for e in items:
+    for e in (e for e in items if e["expected"] == "answer"):
         for s in {g["source"].replace(".pdf", "") for g in e.get("gold") or [] if g.get("role", "main") == "main"}:
             code[s] += 1
     print("  answerable by source (main gold):", dict(sorted(code.items())))
