@@ -10,6 +10,9 @@ Entry format:
      "gold": [{"source": "PenalFr.pdf", "article": "218"}, ...],   # non-empty for answer, empty otherwise
      "reference_points": ["...", ...],                                # answer only, non-empty
      "reason": "..."}                                                 # clarify / refuse only, non-empty
+A clarify entry may add a scripted reply that picks one reading (clarify-then-answer):
+     "reply": "...",                                                  # non-empty, clarify only
+     "gold": [...] and/or "candidate_gold": ["COC/s02/1160", ...]     # gold as above; candidate_gold = chunk ids
 """
 import sys
 import json
@@ -71,25 +74,43 @@ def check(entries, pairs) -> tuple[list[str], list[str]]:
             if not isinstance(gold, list) or not gold:
                 errors.append(f"{where}: answer needs a non-empty gold list")
             else:
-                for g in gold:
-                    if not (isinstance(g, dict) and g.get("source") and g.get("article")):
-                        errors.append(f"{where}: gold item {g!r} needs 'source' and 'article'")
-                    else:
-                        if pairs is not None and (g["source"], str(g["article"])) not in pairs:
-                            errors.append(f"{where}: gold ({g['source']}, {g['article']}) not found in the corpus index")
-                        if not pdf_truth.is_verified(g["source"]):
-                            warnings.append(f"{where}: gold ({g['source']}, {g['article']}): pdf unverified")
-                        elif str(g["article"]) not in pdf_truth.load()[pdf_truth.source_stem(g["source"])]["articles"]:
-                            errors.append(f"{where}: gold ({g['source']}, {g['article']}) not found in the PDF text")
+                check_gold(where, gold, pairs, errors, warnings)
             rp = e.get("reference_points")
             if not (isinstance(rp, list) and rp and all(isinstance(x, str) and x.strip() for x in rp)):
                 errors.append(f"{where}: answer needs a non-empty reference_points list of strings")
         else:
-            if gold:
-                errors.append(f"{where}: {exp} must have an empty gold list")
+            reply = e.get("reply")
+            if reply is not None and (exp != "clarify" or not (isinstance(reply, str) and reply.strip())):
+                errors.append(f"{where}: 'reply' must be a non-empty string, on clarify entries only")
+            if gold and reply is None:
+                errors.append(f"{where}: {exp} must have an empty gold list (unless it has a 'reply')")
+            elif gold:
+                check_gold(where, gold, pairs, errors, warnings)
+            cand = e.get("candidate_gold")
+            if cand is not None:
+                if reply is None or not isinstance(cand, list) or not all(isinstance(c, str) and "/" in c for c in cand):
+                    errors.append(f"{where}: 'candidate_gold' must be a list of chunk ids, on entries with a 'reply' only")
+                else:
+                    for c in cand:
+                        stem, label = c.split("/")[0], c.split("/")[-1].split("~")[0]
+                        if stem not in pdf_truth.load() or label not in pdf_truth.load()[stem]["articles"]:
+                            errors.append(f"{where}: candidate_gold {c} not found in the PDF text")
             if not (isinstance(e.get("reason"), str) and e["reason"].strip()):
                 errors.append(f"{where}: {exp} needs a non-empty 'reason'")
     return errors, warnings
+
+
+def check_gold(where, gold, pairs, errors, warnings):
+    for g in gold:
+        if not (isinstance(g, dict) and g.get("source") and g.get("article")):
+            errors.append(f"{where}: gold item {g!r} needs 'source' and 'article'")
+            continue
+        if pairs is not None and (g["source"], str(g["article"])) not in pairs:
+            errors.append(f"{where}: gold ({g['source']}, {g['article']}) not found in the corpus index")
+        if not pdf_truth.is_verified(g["source"]):
+            warnings.append(f"{where}: gold ({g['source']}, {g['article']}): pdf unverified")
+        elif str(g["article"]) not in pdf_truth.load()[pdf_truth.source_stem(g["source"])]["articles"]:
+            errors.append(f"{where}: gold ({g['source']}, {g['article']}) not found in the PDF text")
 
 
 def show(entries, qid):

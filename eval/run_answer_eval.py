@@ -6,7 +6,10 @@
     python eval/run_answer_eval.py --system v2 --export-audit 20             # CSV for a human check of the judge
 
 Items (eval/answer_set.json, see eval/check_answer_set.py): id, question, language, expected (answer|clarify|refuse),
-gold [{source, article}], reference_points [str], reason. Results are appended to
+gold [{source, article}], reference_points [str], reason; a clarify item may add "reply" (a scripted user reply that
+picks one reading): v2 gets the question, then the reply, on the SAME thread_id (first-turn status in first_status,
+used for gate accuracy); v1.1 and v1 (single-turn) get one merged question "<question> (précision : <reply>)" in the
+item's language (field "asked"). Results are appended to
 results/answer_eval_<setname>_<system>.jsonl; items already there are skipped (resume).
 Timing per item: seconds (system only), elapsed_total (system + metrics + judge; the --min-gap sleep is outside),
 n_429 (rate-limited Groq responses the client retried) and waited_seconds (sum of the retry waits the Groq client
@@ -86,6 +89,16 @@ def out_path(set_path: Path, system: str) -> Path:
     return ROOT / "results" / f"answer_eval_{set_path.stem}_{system}.jsonl"
 
 
+MERGED = {"fr": "{q} (précision : {r})", "en": "{q} (clarification: {r})", "ar": "{q} (توضيح: {r})"}
+
+
+def asked(item) -> str:
+    """What a single-turn system (v1.1, v1) is asked: the question, merged with the scripted reply if any."""
+    if not item.get("reply"):
+        return item["question"]
+    return MERGED.get(item.get("language"), MERGED["fr"]).format(q=item["question"], r=item["reply"])
+
+
 def read_jsonl(p: Path) -> list[dict]:
     return [json.loads(l) for l in p.read_text(encoding="utf-8").splitlines() if l.strip()] if p.exists() else []
 
@@ -94,8 +107,12 @@ def read_jsonl(p: Path) -> list[dict]:
 
 def run_v2(item) -> dict:
     from agent_graph import app
-    s = app.invoke({"question": item["question"]},
-                   {"configurable": {"thread_id": f"eval-{item['id']}-{time.time_ns()}"}})
+    cfg = {"configurable": {"thread_id": f"eval-{item['id']}-{time.time_ns()}"}}      # a new thread per item
+    s = app.invoke({"question": item["question"]}, cfg)
+    first = None
+    if item.get("reply"):                       # clarify-then-answer: the scripted reply on the same thread
+        first = {"first_status": s.get("status"), "first_text": s.get("text"), "reply": item["reply"]}
+        s = app.invoke({"question": item["reply"]}, cfg)
     ev = (s.get("evidence") or {}) if s.get("status") == "done" else {}
     rec = {"intent": s.get("intent"), "status": s.get("status"), "retries": s.get("retries"), "tried": s.get("tried"),
            "evidence_ids": list(ev), "cited": s.get("cited") or [], "claims": s.get("claims") or [],
@@ -106,7 +123,7 @@ def run_v2(item) -> dict:
     if s.get("status") == "clarify":
         rec["clarification_question"] = s.get("text")
     rec["_evidence_text"] = {cid: e["text"] for cid, e in ev.items()}
-    return rec
+    return rec | (first or {})
 
 
 _V11 = {}
@@ -116,10 +133,11 @@ def run_v11(item) -> dict:
     from pipeline import load_vectorstore, ask_question
     if "vs" not in _V11:
         _V11["vs"] = load_vectorstore()
-    answer, docs = ask_question(_V11["vs"], item["question"], None)     # no law_type hint (fair, like A2)
+    answer, docs = ask_question(_V11["vs"], asked(item), None)     # no law_type hint (fair, like A2)
     ids = [d.metadata.get("chunk_id") for d in docs]
     return {"status": "done" if docs else "no_docs", "evidence_ids": ids, "cited": None, "claims": None, "text": answer,
-            "_evidence_text": {d.metadata.get("chunk_id"): d.page_content for d in docs}}
+            "_evidence_text": {d.metadata.get("chunk_id"): d.page_content for d in docs}} | (
+            {"asked": asked(item)} if item.get("reply") else {})
 
 
 class V1Process:
@@ -134,7 +152,7 @@ class V1Process:
                                   env={**os.environ, "PYTHONIOENCODING": "utf-8"})
 
     def run(self, item) -> dict:
-        self.p.stdin.write(json.dumps({"id": item["id"], "question": item["question"]}, ensure_ascii=False) + "\n")
+        self.p.stdin.write(json.dumps({"id": item["id"], "question": asked(item)}, ensure_ascii=False) + "\n")
         self.p.stdin.flush()
         r = json.loads(self.p.stdout.readline())
         if "error" in r:
@@ -143,7 +161,7 @@ class V1Process:
         ids = [f"{source_stem(d['source'])}/v1/{d['article']}" for d in r["docs"]]
         return {"status": "done" if r["docs"] else "no_docs", "evidence_ids": ids, "cited": None, "claims": None,
                 "text": r["answer"], "_evidence_text": {i: d["text"] for i, d in zip(ids, r["docs"])},
-                "_seconds": r["seconds"], "_llm_calls": r["llm_calls"]}
+                "_seconds": r["seconds"], "_llm_calls": r["llm_calls"]} | ({"asked": asked(item)} if item.get("reply") else {})
 
 
 def pdf_text(cid: str):
@@ -187,7 +205,8 @@ def deterministic(item, rec) -> dict:
         oks = [c["ok"] for c in m["pdf_numeric_draft_claims"]]
         m["pdf_numeric_ok_draft"] = False if False in oks else (None if all(o is None for o in oks) else True)
     exp, st = item["expected"], rec.get("status")
-    m["gate_correct"] = (st == exp) if exp in ("clarify", "refuse") else None
+    gate_st = rec.get("first_status", st)                  # v2 with a scripted reply: the gate is the first turn
+    m["gate_correct"] = (gate_st == exp) if exp in ("clarify", "refuse") else None
     m["false_clarify"] = (st == "clarify") if exp == "answer" else None
     m["false_refuse"] = (st == "refuse") if exp == "answer" else None
     return m
@@ -262,6 +281,8 @@ def metric_values(rows) -> dict:
         m, j = r["metrics"], r.get("judge")
         if r["expected"] in ("clarify", "refuse"):
             vals["gate accuracy (clarify/refuse items)"].append(int(m["gate_correct"]))
+            if r.get("reply") or r.get("asked"):           # clarify-then-answer, once gold is filled
+                vals["Hit@6 after the reply (clarify items)"].append(None if m["gold_hit"] is None else int(m["gold_hit"]))
             continue
         vals["Hit@6 (gold in evidence)"].append(None if m["gold_hit"] is None else int(m["gold_hit"]))
         vals["gold cited"].append(None if m["gold_cited"] is None else int(m["gold_cited"]))
@@ -431,6 +452,14 @@ def main():
           f"judge: {'skipped' if args.skip_judge else (args.judge_model or 'NOT SET')}")
     print(f"LLM calls per question: {lo + j}-{hi + j} ({how}{'' if args.skip_judge else '; judge 1 on answered items only'}); "
           f"for these {len(todo)} items: {len(todo) * (lo + j)}-{len(todo) * (hi + j)}; for 100 items: {100 * (lo + j)}-{100 * (hi + j)}")
+    replies = [i for i in todo if i.get("reply")]
+    if replies:
+        print(f"{len(replies)} clarify items with a scripted reply"
+              + (" (v2: one more graph run each, on the same thread_id)" if args.system == "v2" else "") + ":")
+        for i in replies:
+            turns = (f"turn 1 {i['question']!r} | turn 2 {i['reply']!r}" if args.system == "v2"
+                     else f"one question {asked(i)!r}")
+            print(f"  {i['id']} {args.system}: {turns}")
     if args.dry_run:
         return
     if need_judge and not args.judge_model:
