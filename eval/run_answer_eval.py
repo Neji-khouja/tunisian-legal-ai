@@ -46,8 +46,10 @@ or gemini (langchain-google-genai, key from GOOGLE_API_KEY), temperature 0, own 
 output. Never guessed: without a judge model the run stops unless --skip-judge. Clarify and refuse items (every system)
 get a second judge prompt (GATE_PROMPT, hash recorded): gives_substantive_answer and enumerates_alternatives, on the
 first-turn response; --summarize reports for refuse items "no substantive answer" (explicit refusal OR no substantive
-answer, the primary metric) and "explicit refusal status", for clarify items "asked for clarification (status)",
-"answered directly" and "enumerated alternatives", and "gate accuracy (explicit status)" for both.
+answer, the primary metric) and "explicit refusal status"; for the clarify items WITHOUT a scripted reply ("clarify
+w/o reply: ...") "asked for clarification (status)", "answered directly" and "enumerated alternatives"; for the clarify
+items WITH a scripted reply ("clarify then answer: ...") "correct after the reply" (answer judge verdict, when the row
+has one) and "Hit@6 after the reply"; and "gate accuracy (explicit status)" for all clarify and refuse items.
 v1 needs a git worktree of tag v1-baseline-runnable with the old index (the script prints the setup commands).
 """
 import os
@@ -488,11 +490,16 @@ def metric_values(rows) -> dict:
                                                              None if subst is None else 1 - subst)
                 vals["refuse: explicit refusal status"].append(int(gate_st == "refuse"))
                 continue
-            vals["clarify: asked for clarification (status)"].append(int(gate_st == "clarify"))
-            vals["clarify: answered directly"].append(subst)
-            vals["clarify: enumerated alternatives"].append(None if not gj else int(gj["enumerates_alternatives"]))
-            if r.get("reply") or r.get("asked"):           # clarify-then-answer, once gold is filled
-                vals["Hit@6 after the reply (clarify items)"].append(None if m["gold_hit"] is None else int(m["gold_hit"]))
+            if r.get("reply") or r.get("asked"):           # scripted reply: clarify then answer
+                v = (j or {}).get("verdict")                # needs reference points and an answer judgement
+                vals["clarify then answer: correct after the reply"].append(None if v is None else int(v == "correct"))
+                vals["clarify then answer: Hit@6 after the reply"].append(
+                    None if m["gold_hit"] is None else int(m["gold_hit"]))
+                continue
+            vals["clarify w/o reply: asked for clarification (status)"].append(int(gate_st == "clarify"))
+            vals["clarify w/o reply: answered directly"].append(subst)
+            vals["clarify w/o reply: enumerated alternatives"].append(
+                None if not gj else int(gj["enumerates_alternatives"]))
             continue
         vals["Hit@6 (gold in evidence)"].append(None if m["gold_hit"] is None else int(m["gold_hit"]))
         vals["gold cited"].append(None if m["gold_cited"] is None else int(m["gold_cited"]))
@@ -565,18 +572,18 @@ def print_block(title: str, rows: list[dict]):
     for name, xs in vals.items():
         xs = [x for x in xs if x is not None]
         if not xs:
-            print(f"  {name:<42} n=0   -")
+            print(f"  {name:<52} n=0   -")
             continue
         lo, hi = boot_ci(xs, random.Random(SEED))
-        print(f"  {name:<42} n={len(xs):<4} {sum(xs) / len(xs):8.3f}   [{lo:.3f}, {hi:.3f}]")
+        print(f"  {name:<52} n={len(xs):<4} {sum(xs) / len(xs):8.3f}   [{lo:.3f}, {hi:.3f}]")
     n_fail = {"answer": sum(r["expected"] == "answer" for r in failed)}
     n_fail["gate"] = len(failed) - n_fail["answer"]
-    print(f"  {'system failure (no answer)':<42} answer items {n_fail['answer']}, clarify/refuse items {n_fail['gate']}")
+    print(f"  {'system failure (no answer)':<52} answer items {n_fail['answer']}, clarify/refuse items {n_fail['gate']}")
     for name, kind in (("correct", "answer"), ("gate accuracy (explicit status)", "gate")):
         xs = [x for x in vals.get(name, []) if x is not None] + [0] * n_fail[kind]
         if n_fail[kind] and xs:
             lo, hi = boot_ci(xs, random.Random(SEED))
-            print(f"  {'sensitivity: ' + name + ', failures = 0':<42} n={len(xs):<4} {sum(xs) / len(xs):8.3f}   "
+            print(f"  {'sensitivity: ' + name + ', failures = 0':<52} n={len(xs):<4} {sum(xs) / len(xs):8.3f}   "
                   f"[{lo:.3f}, {hi:.3f}]")
 
 
@@ -608,10 +615,10 @@ def summarize(paths: list[Path]):
             for name in va:
                 d = [y - x for x, y in zip(va[name], vb.get(name, [])) if x is not None and y is not None]
                 if not d:
-                    print(f"  {name:<42} n=0   -")
+                    print(f"  {name:<52} n=0   -")
                     continue
                 lo, hi = boot_ci(d, random.Random(SEED))
-                print(f"  {name:<42} n={len(d):<4} {sum(d) / len(d):+8.3f}   [{lo:+.3f}, {hi:+.3f}]")
+                print(f"  {name:<52} n={len(d):<4} {sum(d) / len(d):+8.3f}   [{lo:+.3f}, {hi:+.3f}]")
 
 
 # ---------------------------------------------------------------- audit export

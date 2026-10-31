@@ -20,6 +20,7 @@
 (p) eval/run_batch.py with a stub runner: next K ids, one process per system, exit 75 forwarded, other failures go on
 (q) crash isolation: a parse error once (recovers in the same run), on both tries (error row, the run goes on), in 3
     runs (failed: final, "system failure" in --summarize); a quota error still exits 75
+(s) clarify behaviour metrics on the clarify items without a scripted reply; "clarify then answer" on the reply items
 (r) system fingerprint: a harness (eval/) or agent test file change keeps it, an agent file or index change does not;
     --judge-only ignores provenance
 """
@@ -418,12 +419,41 @@ def test_gate_judge():
         row(cla, "done", None, first_status="clarify", first_text="?", reply="R ?", ev=["PenalFr/s01/8"]),
     ])
     want = {"refuse: no substantive answer": [1, 0, 1], "refuse: explicit refusal status": [0, 0, 1],
-            "gate accuracy (explicit status)": [0, 0, 1, 0, 1], "clarify: asked for clarification (status)": [0, 1],
-            "clarify: answered directly": [1, None], "clarify: enumerated alternatives": [1, None],
-            "Hit@6 after the reply (clarify items)": [1, 0]}
+            "gate accuracy (explicit status)": [0, 0, 1, 0, 1]}
     got = {k: vals[k] for k in want}
-    check("(n) summary: refuse = explicit refusal OR no substantive answer; clarify status / answered / enumerated; "
-          "gate accuracy renamed", got == want and "gate accuracy (clarify/refuse items)" not in vals, str(got))
+    check("(n) summary: refuse = explicit refusal OR no substantive answer; gate accuracy renamed",
+          got == want and "gate accuracy (clarify/refuse items)" not in vals, str(got))
+
+
+def test_clarify_subsets():
+    plain, cla = ITEMS[3], dict(ITEMS[3], reply="R ?", gold=[{"source": "PenalFr.pdf", "article": "9"}])
+
+    def row(item, status, gj, **kw):
+        rec = {"status": status, "evidence_ids": kw.pop("ev", []), "cited": None, "claims": None, "text": "t", **kw}
+        g = None if gj is None else {"gives_substantive_answer": gj[0], "enumerates_alternatives": gj[1]}
+        return {"id": item["id"], "expected": item["expected"], **rec, "metrics": rae.deterministic(item, rec),
+                "gate_judge": g}
+    rs = [row(plain, "done", (True, True)),                      # no reply: answered directly, enumerated
+          row(plain, "clarify", (False, False)),                 # no reply: asked
+          row(cla, "done", (True, False), asked="C1 ? (précision : R ?)", ev=["PenalFr/s01/9"],
+              judge={"verdict": "correct"}),                     # reply: gold hit, judged correct
+          row(cla, "done", None, first_status="clarify", first_text="?", reply="R ?", ev=["PenalFr/s01/8"])]
+    vals = rae.metric_values(rs)
+    want = {"clarify w/o reply: asked for clarification (status)": [0, 1],
+            "clarify w/o reply: answered directly": [1, 0], "clarify w/o reply: enumerated alternatives": [1, 0],
+            "clarify then answer: correct after the reply": [1, None],
+            "clarify then answer: Hit@6 after the reply": [1, 0], "gate accuracy (explicit status)": [0, 1, 0, 1]}
+    got = {k: vals[k] for k in want}
+    check("(s) clarify behaviour on the items without a reply only; reply items under 'clarify then answer'",
+          got == want and not [k for k in vals if k.startswith("clarify:")], str(dict(vals))[:500])
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rae.print_block("stub", [dict(r, provenance={}) for r in rs])
+    lines = {l.split(" n=")[0].strip(): l.split(" n=")[1].split()[0] for l in buf.getvalue().splitlines() if " n=" in l}
+    check("(s) --summarize prints n and the subset name in each label",
+          lines.get("clarify w/o reply: asked for clarification (status)") == "2"
+          and lines.get("clarify then answer: correct after the reply") == "1"
+          and lines.get("clarify then answer: Hit@6 after the reply") == "2", str(lines))
 
 
 def test_reply_gold():
@@ -434,7 +464,7 @@ def test_reply_gold():
         cid = item["gold"][0]["chunk_ids"][0] if k % 2 == 0 else "PenalFr/s02/264"    # hit, miss, hit, miss, hit
         rec = {"status": "done", "evidence_ids": [cid], "cited": None, "claims": None, "text": "t", "asked": rae.asked(item)}
         rs.append({"id": item["id"], "expected": item["expected"], **rec, "metrics": rae.deterministic(item, rec)})
-    xs = rae.metric_values(rs)["Hit@6 after the reply (clarify items)"]
+    xs = rae.metric_values(rs)["clarify then answer: Hit@6 after the reply"]
     check("(o) exam: 5 reply items with gold, Hit@6 after the reply non-empty (n=5)",
           sorted(i["id"] for i in replies if i["gold"]) == ["c01", "c03", "c06", "c11", "c15"] and xs == [1, 0, 1, 0, 1],
           f"{[i['id'] for i in replies]} {xs}")
@@ -707,7 +737,7 @@ def test_usage_in_graph():
 
 if __name__ == "__main__":
     for t in (test_quota_and_resume, test_per_minute_retry, test_changed_exam, test_other_set, test_judge_only,
-              test_judge_errors, test_gate_judge, test_reply_gold, test_run_batch, test_crash_isolation, test_fingerprint,
+              test_judge_errors, test_gate_judge, test_clarify_subsets, test_reply_gold, test_run_batch, test_crash_isolation, test_fingerprint,
               test_judge_check,
               test_wait_and_budget,
               test_classes, test_usage_in_graph):
