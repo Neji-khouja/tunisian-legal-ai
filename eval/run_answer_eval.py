@@ -315,7 +315,7 @@ def judge_llm(provider: str, model: str):
 
     if provider == "gemini":
         from langchain_google_genai import ChatGoogleGenerativeAI
-        return ChatGoogleGenerativeAI(model=model, temperature=0,
+        return ChatGoogleGenerativeAI(model=model, temperature=0, timeout=120, max_retries=0,   # retries: invoke_judge
                                       google_api_key=os.environ.get("GOOGLE_API_KEY")).with_structured_output(Judgement)
     from langchain_groq import ChatGroq
     return ChatGroq(model=model, temperature=0).with_structured_output(Judgement, method="json_schema")
