@@ -3,7 +3,7 @@
 """
 import re, sys, json, unicodedata
 from pathlib import Path
-ROOT = Path(r"C:\Users\deadx\OneDrive\Documents\Projects\RAG_PDF")
+ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "agent"))
 import analyze, plan, grade, reformulate, verify, answer, condense, codes
 
