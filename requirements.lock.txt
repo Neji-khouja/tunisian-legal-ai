@@ -53,6 +53,8 @@ langchain-chroma==1.1.0
 langchain-classic==1.0.4
 langchain-community==0.4.1
 langchain-core==1.3.0
+# judge --judge-provider gemini (eval/run_answer_eval.py); not installed in rag-app, version not pinned yet
+langchain-google-genai>=3.0,<4
 langchain-groq==1.1.2
 langchain-huggingface==1.2.2
 langchain-text-splitters==1.1.2

@@ -1,16 +1,29 @@
 """Answer-level evaluation harness (v2 = agent graph, v1.1 = baseline pipeline, v1 = original pipeline).
 
-    python eval/run_answer_eval.py --system v2 --dry-run                     # plan + LLM-call estimate, no call
-    python eval/run_answer_eval.py --system v2 [--limit N] [--only-ids a001,a002] [--skip-judge] [--judge-draft] [--min-gap SECONDS]
-    python eval/run_answer_eval.py --summarize results/answer_eval_answer_set_v2.jsonl [more.jsonl ...]
-    python eval/run_answer_eval.py --system v2 --export-audit 20             # CSV for a human check of the judge
+    python eval/run_answer_eval.py --stage 1 --system all --v1-worktree ../RAG_PDF_v1 --dry-run   # plan, no call
+    python eval/run_answer_eval.py --stage 1 --system all --v1-worktree ../RAG_PDF_v1 [--min-gap S] [--skip-judge]
+           [--daily-budget-tokens N] [--wait-on-quota [MINUTES]] [--max-wait-hours H] [--allow-mixed] [--allow-changed-exam]
+    python eval/run_answer_eval.py --stage 1 --system all --judge-only --judge-provider gemini   # judge saved answers later
+    python eval/run_answer_eval.py --summarize [results/answer_eval_answer_set_stage1_v2.jsonl ...]   # no path: all stage files
+    python eval/run_answer_eval.py --stage 1 --system v2 --export-audit 20   # CSV for a human check of the judge
+
+Run mechanics (eval/harness_core.py): question-major order (for each question: v1, v1.1, v2); one result file per stage
+and system (results/answer_eval_answer_set_stage<k>_<system>.jsonl), rewritten atomically after each finished
+(item, system); the same command resumes (finished pairs skipped, degraded ones redone). A 429 naming a per-day limit
+(TPD/RPD) is QuotaExhausted: never retried, the pair in progress is discarded (not saved, not degraded), results/run_state.json
+and results/run_log.jsonl are written, exit code 75. --daily-budget-tokens stops (exit 75) before a pair that would pass
+N agent-model tokens today (estimate: mean of the measured rows of that system, else DEFAULT_TOKENS). --wait-on-quota
+sleeps and probes instead of stopping, for at most --max-wait-hours. Every row records date, provenance (git commit, tags,
+agent model, prompt hashes, exam hashes, judge) and tokens; a file holding rows of another commit is refused unless
+--allow-mixed; a changed exam (vs eval/exam_hashes.txt) is refused unless --allow-changed-exam. A judge quota stop
+during a run leaves judge_pending rows for --judge-only.
 
 Items (eval/answer_set.json, see eval/check_answer_set.py): id, question, language, expected (answer|clarify|refuse),
 gold [{source, article}], reference_points [str], reason; a clarify item may add "reply" (a scripted user reply that
 picks one reading): v2 gets the question, then the reply, on the SAME thread_id (first-turn status in first_status,
 used for gate accuracy); v1.1 and v1 (single-turn) get one merged question "<question> (précision : <reply>)" in the
-item's language (field "asked"). Results are appended to
-results/answer_eval_<setname>_<system>.jsonl; items already there are skipped (resume).
+item's language (field "asked"). Results go to the
+stage file above (another --set: results/answer_eval_<setname>_<system>.jsonl, --stage all only).
 Timing per item: seconds (system only), elapsed_total (system + metrics + judge; the --min-gap sleep is outside),
 n_429 (rate-limited Groq responses the client retried) and waited_seconds (sum of the retry waits the Groq client
 announced); n_429 and waited_seconds are None for v1, whose LLM calls run in a subprocess.
@@ -18,8 +31,9 @@ v2 rows also keep the verifier loop: verdicts (last pass), first_verdicts (first
 draft_claims / draft_text (the first, unverified answer). A v2 item whose `degraded` list is not empty (a node fell back) is stored with status "degraded"
 (graph status in graph_status), gets no metrics and no judge, and is run again on resume.
 
-Judge: a model different from the generator (env JUDGE_MODEL or --judge-model; a Groq model id), temperature 0,
-own prompt, structured output. Never guessed: without a judge model the run stops unless --skip-judge.
+Judge: a model different from the generator (env JUDGE_MODEL or --judge-model), --judge-provider groq (Groq model id)
+or gemini (langchain-google-genai, key from GOOGLE_API_KEY), temperature 0, own prompt (hash recorded), structured
+output. Never guessed: without a judge model the run stops unless --skip-judge.
 v1 needs a git worktree of tag v1-baseline-runnable with the old index (the script prints the setup commands).
 """
 import os
@@ -28,10 +42,13 @@ import csv
 import json
 import time
 import random
+import sqlite3
+import hashlib
 import logging
 import argparse
 import subprocess
 from pathlib import Path
+from datetime import datetime
 from collections import defaultdict
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -40,11 +57,16 @@ sys.path.insert(0, str(ROOT / "agent"))
 sys.path.insert(0, str(ROOT / "eval"))
 from pdf_truth import from_chunk_id, pdf_article_text, source_stem, normalize
 from pdf_factcheck import claim_numbers_ok, implicit_reference_numbers
+import harness_core as hc
 
 SEED = 20261022
 N_BOOT = 5000
 GENERATOR_MODEL = "openai/gpt-oss-120b"        # config.LLM_MODEL and agent/analyze.py
 V1_TAG = "v1-baseline-runnable"
+SYSTEM_ORDER = ["v1", "v1.1", "v2"]            # question-major order: for each question, every system in this order
+TPD = 200_000                                  # Groq tokens per day on the agent model (projection only)
+DEFAULT_TOKENS = {"v2": 15_000, "v1.1": 4_000, "v1": 5_000}   # guess per question until measured rows exist
+EXAM_DIR = ROOT / "eval"
 # successful Groq requests (n), rate-limited responses (n429) seen by httpx in this process, and the retry waits
 # the Groq client announced ("Retrying request to ... in X seconds", logger groq._base_client; 429s and
 # connection errors alike). Only the Groq client in this process is seen: not the v1 subprocess.
@@ -85,8 +107,15 @@ def gold_set(item) -> set:
     return {(source_stem(g["source"]), str(g["article"])) for g in item.get("gold") or []}
 
 
-def out_path(set_path: Path, system: str) -> Path:
-    return ROOT / "results" / f"answer_eval_{set_path.stem}_{system}.jsonl"
+def is_exam(set_path: Path) -> bool:
+    return Path(set_path).name == "answer_set.json"
+
+
+def out_path(set_path: Path, system: str, stage: str = "all", results_dir: Path = ROOT / "results") -> Path:
+    if is_exam(set_path):
+        tag = "all" if stage == "all" else f"stage{stage}"
+        return Path(results_dir) / f"answer_eval_{Path(set_path).stem}_{tag}_{system}.jsonl"
+    return Path(results_dir) / f"answer_eval_{Path(set_path).stem}_{system}.jsonl"
 
 
 MERGED = {"fr": "{q} (précision : {r})", "en": "{q} (clarification: {r})", "ar": "{q} (توضيح: {r})"}
@@ -101,6 +130,42 @@ def asked(item) -> str:
 
 def read_jsonl(p: Path) -> list[dict]:
     return [json.loads(l) for l in p.read_text(encoding="utf-8").splitlines() if l.strip()] if p.exists() else []
+
+
+class _NoUsage:
+    usage_metadata = {}
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        return False
+
+
+def usage_callback():
+    """LangChain usage-metadata callback (every chat-model call in the context, LangGraph nodes included)."""
+    try:
+        from langchain_core.callbacks import get_usage_metadata_callback
+        return get_usage_metadata_callback()
+    except ImportError:
+        return _NoUsage()
+
+
+def token_record(usage, sub_usage, est_in: str = "", est_out: str = "", calls: int = 0,
+                 model: str = GENERATOR_MODEL) -> dict:
+    """Tokens of one (item, system): exact from usage metadata ({model: {input_tokens, output_tokens}}, in process or
+    from the v1 process); else, when LLM calls happened, an estimate of characters/4, labelled "estimated"."""
+    usage = usage or sub_usage or {}
+    by_model = {m: {"input": int(u.get("input_tokens", 0)), "output": int(u.get("output_tokens", 0))}
+                for m, u in usage.items()}
+    source = "usage_metadata" if by_model else "none"
+    if not by_model and calls:
+        by_model = {model: {"input": len(est_in) // 4, "output": len(est_out) // 4}}
+        source = "estimated (characters/4 of question + evidence and of the answer; a lower bound)"
+    agent = by_model.get(model) or {"input": sum(v["input"] for v in by_model.values()),
+                                    "output": sum(v["output"] for v in by_model.values())}
+    return {"source": source, "by_model": by_model, "input": agent["input"], "output": agent["output"],
+            "total": agent["input"] + agent["output"]}
 
 
 # ---------------------------------------------------------------- systems
@@ -155,13 +220,16 @@ class V1Process:
         self.p.stdin.write(json.dumps({"id": item["id"], "question": asked(item)}, ensure_ascii=False) + "\n")
         self.p.stdin.flush()
         r = json.loads(self.p.stdout.readline())
+        if r.get("quota"):                       # a daily-quota 429 inside the v1 process
+            raise hc.QuotaExhausted(r["quota"], hc.parse_retry_after(r["quota"]))
         if "error" in r:
             raise RuntimeError(r["error"])
         # v1 chunks have no chunk ids: use "<stem>/v1/<article>" (article = base number in the v1 index)
         ids = [f"{source_stem(d['source'])}/v1/{d['article']}" for d in r["docs"]]
         return {"status": "done" if r["docs"] else "no_docs", "evidence_ids": ids, "cited": None, "claims": None,
                 "text": r["answer"], "_evidence_text": {i: d["text"] for i, d in zip(ids, r["docs"])},
-                "_seconds": r["seconds"], "_llm_calls": r["llm_calls"]} | ({"asked": asked(item)} if item.get("reply") else {})
+                "_seconds": r["seconds"], "_llm_calls": r["llm_calls"], "_tokens": r.get("usage")} | (
+                {"asked": asked(item)} if item.get("reply") else {})
 
 
 def pdf_text(cid: str):
@@ -229,31 +297,80 @@ Return:
 Judge only from the texts given. Do not use outside legal knowledge."""
 
 
-def judge(item, rec, model: str) -> dict:
+JUDGE_PROMPT_SHA = hashlib.sha1(JUDGE_PROMPT.encode("utf-8")).hexdigest()[:12]
+
+
+def judge_llm(provider: str, model: str):
+    """Structured-output judge. groq: ChatGroq; gemini: langchain-google-genai, key from GOOGLE_API_KEY."""
     from typing import List
     from pydantic import BaseModel
-    from langchain_groq import ChatGroq
 
     class Judgement(BaseModel):
         covered: List[bool]
         contradiction: bool
         unsupported_statements: List[str]
 
+    if provider == "gemini":
+        from langchain_google_genai import ChatGoogleGenerativeAI
+        return ChatGoogleGenerativeAI(model=model, temperature=0,
+                                      google_api_key=os.environ.get("GOOGLE_API_KEY")).with_structured_output(Judgement)
+    from langchain_groq import ChatGroq
+    return ChatGroq(model=model, temperature=0).with_structured_output(Judgement, method="json_schema")
+
+
+JUDGE_FACTORY = judge_llm          # tests replace it with a stub
+
+
+def invoke_judge(llm, messages, provider: str, sleep=time.sleep):
+    """A daily-quota 429 -> QuotaExhausted(who='judge'), never retried. Gemini per-minute 429: up to 5 retries with
+    backoff (the stated delay + 1 s, else 5, 10, 20, 40, 80 s; at most 120 s). Groq: the client's own retries."""
+    for attempt in range(6):
+        try:
+            return llm.invoke(messages)
+        except Exception as e:
+            msg = hc.full_message(e)
+            if hc.is_daily_quota(msg):
+                raise hc.QuotaExhausted(msg[:600], hc.parse_retry_after(msg), "judge") from e
+            if provider != "gemini" or not hc.is_rate_limit(msg) or attempt == 5:
+                raise
+            sleep(min((hc.parse_retry_after(msg) or 5 * 2 ** attempt) + 1, 120))
+
+
+_INDEX = {}
+
+
+def index_text(cid: str) -> str | None:
+    """Chunk text from the index (config.DB_DIR, read-only), for cited ids without PDF text (judge FALLBACK)."""
+    if "db" not in _INDEX:
+        from config import DB_DIR
+        p = Path(DB_DIR) / "chroma.sqlite3"
+        _INDEX["db"] = sqlite3.connect(f"file:{p.as_posix()}?mode=ro", uri=True) if p.exists() else None
+    if _INDEX["db"] is None:
+        return None
+    row = _INDEX["db"].execute(
+        """select d.string_value from embedding_metadata c join embedding_metadata d on d.id = c.id
+           and d.key = 'chroma:document' where c.key = 'chunk_id' and c.string_value = ?""", (cid,)).fetchone()
+    return row[0] if row else None
+
+
+def judge(item, rec, model: str, provider: str = "groq") -> dict:
     cited = rec["cited"] if rec.get("cited") is not None else rec.get("evidence_ids") or []
     arts = []
     for cid in cited:
         t = pdf_text(cid)
+        fb = (rec.get("_evidence_text") or {}).get(cid) or (None if t else index_text(cid))
         if t:
             arts.append(f"[{cid}] (PDF)\n{normalize(t)[:2000]}")
-        elif cid in rec.get("_evidence_text", {}):
-            arts.append(f"[{cid}] (FALLBACK: index chunk)\n{normalize(rec['_evidence_text'][cid])[:2000]}")
+        elif fb:
+            arts.append(f"[{cid}] (FALLBACK: index chunk)\n{normalize(fb)[:2000]}")
     rp = item.get("reference_points") or []
     human = (f"Question: {item['question']}\n\nReference points:\n" + "\n".join(f"{i}. {p}" for i, p in enumerate(rp, 1))
              + f"\n\nAnswer:\n{rec.get('text') or ''}\n\nCited articles:\n" + ("\n\n".join(arts) or "(none)"))
-    llm = ChatGroq(model=model, temperature=0).with_structured_output(Judgement, method="json_schema")
-    j = llm.invoke([("system", JUDGE_PROMPT), ("human", human)])
+    with usage_callback() as cb:
+        j = invoke_judge(JUDGE_FACTORY(provider, model), [("system", JUDGE_PROMPT), ("human", human)], provider)
     out = {"covered": j.covered, "contradiction": j.contradiction, "unsupported_statements": j.unsupported_statements,
-           "fallback_articles": sum("FALLBACK" in a for a in arts)}
+           "fallback_articles": sum("FALLBACK" in a for a in arts), "provider": provider, "model": model,
+           "prompt_sha": JUDGE_PROMPT_SHA, "tokens": token_record(cb.usage_metadata, None, model=model)}
     if len(j.covered) != len(rp):
         out["error"] = f"covered has {len(j.covered)} values for {len(rp)} reference points"
         return out
@@ -338,29 +455,47 @@ def boot_ci(xs, rng) -> tuple:
     return means[int(0.025 * N_BOOT)], means[int(0.975 * N_BOOT) - 1]
 
 
+def print_block(title: str, rows: list[dict]):
+    n_deg = sum(r.get("status") == "degraded" for r in rows)
+    rows = [r for r in rows if r.get("status") != "degraded"]
+    vals = metric_values(rows)
+    print(f"\n=== {title}: {len(rows)} items (answer: {sum(r['expected'] == 'answer' for r in rows)}, "
+          f"clarify/refuse: {sum(r['expected'] != 'answer' for r in rows)}); degraded (excluded, re-run on resume): "
+          f"{n_deg}; 95% bootstrap CI over questions, {N_BOOT} resamples, seed {SEED}")
+    versions = sorted({(r.get("provenance") or {}).get("commit", "?")[:10] + " " +
+                       ",".join((r.get("provenance") or {}).get("tags") or []) for r in rows})
+    print(f"  commits/tags in these rows: {versions}")
+    for name, xs in vals.items():
+        xs = [x for x in xs if x is not None]
+        if not xs:
+            print(f"  {name:<40} n=0   -")
+            continue
+        lo, hi = boot_ci(xs, random.Random(SEED))
+        print(f"  {name:<40} n={len(xs):<4} {sum(xs) / len(xs):8.3f}   [{lo:.3f}, {hi:.3f}]")
+
+
 def summarize(paths: list[Path]):
     runs = {}
     for p in paths:
         runs[p.stem] = {r["id"]: r for r in read_jsonl(p)}         # latest row per item (a resume re-runs degraded)
+        print_block(p.name, list(runs[p.stem].values()))
+    by_system = defaultdict(list)                                   # stage files of one system -> pooled line
+    for p in paths:
         rows = list(runs[p.stem].values())
-        n_deg = sum(r.get("status") == "degraded" for r in rows)
-        rows = [r for r in rows if r.get("status") != "degraded"]
-        vals = metric_values(rows)
-        print(f"\n=== {p.name}: {len(rows)} items (answer: {sum(r['expected'] == 'answer' for r in rows)}, "
-              f"clarify/refuse: {sum(r['expected'] != 'answer' for r in rows)}); degraded (excluded, re-run on resume): "
-              f"{n_deg}; 95% bootstrap CI over questions, {N_BOOT} resamples, seed {SEED}")
-        for name, xs in vals.items():
-            xs = [x for x in xs if x is not None]
-            if not xs:
-                print(f"  {name:<40} n=0   -")
-                continue
-            lo, hi = boot_ci(xs, random.Random(SEED))
-            print(f"  {name:<40} n={len(xs):<4} {sum(xs) / len(xs):8.3f}   [{lo:.3f}, {hi:.3f}]")
+        if rows and "_stage" in p.stem:
+            by_system[rows[0].get("system")].append(p)
+    for system, ps in by_system.items():
+        if len(ps) > 1:
+            pooled = {i: r for p in ps for i, r in runs[p.stem].items()}
+            print_block(f"pooled (valid only if the same tag ran both stages) {system}: "
+                        f"{' + '.join(p.name for p in ps)}", list(pooled.values()))
     names = list(runs)
     for a in range(len(names)):
         for b in range(a + 1, len(names)):
             A, B = runs[names[a]], runs[names[b]]
             ids = sorted(i for i in set(A) & set(B) if "degraded" not in (A[i].get("status"), B[i].get("status")))
+            if not ids:
+                continue
             print(f"\n=== paired difference {names[b]} - {names[a]} on {len(ids)} common items")
             va = metric_values([A[i] for i in ids])
             vb = metric_values([B[i] for i in ids])
@@ -406,60 +541,268 @@ CALL_RANGES = {   # (min, max) Groq calls per question, without the judge
     "v1.1": ((1, 2), "translation 0-1 (AR/EN), generation 1"),
     "v1": ((2, 3), "rewrite 1, sub-queries 0-1 (complex questions), generation 1"),
 }
+SYSTEMS = {"v2": run_v2, "v1.1": run_v11}       # v1: a V1Process, created in main; tests replace entries with stubs
+SLEEP = time.sleep                              # --wait-on-quota sleeps (tests replace it)
 
 
-def main():
+def prompt_hashes() -> dict:
+    """sha1[:12] of the agent prompts, as eval/preflight.py computes them (no model is loaded, no call is made)."""
+    import analyze, plan, grade, reformulate, verify, answer, condense
+    sha = lambda t: hashlib.sha1(t.encode("utf-8")).hexdigest()[:12]
+    return {"analyze": sha(analyze.SYSTEM_PROMPT), "plan": sha(plan.PLAN_PROMPT),
+            "codes": sha((ROOT / "agent" / "codes.py").read_text(encoding="utf-8")),
+            "verify": sha(verify.SYSTEM_PROMPT), "grade": sha(grade.GRADE_PROMPT),
+            "reformulate": sha(reformulate.REFORMULATE_PROMPT), "answer": sha(answer.SYSTEM_PROMPT),
+            "condense": sha(condense.CONDENSE_PROMPT)}
+
+
+def provenance(args, exam_hashes: dict) -> dict:
+    """Stored in every row. Tests replace this function."""
+    return {**hc.git_provenance(ROOT), "agent_model": GENERATOR_MODEL, "prompt_hashes": prompt_hashes(),
+            "exam_hashes": exam_hashes,
+            "judge": None if args.skip_judge else {"provider": args.judge_provider, "model": args.judge_model,
+                                                   "prompt_sha": JUDGE_PROMPT_SHA}}
+
+
+def probe_agent() -> bool:
+    """One tiny request on the agent model: True if it answers, False on a daily-quota 429. Tests replace it."""
+    from langchain_groq import ChatGroq
+    try:
+        ChatGroq(model=GENERATOR_MODEL, temperature=0, max_tokens=1, max_retries=0).invoke("ping")
+        return True
+    except Exception as e:
+        if hc.classify(e):
+            return False
+        raise
+
+
+def run_one(item, system, run, args, judge_state, stage, prov) -> dict:
+    """Run one (item, system) and build its row. Raises QuotaExhausted (the pair is then discarded by the caller)."""
+    hc.QUOTA_SEEN["msg"] = None
+    c0, t0 = CALLS["n"], time.time()
+    r0, w0 = CALLS["n429"], CALLS["waited"]
+    try:
+        with usage_callback() as cb:
+            rec = run(item)
+    except Exception as e:
+        q = hc.classify(e)
+        if q:
+            raise q from e
+        raise
+    if hc.QUOTA_SEEN["msg"]:                        # a node swallowed a daily-quota error (v2 marks it degraded)
+        raise hc.QuotaExhausted(hc.QUOTA_SEEN["msg"], hc.parse_retry_after(hc.QUOTA_SEEN["msg"]))
+    seconds = rec.pop("_seconds", round(time.time() - t0, 1))
+    calls = rec.pop("_llm_calls", CALLS["n"] - c0)
+    ev_text = rec.get("_evidence_text") or {}
+    tokens = token_record(cb.usage_metadata, rec.pop("_tokens", None),
+                          est_in=asked(item) + "".join(ev_text.values()), est_out=rec.get("text") or "", calls=calls)
+    degraded = bool(rec.get("degraded"))
+    if degraded:                                    # a node fell back: no metrics, re-run on resume
+        rec["graph_status"], rec["status"] = rec.get("status"), "degraded"
+    m = None if degraded else deterministic(item, rec)
+    jd = jdd = None
+    judgeable = item["expected"] == "answer" and rec.get("status") == "done"
+    if judgeable and judge_state["on"]:
+        c1 = CALLS["n"]
+        hc.QUOTA_SEEN["msg"] = None
+        try:
+            jd = judge(item, rec, args.judge_model, args.judge_provider)
+            if args.judge_draft and rec.get("draft_text"):
+                if rec["draft_text"] == rec.get("text"):                 # nothing repaired or dropped
+                    jdd = dict(jd, same_as_final=True)
+                else:
+                    d_cited = sorted({c for cl in rec["draft_claims"] for c in cl["cited_ids"]})
+                    jdd = judge(item, rec | {"text": rec["draft_text"], "cited": d_cited}, args.judge_model,
+                                args.judge_provider)
+            jd["llm_calls"] = CALLS["n"] - c1
+        except Exception as e:
+            q = hc.classify(e, "judge")
+            if not q:
+                sys.exit(f"STOPPED: judge failed on {item['id']}: {type(e).__name__}: {e}\nRe-run to resume.")
+            judge_state.update(on=False, quota=q)               # the answer is kept; judge later with --judge-only
+            jd = jdd = None
+            print(f"JUDGE QUOTA EXHAUSTED on {item['id']} ({args.judge_provider} {args.judge_model}): judging is off "
+                  f"for the rest of this run; rows are saved with judge_pending; run --judge-only later.", file=sys.stderr)
+    rec.pop("_evidence_text", None)
+    v1 = system == "v1"                             # its LLM calls run in the subprocess: 429s and waits not seen
+    row = {"id": item["id"], "question": item["question"], "language": item.get("language"),
+           "expected": item["expected"], "system": system, "stage": stage, **rec, "seconds": seconds,
+           "llm_calls": calls, "elapsed_total": round(time.time() - t0, 1),         # system + metrics + judge
+           "n_429": None if v1 else CALLS["n429"] - r0, "waited_seconds": None if v1 else round(CALLS["waited"] - w0, 1),
+           "metrics": m, "judge": jd, "judge_pending": bool(judgeable and jd is None and not degraded),
+           "tokens": tokens, "date": datetime.now().isoformat(timespec="seconds"), "provenance": prov}
+    row["hallucinated"] = None if degraded else hallucinated(rec, m, jd)
+    if args.judge_draft and m and "pdf_numeric_ok_draft" in m:
+        row["judge_draft"] = jdd
+        row["hallucinated_draft"] = hallucinated(rec, {"cited_not_in_evidence": m["draft_cited_not_in_evidence"],
+                                                       "pdf_numeric_ok": m["pdf_numeric_ok_draft"]}, jdd)
+    return row
+
+
+def measured_tokens(f: hc.ResultFile) -> list[int]:
+    return [r["tokens"]["total"] for r in f.latest().values() if (r.get("tokens") or {}).get("source") not in (None, "none")]
+
+
+def projection(files: dict, todo_by_system: dict):
+    """Tokens used (agent model), tokens per question, days needed at TPD for what remains."""
+    per_q_all, need = 0.0, 0.0
+    print(f"\nToken projection (agent model {GENERATOR_MODEL}, {TPD} tokens/day):")
+    for s, f in files.items():
+        xs = measured_tokens(f)
+        est = sum("estimated" in (r.get("tokens") or {}).get("source", "") for r in f.latest().values())
+        per_q = sum(xs) / len(xs) if xs else DEFAULT_TOKENS[s]
+        per_q_all += per_q
+        need += per_q * todo_by_system.get(s, 0)
+        print(f"  {s:<5} used {sum(xs):>9} tokens on {len(xs)} rows ({est} estimated); per question "
+              f"{per_q:>8.0f} ({'measured' if xs else 'DEFAULT_TOKENS guess'}); {todo_by_system.get(s, 0)} to run")
+    print(f"  per question, all selected systems: {per_q_all:.0f}; remaining: {need:.0f} tokens = "
+          f"{need / TPD:.1f} day(s) at {TPD}/day")
+
+
+def stage_ids(stages_path: Path, stage: str) -> set | None:
+    if stage == "all":
+        return None
+    st = json.loads(Path(stages_path).read_text(encoding="utf-8"))
+    return set(st[f"stage{stage}"])
+
+
+def stop(results_dir, reason, msg, todo, k, files, args, retry_after=None, code=hc.EXIT_QUOTA):
+    remaining = defaultdict(int)
+    for _, s in todo[k:]:
+        remaining[s] += 1
+    hc.write_state(results_dir, {"reason": reason, "message": msg[:600], "resume_estimate": hc.resume_estimate(retry_after),
+                                 "command": " ".join(sys.argv), "stage": args.stage,
+                                 "done": {s: len(f.finished()) for s, f in files.items()}, "remaining": dict(remaining)})
+    print(msg, file=sys.stderr)
+    sys.exit(code)
+
+
+def judge_only(args, items, files, results_dir):
+    by_id = {i["id"]: i for i in items}
+    todo = [(r, s) for s, f in files.items() for r in f.latest().values()
+            if r["expected"] == "answer" and r.get("status") == "done" and r["id"] in by_id
+            and not (r.get("judge") and "verdict" in r["judge"])]
+    print(f"--judge-only: {len(todo)} saved answers without a judgement ({args.judge_provider} {args.judge_model})")
+    for k, (r, s) in enumerate(todo):
+        if k and args.min_gap:
+            time.sleep(args.min_gap)
+        try:
+            jd = judge(by_id[r["id"]], r, args.judge_model, args.judge_provider)
+        except Exception as e:
+            q = hc.classify(e, "judge")
+            if not q:
+                raise
+            stop(results_dir, "judge daily quota", f"STOPPED: daily quota of the judge ({args.judge_provider} "
+                 f"{args.judge_model}) reached on {r['id']} ({s}). Judged so far are saved; re-run the same command to "
+                 f"continue.\n{q}", [(x["id"], y) for x, y in todo], k, files, args, q.retry_after)
+        files[s].replace_latest(dict(r, judge=jd, judge_pending=False, hallucinated=hallucinated(r, r["metrics"], jd)))
+        print(f"  judged {r['id']} ({s}): {jd.get('verdict', jd.get('error'))}")
+    hc.write_state(results_dir, {"reason": "judge-only completed", "stage": args.stage, "judged": len(todo)})
+
+
+def parse_args(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("--set", default=str(ROOT / "eval" / "answer_set.json"))
-    ap.add_argument("--system", choices=["v2", "v1.1", "v1"], default="v2")
+    ap.add_argument("--set", default=str(EXAM_DIR / "answer_set.json"))
+    ap.add_argument("--stages-file", default=str(EXAM_DIR / "stages.json"))
+    ap.add_argument("--hashes-file", default=str(EXAM_DIR / "exam_hashes.txt"))
+    ap.add_argument("--results-dir", default=str(ROOT / "results"))
+    ap.add_argument("--stage", choices=["1", "2", "all"], default="all")
+    ap.add_argument("--system", default="v2", help="v2, v1.1, v1, a comma list, or all (= v1,v1.1,v2)")
     ap.add_argument("--limit", type=int)
     ap.add_argument("--only-ids")
-    ap.add_argument("--out")
     ap.add_argument("--skip-judge", action="store_true")
+    ap.add_argument("--judge-only", action="store_true", help="judge saved answers that have no judgement yet")
+    ap.add_argument("--judge-provider", choices=["groq", "gemini"], default="groq")
     ap.add_argument("--judge-model", default=os.environ.get("JUDGE_MODEL"))
     ap.add_argument("--judge-draft", action="store_true",
                     help="v2: also judge draft_text (the unverified first answer); one more judge call when it differs")
     ap.add_argument("--dry-run", action="store_true")
-    ap.add_argument("--min-gap", type=float, default=0, metavar="SECONDS", help="sleep between questions")
-    ap.add_argument("--summarize", nargs="+", metavar="JSONL")
+    ap.add_argument("--min-gap", type=float, default=0, metavar="SECONDS", help="sleep between (item, system) runs")
+    ap.add_argument("--daily-budget-tokens", type=int, metavar="N")
+    ap.add_argument("--wait-on-quota", type=float, nargs="?", const=20, metavar="MINUTES")
+    ap.add_argument("--max-wait-hours", type=float, default=30)
+    ap.add_argument("--allow-mixed", action="store_true")
+    ap.add_argument("--allow-changed-exam", action="store_true")
+    ap.add_argument("--summarize", nargs="*", metavar="JSONL")
     ap.add_argument("--export-audit", type=int, metavar="N")
     ap.add_argument("--v1-worktree", help=f"git worktree of {V1_TAG} with the old index in db/ (for --system v1)")
-    args = ap.parse_args()
+    return ap.parse_args(argv)
 
-    if args.summarize:
-        summarize([Path(p) for p in args.summarize])
+
+def main(argv=None):
+    args = parse_args(argv)
+    set_path, results_dir = Path(args.set), Path(args.results_dir)
+    systems = SYSTEM_ORDER if args.system == "all" else args.system.split(",")
+    bad = [s for s in systems if s not in SYSTEM_ORDER]
+    if bad:
+        sys.exit(f"unknown system(s) {bad}; choose from {SYSTEM_ORDER} or all")
+    systems = [s for s in SYSTEM_ORDER if s in systems]                 # question-major order v1, v1.1, v2
+    if args.summarize is not None:
+        paths = [Path(p) for p in args.summarize] or sorted(results_dir.glob(f"answer_eval_{set_path.stem}_stage*_*.jsonl"))
+        summarize(paths)
         return
-    set_path = Path(args.set)
-    out = Path(args.out) if args.out else out_path(set_path, args.system)
+    if not is_exam(set_path) and args.stage != "all":
+        sys.exit("--stage 1/2 applies to the exam (eval/answer_set.json) only")
+    files = {s: hc.ResultFile(out_path(set_path, s, args.stage, results_dir)) for s in systems}
     if args.export_audit:
-        export_audit(out, args.system, args.export_audit)
+        export_audit(files[systems[0]].path, systems[0], args.export_audit)
         return
 
+    cur_hashes, diffs = hc.exam_check(set_path, args.stages_file, args.hashes_file)
+    if is_exam(set_path):
+        print(f"exam fingerprint ({Path(args.hashes_file).name}): {'matches' if not diffs else 'DIFFERS'}")
+        if diffs and not args.allow_changed_exam:
+            sys.exit("REFUSED: the exam changed since the fingerprint:\n  " + "\n  ".join(diffs) +
+                     "\nResults on a changed exam are not comparable. Re-run eval/build_exam.py and eval/make_stages.py "
+                     "if the change is intended (and commit), or pass --allow-changed-exam.")
     items = json.loads(set_path.read_text(encoding="utf-8"))
+    ids = stage_ids(args.stages_file, args.stage) if is_exam(set_path) else None
+    if ids is not None:
+        items = [i for i in items if i["id"] in ids]
     if args.only_ids:
         wanted = set(args.only_ids.split(","))
         items = [i for i in items if i["id"] in wanted]
     if args.limit:
         items = items[:args.limit]
-    done = {r["id"]: r.get("status") != "degraded" for r in read_jsonl(out)}      # latest row per item
-    done = {i for i, ok in done.items() if ok}
-    todo = [i for i in items if i["id"] not in done]
+
+    prov = provenance(args, cur_hashes)
+    for s, f in files.items():                     # no pooling across versions
+        other = hc.mixed_versions(f.rows(), prov["commit"])
+        if other:
+            msg = (f"{f.path.name} holds rows of another commit/tag ({sorted(map(str, other))}; now {prov['commit']} "
+                   f"{prov['tags']}). Results of different versions must not be pooled: the systems, prompts or "
+                   f"index may differ, so the numbers would mix two experiments.")
+            if not args.allow_mixed:
+                sys.exit("REFUSED: " + msg + " Use a new --results-dir, or pass --allow-mixed.")
+            print("WARNING (--allow-mixed): " + msg)
+    if args.judge_only:
+        if not args.judge_model:
+            sys.exit("--judge-only needs a judge model (JUDGE_MODEL or --judge-model).")
+        judge_only(args, items, files, results_dir)
+        return
+
+    todo = [(i, s) for i in items for s in systems if i["id"] not in files[s].finished()]
+    todo_by_system = defaultdict(int)
+    for _, s in todo:
+        todo_by_system[s] += 1
     need_judge = not args.skip_judge
-    (lo, hi), how = CALL_RANGES[args.system]
     j = 0 if args.skip_judge else 1
-    print(f"set {set_path.name}: {len(items)} items selected, {len(done & {i['id'] for i in items})} already in "
-          f"{out.relative_to(ROOT) if out.is_relative_to(ROOT) else out}, {len(todo)} to run; system {args.system}; "
-          f"judge: {'skipped' if args.skip_judge else (args.judge_model or 'NOT SET')}")
-    print(f"LLM calls per question: {lo + j}-{hi + j} ({how}{'' if args.skip_judge else '; judge 1 on answered items only'}); "
-          f"for these {len(todo)} items: {len(todo) * (lo + j)}-{len(todo) * (hi + j)}; for 100 items: {100 * (lo + j)}-{100 * (hi + j)}")
-    replies = [i for i in todo if i.get("reply")]
+    judge_desc = "skipped" if args.skip_judge else f"{args.judge_provider} {args.judge_model or 'NOT SET'}"
+    print(f"set {set_path.name}, stage {args.stage}: {len(items)} items; systems {systems} (question-major order); "
+          f"{len(todo)} (item, system) runs to do; judge: {judge_desc}")
+    for s in systems:
+        (lo, hi), how = CALL_RANGES[s]
+        print(f"  {s}: {files[s].path.name}: {len(files[s].finished() & {i['id'] for i in items})} done, "
+              f"{todo_by_system[s]} to run; LLM calls per question {lo + j}-{hi + j} ({how})")
+    replies = [i for i in items if i.get("reply")]
     if replies:
-        print(f"{len(replies)} clarify items with a scripted reply"
-              + (" (v2: one more graph run each, on the same thread_id)" if args.system == "v2" else "") + ":")
+        print(f"{len(replies)} clarify items with a scripted reply (v2: question then reply on the same thread_id; "
+              f"v1.1/v1: one merged question):")
         for i in replies:
-            turns = (f"turn 1 {i['question']!r} | turn 2 {i['reply']!r}" if args.system == "v2"
-                     else f"one question {asked(i)!r}")
-            print(f"  {i['id']} {args.system}: {turns}")
+            print(f"  {i['id']}: turn 1 {i['question']!r} | turn 2 {i['reply']!r} | merged {asked(i)!r}")
+    if args.judge_provider == "gemini":
+        print(f"GOOGLE_API_KEY: {'set' if os.environ.get('GOOGLE_API_KEY') else 'unset'}")
+    projection(files, todo_by_system)
     if args.dry_run:
         return
     if need_judge and not args.judge_model:
@@ -468,57 +811,61 @@ def main():
     if need_judge and args.judge_model == GENERATOR_MODEL:
         sys.exit(f"The judge must be a different model from the generator ({GENERATOR_MODEL}).")
 
-    runner = V1Process(Path(args.v1_worktree or "")) if args.system == "v1" else None
-    run = {"v2": run_v2, "v1.1": run_v11}.get(args.system) or runner.run
-    out.parent.mkdir(parents=True, exist_ok=True)
-    for k, item in enumerate(todo, 1):
-        if k > 1 and args.min_gap:
+    hc.install_groq_patches()
+    runners = dict(SYSTEMS)
+    v1proc = None
+    if "v1" in systems and "v1" not in runners:
+        v1proc = V1Process(Path(args.v1_worktree or ""))
+        runners["v1"] = v1proc.run
+    judge_state = {"on": need_judge, "quota": None}
+    today = datetime.now().date().isoformat()
+    today_tokens = lambda rs: sum(r["tokens"]["total"] for r in rs if (r.get("date") or "").startswith(today) and r.get("tokens"))
+    mine = {f.path.resolve() for f in files.values()}       # agent tokens already spent today by other stage files
+    used_other = sum(today_tokens(read_jsonl(p)) for p in results_dir.glob(f"answer_eval_{set_path.stem}_*.jsonl")
+                     if p.resolve() not in mine)
+    waited, k = 0.0, 0
+    while k < len(todo):
+        item, s = todo[k]
+        if args.daily_budget_tokens:
+            used = used_other + sum(today_tokens(f.rows()) for f in files.values())
+            xs = measured_tokens(files[s])
+            est = sum(xs) / len(xs) if xs else DEFAULT_TOKENS[s]
+            if used + est > args.daily_budget_tokens:
+                stop(results_dir, "daily token budget", f"STOPPED: daily token budget: {used} agent tokens used today "
+                     f"+ about {est:.0f} for {item['id']} ({s}) > {args.daily_budget_tokens}. Finished pairs are saved; "
+                     f"re-run the same command to continue.", [(i["id"], x) for i, x in todo], k, files, args)
+        if k and args.min_gap:
             time.sleep(args.min_gap)
-        print(f"[{k}/{len(todo)}] {item['id']} ...", file=sys.stderr, flush=True)
-        c0, t0 = CALLS["n"], time.time()
-        r0, w0 = CALLS["n429"], CALLS["waited"]
+        print(f"[{k + 1}/{len(todo)}] {item['id']} {s} ...", file=sys.stderr, flush=True)
         try:
-            rec = run(item)
+            row = run_one(item, s, runners[s], args, judge_state, args.stage, prov)
+        except hc.QuotaExhausted as q:
+            if args.wait_on_quota is not None:
+                ok, waited = hc.wait_for_quota(probe_agent, args.wait_on_quota, args.max_wait_hours, q.retry_after,
+                                               waited, sleep=SLEEP)
+                if ok:
+                    continue                        # the discarded pair is run again
+            stop(results_dir, "agent daily quota", f"STOPPED: daily quota reached on {item['id']} ({s}); this pair is "
+                 f"discarded (not saved, not degraded). Finished pairs are saved. Re-run the same command to continue"
+                 + (f" (about {q.retry_after / 60:.0f} min from now)" if q.retry_after else "") + f".\n{str(q)[:400]}",
+                 [(i["id"], x) for i, x in todo], k, files, args, q.retry_after)
+        except SystemExit:
+            raise
         except Exception as e:
-            sys.exit(f"STOPPED on {item['id']}: {type(e).__name__}: {e}\nCompleted items are in {out}; re-run to resume.")
-        seconds = rec.pop("_seconds", round(time.time() - t0, 1))
-        calls = rec.pop("_llm_calls", CALLS["n"] - c0)
-        degraded = bool(rec.get("degraded"))
-        if degraded:                                # a node fell back: no metrics, re-run on resume
-            rec["graph_status"], rec["status"] = rec.get("status"), "degraded"
-        m = None if degraded else deterministic(item, rec)
-        jd = jdd = None
-        if need_judge and item["expected"] == "answer" and rec.get("status") == "done":
-            c1 = CALLS["n"]
-            try:
-                jd = judge(item, rec, args.judge_model)
-                if args.judge_draft and rec.get("draft_text"):
-                    if rec["draft_text"] == rec.get("text"):                 # nothing repaired or dropped
-                        jdd = dict(jd, same_as_final=True)
-                    else:
-                        d_cited = sorted({c for cl in rec["draft_claims"] for c in cl["cited_ids"]})
-                        jdd = judge(item, rec | {"text": rec["draft_text"], "cited": d_cited}, args.judge_model)
-            except Exception as e:
-                sys.exit(f"STOPPED: judge failed on {item['id']}: {type(e).__name__}: {e}\nRe-run to resume.")
-            jd["llm_calls"] = CALLS["n"] - c1
-        rec.pop("_evidence_text", None)
-        v1 = args.system == "v1"                    # its LLM calls run in the subprocess: 429s and waits not seen
-        row = {"id": item["id"], "question": item["question"], "language": item.get("language"),
-               "expected": item["expected"], "system": args.system, **rec, "seconds": seconds, "llm_calls": calls,
-               "elapsed_total": round(time.time() - t0, 1),               # system + deterministic metrics + judge
-               "n_429": None if v1 else CALLS["n429"] - r0,              # system + judge
-               "waited_seconds": None if v1 else round(CALLS["waited"] - w0, 1),
-               "metrics": m, "judge": jd}
-        row["hallucinated"] = None if degraded else hallucinated(rec, m, jd)
-        if args.judge_draft and m and "pdf_numeric_ok_draft" in m:
-            row["judge_draft"] = jdd
-            row["hallucinated_draft"] = hallucinated(rec, {"cited_not_in_evidence": m["draft_cited_not_in_evidence"],
-                                                           "pdf_numeric_ok": m["pdf_numeric_ok_draft"]}, jdd)
-        with out.open("a", encoding="utf-8") as f:
-            f.write(json.dumps(row, ensure_ascii=False) + "\n")
-    if runner:
-        runner.p.stdin.close()
-    summarize([out])
+            stop(results_dir, "error", f"STOPPED on {item['id']} ({s}): {type(e).__name__}: {e}\nFinished pairs are "
+                 f"saved; re-run to resume.", [(i["id"], x) for i, x in todo], k, files, args, code=1)
+        files[s].append(row)
+        k += 1
+    if v1proc:
+        v1proc.p.stdin.close()
+    pending = sum(r.get("judge_pending", False) for f in files.values() for r in f.latest().values())
+    hc.write_state(results_dir, {"reason": "completed", "stage": args.stage, "command": " ".join(sys.argv),
+                                 "done": {s: len(f.finished()) for s, f in files.items()}, "remaining": {},
+                                 "judge_pending": pending})
+    if pending:
+        print(f"{pending} rows wait for the judge: run the same command with --judge-only.")
+    projection(files, {})
+    summarize([f.path for f in files.values()])
 
 
 if __name__ == "__main__":
