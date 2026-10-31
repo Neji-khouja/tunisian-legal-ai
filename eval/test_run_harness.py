@@ -17,6 +17,7 @@
 (m) eval/judge_check.py with a stub judge: verdicts, successes, the selection rule; the Gemini thinking argument
 (n) the clarify/refuse judge (GATE_PROMPT) runs on every clarify/refuse row of every system; --summarize metrics
 (o) the 5 exam clarify items with a scripted reply have gold: "Hit@6 after the reply" is computed on them (n = 5)
+(p) eval/run_batch.py with a stub runner: next K ids, one process per system, exit 75 forwarded, other failures go on
 """
 import io
 import sys
@@ -431,6 +432,53 @@ def test_reply_gold():
           f"{[i['id'] for i in replies]} {xs}")
 
 
+def test_run_batch():
+    import run_batch as rb
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        setup(tmp)
+        res = tmp / "results"
+        res.mkdir()
+        for s, ids in {"v1": ["a1", "a2"], "v1.1": ["a1"], "v2": ["a1"]}.items():   # a1 finished everywhere
+            rae.out_path(tmp / "answer_set.json", s, "1", res).write_text(
+                "".join(json.dumps({"id": i, "status": "done"}) + "\n" for i in ids), encoding="utf-8")
+        calls = []
+
+        def fake(codes):
+            def run(cmd, cwd=None):
+                sysname = cmd[cmd.index("--system") + 1]
+                calls.append((sysname, cmd[cmd.index("--only-ids") + 1], "--min-gap" in cmd))
+                return SimpleNamespace(returncode=codes.get(sysname, 0))
+            return run
+
+        def go(codes, *extra):
+            calls.clear()
+            rb.RUN = fake(codes)
+            buf, code = io.StringIO(), None
+            with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
+                try:
+                    rb.main(["--stage", "1", "--set", str(tmp / "answer_set.json"), "--stages-file", str(tmp / "stages.json"),
+                             "--results-dir", str(res), "--questions-per-run", "2", "--min-gap", "3", *extra])
+                except SystemExit as e:
+                    code = e.code
+            return code, buf.getvalue()
+        code, out = go({})
+        check("(p) run_batch: next 2 unfinished ids (a2, c1), v1 v1.1 v2 in separate runs, extra flags passed on",
+              code is None and calls == [("v1", "a2,c1", True), ("v1.1", "a2,c1", True), ("v2", "a2,c1", True)]
+              and "remaining" in out and "day(s)" in out, f"{code!r} {calls}")
+        code, out = go({"v1.1": 75})
+        check("(p) run_batch: exit 75 is forwarded at once (v2 not run)", code == 75 and [c[0] for c in calls] == ["v1", "v1.1"],
+              f"{code!r} {calls}")
+        code, out = go({"v1": 1})
+        check("(p) run_batch: another failure is reported and the next systems run (exit 1 at the end)",
+              code == 1 and [c[0] for c in calls] == ["v1", "v1.1", "v2"] and "v1 FAILED" in out, f"{code!r} {calls}")
+        rae.out_path(tmp / "answer_set.json", "v1", "1", res).write_text(
+            "".join(json.dumps({"id": i, "status": "done"}) + "\n" for i in ["a1", "a2", "c1"]), encoding="utf-8")
+        code, out = go({})
+        check("(p) run_batch: a system with the whole batch finished is skipped", [c[0] for c in calls] == ["v1.1", "v2"],
+              str(calls))
+
+
 def test_judge_check():
     import judge_check as jc
     from pdf_truth import from_chunk_id
@@ -554,7 +602,7 @@ def test_usage_in_graph():
 
 if __name__ == "__main__":
     for t in (test_quota_and_resume, test_per_minute_retry, test_changed_exam, test_other_set, test_judge_only,
-              test_judge_errors, test_gate_judge, test_reply_gold, test_judge_check, test_wait_and_budget,
+              test_judge_errors, test_gate_judge, test_reply_gold, test_run_batch, test_judge_check, test_wait_and_budget,
               test_classes, test_usage_in_graph):
         t()
     n_fail = RESULTS.count(False)
