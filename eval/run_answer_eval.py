@@ -18,9 +18,12 @@ short message, attempt k) and the run goes on; resumes run "error" rows again, a
 status "failed": final, no answer, shown by --summarize as "system failure" and counted as incorrect in a
 sensitivity line. --daily-budget-tokens stops (exit 75) before a pair that would pass
 N agent-model tokens today (estimate: mean of the measured rows of that system, else DEFAULT_TOKENS). --wait-on-quota
-sleeps and probes instead of stopping, for at most --max-wait-hours. Every row records date, provenance (git commit, tags,
-agent model, prompt hashes, exam hashes, judge) and tokens; a file holding rows of another commit is refused unless
---allow-mixed; a changed exam (vs eval/exam_hashes.txt) is refused unless --allow-changed-exam. A judge quota stop
+sleeps and probes instead of stopping, for at most --max-wait-hours. Every row records date, provenance (system
+fingerprint, git commit, tags, agent model, prompt hashes, exam hashes, judge) and tokens. The system fingerprint
+(harness_core.system_fingerprint) is a sha256 over agent/*.py (not test_*/run_*), config.py, splitter.py, retriever.py,
+reranker.py, pipeline.py and the index identity (path, chunk count): a file holding rows of another fingerprint is
+refused unless --allow-mixed (a commit that changes only eval/ is not a new system); --judge-only ignores provenance.
+A changed exam (vs eval/exam_hashes.txt) is refused unless --allow-changed-exam. A judge quota stop
 during a run leaves judge_pending rows for --judge-only.
 
 Items (eval/answer_set.json, see eval/check_answer_set.py): id, question, language, expected (answer|clarify|refuse),
@@ -555,9 +558,10 @@ def print_block(title: str, rows: list[dict]):
           f"clarify/refuse: {sum(r['expected'] != 'answer' for r in rows)}); degraded (excluded, re-run on resume): "
           f"{n_deg}; error (excluded, re-run on resume): {n_err}; system failure (no answer, excluded): {len(failed)}; "
           f"95% bootstrap CI over questions, {N_BOOT} resamples, seed {SEED}")
-    versions = sorted({(r.get("provenance") or {}).get("commit", "?")[:10] + " " +
+    versions = sorted({str(((r.get("provenance") or {}).get("fingerprint") or {}).get("sha256"))[:12] + " " +
+                       (r.get("provenance") or {}).get("commit", "?")[:10] + " " +
                        ",".join((r.get("provenance") or {}).get("tags") or []) for r in rows})
-    print(f"  commits/tags in these rows: {versions}")
+    print(f"  fingerprints/commits/tags in these rows: {versions}")
     for name, xs in vals.items():
         xs = [x for x in xs if x is not None]
         if not xs:
@@ -661,9 +665,15 @@ def prompt_hashes() -> dict:
             "condense": sha(condense.CONDENSE_PROMPT)}
 
 
+def fingerprint() -> dict:
+    from config import DB_DIR
+    return hc.system_fingerprint(ROOT, DB_DIR)
+
+
 def provenance(args, exam_hashes: dict) -> dict:
     """Stored in every row. Tests replace this function."""
-    return {**hc.git_provenance(ROOT), "agent_model": GENERATOR_MODEL, "prompt_hashes": prompt_hashes(),
+    return {"fingerprint": fingerprint(), **hc.git_provenance(ROOT), "agent_model": GENERATOR_MODEL,
+            "prompt_hashes": prompt_hashes(),
             "exam_hashes": exam_hashes,
             "judge": None if args.skip_judge else {"provider": args.judge_provider, "model": args.judge_model,
                                                    "prompt_sha": JUDGE_PROMPT_SHA, "gate_prompt_sha": GATE_PROMPT_SHA,
@@ -948,12 +958,14 @@ def main(argv=None):
         items = items[:args.limit]
 
     prov = provenance(args, cur_hashes)
-    for s, f in files.items():                     # no pooling across versions
-        other = hc.mixed_versions(f.rows(), prov["commit"])
+    fp = prov["fingerprint"]["sha256"]
+    print(f"system fingerprint {fp[:12]} (commit {prov['commit'][:10]} {prov['tags']})")
+    for s, f in files.items() if not args.judge_only else ():     # no pooling across system versions
+        other = hc.mixed_versions(f.rows(), fp)
         if other:
-            msg = (f"{f.path.name} holds rows of another commit/tag ({sorted(map(str, other))}; now {prov['commit']} "
-                   f"{prov['tags']}). Results of different versions must not be pooled: the systems, prompts or "
-                   f"index may differ, so the numbers would mix two experiments.")
+            msg = (f"{f.path.name} holds rows of another system fingerprint ({sorted(str(o)[:12] for o in other)}; now "
+                   f"{fp[:12]}). Results of different versions must not be pooled: the agent code, pipeline, config or "
+                   f"index differ, so the numbers would mix two experiments.")
             if not args.allow_mixed:
                 sys.exit("REFUSED: " + msg + " Use a new --results-dir, or pass --allow-mixed.")
             print("WARNING (--allow-mixed): " + msg)

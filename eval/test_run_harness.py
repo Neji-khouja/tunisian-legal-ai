@@ -6,7 +6,7 @@
     a daily-quota error swallowed by a node (degraded + QUOTA_SEEN) is discarded too, not saved as degraded
 (b) re-running continues from the next pair; earlier lines byte-identical; no duplicates
 (c) a per-minute 429 is retried (agent/llm_retry.py) and does not stop the run; a daily one is not retried
-(d) a result file of another commit is refused (unless --allow-mixed)
+(d) a result file of another system fingerprint is refused (unless --allow-mixed); another commit alone is not
 (e) a changed exam file is refused (unless --allow-changed-exam)
 (f) --judge-only judges what has no judgement and skips already judged rows
 (g) --wait-on-quota: sleeps, probes, then continues    (h) --daily-budget-tokens stops before the pair, exit 75
@@ -20,6 +20,8 @@
 (p) eval/run_batch.py with a stub runner: next K ids, one process per system, exit 75 forwarded, other failures go on
 (q) crash isolation: a parse error once (recovers in the same run), on both tries (error row, the run goes on), in 3
     runs (failed: final, "system failure" in --summarize); a quota error still exits 75
+(r) system fingerprint: a harness (eval/) or agent test file change keeps it, an agent file or index change does not;
+    --judge-only ignores provenance
 """
 import io
 import sys
@@ -119,9 +121,10 @@ def write_hashes(tmp: Path):
                                          f"eval/stages.json {hc.sha256(tmp / 'stages.json')}\n", encoding="utf-8")
 
 
-def set_commit(commit):
-    rae.provenance = lambda args, h: {"commit": commit, "tags": [], "dirty_py": [], "agent_model": rae.GENERATOR_MODEL,
-                                      "prompt_hashes": {}, "exam_hashes": h, "judge": None}
+def set_commit(commit, fp="F"):
+    rae.provenance = lambda args, h: {"fingerprint": {"sha256": fp}, "commit": commit, "tags": [], "dirty_py": [],
+                                      "agent_model": rae.GENERATOR_MODEL, "prompt_hashes": {}, "exam_hashes": h,
+                                      "judge": None}
 
 
 def run(tmp: Path, *extra) -> tuple[object, str]:
@@ -195,10 +198,13 @@ def test_quota_and_resume():
         code, out = run(tmp)
         check("(b) a third run has nothing to do", code is None and "0 (item, system) runs to do" in out)
 
-        set_commit("B")                                    # (d)
+        set_commit("B")                                    # (d) a new commit, same system fingerprint
         code, out = run(tmp)
-        check("(d) another commit is refused", isinstance(code, str) and code.startswith("REFUSED") and "pooled" in code,
-              str(code)[:300])
+        check("(d) another commit with the same fingerprint goes on", code is None and "WARNING" not in out, str(code)[:300])
+        set_commit("B", fp="G")
+        code, out = run(tmp)
+        check("(d) another fingerprint is refused", isinstance(code, str) and code.startswith("REFUSED")
+              and "fingerprint" in code and "pooled" in code, str(code)[:300])
         code, out = run(tmp, "--allow-mixed")
         check("(d) --allow-mixed goes on with a warning", code is None and "WARNING (--allow-mixed)" in out, str(code))
 
@@ -530,6 +536,54 @@ def test_crash_isolation():
         check("(q) a quota error is not isolated: exit 75", code == 75, f"{code!r}")
 
 
+def test_fingerprint():
+    import sqlite3
+    with tempfile.TemporaryDirectory() as d:
+        root = Path(d)
+        for f in ["agent/answer.py", "agent/test_graph_logic.py", "agent/run_demo.py", "eval/run_answer_eval.py",
+                  "config.py", "splitter.py", "retriever.py", "reranker.py", "pipeline.py"]:
+            (root / f).parent.mkdir(parents=True, exist_ok=True)
+            (root / f).write_text(f"# {f}\n", encoding="utf-8")
+        (root / "db").mkdir()
+        con = sqlite3.connect(root / "db" / "chroma.sqlite3")
+        con.execute("create table embeddings (id integer)")
+        con.executemany("insert into embeddings values (?)", [(1,), (2,), (3,)])
+        con.commit()
+        fp = lambda: hc.system_fingerprint(root, root / "db")
+        f0 = fp()
+        (root / "eval" / "run_answer_eval.py").write_text("# harness changed\n", encoding="utf-8")
+        (root / "agent" / "test_graph_logic.py").write_text("# test changed\n", encoding="utf-8")
+        (root / "agent" / "run_demo.py").write_text("# runner changed\n", encoding="utf-8")
+        check("(r) fingerprint: a harness file, an agent test_*/run_* file change does not trigger it",
+              fp() == f0 and f0["files"] == 6 and f0["index"] == {"path": "db", "chunks": 3}, json.dumps(f0))
+        (root / "agent" / "answer.py").write_text("# agent changed\n", encoding="utf-8")
+        f1 = fp()
+        check("(r) fingerprint: an agent file change triggers it", f1["sha256"] != f0["sha256"])
+        con.execute("insert into embeddings values (4)")
+        con.commit()
+        con.close()
+        check("(r) fingerprint: an index with another chunk count triggers it", fp()["sha256"] != f1["sha256"])
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        setup(tmp)
+        Stub().install()
+        run(tmp, "--stage", "1")
+        set_commit("A", fp="G")
+        rae.JUDGE_FACTORY = JudgeStub()
+        argv = ["--set", str(tmp / "answer_set.json"), "--stages-file", str(tmp / "stages.json"), "--hashes-file",
+                str(tmp / "exam_hashes.txt"), "--results-dir", str(tmp / "results"), "--system", "all", "--stage", "1",
+                "--judge-only", "--judge-model", "stub-judge"]
+        buf, code = io.StringIO(), None
+        with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
+            try:
+                rae.main(argv)
+            except SystemExit as e:
+                code = e.code
+        check("(r) --judge-only ignores provenance (rows of another fingerprint judged, no refusal)",
+              code is None and all(r.get("judge") for r in rows(tmp, "v2", "1") if r["expected"] == "answer"),
+              f"{str(code)[:200]}")
+
+
 def test_judge_check():
     import judge_check as jc
     from pdf_truth import from_chunk_id
@@ -653,7 +707,8 @@ def test_usage_in_graph():
 
 if __name__ == "__main__":
     for t in (test_quota_and_resume, test_per_minute_retry, test_changed_exam, test_other_set, test_judge_only,
-              test_judge_errors, test_gate_judge, test_reply_gold, test_run_batch, test_crash_isolation, test_judge_check,
+              test_judge_errors, test_gate_judge, test_reply_gold, test_run_batch, test_crash_isolation, test_fingerprint,
+              test_judge_check,
               test_wait_and_budget,
               test_classes, test_usage_in_graph):
         t()

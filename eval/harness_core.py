@@ -11,6 +11,7 @@ import re
 import sys
 import json
 import time
+import sqlite3
 import hashlib
 import subprocess
 from pathlib import Path
@@ -209,8 +210,40 @@ def git_provenance(root: Path) -> dict:
             "dirty_py": dirty}
 
 
-def mixed_versions(rows: list[dict], commit: str) -> set:
-    return {(r.get("provenance") or {}).get("commit") for r in rows} - {commit}
+FINGERPRINT_FILES = ["config.py", "splitter.py", "retriever.py", "reranker.py", "pipeline.py"]
+
+
+def fingerprint_files(root: Path) -> list[Path]:
+    """agent/*.py except test_*.py and run_*.py, then FINGERPRINT_FILES (repo root). eval/ (the harness) is not in it."""
+    root = Path(root)
+    agent = sorted(p for p in (root / "agent").glob("*.py") if not p.name.startswith(("test_", "run_")))
+    return agent + [root / f for f in FINGERPRINT_FILES]
+
+
+def index_identity(root: Path, db_dir: Path) -> dict:
+    """Index path (relative to the repo) and chunk count (rows of the chroma embeddings table, read-only)."""
+    p, n = Path(db_dir) / "chroma.sqlite3", None
+    if p.exists():
+        con = sqlite3.connect(f"file:{p.as_posix()}?mode=ro", uri=True)
+        n = con.execute("select count(*) from embeddings").fetchone()[0]
+        con.close()
+    return {"path": Path(os.path.relpath(db_dir, root)).as_posix(), "chunks": n}
+
+
+def system_fingerprint(root: Path, db_dir: Path) -> dict:
+    """sha256 over the path and contents of every fingerprint file, then the index identity."""
+    h, files = hashlib.sha256(), fingerprint_files(root)
+    for f in files:
+        h.update(f.relative_to(root).as_posix().encode("utf-8") + b"\0")
+        h.update((f.read_bytes() if f.exists() else b"missing") + b"\0")
+    idx = index_identity(root, db_dir)
+    h.update(json.dumps(idx, sort_keys=True).encode("utf-8"))
+    return {"sha256": h.hexdigest(), "files": len(files), "index": idx}
+
+
+def mixed_versions(rows: list[dict], fingerprint: str) -> set:
+    """System fingerprints (sha256) of rows made by another system version; a row without one counts as None."""
+    return {((r.get("provenance") or {}).get("fingerprint") or {}).get("sha256") for r in rows} - {fingerprint}
 
 
 # ---------------------------------------------------------------- waiting for the quota
