@@ -41,8 +41,8 @@ v2 rows also keep the verifier loop: verdicts (last pass), first_verdicts (first
 draft_claims / draft_text (the first, unverified answer). A v2 item whose `degraded` list is not empty (a node fell back) is stored with status "degraded"
 (graph status in graph_status), gets no metrics and no judge, and is run again on resume.
 
-Judge: a model different from the generator (env JUDGE_MODEL or --judge-model), --judge-provider groq (Groq model id)
-or gemini (langchain-google-genai, key from GOOGLE_API_KEY), temperature 0, own prompt (hash recorded), structured
+Judge: a model different from the generator (env JUDGE_MODEL or --judge-model), --judge-provider (env JUDGE_PROVIDER,
+default groq; the flags win) groq (Groq model id) or gemini (langchain-google-genai, key from GOOGLE_API_KEY), temperature 0, own prompt (hash recorded), structured
 output. Never guessed: without a judge model the run stops unless --skip-judge. Clarify and refuse items (every system)
 get a second judge prompt (GATE_PROMPT, hash recorded): gives_substantive_answer and enumerates_alternatives, on the
 first-turn response; --summarize reports for refuse items "no substantive answer" (explicit refusal OR no substantive
@@ -948,7 +948,7 @@ def parse_args(argv=None):
     ap.add_argument("--only-ids")
     ap.add_argument("--skip-judge", action="store_true")
     ap.add_argument("--judge-only", action="store_true", help="judge saved answers that have no judgement yet")
-    ap.add_argument("--judge-provider", choices=["groq", "gemini"], default="groq")
+    ap.add_argument("--judge-provider", choices=["groq", "gemini"], default=hc.env_judge_provider())
     ap.add_argument("--judge-model", default=os.environ.get("JUDGE_MODEL"))
     ap.add_argument("--judge-thinking", choices=["minimal", "low", "medium", "high", "default", "auto"], default="auto",
                     help="gemini judge thinking level; auto: minimal, else low if minimal is not supported; default: "

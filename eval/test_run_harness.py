@@ -23,6 +23,8 @@
 (s) clarify behaviour metrics on the clarify items without a scripted reply; "clarify then answer" on the reply items
 (t) judge thinking auto (minimal -> low on a 400, kept), retry on json_validate_failed / parser errors, judge_check
     --candidates order, stop at the first passing, log, --min-gap, error texts
+(u) run_batch --loop: until nothing left (0), exit 75 at once, two consecutive failed batches (1), a batch that
+    finishes no row counts as failed; JUDGE_PROVIDER / JUDGE_MODEL env defaults, the flags win
 (r) system fingerprint: a harness (eval/) or agent test file change keeps it, an agent file or index change does not;
     --judge-only ignores provenance
 """
@@ -722,6 +724,83 @@ def test_judge_thinking_retry():
               and "429 looks per-minute; quota metric not stated; limit 8000; retry delay 1.5 s" in o, o[-600:])
 
 
+def test_run_batch_loop():
+    import os
+    import run_batch as rb
+    import preflight
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        setup(tmp)
+        res = tmp / "results"
+
+        def fake(plan):
+            """plan: list of (system exit code, write rows?) per call, in order; afterwards (0, True)."""
+            calls = []
+
+            def run(cmd, cwd=None):
+                sysname = cmd[cmd.index("--system") + 1]
+                ids = cmd[cmd.index("--only-ids") + 1].split(",")
+                code, write = plan.pop(0) if plan else (0, True)
+                calls.append((sysname, ",".join(ids), code))
+                if write:
+                    f = hc.ResultFile(rae.out_path(tmp / "answer_set.json", sysname, "1", res))
+                    for i in ids:
+                        if i not in f.finished():
+                            f.append({"id": i, "status": "done"})
+                return SimpleNamespace(returncode=code)
+            run.calls = calls
+            return run
+
+        def go(plan):
+            for p_ in res.glob("*.jsonl"):
+                p_.unlink()
+            rb.RUN = fake(plan)
+            buf, code = io.StringIO(), None
+            with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
+                try:
+                    rb.main(["--stage", "1", "--set", str(tmp / "answer_set.json"), "--stages-file",
+                             str(tmp / "stages.json"), "--results-dir", str(res), "--questions-per-run", "2", "--loop"])
+                except SystemExit as e:
+                    code = e.code
+            return code, buf.getvalue(), rb.RUN.calls
+        res.mkdir()
+        code, out, calls = go([])
+        check("(u) --loop: batches until nothing is left, exit 0, one progress line per batch",
+              code in (None, 0) and out.count("BATCH ") == 2 and "nothing left" in out
+              and [c[1] for c in calls] == ["a1,a2"] * 3 + ["c1"] * 3, f"{code!r} {calls}")
+        code, out, calls = go([(0, True)] * 3 + [(0, True), (75, False)])
+        check("(u) --loop: exit 75 in the 2nd batch stops at once with 75", code == 75 and len(calls) == 5
+              and out.count("BATCH ") == 1, f"{code!r} {calls}")
+        code, out, calls = go([(1, False), (0, True), (0, True)] * 2)
+        check("(u) --loop: two consecutive failed batches (non-quota exit code) stop with exit 1",
+              code == 1 and out.count("BATCH ") == 2 and "two consecutive batches failed" in out, f"{code!r} {calls}")
+        code, out, calls = go([(1, False), (0, True), (0, True)])
+        check("(u) --loop: one failed batch, then success: goes on to the end (exit 0)",
+              code in (None, 0) and out.count("BATCH 1 FAILED") == 1 and "nothing left" in out, f"{code!r} {calls}")
+        code, out, calls = go([(0, False)] * 6)
+        check("(u) --loop: batches that finish no row count as failed (no endless loop on degraded items), exit 1",
+              code == 1 and len(calls) == 6 and "no row finished" in out, f"{code!r} {calls}")
+    old = {k: os.environ.get(k) for k in ("JUDGE_PROVIDER", "JUDGE_MODEL")}
+    try:
+        os.environ.update(JUDGE_PROVIDER="gemini", JUDGE_MODEL="env-model")
+        a = rae.parse_args([])
+        b = rae.parse_args(["--judge-provider", "groq", "--judge-model", "flag-model"])
+        c = hc.env_judge_provider()
+        check("(u) harness: JUDGE_PROVIDER / JUDGE_MODEL env defaults; the flags win",
+              (a.judge_provider, a.judge_model, b.judge_provider, b.judge_model, c)
+              == ("gemini", "env-model", "groq", "flag-model", "gemini"), str((a.judge_provider, a.judge_model)))
+    finally:
+        for k, v in old.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
+    src = (ROOT / "eval" / "preflight.py").read_text(encoding="utf-8") + (ROOT / "eval" / "run_batch.py").read_text(
+        encoding="utf-8") + (ROOT / "eval" / "judge_check.py").read_text(encoding="utf-8")
+    check("(u) preflight, run_batch, judge_check: --judge-provider default from JUDGE_PROVIDER",
+          src.count("default=hc.env_judge_provider()") == 3 and preflight.hc is hc)
+
+
 def test_judge_check():
     import judge_check as jc
     from pdf_truth import from_chunk_id
@@ -846,7 +925,7 @@ def test_usage_in_graph():
 if __name__ == "__main__":
     for t in (test_quota_and_resume, test_per_minute_retry, test_changed_exam, test_other_set, test_judge_only,
               test_judge_errors, test_gate_judge, test_clarify_subsets, test_reply_gold, test_run_batch, test_crash_isolation, test_fingerprint,
-              test_judge_thinking_retry, test_judge_check,
+              test_judge_thinking_retry, test_run_batch_loop, test_judge_check,
               test_wait_and_budget,
               test_classes, test_usage_in_graph):
         t()

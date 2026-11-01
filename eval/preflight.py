@@ -2,8 +2,8 @@
 
     python eval/preflight.py [--v1-worktree ../RAG_PDF_v1] [--judge-provider groq|gemini] [--judge-model ID]
 
-Checks: no uncommitted agent/*.py or eval/*.py; frozen prompt hashes; judge provider and model (--judge-model, default
-env JUDGE_MODEL; set, and not the agent model; only "set"/"unset" is printed for keys); for gemini, langchain-google-genai importable; GOOGLE_API_KEY
+Checks: no uncommitted agent/*.py or eval/*.py; frozen prompt hashes; judge provider and model (--judge-provider,
+default env JUDGE_PROVIDER, else groq; --judge-model, default env JUDGE_MODEL; the flags win; set, and not the agent model; only "set"/"unset" is printed for keys); for gemini, langchain-google-genai importable; GOOGLE_API_KEY
 (INFO, set/unset only); eval/answer_set.json valid and non-empty (eval/check_answer_set.py); eval/exam_hashes.txt
 matches eval/answer_set.json and eval/stages.json; stages disjoint and covering every exam item; v1 worktree present
 (the test eval/run_answer_eval.py applies: pipeline.py and db/ inside it). INFO: the system fingerprint the harness
@@ -20,6 +20,8 @@ from pathlib import Path
 from collections import Counter
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "eval"))
+import harness_core as hc
 EXPECTED_HASHES = {"analyze": "0bbb0226bdc9", "plan": "04c1c55cf119", "codes": "7f49e7a7c8c1",
                    "combined": "e4c6a65fda60", "verify": "6568dc934538", "grade": "4a25ce5f5b52",
                    "reformulate": "5d689216e8cc"}
@@ -45,7 +47,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--v1-worktree", default=str(ROOT.parent / "RAG_PDF_v1"),
                     help="v1 worktree to check (default: ../RAG_PDF_v1, a suggestion; run_answer_eval.py has no default)")
-    ap.add_argument("--judge-provider", choices=["groq", "gemini"], default="groq")
+    ap.add_argument("--judge-provider", choices=["groq", "gemini"], default=hc.env_judge_provider())
     ap.add_argument("--judge-model", default=os.environ.get("JUDGE_MODEL"))
     args = ap.parse_args()
 

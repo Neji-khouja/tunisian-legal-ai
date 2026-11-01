@@ -6,7 +6,7 @@ eval/run_answer_eval.py, on 2 canned cases x 3 repeats.
     python eval/judge_check.py --candidates "gemini:gemini-3.8-flash,gemini:gemini-3.7-flash,groq:openai/gpt-oss-20b"
     python eval/judge_check.py --judge-provider groq --judge-model JUDGE_MODEL_ID --dry-run       # no call
 
-Defaults as in the harness: --judge-provider groq, --judge-model from env JUDGE_MODEL, --judge-thinking auto (Gemini 3+:
+Defaults as in the harness: --judge-provider from env JUDGE_PROVIDER (else groq), --judge-model from env JUDGE_MODEL, --judge-thinking auto (Gemini 3+:
 minimal, then low for the rest of the run if a 400 says minimal is not supported; groq: n/a).
 Canned cases: one question built from PenalFr art. 264 (verbatim PDF text, chunk PenalFr/s02/264; not in
 eval/answer_set.json), a correct answer (expected verdict "correct") and a clearly wrong one (expected "incorrect").
@@ -163,7 +163,7 @@ def list_models(provider: str) -> list[str]:
 
 def main(argv=None, sleep=time.sleep, clock=time.perf_counter):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("--judge-provider", choices=["groq", "gemini"], default="groq")
+    ap.add_argument("--judge-provider", choices=["groq", "gemini"], default=hc.env_judge_provider())
     ap.add_argument("--judge-model", default=os.environ.get("JUDGE_MODEL"))
     ap.add_argument("--judge-thinking", choices=["minimal", "low", "medium", "high", "default", "auto"], default="auto")
     ap.add_argument("--candidates", help='"provider:model,provider:model,..." checked in this order')

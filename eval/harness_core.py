@@ -246,6 +246,16 @@ def mixed_versions(rows: list[dict], fingerprint: str) -> set:
     return {((r.get("provenance") or {}).get("fingerprint") or {}).get("sha256") for r in rows} - {fingerprint}
 
 
+# ---------------------------------------------------------------- judge provider default
+
+def env_judge_provider() -> str:
+    """--judge-provider default: env JUDGE_PROVIDER (groq or gemini), else groq. The flag wins."""
+    p = os.environ.get("JUDGE_PROVIDER", "groq").strip().lower()
+    if p not in ("groq", "gemini"):
+        sys.exit(f"JUDGE_PROVIDER must be groq or gemini (got {p!r})")
+    return p
+
+
 # ---------------------------------------------------------------- waiting for the quota
 
 def wait_for_quota(probe, minutes: float, max_hours: float, retry_after: float | None, waited: float,

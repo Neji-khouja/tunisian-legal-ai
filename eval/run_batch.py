@@ -10,6 +10,9 @@ then runs eval/run_answer_eval.py --stage S --system X --only-ids <the K ids> fo
 (a system whose rows for these ids are all finished is skipped). Exit code 75 (daily quota or token budget) is
 forwarded at once and the batch stops; any other failure is reported and the next system runs (exit code 1 at the
 end). Flags not listed here are passed to every run. Prints done/remaining per system and the token projection.
+--loop: batch after batch, one progress line each, until exit 75 (stop, exit 75), nothing left (exit 0), or two
+consecutive failed batches (exit 1). A batch fails when a system exits with a code other than 0 and 75, or when it
+finishes no row at all (e.g. the same items degraded again), so a loop cannot spin. --dry-run shows one batch only.
 """
 import sys
 import json
@@ -45,26 +48,12 @@ def progress(items, files) -> dict:
     return todo
 
 
-def main(argv=None):
-    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("--stage", choices=["1", "2"], required=True)
-    ap.add_argument("--questions-per-run", type=int, default=10, metavar="K")
-    ap.add_argument("--judge-provider", choices=["groq", "gemini"], default="groq")
-    ap.add_argument("--set", default=str(rae.EXAM_DIR / "answer_set.json"))
-    ap.add_argument("--stages-file", default=str(rae.EXAM_DIR / "stages.json"))
-    ap.add_argument("--results-dir", default=str(ROOT / "results"))
-    ap.add_argument("--dry-run", action="store_true", help="every run with --dry-run (no LLM call)")
-    args, rest = ap.parse_known_args(argv)
-    clash = [a for a in rest if a.split("=")[0] in ("--system", "--only-ids", "--limit", "--judge-only", "--summarize")]
-    if clash:
-        sys.exit(f"run_batch.py sets these itself or does not batch them: {clash}")
-    items = stage_items(Path(args.set), Path(args.stages_file), args.stage)
+def run_one_batch(args, rest, items) -> tuple[str, list, list]:
+    """-> (outcome "nothing" | "ok" | "failed", batch ids, failures). Exit code 75 of a run: sys.exit(75) at once."""
     files = result_files(args)
-    progress(items, files)
     batch = [i["id"] for i in items if any(i["id"] not in f.finished() for f in files.values())][:args.questions_per_run]
     if not batch:
-        print("\nnothing left to run in this stage.")
-        return
+        return "nothing", [], []
     print(f"\nbatch of {len(batch)} question(s): {','.join(batch)}")
     failures = []
     for s in rae.SYSTEM_ORDER:
@@ -84,10 +73,50 @@ def main(argv=None):
         if code:
             failures.append((s, code))
             print(f"\n{s} FAILED (exit code {code}); going on to the next system.", file=sys.stderr)
+    done_before = sum(len(set(batch) & f.finished()) for f in files.values())
+    done_after = sum(len(set(batch) & f.finished()) for f in result_files(args).values())
+    if args.loop and not args.dry_run and not failures and done_after == done_before:
+        failures.append(("all", "no row finished"))
+    return ("failed" if failures else "ok"), batch, failures
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("--stage", choices=["1", "2"], required=True)
+    ap.add_argument("--questions-per-run", type=int, default=10, metavar="K")
+    ap.add_argument("--judge-provider", choices=["groq", "gemini"], default=hc.env_judge_provider())
+    ap.add_argument("--set", default=str(rae.EXAM_DIR / "answer_set.json"))
+    ap.add_argument("--stages-file", default=str(rae.EXAM_DIR / "stages.json"))
+    ap.add_argument("--results-dir", default=str(ROOT / "results"))
+    ap.add_argument("--dry-run", action="store_true", help="every run with --dry-run (no LLM call)")
+    ap.add_argument("--loop", action="store_true", help="repeat batches until quota (75), done (0) or 2 failed batches (1)")
+    args, rest = ap.parse_known_args(argv)
+    clash = [a for a in rest if a.split("=")[0] in ("--system", "--only-ids", "--limit", "--judge-only", "--summarize")]
+    if clash:
+        sys.exit(f"run_batch.py sets these itself or does not batch them: {clash}")
+    items = stage_items(Path(args.set), Path(args.stages_file), args.stage)
     progress(items, result_files(args))
-    if failures:
-        print(f"\nfailures: {', '.join(f'{s} (exit {c})' for s, c in failures)}", file=sys.stderr)
-        sys.exit(1)
+    n, failed_in_a_row = 0, 0
+    while True:
+        outcome, batch, failures = run_one_batch(args, rest, items)
+        if outcome == "nothing":
+            print("\nnothing left to run in this stage.")
+            return
+        n += 1
+        ids = {i["id"] for i in items}
+        done = ", ".join(f"{s} {len(ids & f.finished())}/{len(ids)}" for s, f in result_files(args).items())
+        print(f"\nBATCH {n} {outcome.upper()} ({batch[0]}..{batch[-1]}, {len(batch)} questions); done {done}"
+              + (f"; failures: {', '.join(f'{s} ({c})' for s, c in failures)}" if failures else ""), flush=True)
+        failed_in_a_row = failed_in_a_row + 1 if outcome == "failed" else 0
+        if not args.loop or args.dry_run:
+            progress(items, result_files(args))
+            if failures:
+                sys.exit(1)
+            return
+        if failed_in_a_row == 2:
+            progress(items, result_files(args))
+            print("\nSTOPPED: two consecutive batches failed (not a quota stop).", file=sys.stderr)
+            sys.exit(1)
 
 
 if __name__ == "__main__":
