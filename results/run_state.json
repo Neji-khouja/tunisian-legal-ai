@@ -1,14 +1,6 @@
 {
- "time": "2026-11-01T01:53:49",
- "reason": "agent daily quota",
- "message": "STOPPED: daily quota reached on ac13 (v1.1); this pair is discarded (not saved, not degraded). Finished pairs are saved. Re-run the same command to continue (about 9 min from now).\nRateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kpgszrv8fe9rn2xq00psn3xp` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199034, Requested 2228. Please try again in 9m5.183999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code",
- "resume_estimate": "2026-11-01T02:02:54",
- "command": "C:\\Users\\deadx\\OneDrive\\Documents\\Projects\\RAG_PDF\\eval\\run_answer_eval.py --set C:\\Users\\deadx\\OneDrive\\Documents\\Projects\\RAG_PDF\\eval\\answer_set.json --stages-file C:\\Users\\deadx\\OneDrive\\Documents\\Projects\\RAG_PDF\\eval\\stages.json --results-dir C:\\Users\\deadx\\OneDrive\\Documents\\Projects\\RAG_PDF\\results --stage 1 --system v1.1 --only-ids ac02,ac06,ac10,ac11,ac13,ac14,ac15,ac17,ac21,ac22 --judge-provider gemini --judge-model gemini-3.1-flash-lite --v1-worktree ../RAG_PDF_v1 --min-gap 3",
+ "time": "2026-11-01T16:52:07",
+ "reason": "judge-only completed",
  "stage": "1",
- "done": {
-  "v1.1": 4
- },
- "remaining": {
-  "v1.1": 6
- }
+ "judged": 4
 }
