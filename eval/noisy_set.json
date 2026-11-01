@@ -1,0 +1,1157 @@
+[
+ {
+  "id": "n_ac01",
+  "original_id": "ac01",
+  "noise_type": "typos",
+  "language": "fr",
+  "question": "jai signe avec une societe etrangere un contrat qui prevoit un arbitrage internationnal mais elle ma assigné devant un tribunal tunisien jusqua quand je peux demander que laffaire soit renvoyee aux arbitres",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "ArbitrageFr #1",
+  "gold": [
+   {
+    "source": "ArbitrageFr.pdf",
+    "article": "52",
+    "chunk_ids": [
+     "ArbitrageFr/s01/52"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "renverra les parties à l'arbitrage si l'une d'entre elles le demande",
+   "au plus tard lorsqu'elle soumet ses premières conclusions sur le fond du différend",
+   "à moins qu'il ne constate que ladite convention est nulle, inopérante ou non susceptible d'être exécutée"
+  ],
+  "reason": "The article sets the latest moment to ask for referral to arbitration: the first submissions on the merits."
+ },
+ {
+  "id": "n_ac03",
+  "original_id": "ac03",
+  "noise_type": "wrong_term",
+  "language": "fr",
+  "question": "J'ai obtenu à l'étranger un verdict rendu par un médiateur privé en ma faveur. Est-ce que je peux le faire appliquer en Tunisie, auprès de quel tribunal et avec quels papiers ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "two_article",
+  "sample": "ArbitrageFr #3",
+  "gold": [
+   {
+    "source": "ArbitrageFr.pdf",
+    "article": "79",
+    "chunk_ids": [
+     "ArbitrageFr/s01/79"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "ArbitrageFr.pdf",
+    "article": "80",
+    "chunk_ids": [
+     "ArbitrageFr/s01/80"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "les sentences arbitrales rendues en matière d'arbitrage international dans n'importe quel pays",
+   "Elle est exécutée sur requête écrite adressée à la cour d'appel de Tunis",
+   "doit en produire l'original dûment authentifié ou une copie certifiée conforme",
+   "d'une traduction officielle en langue arabe"
+  ],
+  "reason": "Art. 79 brings foreign awards within the regime; art. 80 names the court (Tunis court of appeal) and the documents."
+ },
+ {
+  "id": "n_ac04",
+  "original_id": "ac04",
+  "noise_type": "describe",
+  "language": "ar",
+  "question": "أعطيت صديقي مالاً ليشتغل به في البيع والشراء ونتقاسم ما يربحه، لكنه دخل في صفقات أكبر من المال الذي سلّمته له. هل أتحمل أنا نتيجة تلك الصفقات أم هو؟",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "COC #1",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "1203",
+    "chunk_ids": [
+     "COC/s02/1203"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "Le gérant ne peut engager d’opérations pour une somme supérieure à celle qui lui a été fournie",
+   "ce qu’il fait au-delà reste à son compte personnel",
+   "à moins que le bailleur de fonds ne le ratifie"
+  ],
+  "reason": "The article says operations beyond the funds provided stay on the manager's own account unless ratified."
+ },
+ {
+  "id": "n_ac05",
+  "original_id": "ac05",
+  "noise_type": "informal",
+  "language": "fr",
+  "question": "g filé mes bijoux à un pote pr qu'il me les garde, genre 3000 dinars, on a rien signé... fallait un papier écrit ou pas ? et y a des cas où c pas obligé ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "number",
+  "sample": "COC #2",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "1003",
+    "chunk_ids": [
+     "COC/s02/1003"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "COC.pdf",
+    "article": "473",
+    "chunk_ids": [
+     "COC/s02/473"
+    ],
+    "role": "alternative"
+   }
+  ],
+  "reference_points": [
+   "Le dépôt doit être constaté par écrit, lorsqu’il a une valeur excédant mille dinars",
+   "cette règle ne s’applique pas au dépôt nécessaire",
+   "la preuve peut être faite par tous moyens, quelle que soit la valeur de l’objet du dépôt"
+  ],
+  "reason": "The article requires a writing for a deposit above 1000 dinars and exempts the necessary deposit; art. 473 states the general 1000-dinar writing rule."
+ },
+ {
+  "id": "n_ac07",
+  "original_id": "ac07",
+  "noise_type": "typos",
+  "language": "ar",
+  "question": "اتفقت مع شخص علي ان يحرس امتعتي لمده سنه مقابل اجر لكن العقد انتهي بعد اربعه اشهر فقط هل يستحق الاجر المتفق عليه كاملا",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "COC #4",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "1030",
+    "chunk_ids": [
+     "COC/s02/1030"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "Si le contrat de dépôt a pris fin avant le délai fixé",
+   "n'a droit à la rétribution convenue qu’à proportion du temps où il a eu la garde du dépôt",
+   "s’il n’en est autrement convenu"
+  ],
+  "reason": "The article gives the depositary a fee proportional to the time of custody when the deposit ends early."
+ },
+ {
+  "id": "n_ac08",
+  "original_id": "ac08",
+  "noise_type": "wrong_term",
+  "language": "fr",
+  "question": "J'ai pris un sous-traitant pour régler une affaire à ma place. Une fois son travail fini, qu'est-ce que je lui dois, même si l'affaire n'a pas réussi ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "conditions",
+  "sample": "COC #5",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "1142",
+    "chunk_ids": [
+     "COC/s02/1142"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "rembourser au mandataire les avances et frais qu’il a dû faire pour l’exécution du mandat",
+   "lui payer sa rétribution au cas où elle serait due, quel que soit le résultat de l’affaire",
+   "exonérer le mandataire des obligations qu’il a dû contracter"
+  ],
+  "reason": "The article lists the principal's obligations toward the agent."
+ },
+ {
+  "id": "n_ac09",
+  "original_id": "ac09",
+  "noise_type": "describe",
+  "language": "en",
+  "question": "Two people each have a signed paper saying the same house is theirs, and nobody is living there. Which of the two wins?",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "COC #6",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "490",
+    "chunk_ids": [
+     "COC/s02/490"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "A défaut de possession et à égalité de titres, celui dont le titre à une date antérieure doit être préféré",
+   "on préférera celle dont le titre a une date certaine"
+  ],
+  "reason": "The article gives the rule between equal titles without possession: earlier date, then certain date."
+ },
+ {
+  "id": "n_ac12",
+  "original_id": "ac12",
+  "noise_type": "informal",
+  "language": "fr",
+  "question": "j'avais filé mon argent à un commerçant pour qu'il le fasse tourner et on partageait les bénefs. c fini maintenant, j'ai combien de temps pour le trainer au tribunal ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "number",
+  "sample": "COC #9",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "1225",
+    "chunk_ids": [
+     "COC/s02/1225"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "Toutes actions naissant du contrat de commande sont prescrites entre les parties après cinq ans",
+   "à partir du moment où le contrat a pris fin"
+  ],
+  "reason": "The article sets a five-year limitation for actions arising from the commenda contract."
+ },
+ {
+  "id": "n_ac16",
+  "original_id": "ac16",
+  "noise_type": "typos",
+  "language": "ar",
+  "question": "فتح البنك لفائدتي اعتمادا مستنديا غير قابل للالغاء هل يمكن للبنك ان يلغيه او يغير شروطه دون موافقتى",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "CommerceFr #3",
+  "gold": [
+   {
+    "source": "CommerceFr.pdf",
+    "article": "724",
+    "chunk_ids": [
+     "CommerceFr/s01/724"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "Le crédit irrévocable comporte un engagement ferme et direct de la banque à l'égard du bénéficiaire",
+   "Cet engagement ne peut être annulé ou modifié sans l'accord de toutes les parties intéressées",
+   "peut être confirmé par une autre banque"
+  ],
+  "reason": "The article says an irrevocable credit cannot be cancelled or changed without all parties' consent."
+ },
+ {
+  "id": "n_ac18",
+  "original_id": "ac18",
+  "noise_type": "wrong_term",
+  "language": "ar",
+  "question": "أرسلت سلعة مع شركة شحن واتفقنا أن الزبون يدفع ثمن التوصيل عند الاستلام. من هو المطالب في الحقيقة بدفع ثمن التوصيل؟",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "CommerceFr #5",
+  "gold": [
+   {
+    "source": "CommerceFr.pdf",
+    "article": "632",
+    "chunk_ids": [
+     "CommerceFr/s01/632"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "Le prix du transport et les frais grevant la chose transportée sont dus par l'expéditeur",
+   "Dans le cas d'expédition en port dû, l'expéditeur et le destinataire qui a accepté en sont solidairement tenus"
+  ],
+  "reason": "The article makes the sender liable and, for carriage forward, the accepting consignee jointly liable."
+ },
+ {
+  "id": "n_ac19",
+  "original_id": "ac19",
+  "noise_type": "describe",
+  "language": "fr",
+  "question": "Un commerçant a coulé son affaire et ne peut plus payer personne ; juste avant, il avait réglé quelqu'un avec un papier de paiement tiré sur sa banque, et ce paiement a été remis en cause. Qui peut-on poursuivre pour récupérer l'argent ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "CommerceFr #6",
+  "gold": [
+   {
+    "source": "CommerceFr.pdf",
+    "article": "464",
+    "chunk_ids": [
+     "CommerceFr/s01/464"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "donnera lieu, le cas échéant, à une action en rapport",
+   "cette action ne peut être exercée que contre le premier bénéficiaire",
+   "S'il s'agit d'un billet à ordre, l'action ne peut être exercée que contre le premier endosseur"
+  ],
+  "reason": "The article limits the recovery action for annulled cheque payments to the first beneficiary."
+ },
+ {
+  "id": "n_ac20",
+  "original_id": "ac20",
+  "noise_type": "informal",
+  "language": "fr",
+  "question": "un pays étranger me doit de l'argent, g gagné au tribunal mais il veut tjs pas payer... je peux faire saisir ses trucs qu'il a en tunisie ou pas ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "two_article",
+  "sample": "DIPFR #1",
+  "gold": [
+   {
+    "source": "DIPFR.pdf",
+    "article": "23",
+    "chunk_ids": [
+     "DIPFR/s01/23"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "DIPFR.pdf",
+    "article": "24",
+    "chunk_ids": [
+     "DIPFR/s01/24"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "jouissent de l'immunité d'exécution sur leurs biens situés en territoire tunisien",
+   "affectés à une activité liée à sa souveraineté ou à une fin de service public",
+   "ne sont pas couverts par l'immunité d'exécution lorsqu'ils sont affectés à une activité privée ou à caractère commercial"
+  ],
+  "reason": "Art. 23 grants immunity for sovereign assets; art. 24 excludes assets used for private or commercial activity."
+ },
+ {
+  "id": "n_ac25",
+  "original_id": "ac25",
+  "noise_type": "typos",
+  "language": "fr",
+  "question": "jai un apartement dans un imeuble en copropriete et je voudrai le louer meuble a des touristes pour quelques jours a chaque fois est ce que jai besoin dune autorisation",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "dtreelFr #3",
+  "gold": [
+   {
+    "source": "dtreelFr.pdf",
+    "article": "102",
+    "chunk_ids": [
+     "dtreelFr/s01/102"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "La vocation de ces parties ne peut être changée que par autorisation préalable de l’autorité administrative compétente",
+   "à la location en tant qu’appartements meublés pour une courte période n’excédant pas un mois",
+   "comme changement de vocation de l’immeuble au sens du présent article"
+  ],
+  "reason": "The article treats short furnished letting as a change of use that needs prior administrative authorisation."
+ },
+ {
+  "id": "n_ac26",
+  "original_id": "ac26",
+  "noise_type": "wrong_term",
+  "language": "fr",
+  "question": "J'ai acheté un champ du domaine public et je l'ai sous-loué à un voisin. Quelle pénalité financière je risque ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "number",
+  "sample": "dtreelFr #4",
+  "gold": [
+   {
+    "source": "dtreelFr.pdf",
+    "article": "27-bis",
+    "chunk_ids": [
+     "dtreelFr/s06/27-bis"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "qui procède à sa location en totalité ou en partie",
+   "une amende de 200 dinars à 500 dinars pour tout hectare loué"
+  ],
+  "reason": "The article fines the buyer of state land who leases it, per hectare."
+ },
+ {
+  "id": "n_ac27",
+  "original_id": "ac27",
+  "noise_type": "describe",
+  "language": "ar",
+  "question": "المحكمة التي تنظر في قضايا الأراضي أصدرت حكماً يسمح بقيد أرض باسم شخص في السجل. هل يمكن الاعتراض على هذا الحكم أمام أعلى محكمة في البلاد، وفي أي حالات؟",
+  "status": "final",
+  "expected": "answer",
+  "type": "conditions",
+  "sample": "dtreelFr #5",
+  "gold": [
+   {
+    "source": "dtreelFr.pdf",
+    "article": "357-bis",
+    "chunk_ids": [
+     "dtreelFr/s01/357-bis"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "peuvent faire l’objet d’un recours en cassation auprès de la cour de cassation dans les cas suivants",
+   "si le jugement contient une violation de la loi",
+   "si le tribunal qui l’a rendu était incompétent",
+   "s’il y a eu excès de pouvoir"
+  ],
+  "reason": "The article allows cassation against land-court registration judgments and lists the grounds."
+ },
+ {
+  "id": "n_ac28",
+  "original_id": "ac28",
+  "noise_type": "informal",
+  "language": "fr",
+  "question": "un journal a mis la photo et le nom d'un ado qui passe devant le juge, celui qui a publié ça il risque koi ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "number",
+  "sample": "EnfantFr #1",
+  "gold": [
+   {
+    "source": "EnfantFr.pdf",
+    "article": "121",
+    "chunk_ids": [
+     "EnfantFr/s01/121"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "Est passible de prison de 16 jours à un an et d'une amende de cent dinars à mille dinars ou de l'une des deux peines",
+   "toute personne qui porte atteinte à la vie privée de l'enfant",
+   "qui indiqueraient le public sur l'identité de l'enfant qu'il soit inculpé ou victime"
+  ],
+  "reason": "The article punishes publishing material that identifies a child before the juvenile judge."
+ },
+ {
+  "id": "n_ac30",
+  "original_id": "ac30",
+  "noise_type": "typos",
+  "language": "ar",
+  "question": "اذا ضبط طفل وهو يتعاطي المخدرات هل يمكن للمحكمه ان تلزمه بالخضوع للعلاج",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "EnfantFr #3",
+  "gold": [
+   {
+    "source": "EnfantFr.pdf",
+    "article": "19-bis",
+    "chunk_ids": [
+     "EnfantFr/s04/19-bis"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "Le tribunal peut soumettre l'enfant, dans les cas de consommation ou de détention pour consommation, à un traitement médical",
+   "à un traitement psycho-médical qui l'empêche de la récidive",
+   "prendre toute disposition citée à l'article 59 du code de la protection de l'enfant"
+  ],
+  "reason": "The article lets the court order medical or psycho-medical treatment for a child drug user."
+ },
+ {
+  "id": "n_ac31",
+  "original_id": "ac31",
+  "noise_type": "wrong_term",
+  "language": "fr",
+  "question": "Un site internet balance des photos et des infos sur un enfant impliqué dans un procès. Que peut faire la justice pour arrêter ça et, si c'est très urgent, qui peut porter plainte devant le juge de permanence ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "two_article",
+  "sample": "EnfantFr #4",
+  "gold": [
+   {
+    "source": "EnfantFr.pdf",
+    "article": "97",
+    "chunk_ids": [
+     "EnfantFr/s01/97"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "EnfantFr.pdf",
+    "article": "98",
+    "chunk_ids": [
+     "EnfantFr/s01/98"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "le tribunal prendra d'office toutes les mesures requises pour mettre fin aux violations",
+   "telle que la saisie des publications, des livres, des enregistrements, des photos",
+   "peuvent être prises par le juge des référés, sur une demande présentée par l'enfant, par l'un des membres de sa famille",
+   "ou par le ministère public"
+  ],
+  "reason": "Art. 97 gives the court's measures (seizure); art. 98 says who may ask the summary judge in urgent cases."
+ },
+ {
+  "id": "n_ac32",
+  "original_id": "ac32",
+  "noise_type": "describe",
+  "language": "fr",
+  "question": "Je suis étranger et j'ai fait une demande pour devenir tunisien. Comment cette demande est-elle étudiée, et que se passe-t-il si je n'ai pas ce qu'il faut pour l'obtenir ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "two_article",
+  "sample": "NationaliteFr #1",
+  "gold": [
+   {
+    "source": "NationaliteFr.pdf",
+    "article": "42",
+    "chunk_ids": [
+     "NationaliteFr/s01/42"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "NationaliteFr.pdf",
+    "article": "43",
+    "chunk_ids": [
+     "NationaliteFr/s01/43"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "Elle fait l’objet d’une enquête",
+   "dans les six mois à compter du jour de la réception de la demande",
+   "déclare la demande irrecevable",
+   "Sa décision est motivée. Elle est notifiée à l’intéressé"
+  ],
+  "reason": "Art. 42 sets the investigation within six months; art. 43 the reasoned inadmissibility decision."
+ },
+ {
+  "id": "n_ac34",
+  "original_id": "ac34",
+  "noise_type": "informal",
+  "language": "fr",
+  "question": "si on s'est mariés à l'étranger, ça compte pour la nationalité tunisienne peu importe comment on l'a fait le mariage ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "NationaliteFr #3",
+  "gold": [
+   {
+    "source": "NationaliteFr.pdf",
+    "article": "29",
+    "chunk_ids": [
+     "NationaliteFr/s01/29"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "Le mariage ne produit effet, quant à la nationalité, que s’il est célébré en l’une des formes admises",
+   "soit par la loi tunisienne, soit par la loi du pays où il a été célébré"
+  ],
+  "reason": "The article limits the nationality effect of marriage to the forms admitted by Tunisian or local law."
+ },
+ {
+  "id": "n_ac37",
+  "original_id": "ac37",
+  "noise_type": "typos",
+  "language": "ar",
+  "question": "ماهي عقوبه من يحرق او يتلف سجلات او وثائق اصليه صادره عن السلطه العموميه",
+  "status": "final",
+  "expected": "answer",
+  "type": "number",
+  "sample": "PenalFr #3",
+  "gold": [
+   {
+    "source": "PenalFr.pdf",
+    "article": "160",
+    "chunk_ids": [
+     "PenalFr/s02/160"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "Est puni de cinq ans d'emprisonnement et de deux cent quarante dinars d’amende",
+   "quiconque aura brûlé ou détruit, d'une manière quelconque, des registres",
+   "La tentative est punissable"
+  ],
+  "reason": "The article sets the penalty for burning or destroying public records and titles."
+ },
+ {
+  "id": "n_ac38",
+  "original_id": "ac38",
+  "noise_type": "wrong_term",
+  "language": "fr",
+  "question": "Quelqu'un part en fugue avec un enfant de 12 ans, sans le forcer ni le tromper, loin de la famille à qui l'enfant était confié. Quelle sanction risque-t-il ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "number",
+  "sample": "PenalFr #4",
+  "gold": [
+   {
+    "source": "PenalFr.pdf",
+    "article": "238",
+    "chunk_ids": [
+     "PenalFr/s02/238"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "Quiconque sans fraude, violence ni menace, détourne ou déplace une personne des lieux où elle a été mise",
+   "est puni de deux ans d'emprisonnement",
+   "La peine est portée à cinq ans d'emprisonnement si l'enfant enlevé est âgé de mois de treize ans"
+  ],
+  "reason": "The article sets five years when the child taken without violence is under thirteen."
+ },
+ {
+  "id": "n_ac39",
+  "original_id": "ac39",
+  "noise_type": "describe",
+  "language": "fr",
+  "question": "Que risque quelqu'un qui s'enfuit de l'endroit où il est enfermé, selon qu'on ne l'a pas encore jugé ou qu'il est déjà en train de faire ses années derrière les barreaux ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "two_article",
+  "sample": "PenalFr #5",
+  "gold": [
+   {
+    "source": "PenalFr.pdf",
+    "article": "146",
+    "chunk_ids": [
+     "PenalFr/s02/146"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "PenalFr.pdf",
+    "article": "147",
+    "chunk_ids": [
+     "PenalFr/s02/147"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "Tout prévenu qui s'évade du lieu de sa détention ou se délivre des mains de ses gardiens à l'aide de violences, de menaces ou de bris de prison est puni d'un emprisonnement d'un an",
+   "Est augmentée d'un an, la peine du condamné à l'emprisonnement à temps qui s'est évadé ou tenté de s'évader",
+   "S'il y a eu violence, bris de prison ou entente entre détenus, l'augmentation est de trois ans",
+   "Elle est de cinq ans, s'il y a eu corruption ou tentative de corruption du gardien"
+  ],
+  "reason": "Art. 146 covers escape before judgment; art. 147 the increase for a convicted prisoner."
+ },
+ {
+  "id": "n_ac40",
+  "original_id": "ac40",
+  "noise_type": "informal",
+  "language": "en",
+  "question": "a bunch of ppl i owe money to put seizures on my land papers... if just one of them says ok can it get taken off??",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "Procedurecivilecom #1",
+  "gold": [
+   {
+    "source": "Procedurecivilecom.pdf",
+    "article": "455",
+    "chunk_ids": [
+     "Procedurecivilecom/s01/455"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "La radiation de la saisie ne peut être opérée que du consentement des créanciers poursuivants mentionnés sur le titre foncier",
+   "ou en vertu d'un jugement qui leur soit opposable"
+  ],
+  "reason": "The article requires the consent of all pursuing creditors on the title, or a judgment, to lift the seizure."
+ },
+ {
+  "id": "n_ac42",
+  "original_id": "ac42",
+  "noise_type": "typos",
+  "language": "ar",
+  "question": "اريد رفع دعوي نفقه علي طليقي الذي يسكن في ولايه اخري هل يمكنني رفعها امام محكمه المكان الذي اقيم فيه",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "Procedurecivilecom #3",
+  "gold": [
+   {
+    "source": "Procedurecivilecom.pdf",
+    "article": "36",
+    "chunk_ids": [
+     "Procedurecivilecom/s01/36"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "le demandeur peut saisir, à son choix",
+   "en matière de pension alimentaire, le tribunal du lieu du domicile du créancier d'aliments"
+  ],
+  "reason": "The article lets a maintenance claimant sue at the court of their own domicile."
+ },
+ {
+  "id": "n_ac45",
+  "original_id": "ac45",
+  "noise_type": "wrong_term",
+  "language": "fr",
+  "question": "Quelqu'un à qui je dois de l'argent a mis un blocage sur mon terrain. Est-ce que je peux encore le vendre ou le mettre en gage et faire passer ça au cadastre ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "Procedurecivilecom #6",
+  "gold": [
+   {
+    "source": "Procedurecivilecom.pdf",
+    "article": "328",
+    "chunk_ids": [
+     "Procedurecivilecom/s01/328"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "il ne peut être procédé à l'inscription des aliénations autres que les ventes sur saisie",
+   "des hypothèques volontaires et autres droits réels",
+   "des baux et des quittances ou cessions de loyers ou fermages non échus"
+  ],
+  "reason": "The article blocks registration of sales, voluntary mortgages and leases once a protective opposition is registered."
+ },
+ {
+  "id": "n_ac46",
+  "original_id": "ac46",
+  "noise_type": "describe",
+  "language": "fr",
+  "question": "J'ai été déclaré coupable au pénal et, après coup, j'ai demandé qu'on rouvre mon affaire déjà jugée définitivement. Comment les juges vont-ils traiter ma demande ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "ProcedurepenaleFr #1",
+  "gold": [
+   {
+    "source": "ProcedurepenaleFr.pdf",
+    "article": "281",
+    "chunk_ids": [
+     "ProcedurepenaleFr/s02/281"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "statue d'abord en la forme sur la recevabilité de la demande",
+   "Elle fixe ensuite une autre audience, sans nouvelle citation, pour être plaidé au fond",
+   "par une seule et même décision en la forme et au fond si toutes les parties ont épuisé leurs moyens"
+  ],
+  "reason": "The article describes the two-stage examination of a revision request."
+ },
+ {
+  "id": "n_ac48",
+  "original_id": "ac48",
+  "noise_type": "informal",
+  "language": "fr",
+  "question": "un juge d'un autre pays veut faire une enquête ici en tunisie pour une affaire pénale, sa demande elle doit passer par où ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "ProcedurepenaleFr #3",
+  "gold": [
+   {
+    "source": "ProcedurepenaleFr.pdf",
+    "article": "331",
+    "chunk_ids": [
+     "ProcedurepenaleFr/s02/331"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "les commissions rogatoires émanant de l'autorité étrangère sont reçues par la voie diplomatique",
+   "transmises au secrétariat d'Etat à la justice",
+   "Au cas d'urgence, elles peuvent être l'objet de communication directe entre les autorités judiciaires des deux Etats"
+  ],
+  "reason": "The article sets the diplomatic channel for foreign letters rogatory, with direct contact if urgent."
+ },
+ {
+  "id": "n_ac50",
+  "original_id": "ac50",
+  "noise_type": "typos",
+  "language": "en",
+  "question": "can a prisonner held in tunisia be sent abroad to be confronted with somone in a foriegn case and how is that requestd",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "ProcedurepenaleFr #5",
+  "gold": [
+   {
+    "source": "ProcedurepenaleFr.pdf",
+    "article": "335",
+    "chunk_ids": [
+     "ProcedurepenaleFr/s02/335"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "L'envoi des individus détenus, en vue d'une confrontation, doit être demandé par la voie diplomatique",
+   "à moins que des considérations particulières ne s'y opposent",
+   "sous la condition de renvoyer lesdits détenus dans le plus bref délai"
+  ],
+  "reason": "The article allows sending detainees for confrontation on a diplomatic request, with prompt return."
+ },
+ {
+  "id": "n_ac52",
+  "original_id": "ac52",
+  "noise_type": "wrong_term",
+  "language": "en",
+  "question": "In a small private firm, who calls the shareholders' meeting and how far ahead must people be warned? Can the small shareholders make the boss call one?",
+  "status": "final",
+  "expected": "answer",
+  "type": "two_article",
+  "sample": "societeFr #2",
+  "gold": [
+   {
+    "source": "societeFr.pdf",
+    "article": "126",
+    "chunk_ids": [
+     "societeFr/s01/126"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "societeFr.pdf",
+    "article": "127",
+    "chunk_ids": [
+     "societeFr/s01/127"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "Les associés sont convoqués aux assemblées générales par le gérant",
+   "par lettre recommandée avec accusé de réception vingt jours au moins avant la date",
+   "Un ou plusieurs associés détenant au moins le quart du capital social peuvent, une fois par an, demander au gérant de convoquer l’assemblée générale"
+  ],
+  "reason": "Art. 126 gives who convenes and the 20-day notice; art. 127 the quarter-of-capital right to demand a meeting."
+ },
+ {
+  "id": "n_ac53",
+  "original_id": "ac53",
+  "noise_type": "describe",
+  "language": "fr",
+  "question": "J'ai des parts dans une entreprise qui me donnent un avantage sur les bénéfices mais pas le droit de voter. Si les autres décident de fermer définitivement l'entreprise plus tôt que prévu, est-ce que je peux les en empêcher ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "number",
+  "sample": "societeFr #3",
+  "gold": [
+   {
+    "source": "societeFr.pdf",
+    "article": "362",
+    "chunk_ids": [
+     "societeFr/s01/362"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "ne peuvent contester la dissolution anticipée de la société",
+   "une action éventuelle en dommages et intérêts qu'ils ne peuvent exercer que collectivement",
+   "dans les six mois qui suivront la date de la publication de la décision de dissolution"
+  ],
+  "reason": "The article bars non-voting preferred shareholders from contesting dissolution and gives a six-month collective damages action."
+ },
+ {
+  "id": "n_ac54",
+  "original_id": "ac54",
+  "noise_type": "informal",
+  "language": "en",
+  "question": "can the ppl on a company's supervisory board get in trouble for stuff the management board decided??",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "societeFr #4",
+  "gold": [
+   {
+    "source": "societeFr.pdf",
+    "article": "255",
+    "chunk_ids": [
+     "societeFr/s01/255"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "répondent de leurs fautes personnelles commises lors de l’accomplissement de leurs fonctions",
+   "Ils ne supportent aucune responsabilité du fait des actes de gestion",
+   "Leur responsabilité civile peut être retenue pour les délits commis par les membres du directoire s’ils en ont pris connaissance"
+  ],
+  "reason": "The article sets the liability of supervisory board members."
+ },
+ {
+  "id": "n_ac57",
+  "original_id": "ac57",
+  "noise_type": "typos",
+  "language": "fr",
+  "question": "une femme est decedee en laissant son mari sa mere son grand pere paternel un frere germain et deux freres uterins comment sa sucession est elle partagee",
+  "status": "final",
+  "expected": "answer",
+  "type": "number",
+  "sample": "Statutpersonnel #1",
+  "gold": [
+   {
+    "source": "Statutpersonnel.pdf",
+    "article": "145",
+    "chunk_ids": [
+     "Statutpersonnel/s01/145"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "le mari recevra la moitié",
+   "la mère ou la grand-mère le sixième, le grand-père le sixième",
+   "Les frères utérins ne recevront rien"
+  ],
+  "reason": "The article settles exactly this set of heirs."
+ },
+ {
+  "id": "n_ac58",
+  "original_id": "ac58",
+  "noise_type": "wrong_term",
+  "language": "ar",
+  "question": "متى يصبح الولد الذي تحت كفالة أهله كبيراً ويستطيع أن يتصرف في كل أموره بنفسه؟",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "Statutpersonnel #2",
+  "gold": [
+   {
+    "source": "Statutpersonnel.pdf",
+    "article": "157",
+    "chunk_ids": [
+     "Statutpersonnel/s01/157"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "Statutpersonnel.pdf",
+    "article": "153",
+    "chunk_ids": [
+     "Statutpersonnel/s01/153"
+    ],
+    "role": "alternative"
+   },
+   {
+    "source": "COC.pdf",
+    "article": "7",
+    "chunk_ids": [
+     "COC/s02/7"
+    ],
+    "role": "alternative"
+   }
+  ],
+  "reference_points": [
+   "sera majeur de plein droit",
+   "Il est alors capable de tous les actes civils",
+   "cessé de faire l'objet d'un jugement d'interdiction pour une des causes autres que la minorité"
+  ],
+  "reason": "The article makes the ward fully capable at eighteen; CSP 153 and COC 7 also state the age of majority (18)."
+ },
+ {
+  "id": "n_ac60",
+  "original_id": "ac60",
+  "noise_type": "describe",
+  "language": "fr",
+  "question": "Quelqu'un a mis par écrit qu'à sa mort un de ses biens irait à une certaine personne. Dans quels cas cette promesse tombe à l'eau ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "conditions",
+  "sample": "Statutpersonnel #4",
+  "gold": [
+   {
+    "source": "Statutpersonnel.pdf",
+    "article": "197",
+    "chunk_ids": [
+     "Statutpersonnel/s01/197"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "par la démence caractérisée du testateur, si cet état persiste jusqu'à son décès",
+   "si la chose léguée périt avant le décès du testateur",
+   "par la répudiation du legs faite par le légataire, après le décès du testateur"
+  ],
+  "reason": "The article lists the causes of lapse of a legacy."
+ },
+ {
+  "id": "n_ac61",
+  "original_id": "ac61",
+  "noise_type": "informal",
+  "language": "en",
+  "question": "my kid goes to job training classes but never signed any apprentice contract, do the apprentice rules still apply to them or nah?",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "travailFr #1",
+  "gold": [
+   {
+    "source": "travailFr.pdf",
+    "article": "363",
+    "chunk_ids": [
+     "travailFr/s01/363"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "A défaut de contrat d'apprentissage, les dispositions des articles 346 à 358 sont applicables",
+   "au contrat né de l'inscription des jeunes gens aux cours professionnels ou aux centres"
+  ],
+  "reason": "The article applies the apprenticeship provisions to enrolment in vocational courses without a contract."
+ },
+ {
+  "id": "n_ac64",
+  "original_id": "ac64",
+  "noise_type": "typos",
+  "language": "fr",
+  "question": "je suis representant de comerce qui me delivre ma carte profesionnelle et est ce que je dois la faire renouveller",
+  "status": "final",
+  "expected": "answer",
+  "type": "two_article",
+  "sample": "travailFr #4",
+  "gold": [
+   {
+    "source": "travailFr.pdf",
+    "article": "423",
+    "chunk_ids": [
+     "travailFr/s01/423"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "travailFr.pdf",
+    "article": "424",
+    "chunk_ids": [
+     "travailFr/s01/424"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "Les cartes d'identité professionnelle sont délivrées par le Gouverneur du domicile du requérant",
+   "La carte d'identité professionnelle doit être renouvelée tous les ans",
+   "La délivrance des cartes d'identité professionnelle donne lieu à la perception d'un droit annuel"
+  ],
+  "reason": "Art. 423 names the issuing authority; art. 424 requires yearly renewal."
+ },
+ {
+  "id": "n_ac65",
+  "original_id": "ac65",
+  "noise_type": "wrong_term",
+  "language": "fr",
+  "question": "Mon entreprise veut exceptionnellement faire faire des heures sup à ses employés comme le permet la convention de sa branche. Quelles formalités doit-elle faire auprès du bureau du travail ?",
+  "status": "final",
+  "expected": "answer",
+  "type": "conditions",
+  "sample": "travailFr #5",
+  "gold": [
+   {
+    "source": "travailFr.pdf",
+    "article": "87",
+    "chunk_ids": [
+     "travailFr/s01/87"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "est tenu d’adresser au préalable à l’Inspection du Travail une déclaration sous pli recommandé datée",
+   "spécifiant la nature et la cause de la dérogation, le nombre de salariés",
+   "jusqu’au 15 janvier de l’année suivante"
+  ],
+  "reason": "The article lists the prior declaration and posting duties for working-time derogations."
+ },
+ {
+  "id": "n_ac69",
+  "original_id": "ac69",
+  "noise_type": "describe",
+  "language": "en",
+  "question": "What design is on the official cloth banner that represents Tunisia as a state?",
+  "status": "final",
+  "expected": "answer",
+  "type": "single",
+  "sample": "tun_RecAcFreeLi #3",
+  "gold": [
+   {
+    "source": "tun_RecAcFreeLi.pdf",
+    "article": "8",
+    "chunk_ids": [
+     "tun_RecAcFreeLi/s00/8"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "Le drapeau de l’Etat tunisien est rouge",
+   "un cercle blanc où figure une étoile rouge à cinq branches entourée d’un croissant rouge"
+  ],
+  "reason": "The article describes the flag."
+ },
+ {
+  "id": "n_ac70",
+  "original_id": "ac70",
+  "noise_type": "informal",
+  "language": "en",
+  "question": "when do tunisia's MPs actually sit every year, and if they're on vacation who can make them come back?",
+  "status": "final",
+  "expected": "answer",
+  "type": "number",
+  "sample": "tun_RecAcFreeLi #4",
+  "gold": [
+   {
+    "source": "tun_RecAcFreeLi.pdf",
+    "article": "71",
+    "chunk_ids": [
+     "tun_RecAcFreeLi/s00/71"
+    ],
+    "role": "main"
+   }
+  ],
+  "reference_points": [
+   "se réunit en session ordinaire débutant au cours du mois d’octobre de chaque année et prenant fin au cours du mois de juillet",
+   "peut également se réunir en session extraordinaire au cours de ses vacances, à la demande du Président de la République ou du tiers de ses membres"
+  ],
+  "reason": "The article gives the October-July ordinary session and who may call an extraordinary one."
+ }
+]
