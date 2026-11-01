@@ -332,3 +332,100 @@ Caveats:
   - The AR/EN contract-validity wins may be a translation weakness, not agentic reasoning (untested).
   - Analyze cache used by G had no prompt hash (UNVERIFIED, prompt is frozen).
 Status: UNCONFIRMED. Test split already seen twice. Confirmation = the fresh 100-question set.
+
+
+## Corpus audit against the original PDFs (2026-10-29)
+- Independent extraction (pypdf) vs the index (PyMuPDF). 14 sources verified. Fidelity: 141/148 sampled chunks match,
+  7 mismatches (3 footnote digits, 3 CommerceFr chunks contain the page footer "Imprimerie Officielle de la
+  République Tuinsienne" (typo in source, so clean_text missed it), 1 footnote text).
+- 9 articles have no chunk of their own because the splitter misses headings broken across lines
+  ("Article \n335.-"): COC 1273, 882; DIPFR 10; dtreelFr 335; societeFr 193, 194, 212, 221; travailFr 48. Their text sits
+  inside the previous article's chunk (0.17% of articles). They cannot be used as gold and may be cited under the
+  neighbouring article number.
+- The index stores the base number in `article`: 112 cases in 10 sources share a base number with a -bis/-ter chunk.
+  Labels are now derived from the chunk id.
+- Mojibake ("quelquâ€™un") exists in no index chunk and no PDF extraction (checked 3 more indexes). Likely emitted by the
+  model once. check_answer now flags it.
+- DECISION: splitter heading repair is PINNED (new index = new baseline = rerun of dev numbers; v1.1 and v2 must
+  stay on the same index for a fair comparison). Backlog item "v1.2".
+
+## Answer node and verifier
+- Answer = claims with cited chunk ids (check_answer: ids exist, no empty claim, no mojibake). ANSWER_CHARS = VERIFY_CHARS = 3000.
+- Verifier calibration (ground truth by construction, French verbatim sentences, n=24 per run, seed 20261022):
+  run 1: false alarms 0/24, number_changed 23/24, wrong_article 24/24, added_condition 24/24.
+  run 2 (after label change and 3000 limit; sample changed, 4 articles in common): 0/24, 24/24, 24/24, 24/24.
+  NOTE: no thresholds were written before run 1. Any threshold written afterwards is post hoc. No verifier threshold is
+  stated (not recorded; no claim made). The evaluation thresholds are in the PRE-REGISTRATION ADDENDUM at the end of
+  this file (written 2026-11-01, after verifier runs 1 and 2).
+- Limits: blatant mutations only; French claims only (Arabic/English claims against French articles are untested);
+  same model family writes and checks claims.
+- PDF numeric check: 60 claims, 0 numbers missing after the implicit-reference rule ("l'article précédent").
+- hit_fr answer verified by hand against the PDF: art. 218 supports the 4 claims on penalties and the attempt.
+- Overlapping provisions: art. 113 (one month of effective work) vs art. 123 (six months of continuous service) for paid
+  leave. Both are valid sources; the answer set must accept either. Which one prevails: not recorded; no claim made.
+  (Recorded: eval/questions.json lists art. 113 as gold in 3 items; art. 123 is in no gold list of eval/questions.json or
+  eval/answer_set.json.)
+- Clarification path works (Arabic ambiguous question -> follow-up -> answer cites 13-bis). Retrieval after a
+  clarification receives the labelled transcript (User:/Agent asked:); n=1, no visible harm.
+- Run-to-run noise: French penal questions identical over 3 runs; the Arabic clarification wording and the 5th/6th
+  evidence chunk changed between two identical runs at temperature 0. Noise on AR/EN not yet measured.
+
+## Incidents and withdrawn claims
+- Dev A1 of 77.1 vs official 88.6: the 77.1 run and the environment it ran in are not recorded in the repo; no claim
+  made. Recorded: 88.6 (Hit@6, dev) was reproduced on 2026-10-23 at commit 19a58b6 (docs/baseline_v1.1_report.md §9,
+  results/repro_agent_v2_dev.txt); results/plan_vs_raw_dev.txt (committed in e331e72) shows A1 at 88.6; the rag-app
+  environment was pinned in requirements.lock.txt by commit fda965a (2026-10-23 22:08). Conclusions built on the 77.1
+  run were discarded.
+- Detached HEAD incident (git reflog, 2026-10-26): at 17:05 HEAD was checked out to commit 0dba643 (detached); at 17:07
+  commit a63037f ("Freeze Analyze/Plan prompts and code descriptions (variant D)") was made there. Its only change,
+  `retrieve_for_plan(sqs, soft=True)` in agent/agent_graph.py, was therefore not on agent-v2. At 19:22 HEAD returned to
+  agent-v2 and a63037f was cherry-picked as 56a6612; branch rescue/detached-a63037f keeps the original commit. Tag
+  agent-prompts-frozen (e331e72) contains 56a6612.
+- Test split run twice (first run discarded because a variant was skipped). The test split is considered seen.
+- Withdrawn hypothesis: the wording of the Arabic hypothesis is not recorded; no claim made. Recorded reason: v1.1 Hit@6
+  dev -> test by language was Arabic 75.0 -> 76.9 (n 8 -> 13), English 100.0 -> 83.3 (n 8 -> 12), French 89.5 -> 81.5
+  (n 19 -> 27) (results/repro_agent_v2_dev.txt, results/final_v1_1_test.txt): on the test split English lost most, not
+  Arabic.
+
+## Pre-registration: final evaluation (100 questions, written BEFORE running)
+Set: ~70 answerable, ~15 ambiguous, ~15 out of scope; systems v1, v1.1, v2; one run; no tuning after the run.
+Primary metrics: correct (judge: all reference points covered, no contradiction) and answer-level hallucination.
+With ~70 answerable questions each rate has a 95% interval of about +-10-12 points, so only large gaps are detectable.
+- H1: v2 correct rate >= v1.1 + 10 points. [edit]
+- H2: v2 hallucination rate <= half of v1.1's. [edit]
+- H3: ambiguity recall >= 70%, false clarification on answerable questions <= 5%. [edit]
+- H4: refusal recall on out-of-scope >= 90%. [edit]
+Rule: if the paired 95% interval of a difference includes 0, report "no detectable difference". Failed hypotheses are
+reported as failed. Human audit of 30 answers (including Arabic and English) to check the judge.
+
+## Backlog (pinned)
+- v1.2: splitter heading repair + footer typo (new index, rerun dev numbers).
+- Verifier calibration for Arabic/English claims.
+- Query for retrieval after a clarification: user turns only.
+- Ambiguity gate set (separate from the 100 questions); "Can I break my contract?" is still classified clear.
+
+## PRE-REGISTRATION ADDENDUM (written 2026-11-01, before any exam item was run)
+System under test: v2-candidate. Fingerprint (sha256 over agent/*.py except test_*/run_*,
+config.py, splitter.py, retriever.py, reranker.py, pipeline.py, plus index path and chunk
+count): dc8fd664c66230b19fa88aad2195be1ab8b67c5be5540a010ba091c4537ec5ca (index db_v1_1, 6031 chunks).
+Exam: eval/answer_set.json sha256 61939392c495ee52c528575dd2c286d4e35fbedf780cca58ed67baac777a1c6e;
+eval/stages.json sha256 621dd54387ae48abdd05c97d3b6fe946cf555a9700b41dd9b9be4a0949a7401b.
+Judge: gemini-3.1-flash-lite, thinking minimal, chosen by the rule in eval/judge_check.py
+(>=5/6 successes, median latency <30 s, both canned verdicts correct).
+Design: Stage 1 (50 items) is primary; Stage 2 (50) is confirmation. No pooling across
+stages or versions. Paired bootstrap CIs over questions (5000 resamples, seed 20261022).
+No agent change between the start of Stage 1 and its end. If the agent changes after
+Stage 1, the new version is tested on Stage 2 only and reported as a separate version.
+Pre-registered thresholds:
+- Human audit of 30 answers: judge/human agreement >= 80%, otherwise judge results are
+  reported as unreliable.
+- Ambiguous items: v2 asks for clarification on >= 60% of the 10 unscripted items;
+  over-clarification (asking on answerable items) <= 10%.
+- Out-of-scope items: >= 80% "no substantive answer" (explicit refusal or "not found").
+- Latency: separate warm benchmark of 10 questions, not taken from the batch runs.
+Reporting rules: persistent errors count as system failures (a sensitivity line treats
+them as incorrect). Degraded items are rerun, not scored. A difference whose CI includes
+zero is reported as "no detectable difference". Known weaknesses are reported, not fixed:
+support is not applicability (recel, periode d'essai art. 370), a date read as an article
+number, ambiguity gate recall 8/10, verifier calibrated only on blatant French mutations,
+few Arabic items in Stage 1.
