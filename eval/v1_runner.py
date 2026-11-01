@@ -5,7 +5,8 @@ eval/run_answer_eval.py --system v1; reads {"id", "question"} JSON lines on stdi
 
 Only the worktree's modules are imported (its config, pipeline, retriever, ...), never the current ones; the one
 exception is eval/harness_core.py (standard library only), loaded by file path: a daily-quota 429 is not retried
-and is returned as "quota". Token usage (LangChain usage metadata) is returned as "usage".
+and is returned as "quota". Token usage (LangChain usage metadata) is returned as "usage". Warnings of a step that fell
+back (harness_core.capture_fallbacks: query rewrite, sub-queries, translation) are returned as "fallbacks".
 """
 import os
 import sys
@@ -48,13 +49,14 @@ for line in sys.stdin:
     before, t0 = calls["n"], time.time()
     hc.QUOTA_SEEN["msg"], usage = None, None
     try:
-        if get_usage_metadata_callback:
-            with get_usage_metadata_callback() as cb:
+        with hc.capture_fallbacks() as fallbacks:
+            if get_usage_metadata_callback:
+                with get_usage_metadata_callback() as cb:
+                    answer, docs = ask_question(vs, item["question"], None)
+                usage = cb.usage_metadata
+            else:
                 answer, docs = ask_question(vs, item["question"], None)
-            usage = cb.usage_metadata
-        else:
-            answer, docs = ask_question(vs, item["question"], None)
-        out = {"id": item["id"], "answer": answer,
+        out = {"id": item["id"], "answer": answer, "fallbacks": fallbacks,
                "docs": [{"source": d.metadata.get("source"), "article": d.metadata.get("article"),
                          "text": d.page_content} for d in docs]}
     except Exception as e:

@@ -5,6 +5,8 @@
            [--daily-budget-tokens N] [--wait-on-quota [MINUTES]] [--max-wait-hours H] [--allow-mixed] [--allow-changed-exam]
     python eval/run_answer_eval.py --stage 1 --system all --judge-only --judge-provider gemini   # judge saved answers later
     python eval/run_answer_eval.py --summarize [results/answer_eval_answer_set_stage1_v2.jsonl ...]   # no path: all stage files
+    python eval/run_answer_eval.py --stage 1 --summarize --exclude-ids ac02,ac29   # sensitivity: items left out everywhere
+    python eval/run_answer_eval.py --stage 1 --system v1 --rerun-ids ac29 --v1-worktree ../RAG_PDF_v1   # run a pair again
     python eval/run_answer_eval.py --stage 1 --system v2 --export-audit 20   # CSV for a human check of the judge
     python eval/run_answer_eval.py --set eval/plumbing_set.json --system all --results-dir results/plumbing --dry-run
 
@@ -40,6 +42,13 @@ announced); n_429 and waited_seconds are None for v1, whose LLM calls run in a s
 v2 rows also keep the verifier loop: verdicts (last pass), first_verdicts (first pass), repairs, dropped,
 draft_claims / draft_text (the first, unverified answer). A v2 item whose `degraded` list is not empty (a node fell back) is stored with status "degraded"
 (graph status in graph_status), gets no metrics and no judge, and is run again on resume.
+Fallbacks (every system): a logging handler (harness_core.capture_fallbacks; v1: inside its own process) keeps the
+warnings of a step that fell back ("Query translation failed", "Query rewrite failed", "Sub-query generation failed",
+"... using original", "... using primary query") in the row as "fallbacks"; a non-empty list makes the row "degraded"
+as above. --rerun-ids a,b,c (with --system) runs those pairs again even if finished: the new row is appended with
+rerun: true and supersedes {status, date} of the row it replaces; the old row stays in the file (the latest row wins).
+A pair whose latest row is a finished re-run is skipped, so the same command resumes after a quota stop.
+--exclude-ids a,b,c (with --summarize) leaves those items out of every block and paired difference (sensitivity).
 
 Judge: a model different from the generator (env JUDGE_MODEL or --judge-model), --judge-provider (env JUDGE_PROVIDER,
 default groq; the flags win) groq (Groq model id) or gemini (langchain-google-genai, key from GOOGLE_API_KEY), temperature 0, own prompt (hash recorded), structured
@@ -245,7 +254,8 @@ class V1Process:
         ids = [f"{source_stem(d['source'])}/v1/{d['article']}" for d in r["docs"]]
         return {"status": "done" if r["docs"] else "no_docs", "evidence_ids": ids, "cited": None, "claims": None,
                 "text": r["answer"], "_evidence_text": {i: d["text"] for i, d in zip(ids, r["docs"])},
-                "_seconds": r["seconds"], "_llm_calls": r["llm_calls"], "_tokens": r.get("usage")} | (
+                "_seconds": r["seconds"], "_llm_calls": r["llm_calls"], "_tokens": r.get("usage"),
+                "_fallbacks": r.get("fallbacks") or []} | (
                 {"asked": asked(item)} if item.get("reply") else {})
 
 
@@ -632,10 +642,12 @@ def print_block(title: str, rows: list[dict]):
                   f"[{lo:.3f}, {hi:.3f}]")
 
 
-def summarize(paths: list[Path]):
-    runs = {}
+def summarize(paths: list[Path], exclude=()):
+    runs, exclude = {}, set(exclude)
+    if exclude:
+        print(f"sensitivity analysis: items excluded for every system: {', '.join(sorted(exclude))}")
     for p in paths:
-        runs[p.stem] = {r["id"]: r for r in read_jsonl(p)}         # latest row per item (a resume re-runs degraded)
+        runs[p.stem] = {r["id"]: r for r in read_jsonl(p) if r["id"] not in exclude}   # latest row per item
         print_block(p.name, list(runs[p.stem].values()))
     by_system = defaultdict(list)                                   # stage files of one system -> pooled line
     for p in paths:
@@ -756,7 +768,7 @@ def run_one(item, system, run, args, judge_state, stage, prov) -> dict:
     c0, t0 = CALLS["n"], time.time()
     r0, w0 = CALLS["n429"], CALLS["waited"]
     try:
-        with usage_callback() as cb:
+        with usage_callback() as cb, hc.capture_fallbacks() as fallbacks:
             rec = run(item)
     except Exception as e:
         q = hc.classify(e)
@@ -770,9 +782,13 @@ def run_one(item, system, run, args, judge_state, stage, prov) -> dict:
     ev_text = rec.get("_evidence_text") or {}
     tokens = token_record(cb.usage_metadata, rec.pop("_tokens", None),
                           est_in=asked(item) + "".join(ev_text.values()), est_out=rec.get("text") or "", calls=calls)
-    degraded = bool(rec.get("degraded"))
-    if degraded:                                    # a node fell back: no metrics, re-run on resume
+    rec["fallbacks"] = fallbacks + rec.pop("_fallbacks", [])     # v1: captured in its own process
+    degraded = bool(rec.get("degraded")) or bool(rec["fallbacks"])
+    if degraded:                                    # a node or step fell back: no metrics, re-run on resume
         rec["graph_status"], rec["status"] = rec.get("status"), "degraded"
+        if rec["fallbacks"]:
+            print(f"  {item['id']} {system}: a step fell back ({rec['fallbacks'][0][:150]}); saved as degraded, re-run "
+                  f"on resume", file=sys.stderr)
     m = None if degraded else deterministic(item, rec)
     jd = jdd = gj = None
     judgeable = item["expected"] == "answer" and rec.get("status") == "done"
@@ -943,9 +959,12 @@ def parse_args(argv=None):
     ap.add_argument("--hashes-file", default=str(EXAM_DIR / "exam_hashes.txt"))
     ap.add_argument("--results-dir", default=str(ROOT / "results"))
     ap.add_argument("--stage", choices=["1", "2", "all"], default="all")
-    ap.add_argument("--system", default="v2", help="v2, v1.1, v1, a comma list, or all (= v1,v1.1,v2)")
+    ap.add_argument("--system", help="v2 (default), v1.1, v1, a comma list, or all (= v1,v1.1,v2)")
     ap.add_argument("--limit", type=int)
     ap.add_argument("--only-ids")
+    ap.add_argument("--rerun-ids", help="a,b,c (needs --system): run these pairs again even if finished; the old row "
+                                        "stays in the file, superseded by the new one")
+    ap.add_argument("--exclude-ids", help="a,b,c (with --summarize): leave these items out for every system")
     ap.add_argument("--skip-judge", action="store_true")
     ap.add_argument("--judge-only", action="store_true", help="judge saved answers that have no judgement yet")
     ap.add_argument("--judge-provider", choices=["groq", "gemini"], default=hc.env_judge_provider())
@@ -972,14 +991,20 @@ def main(argv=None):
     args = parse_args(argv)
     set_thinking(args.judge_thinking)
     set_path, results_dir = Path(args.set), Path(args.results_dir)
-    systems = SYSTEM_ORDER if args.system == "all" else args.system.split(",")
+    system_arg = args.system or "v2"
+    systems = SYSTEM_ORDER if system_arg == "all" else system_arg.split(",")
     bad = [s for s in systems if s not in SYSTEM_ORDER]
     if bad:
         sys.exit(f"unknown system(s) {bad}; choose from {SYSTEM_ORDER} or all")
     systems = [s for s in SYSTEM_ORDER if s in systems]                 # question-major order v1, v1.1, v2
+    if args.exclude_ids and args.summarize is None:
+        sys.exit("--exclude-ids applies to --summarize only")
+    if args.rerun_ids and (args.system is None or args.judge_only or args.summarize is not None):
+        sys.exit("--rerun-ids needs --system and does not go with --judge-only or --summarize")
     if args.summarize is not None:
         pattern = f"answer_eval_{set_path.stem}_stage*_*.jsonl" if is_exam(set_path) else f"answer_eval_{set_path.stem}_*.jsonl"
-        summarize([Path(p) for p in args.summarize] or sorted(results_dir.glob(pattern)))
+        summarize([Path(p) for p in args.summarize] or sorted(results_dir.glob(pattern)),
+                  exclude=args.exclude_ids.split(",") if args.exclude_ids else ())
         return
     if not is_exam(set_path) and args.stage != "all":
         sys.exit("--stage 1/2 applies to the exam (eval/answer_set.json) only")
@@ -1010,6 +1035,12 @@ def main(argv=None):
         items = [i for i in items if i["id"] in wanted]
     if args.limit:
         items = items[:args.limit]
+    rerun = set(args.rerun_ids.split(",")) if args.rerun_ids else set()
+    if rerun:
+        missing = rerun - {i["id"] for i in items}
+        if missing:
+            sys.exit(f"--rerun-ids: not among the selected items: {sorted(missing)}")
+        items = [i for i in items if i["id"] in rerun]
 
     prov = provenance(args, cur_hashes)
     fp = prov["fingerprint"]["sha256"]
@@ -1029,7 +1060,12 @@ def main(argv=None):
         judge_only(args, items, files, results_dir)
         return
 
-    todo = [(i, s) for i in items for s in systems if i["id"] not in files[s].finished()]
+    def to_run(i, s):
+        done = i["id"] in files[s].finished()
+        if i["id"] in rerun:                        # a finished re-run row is not run again (the command resumes)
+            return not (done and files[s].latest()[i["id"]].get("rerun"))
+        return not done
+    todo = [(i, s) for i in items for s in systems if to_run(i, s)]
     todo_by_system = defaultdict(int)
     for _, s in todo:
         todo_by_system[s] += 1
@@ -1100,6 +1136,9 @@ def main(argv=None):
                  f"discarded (not saved, not degraded). Finished pairs are saved. Re-run the same command to continue"
                  + (f" (about {q.retry_after / 60:.0f} min from now)" if q.retry_after else "") + f".\n{str(q)[:400]}",
                  [(i["id"], x) for i, x in todo], k, files, args, q.retry_after)
+        if item["id"] in rerun:                     # the old row stays in the file; the latest row wins
+            old = files[s].latest().get(item["id"]) or {}
+            row["rerun"], row["supersedes"] = True, {"status": old.get("status"), "date": old.get("date")}
         files[s].append(row)
         k += 1
     if v1proc:

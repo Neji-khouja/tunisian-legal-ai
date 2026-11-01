@@ -25,6 +25,10 @@
     --candidates order, stop at the first passing, log, --min-gap, error texts
 (u) run_batch --loop: until nothing left (0), exit 75 at once, two consecutive failed batches (1), a batch that
     finishes no row counts as failed; JUDGE_PROVIDER / JUDGE_MODEL env defaults, the flags win
+(w) fallbacks: a logged "Query rewrite failed ... using original" (in process) or the v1 process' "fallbacks" makes the
+    row degraded with the list in "fallbacks", re-run on resume; other warnings are not captured; --rerun-ids re-runs
+    finished pairs (old row kept, the new one marked rerun/supersedes, the same command resumes); --exclude-ids drops
+    items from --summarize
 (r) system fingerprint: a harness (eval/) or agent test file change keeps it, an agent file or index change does not;
     --judge-only ignores provenance
 """
@@ -801,6 +805,99 @@ def test_run_batch_loop():
           src.count("default=hc.env_judge_provider()") == 3 and preflight.hc is hc)
 
 
+def test_fallbacks_rerun_exclude():
+    import logging
+    log = logging.getLogger("translate")
+
+    class FallbackStub(Stub):
+        """in_process: pairs whose run logs a fallback warning; v1_process: pairs whose v1 process reports one;
+        other: pairs that log an unrelated warning."""
+
+        def __init__(self, in_process=(), v1_process=(), other=()):
+            super().__init__()
+            self.in_process, self.v1_process, self.other = set(in_process), set(v1_process), set(other)
+
+        def system(self, name):
+            base = super().system(name)
+
+            def run(item):
+                pair = (item["id"], name)
+                if pair in self.in_process:
+                    log.warning("Query rewrite failed (%s) — using original", "Connection error.")
+                if pair in self.other:
+                    log.warning("an unrelated warning")
+                rec = base(item)
+                if pair in self.v1_process:
+                    rec["_fallbacks"] = ["translate: Sub-query generation failed (Request timed out.) — using primary query"]
+                return rec
+            return run
+
+    def main_out(*argv):
+        buf, code = io.StringIO(), None
+        with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
+            try:
+                rae.main(list(argv))
+            except SystemExit as e:
+                code = e.code
+        return code, buf.getvalue()
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        setup(tmp)
+        FallbackStub(in_process={("a1", "v1.1")}, v1_process={("a2", "v1")}, other={("a3", "v2")}).install()
+        code, out = run(tmp)
+        latest = {s: {r["id"]: r for r in rows(tmp, s)} for s in rae.SYSTEM_ORDER}
+        a1, a2 = latest["v1.1"]["a1"], latest["v1"]["a2"]
+        check("(w) a logged fallback warning: row degraded, warning kept in fallbacks, no metrics",
+              code is None and a1["status"] == "degraded" and a1["graph_status"] == "done" and a1["metrics"] is None
+              and len(a1["fallbacks"]) == 1 and "Query rewrite failed" in a1["fallbacks"][0], json.dumps(a1)[:300])
+        check("(w) the v1 process' fallbacks: row degraded",
+              a2["status"] == "degraded" and "Sub-query generation failed" in a2["fallbacks"][0], json.dumps(a2)[:300])
+        others = [r for s in rae.SYSTEM_ORDER for r in latest[s].values() if r is not a1 and r is not a2]
+        check("(w) other rows (an unrelated warning included): status kept, fallbacks []",
+              all(r["status"] != "degraded" and r["fallbacks"] == [] for r in others), str([r["fallbacks"] for r in others]))
+        check("(w) the warnings still reach the console", "Query rewrite failed" in out and "an unrelated warning" in out
+              and "saved as degraded" in out)
+        before = {s: raw(tmp, s) for s in rae.SYSTEM_ORDER}
+        stub = FallbackStub()
+        stub.install()
+        code, out = run(tmp)
+        check("(w) resume re-runs exactly the degraded pairs, earlier lines byte-identical",
+              code is None and sorted(stub.calls) == [("a1", "v1.1"), ("a2", "v1")]
+              and all(raw(tmp, s).startswith(before[s]) for s in rae.SYSTEM_ORDER), str(stub.calls))
+
+        before = raw(tmp, "v2")
+        stub = FallbackStub()
+        stub.install()
+        code, out = run(tmp, "--system", "v2", "--rerun-ids", "a1")
+        r_all = [r for r in rows(tmp, "v2") if r["id"] == "a1"]
+        check("(w) --rerun-ids a1 --system v2: only that pair runs; the old row stays, the new one is marked",
+              code is None and stub.calls == [("a1", "v2")] and raw(tmp, "v2").startswith(before) and len(r_all) == 2
+              and r_all[-1]["rerun"] is True and r_all[-1]["supersedes"]["status"] == "done"
+              and "rerun" not in r_all[0], f"{code!r} {stub.calls}")
+        stub = FallbackStub()
+        stub.install()
+        code, out = run(tmp, "--system", "v2", "--rerun-ids", "a1")
+        check("(w) the same --rerun-ids command again: the finished re-run row is not run again",
+              code is None and stub.calls == [], str(stub.calls))
+        code, out = run(tmp, "--system", "v2", "--rerun-ids", "zz")
+        check("(w) --rerun-ids with an unknown id: refused", code and "not among the selected items" in str(code))
+        code, out = main_out("--set", str(tmp / "answer_set.json"), "--stages-file", str(tmp / "stages.json"),
+                             "--hashes-file", str(tmp / "exam_hashes.txt"), "--results-dir", str(tmp / "results"),
+                             "--skip-judge", "--rerun-ids", "a1")
+        check("(w) --rerun-ids without --system: refused", code and "needs --system" in str(code))
+
+        paths = [str(rae.out_path(tmp / "answer_set.json", s, "all", tmp / "results")) for s in ("v1.1", "v2")]
+        code, full = main_out("--summarize", *paths)
+        code2, excl = main_out("--summarize", *paths, "--exclude-ids", "a1,c1")
+        check("(w) --exclude-ids a1,c1: items left out of every block and of the paired difference",
+              code is None and code2 is None and full.count(": 5 items") == 2 and excl.count(": 3 items") == 2
+              and "on 5 common items" in full and "on 3 common items" in excl
+              and "items excluded for every system: a1, c1" in excl, excl[:300])
+        code, out = main_out("--exclude-ids", "a1")
+        check("(w) --exclude-ids without --summarize: refused", code and "--summarize only" in str(code))
+
+
 def test_judge_check():
     import judge_check as jc
     from pdf_truth import from_chunk_id
@@ -925,7 +1022,7 @@ def test_usage_in_graph():
 if __name__ == "__main__":
     for t in (test_quota_and_resume, test_per_minute_retry, test_changed_exam, test_other_set, test_judge_only,
               test_judge_errors, test_gate_judge, test_clarify_subsets, test_reply_gold, test_run_batch, test_crash_isolation, test_fingerprint,
-              test_judge_thinking_retry, test_run_batch_loop, test_judge_check,
+              test_judge_thinking_retry, test_run_batch_loop, test_fallbacks_rerun_exclude, test_judge_check,
               test_wait_and_budget,
               test_classes, test_usage_in_graph):
         t()

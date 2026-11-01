@@ -11,8 +11,10 @@ import re
 import sys
 import json
 import time
+import logging
 import sqlite3
 import hashlib
+import contextlib
 import subprocess
 from pathlib import Path
 from datetime import datetime, timedelta
@@ -114,6 +116,39 @@ def install_groq_patches():
         orig_rl = llm_retry._is_rate_limit
         llm_retry._is_rate_limit = lambda e: orig_rl(e) and not is_daily_quota(full_message(e))
         llm_retry._quota_patched = True
+
+
+# ---------------------------------------------------------------- fallbacks (a step that logged a warning and went on)
+
+FALLBACK_MARKERS = ("Query translation failed", "Query rewrite failed", "Sub-query generation failed",
+                    "using original", "using primary query")
+
+
+class FallbackCapture(logging.Handler):
+    """Root-logger handler for one (item, system) run: keeps the WARNING+ messages saying a step fell back. It also
+    prints every WARNING+ message to stderr, as Python's last-resort handler did while the root logger had no handler."""
+
+    def __init__(self):
+        super().__init__(logging.WARNING)
+        self.found = []
+
+    def emit(self, record):
+        msg = record.getMessage()
+        if any(m in msg for m in FALLBACK_MARKERS):
+            self.found.append(f"{record.name}: {msg}"[:300])
+        if logging.getLogger().handlers == [self]:
+            sys.stderr.write(msg + "\n")
+
+
+@contextlib.contextmanager
+def capture_fallbacks():
+    """with capture_fallbacks() as found: ... -> found: the fallback warnings logged inside the block."""
+    h, root = FallbackCapture(), logging.getLogger()
+    root.addHandler(h)
+    try:
+        yield h.found
+    finally:
+        root.removeHandler(h)
 
 
 # ---------------------------------------------------------------- result files (atomic, append-only content)
