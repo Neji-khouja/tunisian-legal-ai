@@ -98,7 +98,6 @@ def main():
         print("        -", msg)
 
     # 4b. exam fingerprint and stages (eval/harness_core.py, as run_answer_eval.py checks them)
-    import harness_core as hc
     _, diffs = hc.exam_check(cas.SET_PATH, ROOT / "eval" / "stages.json", ROOT / "eval" / "exam_hashes.txt")
     record("eval/exam_hashes.txt matches answer_set.json and stages.json", not diffs, "; ".join(diffs) or "match")
     st = json.loads((ROOT / "eval" / "stages.json").read_text(encoding="utf-8"))
