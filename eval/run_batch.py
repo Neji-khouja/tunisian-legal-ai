@@ -13,7 +13,12 @@ end). Flags not listed here are passed to every run. Prints done/remaining per s
 --loop: batch after batch, one progress line each, until exit 75 (stop, exit 75), nothing left (exit 0), or two
 consecutive failed batches (exit 1). A batch fails when a system exits with a code other than 0 and 75, or when it
 finishes no row at all (e.g. the same items degraded again), so a loop cannot spin. --dry-run shows one batch only.
+Backup Groq keys: put GROQ_API_KEY_2, GROQ_API_KEY_3, ... next to GROQ_API_KEY in .env. When a run stops on the agent's
+daily quota (run_state.json reason "agent daily quota"), the same system runs again at once with the next key; the
+finished rows are kept, so it goes on where it stopped. Keys are never printed, only their number. Groq counts the
+quota per organization: a second key of the same account shares the same 200k tokens and does not help.
 """
+import os
 import sys
 import json
 import argparse
@@ -26,6 +31,26 @@ import harness_core as hc
 import run_answer_eval as rae
 
 RUN = subprocess.run                     # tests replace it
+KEY = {"i": 0}                           # index of the Groq key in use (stays on the next key for later batches)
+
+
+def groq_keys() -> list[str]:
+    """GROQ_API_KEY, then GROQ_API_KEY_2, GROQ_API_KEY_3, ... until one is missing (environment, else .env)."""
+    from dotenv import load_dotenv
+    load_dotenv(ROOT / ".env")           # does not override variables already set
+    keys = [os.environ.get("GROQ_API_KEY", "")]
+    n = 2
+    while os.environ.get(f"GROQ_API_KEY_{n}"):
+        keys.append(os.environ[f"GROQ_API_KEY_{n}"])
+        n += 1
+    return list(dict.fromkeys(k.strip() for k in keys if k and k.strip()))
+
+
+def stop_reason(args) -> str:
+    try:
+        return json.loads((Path(args.results_dir) / "run_state.json").read_text(encoding="utf-8")).get("reason", "")
+    except (OSError, ValueError):
+        return ""
 
 
 def stage_items(set_path: Path, stages_path: Path, stage: str) -> list[dict]:
@@ -48,7 +73,7 @@ def progress(items, files) -> dict:
     return todo
 
 
-def run_one_batch(args, rest, items) -> tuple[str, list, list]:
+def run_one_batch(args, rest, items, keys=()) -> tuple[str, list, list]:
     """-> (outcome "nothing" | "ok" | "failed", batch ids, failures). Exit code 75 of a run: sys.exit(75) at once."""
     files = result_files(args)
     batch = [i["id"] for i in items if any(i["id"] not in f.finished() for f in files.values())][:args.questions_per_run]
@@ -65,7 +90,15 @@ def run_one_batch(args, rest, items) -> tuple[str, list, list]:
                "--only-ids", ",".join(batch), "--judge-provider", args.judge_provider, *rest] + \
               (["--dry-run"] if args.dry_run else [])
         print(f"\n--- {s}: " + " ".join(cmd), flush=True)
-        code = RUN(cmd, cwd=ROOT).returncode
+        while True:
+            env = {**os.environ, "GROQ_API_KEY": keys[KEY["i"]]} if keys else None
+            code = RUN(cmd, cwd=ROOT, env=env).returncode
+            if code == hc.EXIT_QUOTA and KEY["i"] + 1 < len(keys) and stop_reason(args) == "agent daily quota":
+                KEY["i"] += 1
+                print(f"\nGroq key {KEY['i']} of {len(keys)} reached its daily quota; switching to key {KEY['i'] + 1} "
+                      f"and running {s} again (finished rows are kept).", flush=True)
+                continue
+            break
         if code == hc.EXIT_QUOTA:
             print(f"\nSTOPPED: {s} exited with {hc.EXIT_QUOTA} (daily quota or token budget); the batch stops here. "
                   f"Re-run the same command later to continue.", file=sys.stderr)
@@ -95,10 +128,13 @@ def main(argv=None):
     if clash:
         sys.exit(f"run_batch.py sets these itself or does not batch them: {clash}")
     items = stage_items(Path(args.set), Path(args.stages_file), args.stage)
+    keys = [] if args.dry_run else groq_keys()
+    if len(keys) > 1:
+        print(f"Groq keys: {len(keys)} (GROQ_API_KEY + backups); the next one is used when one reaches its daily quota.")
     progress(items, result_files(args))
     n, failed_in_a_row = 0, 0
     while True:
-        outcome, batch, failures = run_one_batch(args, rest, items)
+        outcome, batch, failures = run_one_batch(args, rest, items, keys)
         if outcome == "nothing":
             print("\nnothing left to run in this stage.")
             return
