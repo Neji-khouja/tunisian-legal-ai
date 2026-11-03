@@ -1042,6 +1042,17 @@ def test_classes():
     out = rae.invoke_judge(Busy(), [], "gemini", sleep=waits.append)
     check("(i) Gemini 503 'high demand': not quota, retried with backoff, then answers",
           hc.classify(busy) is None and out == "ok" and waits == [6, 11], f"waits {waits}")
+    slow, tries, waits = RuntimeError("ReadTimeout: The read operation timed out"), [], []
+
+    class Slow:
+        def invoke(self, messages):
+            tries.append(1)
+            if len(tries) < 2:
+                raise slow
+            return "ok"
+    out = rae.invoke_judge(Slow(), [], "gemini", sleep=waits.append)
+    check("(i) Gemini ReadTimeout: not quota, retried with backoff, then answers",
+          hc.classify(slow) is None and out == "ok" and waits == [6], f"waits {waits}")
     wrapped = RuntimeError("verify: Groq rate limit (429) after 0 retries")
     wrapped.__cause__ = RuntimeError(DAILY)
     check("(i) a wrapped error is classified through its cause", hc.classify(wrapped) is not None)

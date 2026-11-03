@@ -408,7 +408,7 @@ BAD_OUTPUT = re.compile(r"json_validate_failed|OutputParserException|Invalid jso
 def invoke_judge(llm, messages, provider: str, sleep=time.sleep):
     """A daily-quota 429 -> QuotaExhausted(who='judge'), never retried. Malformed output (Groq json_validate_failed 400,
     an output parser error): the same call up to 2 more times. Gemini per-minute 429 or a temporary server error (503
-    'high demand', ...): up to 5 retries with backoff (the stated delay + 1 s, else 5, 10, 20, 40, 80 s; at most
+    'high demand', ...) or a network timeout: up to 5 retries with backoff (the stated delay + 1 s, else 5, 10, 20, 40, 80 s; at most
     120 s). Groq 429s: the client's own retries."""
     waits = bad = 0
     while True:
