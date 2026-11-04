@@ -1,0 +1,558 @@
+
+=== answer_eval_answer_set_stage1_v1.1.jsonl: 50 items (answer: 30, clarify/refuse: 20); degraded (excluded, re-run on resume): 0; error (excluded, re-run on resume): 0; system failure (no answer, excluded): 0; 95% bootstrap CI over questions, 5000 resamples, seed 20261022
+  fingerprints/commits/tags in these rows: ['dc8fd664c662 38ff89cfa2 ', 'dc8fd664c662 f23313e732 ']
+  Hit@6 (gold in evidence)                             n=30      0.733   [0.567, 0.900]
+  gold cited                                           n=0   -
+  false clarify                                        n=30      0.000   [0.000, 0.000]
+  false refuse                                         n=30      0.000   [0.000, 0.000]
+  numeric check ok (answer)                            n=30      0.900   [0.800, 1.000]
+  numeric check unverifiable (answer)                  n=30      0.000   [0.000, 0.000]
+  numeric implicit reference (answer)                  n=30      0.000   [0.000, 0.000]
+  numeric check ok (claim share)                       n=30      0.900   [0.800, 1.000]
+  seconds                                              n=30     17.550   [10.037, 27.023]
+  LLM calls                                            n=30      1.433   [1.267, 1.600]
+  elapsed total (s)                                    n=30     19.387   [11.633, 29.293]
+  429 responses                                        n=30      0.000   [0.000, 0.000]
+  client retry waits (s)                               n=30      0.017   [0.000, 0.050]
+  correct                                              n=30      0.600   [0.433, 0.767]
+  partial                                              n=30      0.233   [0.100, 0.400]
+  incorrect                                            n=30      0.167   [0.033, 0.300]
+  hallucination (answer)                               n=30      0.533   [0.367, 0.700]
+  hallucination (claim-level, judge)                   n=0   -
+  claims flagged on 1st pass                           n=0   -
+  repaired (repairs == 1)                              n=0   -
+  dropped claims (mean)                                n=0   -
+  no supported claim left                              n=0   -
+  numeric miss, draft claims (answer)                  n=0   -
+  numeric miss, final claims (answer)                  n=0   -
+  correct (draft)                                      n=0   -
+  hallucination (answer, draft)                        n=0   -
+  gate accuracy (explicit status)                      n=20      0.000   [0.000, 0.000]
+  clarify then answer: correct after the reply         n=0   -
+  clarify then answer: Hit@6 after the reply           n=3       0.667   [0.000, 1.000]
+  clarify w/o reply: asked for clarification (status)  n=7       0.000   [0.000, 0.000]
+  clarify w/o reply: answered directly                 n=7       0.857   [0.571, 1.000]
+  clarify w/o reply: enumerated alternatives           n=7       0.714   [0.429, 1.000]
+  refuse: no substantive answer                        n=10      1.000   [1.000, 1.000]
+  refuse: explicit refusal status                      n=10      0.000   [0.000, 0.000]
+  system failure (no answer)                           answer items 0, clarify/refuse items 0
+
+=== answer_eval_answer_set_stage1_v1.jsonl: 50 items (answer: 30, clarify/refuse: 20); degraded (excluded, re-run on resume): 0; error (excluded, re-run on resume): 0; system failure (no answer, excluded): 0; 95% bootstrap CI over questions, 5000 resamples, seed 20261022
+  fingerprints/commits/tags in these rows: ['dc8fd664c662 38ff89cfa2 ', 'dc8fd664c662 f23313e732 ']
+  Hit@6 (gold in evidence)                             n=30      0.600   [0.433, 0.767]
+  gold cited                                           n=0   -
+  false clarify                                        n=30      0.000   [0.000, 0.000]
+  false refuse                                         n=30      0.000   [0.000, 0.000]
+  numeric check ok (answer)                            n=30      0.733   [0.567, 0.867]
+  numeric check unverifiable (answer)                  n=30      0.000   [0.000, 0.000]
+  numeric implicit reference (answer)                  n=30      0.000   [0.000, 0.000]
+  numeric check ok (claim share)                       n=30      0.733   [0.567, 0.867]
+  seconds                                              n=30     41.493   [33.767, 50.970]
+  LLM calls                                            n=30      2.900   [2.733, 3.000]
+  elapsed total (s)                                    n=30     53.760   [41.290, 69.343]
+  429 responses                                        n=0   -
+  client retry waits (s)                               n=0   -
+  correct                                              n=30      0.533   [0.367, 0.700]
+  partial                                              n=30      0.133   [0.033, 0.267]
+  incorrect                                            n=30      0.333   [0.167, 0.500]
+  hallucination (answer)                               n=30      0.567   [0.400, 0.733]
+  hallucination (claim-level, judge)                   n=0   -
+  claims flagged on 1st pass                           n=0   -
+  repaired (repairs == 1)                              n=0   -
+  dropped claims (mean)                                n=0   -
+  no supported claim left                              n=0   -
+  numeric miss, draft claims (answer)                  n=0   -
+  numeric miss, final claims (answer)                  n=0   -
+  correct (draft)                                      n=0   -
+  hallucination (answer, draft)                        n=0   -
+  gate accuracy (explicit status)                      n=20      0.000   [0.000, 0.000]
+  clarify then answer: correct after the reply         n=0   -
+  clarify then answer: Hit@6 after the reply           n=3       1.000   [1.000, 1.000]
+  clarify w/o reply: asked for clarification (status)  n=7       0.000   [0.000, 0.000]
+  clarify w/o reply: answered directly                 n=7       1.000   [1.000, 1.000]
+  clarify w/o reply: enumerated alternatives           n=7       0.857   [0.571, 1.000]
+  refuse: no substantive answer                        n=10      1.000   [1.000, 1.000]
+  refuse: explicit refusal status                      n=10      0.000   [0.000, 0.000]
+  system failure (no answer)                           answer items 0, clarify/refuse items 0
+
+=== answer_eval_answer_set_stage1_v2.jsonl: 50 items (answer: 30, clarify/refuse: 20); degraded (excluded, re-run on resume): 0; error (excluded, re-run on resume): 0; system failure (no answer, excluded): 0; 95% bootstrap CI over questions, 5000 resamples, seed 20261022
+  fingerprints/commits/tags in these rows: ['dc8fd664c662 38ff89cfa2 ']
+  Hit@6 (gold in evidence)                             n=30      0.767   [0.600, 0.900]
+  gold cited                                           n=30      0.767   [0.600, 0.900]
+  false clarify                                        n=30      0.000   [0.000, 0.000]
+  false refuse                                         n=30      0.000   [0.000, 0.000]
+  numeric check ok (answer)                            n=28      0.929   [0.821, 1.000]
+  numeric check unverifiable (answer)                  n=30      0.067   [0.000, 0.167]
+  numeric implicit reference (answer)                  n=30      0.000   [0.000, 0.000]
+  numeric check ok (claim share)                       n=28      0.946   [0.857, 1.000]
+  seconds                                              n=30     74.133   [47.483, 118.360]
+  LLM calls                                            n=30      5.367   [4.833, 5.933]
+  elapsed total (s)                                    n=30     82.170   [55.247, 127.057]
+  429 responses                                        n=30      1.800   [1.100, 2.533]
+  client retry waits (s)                               n=30     14.770   [8.607, 21.673]
+  correct                                              n=30      0.667   [0.500, 0.833]
+  partial                                              n=30      0.133   [0.033, 0.267]
+  incorrect                                            n=30      0.200   [0.067, 0.333]
+  hallucination (answer)                               n=30      0.333   [0.167, 0.500]
+  hallucination (claim-level, judge)                   n=28      0.208   [0.083, 0.351]
+  claims flagged on 1st pass                           n=30      0.154   [0.071, 0.250]
+  repaired (repairs == 1)                              n=30      0.333   [0.167, 0.500]
+  dropped claims (mean)                                n=30      0.267   [0.067, 0.467]
+  no supported claim left                              n=30      0.067   [0.000, 0.167]
+  numeric miss, draft claims (answer)                  n=30      0.100   [0.000, 0.233]
+  numeric miss, final claims (answer)                  n=30      0.067   [0.000, 0.167]
+  correct (draft)                                      n=0   -
+  hallucination (answer, draft)                        n=0   -
+  gate accuracy (explicit status)                      n=20      0.700   [0.500, 0.900]
+  clarify then answer: correct after the reply         n=0   -
+  clarify then answer: Hit@6 after the reply           n=3       1.000   [1.000, 1.000]
+  clarify w/o reply: asked for clarification (status)  n=7       0.857   [0.571, 1.000]
+  clarify w/o reply: answered directly                 n=7       0.143   [0.000, 0.429]
+  clarify w/o reply: enumerated alternatives           n=7       0.571   [0.143, 0.857]
+  refuse: no substantive answer                        n=10      1.000   [1.000, 1.000]
+  refuse: explicit refusal status                      n=10      0.700   [0.400, 1.000]
+  system failure (no answer)                           answer items 0, clarify/refuse items 0
+
+=== answer_eval_answer_set_stage2_v1.1.jsonl: 50 items (answer: 40, clarify/refuse: 10); degraded (excluded, re-run on resume): 0; error (excluded, re-run on resume): 0; system failure (no answer, excluded): 0; 95% bootstrap CI over questions, 5000 resamples, seed 20261022
+  fingerprints/commits/tags in these rows: ['dc8fd664c662 17779f6dce ', 'dc8fd664c662 35a04e9e69 ', 'dc8fd664c662 78ade16ea7 ']
+  Hit@6 (gold in evidence)                             n=40      0.750   [0.625, 0.875]
+  gold cited                                           n=0   -
+  false clarify                                        n=40      0.000   [0.000, 0.000]
+  false refuse                                         n=40      0.000   [0.000, 0.000]
+  numeric check ok (answer)                            n=40      0.900   [0.800, 0.975]
+  numeric check unverifiable (answer)                  n=40      0.000   [0.000, 0.000]
+  numeric implicit reference (answer)                  n=40      0.000   [0.000, 0.000]
+  numeric check ok (claim share)                       n=40      0.900   [0.800, 0.975]
+  seconds                                              n=40     13.140   [8.607, 18.612]
+  LLM calls                                            n=40      1.425   [1.275, 1.575]
+  elapsed total (s)                                    n=40     26.128   [17.278, 36.297]
+  429 responses                                        n=40      0.000   [0.000, 0.000]
+  client retry waits (s)                               n=40      0.000   [0.000, 0.000]
+  correct                                              n=40      0.575   [0.425, 0.725]
+  partial                                              n=40      0.175   [0.075, 0.300]
+  incorrect                                            n=40      0.250   [0.125, 0.375]
+  hallucination (answer)                               n=40      0.450   [0.300, 0.600]
+  hallucination (claim-level, judge)                   n=0   -
+  claims flagged on 1st pass                           n=0   -
+  repaired (repairs == 1)                              n=0   -
+  dropped claims (mean)                                n=0   -
+  no supported claim left                              n=0   -
+  numeric miss, draft claims (answer)                  n=0   -
+  numeric miss, final claims (answer)                  n=0   -
+  correct (draft)                                      n=0   -
+  hallucination (answer, draft)                        n=0   -
+  gate accuracy (explicit status)                      n=10      0.000   [0.000, 0.000]
+  clarify w/o reply: asked for clarification (status)  n=3       0.000   [0.000, 0.000]
+  clarify w/o reply: answered directly                 n=3       0.667   [0.000, 1.000]
+  clarify w/o reply: enumerated alternatives           n=3       0.333   [0.000, 1.000]
+  clarify then answer: correct after the reply         n=0   -
+  clarify then answer: Hit@6 after the reply           n=2       0.500   [0.000, 1.000]
+  refuse: no substantive answer                        n=5       1.000   [1.000, 1.000]
+  refuse: explicit refusal status                      n=5       0.000   [0.000, 0.000]
+  system failure (no answer)                           answer items 0, clarify/refuse items 0
+
+=== answer_eval_answer_set_stage2_v1.jsonl: 50 items (answer: 40, clarify/refuse: 10); degraded (excluded, re-run on resume): 0; error (excluded, re-run on resume): 0; system failure (no answer, excluded): 0; 95% bootstrap CI over questions, 5000 resamples, seed 20261022
+  fingerprints/commits/tags in these rows: ['dc8fd664c662 17779f6dce ', 'dc8fd664c662 18a63dc104 ', 'dc8fd664c662 35a04e9e69 ', 'dc8fd664c662 78ade16ea7 ']
+  Hit@6 (gold in evidence)                             n=40      0.400   [0.250, 0.550]
+  gold cited                                           n=0   -
+  false clarify                                        n=40      0.000   [0.000, 0.000]
+  false refuse                                         n=40      0.000   [0.000, 0.000]
+  numeric check ok (answer)                            n=39      0.718   [0.590, 0.846]
+  numeric check unverifiable (answer)                  n=40      0.025   [0.000, 0.075]
+  numeric implicit reference (answer)                  n=40      0.000   [0.000, 0.000]
+  numeric check ok (claim share)                       n=39      0.718   [0.590, 0.846]
+  seconds                                              n=40     38.097   [31.418, 46.350]
+  LLM calls                                            n=40      2.950   [2.875, 3.000]
+  elapsed total (s)                                    n=40     48.630   [39.343, 59.047]
+  429 responses                                        n=0   -
+  client retry waits (s)                               n=0   -
+  correct                                              n=40      0.325   [0.175, 0.475]
+  partial                                              n=40      0.125   [0.025, 0.225]
+  incorrect                                            n=40      0.550   [0.400, 0.700]
+  hallucination (answer)                               n=40      0.600   [0.450, 0.750]
+  hallucination (claim-level, judge)                   n=0   -
+  claims flagged on 1st pass                           n=0   -
+  repaired (repairs == 1)                              n=0   -
+  dropped claims (mean)                                n=0   -
+  no supported claim left                              n=0   -
+  numeric miss, draft claims (answer)                  n=0   -
+  numeric miss, final claims (answer)                  n=0   -
+  correct (draft)                                      n=0   -
+  hallucination (answer, draft)                        n=0   -
+  gate accuracy (explicit status)                      n=10      0.000   [0.000, 0.000]
+  clarify w/o reply: asked for clarification (status)  n=3       0.000   [0.000, 0.000]
+  clarify w/o reply: answered directly                 n=3       1.000   [1.000, 1.000]
+  clarify w/o reply: enumerated alternatives           n=3       0.333   [0.000, 1.000]
+  clarify then answer: correct after the reply         n=0   -
+  clarify then answer: Hit@6 after the reply           n=2       0.000   [0.000, 0.000]
+  refuse: no substantive answer                        n=5       1.000   [1.000, 1.000]
+  refuse: explicit refusal status                      n=5       0.000   [0.000, 0.000]
+  system failure (no answer)                           answer items 0, clarify/refuse items 0
+
+=== answer_eval_answer_set_stage2_v2.jsonl: 50 items (answer: 40, clarify/refuse: 10); degraded (excluded, re-run on resume): 0; error (excluded, re-run on resume): 0; system failure (no answer, excluded): 0; 95% bootstrap CI over questions, 5000 resamples, seed 20261022
+  fingerprints/commits/tags in these rows: ['dc8fd664c662 17779f6dce ', 'dc8fd664c662 35a04e9e69 ', 'dc8fd664c662 78ade16ea7 ']
+  Hit@6 (gold in evidence)                             n=40      0.775   [0.625, 0.900]
+  gold cited                                           n=40      0.750   [0.600, 0.875]
+  false clarify                                        n=40      0.000   [0.000, 0.000]
+  false refuse                                         n=40      0.025   [0.000, 0.075]
+  numeric check ok (answer)                            n=38      0.974   [0.921, 1.000]
+  numeric check unverifiable (answer)                  n=40      0.050   [0.000, 0.125]
+  numeric implicit reference (answer)                  n=40      0.000   [0.000, 0.000]
+  numeric check ok (claim share)                       n=38      0.984   [0.953, 1.000]
+  seconds                                              n=40     58.617   [49.395, 67.963]
+  LLM calls                                            n=40      5.950   [5.375, 6.525]
+  elapsed total (s)                                    n=40     84.365   [62.530, 110.923]
+  429 responses                                        n=40      3.225   [2.350, 4.125]
+  client retry waits (s)                               n=40     22.985   [16.495, 29.735]
+  correct                                              n=39      0.641   [0.487, 0.795]
+  partial                                              n=39      0.154   [0.051, 0.282]
+  incorrect                                            n=39      0.205   [0.103, 0.333]
+  hallucination (answer)                               n=39      0.410   [0.256, 0.564]
+  hallucination (claim-level, judge)                   n=39      0.256   [0.150, 0.380]
+  claims flagged on 1st pass                           n=39      0.194   [0.115, 0.282]
+  repaired (repairs == 1)                              n=39      0.359   [0.205, 0.513]
+  dropped claims (mean)                                n=39      0.154   [0.026, 0.333]
+  no supported claim left                              n=39      0.000   [0.000, 0.000]
+  numeric miss, draft claims (answer)                  n=39      0.051   [0.000, 0.128]
+  numeric miss, final claims (answer)                  n=39      0.026   [0.000, 0.077]
+  correct (draft)                                      n=0   -
+  hallucination (answer, draft)                        n=0   -
+  gate accuracy (explicit status)                      n=10      0.500   [0.200, 0.800]
+  clarify w/o reply: asked for clarification (status)  n=3       0.333   [0.000, 1.000]
+  clarify w/o reply: answered directly                 n=3       0.333   [0.000, 1.000]
+  clarify w/o reply: enumerated alternatives           n=3       0.000   [0.000, 0.000]
+  clarify then answer: correct after the reply         n=0   -
+  clarify then answer: Hit@6 after the reply           n=2       0.500   [0.000, 1.000]
+  refuse: no substantive answer                        n=5       1.000   [1.000, 1.000]
+  refuse: explicit refusal status                      n=5       0.400   [0.000, 0.800]
+  system failure (no answer)                           answer items 0, clarify/refuse items 0
+
+=== pooled (valid only if the same tag ran both stages) v1.1: answer_eval_answer_set_stage1_v1.1.jsonl + answer_eval_answer_set_stage2_v1.1.jsonl: 100 items (answer: 70, clarify/refuse: 30); degraded (excluded, re-run on resume): 0; error (excluded, re-run on resume): 0; system failure (no answer, excluded): 0; 95% bootstrap CI over questions, 5000 resamples, seed 20261022
+  fingerprints/commits/tags in these rows: ['dc8fd664c662 17779f6dce ', 'dc8fd664c662 35a04e9e69 ', 'dc8fd664c662 38ff89cfa2 ', 'dc8fd664c662 78ade16ea7 ', 'dc8fd664c662 f23313e732 ']
+  Hit@6 (gold in evidence)                             n=70      0.743   [0.629, 0.843]
+  gold cited                                           n=0   -
+  false clarify                                        n=70      0.000   [0.000, 0.000]
+  false refuse                                         n=70      0.000   [0.000, 0.000]
+  numeric check ok (answer)                            n=70      0.900   [0.829, 0.957]
+  numeric check unverifiable (answer)                  n=70      0.000   [0.000, 0.000]
+  numeric implicit reference (answer)                  n=70      0.000   [0.000, 0.000]
+  numeric check ok (claim share)                       n=70      0.900   [0.829, 0.957]
+  seconds                                              n=70     15.030   [10.786, 20.060]
+  LLM calls                                            n=70      1.429   [1.314, 1.543]
+  elapsed total (s)                                    n=70     23.239   [16.694, 30.501]
+  429 responses                                        n=70      0.000   [0.000, 0.000]
+  client retry waits (s)                               n=70      0.007   [0.000, 0.021]
+  correct                                              n=70      0.586   [0.457, 0.700]
+  partial                                              n=70      0.200   [0.114, 0.300]
+  incorrect                                            n=70      0.214   [0.114, 0.314]
+  hallucination (answer)                               n=70      0.486   [0.371, 0.600]
+  hallucination (claim-level, judge)                   n=0   -
+  claims flagged on 1st pass                           n=0   -
+  repaired (repairs == 1)                              n=0   -
+  dropped claims (mean)                                n=0   -
+  no supported claim left                              n=0   -
+  numeric miss, draft claims (answer)                  n=0   -
+  numeric miss, final claims (answer)                  n=0   -
+  correct (draft)                                      n=0   -
+  hallucination (answer, draft)                        n=0   -
+  gate accuracy (explicit status)                      n=30      0.000   [0.000, 0.000]
+  clarify then answer: correct after the reply         n=0   -
+  clarify then answer: Hit@6 after the reply           n=5       0.600   [0.200, 1.000]
+  clarify w/o reply: asked for clarification (status)  n=10      0.000   [0.000, 0.000]
+  clarify w/o reply: answered directly                 n=10      0.800   [0.500, 1.000]
+  clarify w/o reply: enumerated alternatives           n=10      0.600   [0.300, 0.900]
+  refuse: no substantive answer                        n=15      1.000   [1.000, 1.000]
+  refuse: explicit refusal status                      n=15      0.000   [0.000, 0.000]
+  system failure (no answer)                           answer items 0, clarify/refuse items 0
+
+=== pooled (valid only if the same tag ran both stages) v1: answer_eval_answer_set_stage1_v1.jsonl + answer_eval_answer_set_stage2_v1.jsonl: 100 items (answer: 70, clarify/refuse: 30); degraded (excluded, re-run on resume): 0; error (excluded, re-run on resume): 0; system failure (no answer, excluded): 0; 95% bootstrap CI over questions, 5000 resamples, seed 20261022
+  fingerprints/commits/tags in these rows: ['dc8fd664c662 17779f6dce ', 'dc8fd664c662 18a63dc104 ', 'dc8fd664c662 35a04e9e69 ', 'dc8fd664c662 38ff89cfa2 ', 'dc8fd664c662 78ade16ea7 ', 'dc8fd664c662 f23313e732 ']
+  Hit@6 (gold in evidence)                             n=70      0.486   [0.371, 0.600]
+  gold cited                                           n=0   -
+  false clarify                                        n=70      0.000   [0.000, 0.000]
+  false refuse                                         n=70      0.000   [0.000, 0.000]
+  numeric check ok (answer)                            n=69      0.725   [0.609, 0.826]
+  numeric check unverifiable (answer)                  n=70      0.014   [0.000, 0.043]
+  numeric implicit reference (answer)                  n=70      0.000   [0.000, 0.000]
+  numeric check ok (claim share)                       n=69      0.725   [0.609, 0.826]
+  seconds                                              n=70     39.553   [34.206, 45.663]
+  LLM calls                                            n=70      2.929   [2.843, 2.986]
+  elapsed total (s)                                    n=70     50.829   [43.040, 59.514]
+  429 responses                                        n=0   -
+  client retry waits (s)                               n=0   -
+  correct                                              n=70      0.414   [0.300, 0.529]
+  partial                                              n=70      0.129   [0.057, 0.214]
+  incorrect                                            n=70      0.457   [0.343, 0.571]
+  hallucination (answer)                               n=70      0.586   [0.471, 0.700]
+  hallucination (claim-level, judge)                   n=0   -
+  claims flagged on 1st pass                           n=0   -
+  repaired (repairs == 1)                              n=0   -
+  dropped claims (mean)                                n=0   -
+  no supported claim left                              n=0   -
+  numeric miss, draft claims (answer)                  n=0   -
+  numeric miss, final claims (answer)                  n=0   -
+  correct (draft)                                      n=0   -
+  hallucination (answer, draft)                        n=0   -
+  gate accuracy (explicit status)                      n=30      0.000   [0.000, 0.000]
+  clarify then answer: correct after the reply         n=0   -
+  clarify then answer: Hit@6 after the reply           n=5       0.600   [0.200, 1.000]
+  clarify w/o reply: asked for clarification (status)  n=10      0.000   [0.000, 0.000]
+  clarify w/o reply: answered directly                 n=10      1.000   [1.000, 1.000]
+  clarify w/o reply: enumerated alternatives           n=10      0.700   [0.400, 1.000]
+  refuse: no substantive answer                        n=15      1.000   [1.000, 1.000]
+  refuse: explicit refusal status                      n=15      0.000   [0.000, 0.000]
+  system failure (no answer)                           answer items 0, clarify/refuse items 0
+
+=== pooled (valid only if the same tag ran both stages) v2: answer_eval_answer_set_stage1_v2.jsonl + answer_eval_answer_set_stage2_v2.jsonl: 100 items (answer: 70, clarify/refuse: 30); degraded (excluded, re-run on resume): 0; error (excluded, re-run on resume): 0; system failure (no answer, excluded): 0; 95% bootstrap CI over questions, 5000 resamples, seed 20261022
+  fingerprints/commits/tags in these rows: ['dc8fd664c662 17779f6dce ', 'dc8fd664c662 35a04e9e69 ', 'dc8fd664c662 38ff89cfa2 ', 'dc8fd664c662 78ade16ea7 ']
+  Hit@6 (gold in evidence)                             n=70      0.771   [0.671, 0.871]
+  gold cited                                           n=70      0.757   [0.657, 0.857]
+  false clarify                                        n=70      0.000   [0.000, 0.000]
+  false refuse                                         n=70      0.014   [0.000, 0.043]
+  numeric check ok (answer)                            n=66      0.955   [0.894, 1.000]
+  numeric check unverifiable (answer)                  n=70      0.057   [0.014, 0.114]
+  numeric implicit reference (answer)                  n=70      0.000   [0.000, 0.000]
+  numeric check ok (claim share)                       n=66      0.968   [0.927, 1.000]
+  seconds                                              n=70     65.267   [51.941, 85.450]
+  LLM calls                                            n=70      5.700   [5.300, 6.129]
+  elapsed total (s)                                    n=70     83.424   [64.537, 107.390]
+  429 responses                                        n=70      2.614   [2.014, 3.243]
+  client retry waits (s)                               n=70     19.464   [14.889, 24.584]
+  correct                                              n=69      0.652   [0.536, 0.768]
+  partial                                              n=69      0.145   [0.072, 0.232]
+  incorrect                                            n=69      0.203   [0.116, 0.304]
+  hallucination (answer)                               n=69      0.377   [0.275, 0.493]
+  hallucination (claim-level, judge)                   n=67      0.236   [0.154, 0.331]
+  claims flagged on 1st pass                           n=69      0.177   [0.116, 0.242]
+  repaired (repairs == 1)                              n=69      0.348   [0.246, 0.464]
+  dropped claims (mean)                                n=69      0.203   [0.087, 0.333]
+  no supported claim left                              n=69      0.029   [0.000, 0.072]
+  numeric miss, draft claims (answer)                  n=69      0.072   [0.014, 0.145]
+  numeric miss, final claims (answer)                  n=69      0.043   [0.000, 0.101]
+  correct (draft)                                      n=0   -
+  hallucination (answer, draft)                        n=0   -
+  gate accuracy (explicit status)                      n=30      0.633   [0.467, 0.800]
+  clarify then answer: correct after the reply         n=0   -
+  clarify then answer: Hit@6 after the reply           n=5       0.800   [0.400, 1.000]
+  clarify w/o reply: asked for clarification (status)  n=10      0.700   [0.400, 1.000]
+  clarify w/o reply: answered directly                 n=10      0.200   [0.000, 0.500]
+  clarify w/o reply: enumerated alternatives           n=10      0.400   [0.100, 0.700]
+  refuse: no substantive answer                        n=15      1.000   [1.000, 1.000]
+  refuse: explicit refusal status                      n=15      0.600   [0.333, 0.867]
+  system failure (no answer)                           answer items 0, clarify/refuse items 0
+
+=== paired difference answer_eval_answer_set_stage1_v1 - answer_eval_answer_set_stage1_v1.1 on 50 common items
+  Hit@6 (gold in evidence)                             n=30     -0.133   [-0.333, +0.100]
+  gold cited                                           n=0   -
+  false clarify                                        n=30     +0.000   [+0.000, +0.000]
+  false refuse                                         n=30     +0.000   [+0.000, +0.000]
+  numeric check ok (answer)                            n=30     -0.167   [-0.333, +0.000]
+  numeric check unverifiable (answer)                  n=30     +0.000   [+0.000, +0.000]
+  numeric implicit reference (answer)                  n=30     +0.000   [+0.000, +0.000]
+  numeric check ok (claim share)                       n=30     -0.167   [-0.333, +0.000]
+  seconds                                              n=30    +23.943   [+15.490, +32.103]
+  LLM calls                                            n=30     +1.467   [+1.267, +1.667]
+  elapsed total (s)                                    n=30    +34.373   [+22.723, +46.920]
+  429 responses                                        n=0   -
+  client retry waits (s)                               n=0   -
+  correct                                              n=30     -0.067   [-0.267, +0.133]
+  partial                                              n=30     -0.100   [-0.267, +0.067]
+  incorrect                                            n=30     +0.167   [-0.067, +0.400]
+  hallucination (answer)                               n=30     +0.033   [-0.233, +0.300]
+  hallucination (claim-level, judge)                   n=0   -
+  claims flagged on 1st pass                           n=0   -
+  repaired (repairs == 1)                              n=0   -
+  dropped claims (mean)                                n=0   -
+  no supported claim left                              n=0   -
+  numeric miss, draft claims (answer)                  n=0   -
+  numeric miss, final claims (answer)                  n=0   -
+  correct (draft)                                      n=0   -
+  hallucination (answer, draft)                        n=0   -
+  gate accuracy (explicit status)                      n=20     +0.000   [+0.000, +0.000]
+  clarify then answer: correct after the reply         n=0   -
+  clarify then answer: Hit@6 after the reply           n=3      +0.333   [+0.000, +1.000]
+  clarify w/o reply: asked for clarification (status)  n=7      +0.000   [+0.000, +0.000]
+  clarify w/o reply: answered directly                 n=7      +0.143   [+0.000, +0.429]
+  clarify w/o reply: enumerated alternatives           n=7      +0.143   [+0.000, +0.429]
+  refuse: no substantive answer                        n=10     +0.000   [+0.000, +0.000]
+  refuse: explicit refusal status                      n=10     +0.000   [+0.000, +0.000]
+
+=== paired difference answer_eval_answer_set_stage1_v2 - answer_eval_answer_set_stage1_v1.1 on 50 common items
+  Hit@6 (gold in evidence)                             n=30     +0.033   [+0.000, +0.100]
+  gold cited                                           n=0   -
+  false clarify                                        n=30     +0.000   [+0.000, +0.000]
+  false refuse                                         n=30     +0.000   [+0.000, +0.000]
+  numeric check ok (answer)                            n=28     +0.036   [+0.000, +0.107]
+  numeric check unverifiable (answer)                  n=30     +0.067   [+0.000, +0.167]
+  numeric implicit reference (answer)                  n=30     +0.000   [+0.000, +0.000]
+  numeric check ok (claim share)                       n=28     +0.054   [+0.000, +0.143]
+  seconds                                              n=30    +56.583   [+28.240, +99.897]
+  LLM calls                                            n=30     +3.933   [+3.433, +4.467]
+  elapsed total (s)                                    n=30    +62.783   [+33.777, +106.243]
+  429 responses                                        n=30     +1.800   [+1.100, +2.533]
+  client retry waits (s)                               n=30    +14.753   [+8.600, +21.657]
+  correct                                              n=30     +0.067   [-0.067, +0.200]
+  partial                                              n=30     -0.100   [-0.233, +0.033]
+  incorrect                                            n=30     +0.033   [+0.000, +0.100]
+  hallucination (answer)                               n=30     -0.200   [-0.400, +0.000]
+  hallucination (claim-level, judge)                   n=0   -
+  claims flagged on 1st pass                           n=0   -
+  repaired (repairs == 1)                              n=0   -
+  dropped claims (mean)                                n=0   -
+  no supported claim left                              n=0   -
+  numeric miss, draft claims (answer)                  n=0   -
+  numeric miss, final claims (answer)                  n=0   -
+  correct (draft)                                      n=0   -
+  hallucination (answer, draft)                        n=0   -
+  gate accuracy (explicit status)                      n=20     +0.700   [+0.500, +0.900]
+  clarify then answer: correct after the reply         n=0   -
+  clarify then answer: Hit@6 after the reply           n=3      +0.333   [+0.000, +1.000]
+  clarify w/o reply: asked for clarification (status)  n=7      +0.857   [+0.571, +1.000]
+  clarify w/o reply: answered directly                 n=7      -0.714   [-1.000, -0.429]
+  clarify w/o reply: enumerated alternatives           n=7      -0.143   [-0.714, +0.429]
+  refuse: no substantive answer                        n=10     +0.000   [+0.000, +0.000]
+  refuse: explicit refusal status                      n=10     +0.700   [+0.400, +1.000]
+
+=== paired difference answer_eval_answer_set_stage1_v2 - answer_eval_answer_set_stage1_v1 on 50 common items
+  Hit@6 (gold in evidence)                             n=30     +0.167   [-0.067, +0.400]
+  gold cited                                           n=0   -
+  false clarify                                        n=30     +0.000   [+0.000, +0.000]
+  false refuse                                         n=30     +0.000   [+0.000, +0.000]
+  numeric check ok (answer)                            n=28     +0.179   [+0.036, +0.321]
+  numeric check unverifiable (answer)                  n=30     +0.067   [+0.000, +0.167]
+  numeric implicit reference (answer)                  n=30     +0.000   [+0.000, +0.000]
+  numeric check ok (claim share)                       n=28     +0.196   [+0.071, +0.357]
+  seconds                                              n=30    +32.640   [+4.517, +77.047]
+  LLM calls                                            n=30     +2.467   [+1.967, +3.033]
+  elapsed total (s)                                    n=30    +28.410   [-5.377, +73.627]
+  429 responses                                        n=0   -
+  client retry waits (s)                               n=0   -
+  correct                                              n=30     +0.133   [-0.100, +0.367]
+  partial                                              n=30     +0.000   [-0.167, +0.167]
+  incorrect                                            n=30     -0.133   [-0.400, +0.133]
+  hallucination (answer)                               n=30     -0.233   [-0.500, +0.067]
+  hallucination (claim-level, judge)                   n=0   -
+  claims flagged on 1st pass                           n=0   -
+  repaired (repairs == 1)                              n=0   -
+  dropped claims (mean)                                n=0   -
+  no supported claim left                              n=0   -
+  numeric miss, draft claims (answer)                  n=0   -
+  numeric miss, final claims (answer)                  n=0   -
+  correct (draft)                                      n=0   -
+  hallucination (answer, draft)                        n=0   -
+  gate accuracy (explicit status)                      n=20     +0.700   [+0.500, +0.900]
+  clarify then answer: correct after the reply         n=0   -
+  clarify then answer: Hit@6 after the reply           n=3      +0.000   [+0.000, +0.000]
+  clarify w/o reply: asked for clarification (status)  n=7      +0.857   [+0.571, +1.000]
+  clarify w/o reply: answered directly                 n=7      -0.857   [-1.000, -0.571]
+  clarify w/o reply: enumerated alternatives           n=7      -0.286   [-0.714, +0.286]
+  refuse: no substantive answer                        n=10     +0.000   [+0.000, +0.000]
+  refuse: explicit refusal status                      n=10     +0.700   [+0.400, +1.000]
+
+=== paired difference answer_eval_answer_set_stage2_v1 - answer_eval_answer_set_stage2_v1.1 on 50 common items
+  Hit@6 (gold in evidence)                             n=40     -0.350   [-0.550, -0.150]
+  gold cited                                           n=0   -
+  false clarify                                        n=40     +0.000   [+0.000, +0.000]
+  false refuse                                         n=40     +0.000   [+0.000, +0.000]
+  numeric check ok (answer)                            n=39     -0.179   [-0.333, -0.026]
+  numeric check unverifiable (answer)                  n=40     +0.025   [+0.000, +0.075]
+  numeric implicit reference (answer)                  n=40     +0.000   [+0.000, +0.000]
+  numeric check ok (claim share)                       n=39     -0.179   [-0.333, -0.026]
+  seconds                                              n=40    +24.957   [+17.565, +33.213]
+  LLM calls                                            n=40     +1.525   [+1.375, +1.675]
+  elapsed total (s)                                    n=40    +22.502   [+10.342, +33.918]
+  429 responses                                        n=0   -
+  client retry waits (s)                               n=0   -
+  correct                                              n=40     -0.250   [-0.400, -0.100]
+  partial                                              n=40     -0.050   [-0.200, +0.100]
+  incorrect                                            n=40     +0.300   [+0.175, +0.450]
+  hallucination (answer)                               n=40     +0.150   [+0.000, +0.325]
+  hallucination (claim-level, judge)                   n=0   -
+  claims flagged on 1st pass                           n=0   -
+  repaired (repairs == 1)                              n=0   -
+  dropped claims (mean)                                n=0   -
+  no supported claim left                              n=0   -
+  numeric miss, draft claims (answer)                  n=0   -
+  numeric miss, final claims (answer)                  n=0   -
+  correct (draft)                                      n=0   -
+  hallucination (answer, draft)                        n=0   -
+  gate accuracy (explicit status)                      n=10     +0.000   [+0.000, +0.000]
+  clarify w/o reply: asked for clarification (status)  n=3      +0.000   [+0.000, +0.000]
+  clarify w/o reply: answered directly                 n=3      +0.333   [+0.000, +1.000]
+  clarify w/o reply: enumerated alternatives           n=3      +0.000   [+0.000, +0.000]
+  clarify then answer: correct after the reply         n=0   -
+  clarify then answer: Hit@6 after the reply           n=2      -0.500   [-1.000, +0.000]
+  refuse: no substantive answer                        n=5      +0.000   [+0.000, +0.000]
+  refuse: explicit refusal status                      n=5      +0.000   [+0.000, +0.000]
+
+=== paired difference answer_eval_answer_set_stage2_v2 - answer_eval_answer_set_stage2_v1.1 on 50 common items
+  Hit@6 (gold in evidence)                             n=40     +0.025   [-0.125, +0.175]
+  gold cited                                           n=0   -
+  false clarify                                        n=40     +0.000   [+0.000, +0.000]
+  false refuse                                         n=40     +0.025   [+0.000, +0.075]
+  numeric check ok (answer)                            n=38     +0.053   [+0.000, +0.132]
+  numeric check unverifiable (answer)                  n=40     +0.050   [+0.000, +0.125]
+  numeric implicit reference (answer)                  n=40     +0.000   [+0.000, +0.000]
+  numeric check ok (claim share)                       n=38     +0.063   [+0.000, +0.147]
+  seconds                                              n=40    +45.477   [+36.293, +55.012]
+  LLM calls                                            n=40     +4.525   [+3.925, +5.125]
+  elapsed total (s)                                    n=40    +58.237   [+33.690, +86.670]
+  429 responses                                        n=40     +3.225   [+2.350, +4.125]
+  client retry waits (s)                               n=40    +22.985   [+16.495, +29.735]
+  correct                                              n=39     +0.077   [-0.051, +0.205]
+  partial                                              n=39     -0.026   [-0.154, +0.103]
+  incorrect                                            n=39     -0.051   [-0.179, +0.077]
+  hallucination (answer)                               n=39     -0.051   [-0.231, +0.128]
+  hallucination (claim-level, judge)                   n=0   -
+  claims flagged on 1st pass                           n=0   -
+  repaired (repairs == 1)                              n=0   -
+  dropped claims (mean)                                n=0   -
+  no supported claim left                              n=0   -
+  numeric miss, draft claims (answer)                  n=0   -
+  numeric miss, final claims (answer)                  n=0   -
+  correct (draft)                                      n=0   -
+  hallucination (answer, draft)                        n=0   -
+  gate accuracy (explicit status)                      n=10     +0.500   [+0.200, +0.800]
+  clarify w/o reply: asked for clarification (status)  n=3      +0.333   [+0.000, +1.000]
+  clarify w/o reply: answered directly                 n=3      -0.333   [-1.000, +0.000]
+  clarify w/o reply: enumerated alternatives           n=3      -0.333   [-1.000, +0.000]
+  clarify then answer: correct after the reply         n=0   -
+  clarify then answer: Hit@6 after the reply           n=2      +0.000   [+0.000, +0.000]
+  refuse: no substantive answer                        n=5      +0.000   [+0.000, +0.000]
+  refuse: explicit refusal status                      n=5      +0.400   [+0.000, +0.800]
+
+=== paired difference answer_eval_answer_set_stage2_v2 - answer_eval_answer_set_stage2_v1 on 50 common items
+  Hit@6 (gold in evidence)                             n=40     +0.375   [+0.175, +0.575]
+  gold cited                                           n=0   -
+  false clarify                                        n=40     +0.000   [+0.000, +0.000]
+  false refuse                                         n=40     +0.025   [+0.000, +0.075]
+  numeric check ok (answer)                            n=37     +0.243   [+0.081, +0.405]
+  numeric check unverifiable (answer)                  n=40     +0.025   [-0.050, +0.100]
+  numeric implicit reference (answer)                  n=40     +0.000   [+0.000, +0.000]
+  numeric check ok (claim share)                       n=37     +0.254   [+0.114, +0.405]
+  seconds                                              n=40    +20.520   [+9.113, +31.360]
+  LLM calls                                            n=40     +3.000   [+2.425, +3.600]
+  elapsed total (s)                                    n=40    +35.735   [+13.297, +62.150]
+  429 responses                                        n=0   -
+  client retry waits (s)                               n=0   -
+  correct                                              n=39     +0.333   [+0.179, +0.487]
+  partial                                              n=39     +0.026   [-0.128, +0.179]
+  incorrect                                            n=39     -0.359   [-0.513, -0.179]
+  hallucination (answer)                               n=39     -0.205   [-0.410, +0.000]
+  hallucination (claim-level, judge)                   n=0   -
+  claims flagged on 1st pass                           n=0   -
+  repaired (repairs == 1)                              n=0   -
+  dropped claims (mean)                                n=0   -
+  no supported claim left                              n=0   -
+  numeric miss, draft claims (answer)                  n=0   -
+  numeric miss, final claims (answer)                  n=0   -
+  correct (draft)                                      n=0   -
+  hallucination (answer, draft)                        n=0   -
+  gate accuracy (explicit status)                      n=10     +0.500   [+0.200, +0.800]
+  clarify w/o reply: asked for clarification (status)  n=3      +0.333   [+0.000, +1.000]
+  clarify w/o reply: answered directly                 n=3      -0.667   [-1.000, +0.000]
+  clarify w/o reply: enumerated alternatives           n=3      -0.333   [-1.000, +0.000]
+  clarify then answer: correct after the reply         n=0   -
+  clarify then answer: Hit@6 after the reply           n=2      +0.500   [+0.000, +1.000]
+  refuse: no substantive answer                        n=5      +0.000   [+0.000, +0.000]
+  refuse: explicit refusal status                      n=5      +0.400   [+0.000, +0.800]
