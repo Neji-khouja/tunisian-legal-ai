@@ -1,0 +1,12 @@
+{
+ "time": "2026-11-04T22:42:21",
+ "reason": "completed",
+ "stage": "all",
+ "command": "C:\\Users\\deadx\\OneDrive\\Documents\\Projects\\RAG_PDF\\eval\\run_answer_eval.py --set eval/noisy_set.json --stages-file C:\\Users\\deadx\\OneDrive\\Documents\\Projects\\RAG_PDF\\eval\\stages.json --results-dir results/noisy --stage all --system v2 --only-ids n_ac70 --judge-provider gemini --judge-model gemini-3.1-flash-lite --v1-worktree ../RAG_PDF_v1 --min-gap 3",
+ "done": {
+  "v2": 40
+ },
+ "remaining": {},
+ "judge_pending": 0,
+ "judge_error": null
+}
