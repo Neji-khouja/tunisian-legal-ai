@@ -35,7 +35,9 @@ used for gate accuracy); v1.1 and v1 (single-turn) get one merged question "<que
 item's language (field "asked"). Results go to the
 stage file above. Another --set (e.g. eval/plumbing_set.json, a 3-item pipe check): no exam fingerprint, --stage all
 only, <results-dir>/answer_eval_<setname>_<system>.jsonl in its own --results-dir (results/ itself, or a folder holding
-stage files, is refused; the exam is refused in a folder holding another set's files).
+stage files, is refused; the exam is refused in a folder holding another set's files). A set with a
+<set stem>_hashes.txt next to it ("<set file name> <sha256>", e.g. eval/noisy_set_hashes.txt) is locked: a changed
+set is refused unless --allow-changed-exam.
 Timing per item: seconds (system only), elapsed_total (system + metrics + judge; the --min-gap sleep is outside),
 n_429 (rate-limited Groq responses the client retried) and waited_seconds (sum of the retry waits the Groq client
 announced); n_429 and waited_seconds are None for v1, whose LLM calls run in a subprocess.
@@ -1025,7 +1027,17 @@ def main(argv=None):
                      "if the change is intended (and commit), or pass --allow-changed-exam.")
     else:                                          # not the exam (e.g. eval/plumbing_set.json): no fingerprint required
         cur_hashes = {set_path.name: hc.sha256(set_path)}
-        print(f"set {set_path.name} is not the exam: no fingerprint check; results in {results_dir}")
+        lock = set_path.with_name(f"{set_path.stem}_hashes.txt")     # a locked set (e.g. eval/noisy_set_hashes.txt)
+        if lock.exists():
+            want = hc.read_hashes(lock).get(set_path.name)
+            print(f"set {set_path.name} locked by {lock.name}: {'matches' if want == cur_hashes[set_path.name] else 'DIFFERS'}"
+                  f"; results in {results_dir}")
+            if want != cur_hashes[set_path.name] and not args.allow_changed_exam:
+                sys.exit(f"REFUSED: {set_path.name} changed since {lock.name} (expected {want}, now "
+                         f"{cur_hashes[set_path.name]}). Results on a changed set are not comparable; pass "
+                         f"--allow-changed-exam if the change is intended.")
+        else:
+            print(f"set {set_path.name} is not the exam: no fingerprint check; results in {results_dir}")
     items = json.loads(set_path.read_text(encoding="utf-8"))
     ids = stage_ids(args.stages_file, args.stage) if is_exam(set_path) else None
     if ids is not None:

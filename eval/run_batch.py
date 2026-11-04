@@ -17,6 +17,7 @@ Backup Groq keys: put GROQ_API_KEY_2, GROQ_API_KEY_3, ... next to GROQ_API_KEY i
 daily quota (run_state.json reason "agent daily quota"), the same system runs again at once with the next key; the
 finished rows are kept, so it goes on where it stopped. Keys are never printed, only their number. Groq counts the
 quota per organization: a second key of the same account shares the same 200k tokens and does not help.
+Another set (e.g. the noisy-wording set): --stage all --set eval/noisy_set.json --results-dir results/noisy.
 """
 import os
 import sys
@@ -54,8 +55,8 @@ def stop_reason(args) -> str:
 
 
 def stage_items(set_path: Path, stages_path: Path, stage: str) -> list[dict]:
-    ids = rae.stage_ids(stages_path, stage)
-    return [i for i in json.loads(set_path.read_text(encoding="utf-8")) if i["id"] in ids]
+    ids = rae.stage_ids(stages_path, stage)          # None for --stage all: every item of the set
+    return [i for i in json.loads(set_path.read_text(encoding="utf-8")) if ids is None or i["id"] in ids]
 
 
 def result_files(args) -> dict:
@@ -115,7 +116,7 @@ def run_one_batch(args, rest, items, keys=()) -> tuple[str, list, list]:
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("--stage", choices=["1", "2"], required=True)
+    ap.add_argument("--stage", choices=["1", "2", "all"], required=True)
     ap.add_argument("--questions-per-run", type=int, default=10, metavar="K")
     ap.add_argument("--judge-provider", choices=["groq", "gemini"], default=hc.env_judge_provider())
     ap.add_argument("--set", default=str(rae.EXAM_DIR / "answer_set.json"))

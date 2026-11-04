@@ -12,12 +12,14 @@
 (g) --wait-on-quota: sleeps, probes, then continues    (h) --daily-budget-tokens stops before the pair, exit 75
 (i) error classes: daily vs per-minute messages (Groq, Gemini), retry-after parsing
 (j) token usage: the LangChain usage callback sees a chat model called inside a LangGraph node
-(k) another --set (plumbing): no fingerprint, own --results-dir; never in the folder of the stage results (and back)
+(k) another --set (plumbing): no fingerprint, own --results-dir; never in the folder of the stage results (and back);
+    a set with <stem>_hashes.txt is locked (changed: refused unless --allow-changed-exam)
 (l) a failing judge check stops before any agent call; a judge error mid-run keeps the answers as judge_pending
 (m) eval/judge_check.py with a stub judge: verdicts, successes, the selection rule; the Gemini thinking argument
 (n) the clarify/refuse judge (GATE_PROMPT) runs on every clarify/refuse row of every system; --summarize metrics
 (o) the 5 exam clarify items with a scripted reply have gold: "Hit@6 after the reply" is computed on them (n = 5)
-(p) eval/run_batch.py with a stub runner: next K ids, one process per system, exit 75 forwarded, other failures go on
+(p) eval/run_batch.py with a stub runner: next K ids, one process per system, exit 75 forwarded, other failures go on;
+    --stage all on another set
 (q) crash isolation: a parse error once (recovers in the same run), on both tries (error row, the run goes on), in 3
     runs (failed: final, "system failure" in --summarize); a quota error still exits 75
 (s) clarify behaviour metrics on the clarify items without a scripted reply; "clarify then answer" on the reply items
@@ -322,6 +324,17 @@ def test_other_set():
         heads = [l for l in buf.getvalue().splitlines() if l.startswith("=== ") and ".jsonl:" in l]
         check("(k) --summarize on that folder reads the set's 3 files", len(heads) == 3
               and all(l.startswith("=== answer_eval_plumbing_set_") for l in heads), "\n".join(heads))
+        lock = tmp / "plumbing_set_hashes.txt"
+        lock.write_text(f"plumbing_set.json {hc.sha256(plumb)}\n", encoding="utf-8")
+        code, out = go("--results-dir", str(tmp / "plumbing"), "--dry-run")
+        check("(k) a set with <stem>_hashes.txt that matches runs", code is None and "locked by" in out
+              and "matches" in out, f"{code!r} {out[:200]}")
+        lock.write_text("plumbing_set.json 0\n", encoding="utf-8")
+        code, out = go("--results-dir", str(tmp / "plumbing"), "--dry-run")
+        check("(k) a locked set that changed is refused", isinstance(code, str) and code.startswith("REFUSED: plumbing_set"),
+              str(code)[:200])
+        code, out = go("--results-dir", str(tmp / "plumbing"), "--dry-run", "--allow-changed-exam")
+        check("(k) ... unless --allow-changed-exam", code is None and "DIFFERS" in out, f"{code!r}")
 
 
 def test_judge_only():
@@ -526,6 +539,16 @@ def test_run_batch():
         code, out = go({})
         check("(p) run_batch: a system with the whole batch finished is skipped", [c[0] for c in calls] == ["v1.1", "v2"],
               str(calls))
+        other = tmp / "other_set.json"
+        other.write_text(json.dumps([ITEMS[0], ITEMS[3], ITEMS[4]], ensure_ascii=False), encoding="utf-8")
+        calls.clear()
+        rb.RUN = fake({})
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            rb.main(["--stage", "all", "--set", str(other), "--stages-file", str(tmp / "stages.json"),
+                     "--results-dir", str(tmp / "other"), "--questions-per-run", "2"])
+        want = ",".join(i["id"] for i in (ITEMS[0], ITEMS[3]))
+        check("(p) run_batch --stage all on another set: its first 2 items, every system",
+              calls == [("v1", want, False), ("v1.1", want, False), ("v2", want, False)], str(calls))
 
 
 def test_crash_isolation():
