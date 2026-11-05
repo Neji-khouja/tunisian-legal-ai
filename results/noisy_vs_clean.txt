@@ -1,0 +1,220 @@
+Noisy vs clean (eval/noisy_vs_clean.py): 40 noisy items vs their Stage 2 originals; noisy minus clean per question; 95% bootstrap CI over questions, 5000 resamples, seed 20261022; metrics as in --summarize; degraded/error/failed rows left out
+
+=== A. Degradation per system: noisy - clean per question (paired on the same item)
+--- v1: 40 items valid on both sides
+  Hit@6 (gold in evidence)           n=40     -0.125   [-0.275, +0.000]
+  correct                            n=40     -0.075   [-0.200, +0.050]
+  partial                            n=40     +0.075   [-0.050, +0.200]
+  incorrect                          n=40     +0.000   [-0.150, +0.150]
+  hallucination (answer)             n=40     +0.100   [-0.050, +0.250]
+  numeric check ok (answer)          n=39     +0.077   [-0.077, +0.231]
+  false refuse                       n=40     +0.000   [+0.000, +0.000]
+--- v1.1: 40 items valid on both sides
+  Hit@6 (gold in evidence)           n=40     -0.300   [-0.450, -0.125]
+  correct                            n=40     -0.175   [-0.325, -0.025]
+  partial                            n=40     -0.025   [-0.150, +0.075]
+  incorrect                          n=40     +0.200   [+0.050, +0.375]
+  hallucination (answer)             n=40     +0.225   [+0.050, +0.400]
+  numeric check ok (answer)          n=40     +0.000   [-0.075, +0.075]
+  false refuse                       n=40     +0.000   [+0.000, +0.000]
+--- v2: 40 items valid on both sides
+  Hit@6 (gold in evidence)           n=40     -0.150   [-0.325, +0.000]
+  correct                            n=39     -0.179   [-0.359, +0.000]
+  partial                            n=39     +0.103   [-0.026, +0.231]
+  incorrect                          n=39     +0.077   [-0.077, +0.256]
+  hallucination (answer)             n=39     +0.128   [-0.077, +0.333]
+  numeric check ok (answer)          n=38     +0.026   [+0.000, +0.079]
+  false refuse                       n=40     +0.000   [+0.000, +0.000]
+
+=== B. PRE-REGISTERED: difference in differences per question, (noisy - clean) of one system minus (noisy - clean) of the other
+--- v2 vs v1.1 (primary): 40 items valid on both sides for both systems
+  Hit@6 (gold in evidence)           n=40     +0.150   [+0.000, +0.325]
+  correct                            n=39     +0.000   [-0.128, +0.154]
+  incorrect                          n=39     -0.128   [-0.282, +0.026]
+  hallucination (answer)             n=39     -0.103   [-0.333, +0.128]
+--- v2 vs v1 (secondary): 40 items valid on both sides for both systems
+  Hit@6 (gold in evidence)           n=40     -0.025   [-0.225, +0.175]
+  correct                            n=39     -0.128   [-0.333, +0.077]
+  incorrect                          n=39     +0.103   [-0.103, +0.308]
+  hallucination (answer)             n=39     +0.026   [-0.231, +0.282]
+
+=== C. EXPLORATORY (n about 10 per group, descriptive only): noisy - clean per question by noise_type and by language; interval only when n >= 8
+--- noise_type typos, v1: 10 items
+  Hit@6 (gold in evidence)           n=10     -0.200   [-0.600, +0.200]
+  correct                            n=10     +0.000   [-0.400, +0.400]
+  partial                            n=10     +0.200   [+0.000, +0.500]
+  incorrect                          n=10     -0.200   [-0.600, +0.200]
+  hallucination (answer)             n=10     +0.200   [-0.200, +0.600]
+  numeric check ok (answer)          n=10     +0.200   [-0.300, +0.700]
+  false refuse                       n=10     +0.000   [+0.000, +0.000]
+--- noise_type typos, v1.1: 10 items
+  Hit@6 (gold in evidence)           n=10     +0.000   [+0.000, +0.000]
+  correct                            n=10     +0.000   [-0.300, +0.300]
+  partial                            n=10     +0.100   [+0.000, +0.300]
+  incorrect                          n=10     -0.100   [-0.300, +0.000]
+  hallucination (answer)             n=10     +0.100   [-0.200, +0.400]
+  numeric check ok (answer)          n=10     +0.000   [+0.000, +0.000]
+  false refuse                       n=10     +0.000   [+0.000, +0.000]
+--- noise_type typos, v2: 10 items
+  Hit@6 (gold in evidence)           n=10     +0.000   [+0.000, +0.000]
+  correct                            n=10     +0.000   [-0.300, +0.300]
+  partial                            n=10     +0.100   [+0.000, +0.300]
+  incorrect                          n=10     -0.100   [-0.300, +0.000]
+  hallucination (answer)             n=10     -0.100   [-0.500, +0.300]
+  numeric check ok (answer)          n=9      +0.111   [+0.000, +0.333]
+  false refuse                       n=10     +0.000   [+0.000, +0.000]
+--- noise_type wrong_term, v1: 10 items
+  Hit@6 (gold in evidence)           n=10     +0.000   [-0.300, +0.300]
+  correct                            n=10     -0.100   [-0.300, +0.000]
+  partial                            n=10     +0.200   [+0.000, +0.500]
+  incorrect                          n=10     -0.100   [-0.300, +0.000]
+  hallucination (answer)             n=10     -0.100   [-0.300, +0.000]
+  numeric check ok (answer)          n=10     +0.000   [-0.300, +0.300]
+  false refuse                       n=10     +0.000   [+0.000, +0.000]
+--- noise_type wrong_term, v1.1: 10 items
+  Hit@6 (gold in evidence)           n=10     -0.400   [-0.700, -0.100]
+  correct                            n=10     -0.200   [-0.500, +0.000]
+  partial                            n=10     -0.100   [-0.400, +0.200]
+  incorrect                          n=10     +0.300   [+0.000, +0.600]
+  hallucination (answer)             n=10     +0.400   [+0.100, +0.700]
+  numeric check ok (answer)          n=10     +0.000   [+0.000, +0.000]
+  false refuse                       n=10     +0.000   [+0.000, +0.000]
+--- noise_type wrong_term, v2: 10 items
+  Hit@6 (gold in evidence)           n=10     +0.000   [-0.300, +0.300]
+  correct                            n=10     -0.200   [-0.600, +0.200]
+  partial                            n=10     +0.200   [-0.200, +0.600]
+  incorrect                          n=10     +0.000   [-0.300, +0.300]
+  hallucination (answer)             n=10     +0.400   [+0.000, +0.800]
+  numeric check ok (answer)          n=10     +0.000   [+0.000, +0.000]
+  false refuse                       n=10     +0.000   [+0.000, +0.000]
+--- noise_type describe, v1: 10 items
+  Hit@6 (gold in evidence)           n=10     -0.200   [-0.500, +0.000]
+  correct                            n=10     -0.200   [-0.500, +0.000]
+  partial                            n=10     +0.000   [-0.300, +0.300]
+  incorrect                          n=10     +0.200   [-0.200, +0.600]
+  hallucination (answer)             n=10     +0.100   [+0.000, +0.300]
+  numeric check ok (answer)          n=10     +0.100   [+0.000, +0.300]
+  false refuse                       n=10     +0.000   [+0.000, +0.000]
+--- noise_type describe, v1.1: 10 items
+  Hit@6 (gold in evidence)           n=10     -0.600   [-0.900, -0.300]
+  correct                            n=10     -0.500   [-0.800, -0.200]
+  partial                            n=10     -0.100   [-0.300, +0.000]
+  incorrect                          n=10     +0.600   [+0.300, +0.900]
+  hallucination (answer)             n=10     +0.300   [+0.000, +0.600]
+  numeric check ok (answer)          n=10     +0.000   [+0.000, +0.000]
+  false refuse                       n=10     +0.000   [+0.000, +0.000]
+--- noise_type describe, v2: 10 items
+  Hit@6 (gold in evidence)           n=10     -0.400   [-0.800, +0.000]
+  correct                            n=9      -0.556   [-0.889, -0.222]
+  partial                            n=9      +0.222   [+0.000, +0.556]
+  incorrect                          n=9      +0.333   [-0.111, +0.778]
+  hallucination (answer)             n=9      +0.222   [-0.222, +0.667]
+  numeric check ok (answer)          n=9      +0.000   [+0.000, +0.000]
+  false refuse                       n=10     +0.000   [+0.000, +0.000]
+--- noise_type informal, v1: 10 items
+  Hit@6 (gold in evidence)           n=10     -0.100   [-0.300, +0.000]
+  correct                            n=10     +0.000   [+0.000, +0.000]
+  partial                            n=10     -0.100   [-0.300, +0.000]
+  incorrect                          n=10     +0.100   [+0.000, +0.300]
+  hallucination (answer)             n=10     +0.200   [-0.200, +0.600]
+  numeric check ok (answer)          n=9      +0.000   [-0.333, +0.333]
+  false refuse                       n=10     +0.000   [+0.000, +0.000]
+--- noise_type informal, v1.1: 10 items
+  Hit@6 (gold in evidence)           n=10     -0.200   [-0.600, +0.200]
+  correct                            n=10     +0.000   [-0.300, +0.300]
+  partial                            n=10     +0.000   [+0.000, +0.000]
+  incorrect                          n=10     +0.000   [-0.300, +0.300]
+  hallucination (answer)             n=10     +0.100   [-0.200, +0.400]
+  numeric check ok (answer)          n=10     +0.000   [-0.300, +0.300]
+  false refuse                       n=10     +0.000   [+0.000, +0.000]
+--- noise_type informal, v2: 10 items
+  Hit@6 (gold in evidence)           n=10     -0.200   [-0.600, +0.200]
+  correct                            n=10     +0.000   [-0.300, +0.300]
+  partial                            n=10     -0.100   [-0.300, +0.000]
+  incorrect                          n=10     +0.100   [-0.200, +0.400]
+  hallucination (answer)             n=10     +0.000   [-0.300, +0.300]
+  numeric check ok (answer)          n=10     +0.000   [+0.000, +0.000]
+  false refuse                       n=10     +0.000   [+0.000, +0.000]
+--- language fr, v1: 23 items
+  Hit@6 (gold in evidence)           n=23     -0.130   [-0.261, +0.000]
+  correct                            n=23     +0.000   [-0.130, +0.130]
+  partial                            n=23     +0.000   [-0.130, +0.130]
+  incorrect                          n=23     +0.000   [-0.174, +0.174]
+  hallucination (answer)             n=23     +0.130   [-0.043, +0.304]
+  numeric check ok (answer)          n=22     +0.045   [-0.136, +0.227]
+  false refuse                       n=23     +0.000   [+0.000, +0.000]
+--- language fr, v1.1: 23 items
+  Hit@6 (gold in evidence)           n=23     -0.304   [-0.522, -0.087]
+  correct                            n=23     -0.217   [-0.435, +0.000]
+  partial                            n=23     +0.000   [-0.174, +0.174]
+  incorrect                          n=23     +0.217   [+0.000, +0.435]
+  hallucination (answer)             n=23     +0.348   [+0.174, +0.565]
+  numeric check ok (answer)          n=23     -0.043   [-0.130, +0.000]
+  false refuse                       n=23     +0.000   [+0.000, +0.000]
+--- language fr, v2: 23 items
+  Hit@6 (gold in evidence)           n=23     -0.087   [-0.304, +0.130]
+  correct                            n=23     -0.174   [-0.391, +0.000]
+  partial                            n=23     +0.087   [-0.130, +0.304]
+  incorrect                          n=23     +0.087   [-0.130, +0.304]
+  hallucination (answer)             n=23     +0.217   [-0.043, +0.478]
+  numeric check ok (answer)          n=23     +0.043   [+0.000, +0.130]
+  false refuse                       n=23     +0.000   [+0.000, +0.000]
+--- language ar, v1: 9 items
+  Hit@6 (gold in evidence)           n=9      +0.000   [-0.333, +0.333]
+  correct                            n=9      -0.111   [-0.444, +0.222]
+  partial                            n=9      +0.111   [-0.222, +0.444]
+  incorrect                          n=9      +0.000   [-0.444, +0.444]
+  hallucination (answer)             n=9      +0.000   [-0.333, +0.333]
+  numeric check ok (answer)          n=9      +0.222   [-0.222, +0.667]
+  false refuse                       n=9      +0.000   [+0.000, +0.000]
+--- language ar, v1.1: 9 items
+  Hit@6 (gold in evidence)           n=9      -0.333   [-0.667, -0.111]
+  correct                            n=9      -0.222   [-0.667, +0.222]
+  partial                            n=9      +0.000   [+0.000, +0.000]
+  incorrect                          n=9      +0.222   [-0.222, +0.667]
+  hallucination (answer)             n=9      +0.111   [-0.222, +0.444]
+  numeric check ok (answer)          n=9      +0.000   [+0.000, +0.000]
+  false refuse                       n=9      +0.000   [+0.000, +0.000]
+--- language ar, v2: 9 items
+  Hit@6 (gold in evidence)           n=9      -0.222   [-0.667, +0.222]
+  correct                            n=9      -0.111   [-0.556, +0.333]
+  partial                            n=9      +0.111   [+0.000, +0.333]
+  incorrect                          n=9      +0.000   [-0.444, +0.444]
+  hallucination (answer)             n=9      -0.111   [-0.556, +0.333]
+  numeric check ok (answer)          n=8      +0.000   [+0.000, +0.000]
+  false refuse                       n=9      +0.000   [+0.000, +0.000]
+--- language en, v1: 8 items
+  Hit@6 (gold in evidence)           n=8      -0.250   [-0.750, +0.250]
+  correct                            n=8      -0.250   [-0.625, +0.000]
+  partial                            n=8      +0.250   [+0.000, +0.625]
+  incorrect                          n=8      +0.000   [-0.375, +0.375]
+  hallucination (answer)             n=8      +0.125   [-0.250, +0.500]
+  numeric check ok (answer)          n=8      +0.000   [-0.375, +0.375]
+  false refuse                       n=8      +0.000   [+0.000, +0.000]
+--- language en, v1.1: 8 items
+  Hit@6 (gold in evidence)           n=8      -0.250   [-0.500, +0.000]
+  correct                            n=8      +0.000   [+0.000, +0.000]
+  partial                            n=8      -0.125   [-0.375, +0.000]
+  incorrect                          n=8      +0.125   [+0.000, +0.375]
+  hallucination (answer)             n=8      +0.000   [-0.375, +0.375]
+  numeric check ok (answer)          n=8      +0.125   [+0.000, +0.375]
+  false refuse                       n=8      +0.000   [+0.000, +0.000]
+--- language en, v2: 8 items
+  Hit@6 (gold in evidence)           n=8      -0.250   [-0.625, +0.000]
+  correct                            n=7      -0.286   (n < 8: no interval; per question worse 2, same 5, better 0)
+  partial                            n=7      +0.143   (n < 8: no interval; per question worse 0, same 6, better 1)
+  incorrect                          n=7      +0.143   (n < 8: no interval; per question worse 0, same 6, better 1)
+  hallucination (answer)             n=7      +0.143   (n < 8: no interval; per question worse 0, same 6, better 1)
+  numeric check ok (answer)          n=7      +0.000   (n < 8: no interval; per question worse 0, same 7, better 0)
+  false refuse                       n=8      +0.000   [+0.000, +0.000]
+
+=== D. Data audit: rows used, items left out and why, false refuse ids, system fingerprints
+--- v1: clean answer_eval_answer_set_stage2_v1.jsonl: 50 items (40 answerable), 0 older rows superseded; noisy answer_eval_noisy_set_v1.jsonl: 40 items, 0 older rows superseded; pairs used: 40
+  left out: none
+--- v1.1: clean answer_eval_answer_set_stage2_v1.1.jsonl: 50 items (40 answerable), 0 older rows superseded; noisy answer_eval_noisy_set_v1.1.jsonl: 40 items, 0 older rows superseded; pairs used: 40
+  left out: none
+--- v2: clean answer_eval_answer_set_stage2_v2.jsonl: 50 items (40 answerable), 1 older rows superseded; noisy answer_eval_noisy_set_v2.jsonl: 40 items, 1 older rows superseded; pairs used: 40
+  left out: none
+--- v2 false refuse: clean ['ac69']; noisy (original ids) ['ac69']; same item on both sides: ['ac69']
+--- system fingerprints (sha256 prefix) per file: v1 clean ['dc8fd664c662']; v1 noisy ['dc8fd664c662']; v1.1 clean ['dc8fd664c662']; v1.1 noisy ['dc8fd664c662']; v2 clean ['dc8fd664c662']; v2 noisy ['dc8fd664c662']
+  all rows share one fingerprint: dc8fd664c662
