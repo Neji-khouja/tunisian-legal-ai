@@ -1,6 +1,7 @@
 \section{Reproduction}\label{sec:repro}
 
-\paragraph{Version.} Ce rapport a été généré sur la branche \NGitBranch{} au commit \NGitHead. Étiquettes du dépôt :
+\paragraph{Version.} Les nombres des sections antérieures à l'évaluation finale ont été générés sur la branche \NGitBranch{} au
+commit \NGitHead ; ceux de l'évaluation finale (\texttt{report/generated/}) à partir du commit \EvGitHead. Étiquettes du dépôt :
 \NGitTags.
 
 \paragraph{Empreintes des prompts.} Analyse \NHashAnalyze, Plan \NHashPlan, \texttt{codes.py} \NHashCodes{} (combinée
@@ -26,6 +27,8 @@ python eval/noise_check.py
 python eval/pdf_factcheck.py results/noise_check.json
 python eval/clarify_check.py
 python report/build_report.py
+python eval/make_report_numbers.py
+python eval/make_report_figures.py
 \end{lstlisting}
 \texttt{eval/coverage\_discrepancies.py} examine un à un les écarts de couverture entre le PDF et l'index ;
 \texttt{eval/mojibake\_scan.py} recherche des séquences d'encodage corrompu (« â€ », « Ã© », caractère U+FFFD) dans
@@ -43,11 +46,11 @@ modifié.
 
 \section{Incidents et leçons}\label{sec:incidents}
 
-\paragraph{Écart d'environnement.} Une exécution du script de comparaison a donné, pour la variante A1 sur le
-développement, 77,1~\% de Hit@6 au lieu des \NVoneoneDevHitsix~\% attendus \averifier. Avec le code engagé et
-l'environnement figé, la valeur attendue a été reproduite à l'identique, question par question. La cause de l'écart n'a
-pas pu être établie à partir des fichiers ; l'hypothèse retenue est une exécution dans un autre environnement \averifier.
-Leçon : figer l'environnement et enregistrer la provenance de chaque exécution.
+\paragraph{Écart inexpliqué.} Le journal \texttt{agent/LEARNING.md} note, pour la variante A1 sur le développement,
+\EvEnvRun~\% de Hit@6 au lieu des \EvEnvOfficial~\% officiels. Cette exécution et son environnement ne sont pas enregistrés
+dans le dépôt : sa cause n'est pas établie, et les conclusions qui en découlaient ont été écartées. La valeur officielle a été
+reproduite au commit \texttt{\EvEnvReproCommit} (\texttt{results/repro\_agent\_v2\_dev.txt}), et l'environnement a ensuite été figé au
+commit \texttt{\EvEnvPinCommit}. Leçon : figer l'environnement et enregistrer la provenance de chaque exécution.
 
 \paragraph{HEAD détaché et paramètre perdu.} Un passage sur un commit ancien en HEAD détaché a remplacé le fichier de
 récupération (perte du paramètre de filtre doux) et les prompts gelés par leurs versions antérieures, puis une étiquette
@@ -58,8 +61,11 @@ Leçon : vérifier la branche avant chaque commit, et dater les résultats par l
 \paragraph{Jeu de test vu deux fois.} Le jeu de test a servi à la mesure finale de v1.1, puis à la comparaison des
 variantes de planification (\texttt{agent/LEARNING.md}). Il ne peut plus confirmer les résultats de l'agent.
 
-\paragraph{Hypothèse sur l'arabe.} Une hypothèse sur l'avantage de certaines langues a été formulée puis retirée faute de
-mesure suffisante \averifier.
+\paragraph{Hypothèse sur l'arabe.} Une hypothèse sur l'arabe a été retirée ; sa formulation n'est pas enregistrée et nous n'en
+tirons aucune affirmation. Raison notée dans \texttt{agent/LEARNING.md} : Hit@6 de v1.1, du développement au test, passe de
+\EvWithdrawnArDev{} à \EvWithdrawnArTest~\% en arabe ($n$ de \EvWithdrawnArDevN{} à \EvWithdrawnArTestN), de \EvWithdrawnEnDev{} à
+\EvWithdrawnEnTest~\% en anglais ($n$ de \EvWithdrawnEnDevN{} à \EvWithdrawnEnTestN) et de \EvWithdrawnFrDev{} à \EvWithdrawnFrTest~\% en
+français ($n$ de \EvWithdrawnFrDevN{} à \EvWithdrawnFrTestN) : sur le test, c'est l'anglais qui perd le plus, non l'arabe.
 
 \section{Structure du dépôt}
 Fichiers et dossiers suivis à la racine :

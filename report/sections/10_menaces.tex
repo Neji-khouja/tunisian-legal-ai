@@ -5,12 +5,12 @@ questions du développement. L'exemple du Plan (section~\ref{sec:recup}) montre 
 le test. Les descriptions de codes ont en outre été écrites après avoir vu des échecs du développement.
 
 \paragraph{Jeu de test consommé.} Le jeu de test a servi une fois pour v1.1, puis une seconde fois pour comparer les
-variantes de planification. Il n'est plus un test indépendant pour l'agent ; c'est pourquoi les résultats de la boucle
-restent non confirmés jusqu'à l'évaluation sur un jeu neuf.
+variantes de planification. Il n'est plus un test indépendant pour l'agent ; c'est pourquoi l'évaluation finale porte sur un
+jeu neuf (section~\ref{sec:finale}).
 
 \paragraph{Juge LLM et circularité.} Un LLM qui juge les réponses d'un LLM peut partager ses biais. Nous imposons un modèle
-juge distinct du générateur, nous l'alimentons avec le texte des PDF plutôt qu'avec nos \term{chunks}, et nous prévoyons un
-contrôle humain d'un échantillon (accord et kappa de Cohen). Le vérificateur de support, lui, utilise le même modèle que le
+juge distinct du générateur, nous l'alimentons avec le texte des PDF plutôt qu'avec nos \term{chunks}, et un échantillon a été
+contrôlé par un relecteur humain (sections~\ref{sec:resultats} et~\ref{sec:limites-finale}). Le vérificateur de support, lui, utilise le même modèle que le
 générateur ; son étalonnage par mutations mesure ce qu'il détecte, pas ce qu'il manquerait sur des erreurs plus subtiles.
 
 \paragraph{Taille d'échantillon et regroupement.} Avec \NConceptsDev{} concepts de développement, une question déplace le

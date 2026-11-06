@@ -21,7 +21,7 @@ qu'il modifie. La figure~\ref{fig:graphe} montre les nœuds et les transitions.
   \node[llm, below=12mm of gr] (rf) {Reformuler};
   \node[code, left=of rf] (rm) {Récupérer+};
   \node[llm, right=of gr] (aw) {Répondre};
-  \node[todo, below=12mm of aw] (vf) {Vérifier\\{\scriptsize (hors graphe)}};
+  \node[llm, below=12mm of aw] (vf) {Vérifier\\{\scriptsize (une réparation au plus)}};
   \draw[arr] (an) -- node[lab, above, sloped] {ambiguë} (cl);
   \draw[arr] (an) -- node[lab, below, sloped] {hors champ} (re);
   \draw[arr] (an) -- node[lab, above] {claire} (rt);
@@ -31,10 +31,11 @@ qu'il modifie. La figure~\ref{fig:graphe} montre les nœuds et les transitions.
   \draw[arr] (rf) -- (rm);
   \draw[arr] (rm) -- node[lab, left] {reprises $<2$} (gr);
   \draw[arr] (rm.south) -- ++(0,-5mm) -| node[lab, pos=0.25, below] {reprises $=2$ (sans réévaluer)} (aw.south east);
-  \draw[arr, dashed] (aw) -- (vf);
+  \draw[arr] (aw) -- (vf);
 \end{tikzpicture}
-\caption{Graphe de l'agent. En bleu, les nœuds qui appellent le LLM ; en gris, le code déterministe ; en pointillés, le
-vérificateur de support, étalonné (section~\ref{sec:generation}) mais pas encore branché dans le graphe.}
+\caption{Graphe de l'agent. En bleu, les nœuds qui appellent le LLM ; en gris, le code déterministe. Le vérificateur de support
+(section~\ref{sec:generation}) est branché dans le graphe : une réponse signalée est réparée une fois au plus, puis les
+affirmations encore non appuyées sont retirées. Le nœud de condensation des échanges, placé avant l'Analyse, n'est pas représenté.}
 \label{fig:graphe}
 \end{figure}
 
@@ -54,6 +55,9 @@ vérificateur de support, étalonné (section~\ref{sec:generation}) mais pas enc
         réutilisant les termes vus dans les articles ; les nouveaux résultats sont fusionnés avec les anciens.
   \item[Répondre.] Le LLM écrit de une à six affirmations ; chacune est une phrase qui cite les identifiants des articles
         qui l'énoncent. Un contrôle en code vérifie que chaque identifiant cité figure bien dans les preuves.
+  \item[Vérifier, Réparer, Finaliser.] Le LLM juge si chaque affirmation est appuyée par les articles qu'elle cite. Si une
+        affirmation est signalée, Répondre est rejoué une fois avec ce retour, puis la vérification est refaite ; Finaliser retire
+        les affirmations encore signalées.
 \end{description}
 
 \subsection{L'état}

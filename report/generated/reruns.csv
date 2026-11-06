@@ -1,0 +1,8 @@
+set,system,id,statuses,first_date,last_date,error_type
+S1,v1,ac24,error -> done,2026-11-01T13:21:59,2026-11-01T14:20:03,RuntimeError
+S1,v1,ac41,error -> done,2026-11-01T13:40:41,2026-11-01T14:20:37,RuntimeError
+S1,v1,c01,error -> done,2026-11-01T15:05:23,2026-11-01T15:23:14,RuntimeError
+S1,v2,ac11,degraded -> done,2026-11-01T13:03:31,2026-11-01T13:11:21,
+S1,v2,ac33,error -> done,2026-11-01T14:30:13,2026-11-01T14:54:06,APIConnectionError
+S2,v2,ac20,degraded -> done,2026-11-02T21:07:12,2026-11-02T21:35:45,
+N,v2,n_ac70,degraded -> done,2026-11-04T22:39:14,2026-11-04T22:42:21,

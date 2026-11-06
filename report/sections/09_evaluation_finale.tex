@@ -1,41 +1,344 @@
-\section{Évaluation finale sur 100 questions}\label{sec:finale}
+\section{Évaluation finale sur cent questions}\label{sec:finale}
 
-\textbf{Statut : \acompleter.} Le jeu de cent questions (\texttt{eval/answer\_set.json}) est volontairement vide à ce stade :
-ses questions et ses points de référence sont rédigés à la main, après le gel des prompts, pour qu'aucun réglage n'ait pu
-s'appuyer sur eux. Les résultats ci-dessous seront remplis automatiquement à partir de \texttt{results/answer\_eval\_*}.
+Cette section suit l'ordre du protocole : ce qui a été fixé avant l'examen, les résultats par ensemble de questions, leur
+interprétation, les limites, puis les écarts au protocole. Tous les nombres sont des macros de
+\texttt{report/generated/numbers.tex}, produites par \texttt{eval/make\_report\_numbers.py} à partir des fichiers de résultats.
 
-\input{tables/t_final}
+% ----------------------------------------------------------------------
+\subsection{Protocole d'évaluation}\label{sec:protocole}
 
-\figfile{f10_final_eval}{Évaluation finale : part des réponses correctes et des réponses contenant une hallucination, par
-système.}{fig:final}
-\figfile{f11_latency_calls}{Temps et appels LLM par question, par système.}{fig:latence}
+\paragraph{Pré-enregistrement.} L'addendum de pré-enregistrement (fin de \texttt{agent/LEARNING.md}) est daté du
+\EvPreDate{} : commit \EvCommitAddendum{} (\EvDateAddendum), étiquette \texttt{\EvAddendumTag}. La première ligne de résultats
+de l'examen date de \EvSoneFirst. Il fixe le système testé, l'examen, le juge, le plan d'analyse et les seuils.
+Empreinte du système (fichiers de l'agent, \texttt{config.py}, \texttt{splitter.py}, \texttt{retriever.py},
+\texttt{reranker.py}, \texttt{pipeline.py}, chemin et taille de l'index \texttt{\EvPreIndex}, \EvPreChunks{} \term{chunks}) :
+\texttt{\EvPreFingerprint}. Empreintes de l'examen : \texttt{eval/answer\_set.json} \texttt{\EvPreExamHash} ;
+\texttt{eval/stages.json} \texttt{\EvPreStagesHash}. Le contrôle sur les données donne \EvRowFingerprintCount{} seule empreinte
+de système dans toutes les lignes des trois ensembles (\texttt{\EvRowFingerprintShort}), identique à celle de l'addendum, et
+\EvRowPromptSets{} seul jeu d'empreintes de prompts.
 
-\subsection{Protocole}
-Chaque élément du jeu indique la réponse attendue : \emph{répondre} (avec les articles de référence et des points de
-référence rédigés par un juriste), \emph{clarifier} ou \emph{refuser}. Pour chaque système, le harnais
-\texttt{eval/run\_answer\_eval.py} enregistre la réponse, les preuves, les citations, le temps et le nombre d'appels LLM, puis
-calcule sans LLM : présence de l'article de référence parmi les preuves et parmi les citations, identifiants cités absents
-des preuves, contrôle numérique contre les PDF, et justesse des décisions de clarifier ou de refuser. Un juge LLM
-\emph{distinct} du générateur (variable \texttt{JUDGE\_MODEL}, température 0) indique quels points de référence la réponse
-couvre, si elle les contredit, et quelles affirmations ne sont pas appuyées par les articles cités. Les intervalles sont
-obtenus par \emph{bootstrap} sur les questions ; deux systèmes sont comparés question par question. Un échantillon de
-réponses est exporté pour un contrôle humain du juge (accord et kappa de Cohen, \texttt{eval/audit\_agreement.py}).
+\paragraph{Les cent questions.} L'examen compte \EvExamN{} questions : \EvExamAnswer{} avec réponse attendue, \EvExamClarify{}
+ambiguës et \EvExamRefuse{} hors champ ; \EvExamFr{} en français, \EvExamAr{} en arabe et \EvExamEn{} en anglais. Parmi les
+questions ambiguës, certaines ont une réponse scriptée de l'usager (\EvSoneReplies{} à l'étape~1, \EvStwoReplies{} à
+l'étape~2) : v2 reçoit la question puis la réponse dans le même fil, v1 et v1.1 une seule question fusionnée.
+
+\paragraph{Deux étapes.} L'étape~1 (\EvSoneItems{} questions : \EvSoneAnswer{} avec réponse, \EvSoneClarify{} ambiguës,
+\EvSoneRefuse{} hors champ) est l'étape principale ; l'étape~2 (\EvStwoItems{} questions : \EvStwoAnswer{}, \EvStwoClarify,
+\EvStwoRefuse) sert de confirmation. Les étapes ne sont pas regroupées. Les seuls décomptes sur les deux étapes sont ceux des
+seuils que l'addendum définit sur l'ensemble des questions (tableau~\ref{tab:prereg}) ; ce sont les dénominateurs de ces seuils,
+pas une analyse.
+
+\paragraph{Analyse.} Deux systèmes sont comparés question par question. Les intervalles de confiance à \EvLevel~\% sont obtenus
+par \emph{bootstrap} apparié sur les questions (\EvBoot{} tirages, graine \EvSeed, intervalle des percentiles). Règle de
+l'addendum : un écart dont l'intervalle contient zéro est rapporté comme « pas de différence détectable ». Un intervalle dont
+une borne vaut exactement zéro contient zéro ; nous disons qu'il touche zéro.
+
+\paragraph{Systèmes.} v1 tourne dans un \texttt{git worktree} de l'étiquette \texttt{v1-baseline-runnable}, avec son ancien
+index ; v1.1 et v2 utilisent l'index \texttt{\EvPreIndex}. Le générateur est le même partout (\texttt{\EvRowModel}). v2
+réutilise la récupération de v1.1 et ajoute l'analyse de la question, l'évaluation des preuves, la reformulation et la
+vérification de chaque affirmation (section~\ref{sec:archi}).
+
+\paragraph{Juge.} Un LLM distinct du générateur (\texttt{\EvPreJudge}, réflexion \emph{\EvPreJudgeThinking}, température nulle)
+indique quels points de référence la réponse couvre, si elle les contredit, et quelles affirmations les articles cités
+n'appuient pas. Il a été retenu par la règle de \texttt{eval/judge\_check.py} : au moins \EvJudgeRuleOk{} succès sur
+\EvJudgeRuleN, latence médiane inférieure à \EvJudgeRuleSeconds{}~s, et les deux verdicts attendus sur les cas témoins. Il a
+obtenu \EvJudgeCheckOk{} succès sur \EvJudgeCheckN{} et une latence médiane de \EvJudgeCheckLatency{}~s ; le journal
+\texttt{results/judge\_check\_log.json} note \EvJudgeRejected{} candidats écartés avant lui. Le même modèle a jugé toutes les
+lignes.
+
+\paragraph{Mesures.} \emph{Hit@6} : l'article de référence figure parmi les preuves. \emph{Correct} : tous les points de
+référence sont couverts, sans contradiction ; \emph{partiel} : au moins un point est couvert ; \emph{incorrect} : aucun point
+n'est couvert. \emph{Hallucination (réponse)} : le juge relève une affirmation non appuyée, ou un identifiant cité est absent
+des preuves, ou un nombre manque dans les articles cités. \emph{Contrôle numérique} : sans LLM, chaque nombre de la réponse est
+cherché dans le texte PDF des articles cités. Les lignes \emph{degraded}, \emph{error} et \emph{failed} sont écartées, comme dans
+\texttt{--summarize} ; aucune ne subsiste dans les résultats finaux.
+
+\paragraph{Audit humain.} Un échantillon de \EvAuditRows{} réponses de l'étape~1 (\EvAuditPerSystemVone{} par système, ordre
+mélangé, sans nom de système ni verdict du juge, clé dans un fichier séparé) a été étiqueté par un seul relecteur, non
+spécialiste du droit. Le seuil pré-enregistré est un accord d'au moins \EvPreAudit~\%, sur l'estimation ponctuelle.
+
+\paragraph{Jeu bruité.} \EvNoisyN{} variantes mal formulées des \EvStwoAnswer{} questions avec réponse de l'étape~2, à raison de
+\EvGroupTyposN{} par type de bruit (fautes de frappe, terme erroné, description sans nommer, registre familier). L'analyse
+principale est une différence de différences par question : (bruité $-$ propre) de v2 moins (bruité $-$ propre) de v1.1, qui
+indique si v2 se dégrade moins que v1.1. Selon l'auteur, cette hypothèse a été posée avant que les données de l'étape~2 existent.
+Le dépôt atteste que le brouillon du jeu précède ces données, mais il ne date pas l'hypothèse elle-même avant les résultats
+(section~\ref{sec:deviations}).
+
+\paragraph{Latence.} Mesure à chaud distincte, prévue par l'addendum : \EvLatQuestions{} questions avec réponse de l'étape~2
+(\EvLatFr{} en français, \EvLatAr{} en arabe, \EvLatEn{} en anglais), tirées avec la graine \EvSeed, identiques pour les trois
+systèmes, précédées d'une question d'échauffement non comptée, avec une pause de \EvLatPause~s entre les questions et un
+seul processus par système (\texttt{eval/latency\_benchmark.py}).
+
+% ----------------------------------------------------------------------
+\subsection{Résultats}\label{sec:resultats}
+
+\subsubsection{Étape 1 (principale)}
+Le tableau~\ref{tab:evalSone} donne les valeurs et le tableau~\ref{tab:diffSone} les différences appariées. Sur la part de
+réponses correctes, v2 atteint \EvSoneVtwoCorrect~\% \EvSoneVtwoCorrectCI, v1.1 \EvSoneVoneoneCorrect~\%
+\EvSoneVoneoneCorrectCI{} et v1 \EvSoneVoneCorrect~\% \EvSoneVoneCorrectCI. L'écart v2 $-$ v1.1 vaut
+\EvDiffSoneVtwoVoneoneCorrect{} points \EvDiffSoneVtwoVoneoneCorrectCI{} et l'écart v1.1 $-$ v1 vaut
+\EvDiffSoneVoneoneVoneCorrect{} points \EvDiffSoneVoneoneVoneCorrectCI : les deux intervalles contiennent zéro, donc pas de
+différence détectable. Sur l'hallucination, v2 $-$ v1.1 vaut \EvDiffSoneVtwoVoneoneHalluc{} points
+\EvDiffSoneVtwoVoneoneHallucCI{} : l'intervalle touche zéro.
+
+\input{generated/t_eval_Sone}
+\input{generated/t_diff_Sone}
+
+\subsubsection{Étape 2 (confirmation)}
+L'écart v1.1 $-$ v1 sur la part de réponses correctes vaut \EvDiffStwoVoneoneVoneCorrect{} points
+\EvDiffStwoVoneoneVoneCorrectCI{} : ici l'intervalle exclut zéro, comme pour Hit@6 (\EvDiffStwoVoneoneVoneHit{} points
+\EvDiffStwoVoneoneVoneHitCI) et pour les réponses incorrectes (\EvDiffStwoVoneoneVoneIncorrect{} points
+\EvDiffStwoVoneoneVoneIncorrectCI). L'écart v2 $-$ v1.1 vaut \EvDiffStwoVtwoVoneoneCorrect{} points
+\EvDiffStwoVtwoVoneoneCorrectCI{} : pas de différence détectable. La part de réponses correctes de v2 est calculée sur
+\EvStwoVtwoCorrectN{} réponses jugées : \EvStwoVtwoNoVerdict{} a été refusée à tort, n'a donc pas de verdict du juge et compte
+comme faux refus. En comptant ce refus comme non correct, la part devient \EvStwoVtwoCorrectAllCount{}, soit
+\EvStwoVtwoCorrectAll~\%.
+
+\input{generated/t_eval_Stwo}
+\input{generated/t_diff_Stwo}
+
+\figfile{f10_hit_correct}{Hit@6 et part de réponses correctes par système et par ensemble (étape~1 : $n=\EvSoneVtwoHitN$ ;
+étape~2 : $n=\EvStwoVtwoHitN$, \EvStwoVtwoCorrectN{} réponses jugées pour le correct de v2 ; jeu bruité : $n=\EvSnoisyVtwoHitN$,
+\EvSnoisyVtwoCorrectN{} pour le correct de v2). Points : proportions ; traits : IC \EvLevel~\% par \emph{bootstrap} sur les questions
+(\EvBoot{} tirages). Source : \texttt{report/generated/per\_system.csv}, issu de \texttt{results/answer\_eval\_*}.}{fig:hitcorrect}
+
+\figfile{f11_paired}{Différences appariées v2 $-$ v1.1 et v1.1 $-$ v1, en points de pourcentage, un panneau par ensemble (mêmes
+$n$ que la figure~\ref{fig:hitcorrect}). Traits : IC \EvLevel~\% par \emph{bootstrap} apparié sur les questions ; trait vertical à
+zéro. Pour « incorrect » et « hallucination », une valeur négative est favorable au premier système. Source :
+\texttt{report/generated/paired.csv}.}{fig:paired}
+
+\subsubsection{Jeu bruité}
+Le tableau~\ref{tab:evalSnoisy} donne les valeurs sur les questions bruitées, le tableau~\ref{tab:diffSnoisy} les différences
+entre systèmes, le tableau~\ref{tab:deg} la dégradation de chaque système et le tableau~\ref{tab:did} la différence de
+différences. La dégradation de Hit@6 vaut \EvDegVoneHit{} points pour v1, \EvDegVoneoneHit{} pour v1.1 et \EvDegVtwoHit{} pour v2 ;
+celle de la part de réponses correctes vaut \EvDegVoneCorrect, \EvDegVoneoneCorrect{} et \EvDegVtwoCorrect{} points.
+La différence de différences v2 / v1.1 vaut \EvDidVtwoVoneoneHit{} points \EvDidVtwoVoneoneHitCI{} sur Hit@6 (l'intervalle touche
+zéro), \EvDidVtwoVoneoneCorrect{} \EvDidVtwoVoneoneCorrectCI{} sur le correct, \EvDidVtwoVoneoneIncorrect{}
+\EvDidVtwoVoneoneIncorrectCI{} sur l'incorrect et \EvDidVtwoVoneoneHalluc{} \EvDidVtwoVoneoneHallucCI{} sur l'hallucination.
+
+Entre systèmes sur les seules questions bruitées, trois intervalles v2 $-$ v1.1 excluent zéro : Hit@6
+(\EvDiffSnoisyVtwoVoneoneHit{} points \EvDiffSnoisyVtwoVoneoneHitCI), réponses incorrectes (\EvDiffSnoisyVtwoVoneoneIncorrect{}
+\EvDiffSnoisyVtwoVoneoneIncorrectCI) et hallucination (\EvDiffSnoisyVtwoVoneoneHalluc{} \EvDiffSnoisyVtwoVoneoneHallucCI). Le
+correct, lui, reste sans différence détectable (\EvDiffSnoisyVtwoVoneoneCorrect{} \EvDiffSnoisyVtwoVoneoneCorrectCI). Cette
+comparaison n'est pas l'analyse principale du jeu bruité, et aucun ajustement pour comparaisons multiples n'est appliqué.
+
+\paragraph{Analyses exploratoires.} Les découpages par type de bruit et par langue sont descriptifs ($n$ d'environ
+\EvGroupTyposN{} par groupe ; \texttt{report/generated/noisy\_exploratory.csv}). La description d'une infraction sans la nommer a été
+difficile pour toutes les versions : la part de réponses correctes y baisse de \EvDegDescribeVoneCorrect{} points pour v1,
+\EvDegDescribeVoneoneCorrect{} pour v1.1 et \EvDegDescribeVtwoCorrect{} pour v2 ($n=\EvDegDescribeVtwoCorrectN$ pour v2).
+
+\input{generated/t_eval_Snoisy}
+\input{generated/t_diff_Snoisy}
+\input{generated/t_deg}
+\input{generated/t_did}
+
+\figfile{f12_noisy}{Jeu bruité contre questions d'origine de l'étape~2 ($n=\EvDegVtwoHitN$ paires, \EvDegVtwoCorrectN{} pour le
+correct, l'incorrect et l'hallucination de v2). À gauche, dégradation par système ; à droite, différence de différences v2 / v1.1. Traits : IC
+\EvLevel~\% par \emph{bootstrap} sur les questions ; trait vertical à zéro. Source : \texttt{results/noisy\_vs\_clean.txt},
+\texttt{report/generated/noisy\_degradation.csv}, \texttt{noisy\_did.csv}.}{fig:noisy}
+
+\subsubsection{Comportement : clarification et refus}
+v1 et v1.1 n'ont pas de porte : ils ne demandent jamais de précision et n'ont pas de statut de refus. Sur les questions ambiguës
+sans réponse scriptée, v2 demande une clarification dans \EvSoneVtwoClarAskedCount{} cas à l'étape~1 et \EvStwoVtwoClarAskedCount{}
+à l'étape~2. Sur les questions hors champ, son statut de refus explicite vaut \EvSoneVtwoRefExplicitCount{} et
+\EvStwoVtwoRefExplicitCount. Sur les questions avec réponse attendue, la fausse clarification vaut \EvSoneVtwoFalseClarifyCount{}
+et \EvStwoVtwoFalseClarifyCount ; le faux refus \EvSoneVtwoFalseRefuseCount{} et \EvStwoVtwoFalseRefuseCount. Le critère plus faible
+« pas de réponse de fond » vaut \EvSoneVoneRefNoSubst~\% pour les trois systèmes aux deux étapes : il ne les sépare pas, seul le
+statut explicite le fait (tableau~\ref{tab:gate}, figure~\ref{fig:behaviour}). Les effectifs sont petits et les intervalles larges.
+
+Le tableau~\ref{tab:verify} décrit la vérification, affirmation par affirmation, propre à v2. Elle n'a pas de groupe témoin :
+le passage du brouillon à la réponse finale décrit ce que la boucle a modifié, non un gain mesuré contre une méthode concurrente.
+
+\input{generated/t_gate}
+\input{generated/t_verify}
+
+\figfile{f13_behaviour}{Comportement sur les questions ambiguës sans réponse scriptée (étape~1 : $n=\EvSoneVtwoClarAskedN$ ;
+étape~2 : $n=\EvStwoVtwoClarAskedN$) et hors champ (étape~1 : $n=\EvSoneVtwoRefExplicitN$ ; étape~2 : $n=\EvStwoVtwoRefExplicitN$).
+Traits : IC \EvLevel~\% par \emph{bootstrap} sur les questions ; sans trait, l'intervalle est réduit à un point. v1 et v1.1 n'ont
+pas de porte : ce graphique montre une capacité, non une compétition entre méthodes. Source :
+\texttt{report/generated/per\_system.csv}.}{fig:behaviour}
+
+\paragraph{Seuils écrits avant l'examen.} Le tableau~\ref{tab:prereg} confronte les résultats aux seuils de l'addendum, tous
+atteints, et à ceux d'une autre section du même fichier, marquée \texttt{[edit]}, plus stricts et comprenant des seuils sur le
+correct et l'hallucination : ces derniers ne sont pas atteints.
+
+\input{generated/t_prereg}
+
+\subsubsection{Coût et latence}
+Pendant l'examen (tableau~\ref{tab:cost}, figure~\ref{fig:cost}), v2 fait \EvDiffSoneVtwoVoneoneCalls, \EvDiffStwoVtwoVoneoneCalls{}
+et \EvDiffSnoisyVtwoVoneoneCalls{} appels LLM de plus que v1.1 par question, selon l'ensemble, et prend \EvDiffSoneVtwoVoneoneSeconds,
+\EvDiffStwoVtwoVoneoneSeconds{} et \EvDiffSnoisyVtwoVoneoneSeconds{}~s de plus. Ces temps comprennent les attentes de la limite
+de débit du niveau gratuit : les attentes annoncées par le client représentent en moyenne \EvSoneVtwoWaits, \EvStwoVtwoWaits{} et
+\EvSnoisyVtwoWaits~s par question pour v2.
+
+La mesure à chaud (tableau~\ref{tab:latency}, figure~\ref{fig:latency}) sépare ces attentes. Le temps moyen par question vaut
+\EvLatVoneWallMean~s pour v1, \EvLatVoneoneWallMean~s pour v1.1 et \EvLatVtwoWallMean~s pour v2 ; hors attentes de limite de débit,
+\EvLatVoneExclMean, \EvLatVoneoneExclMean{} et \EvLatVtwoExclMean~s. Les médianes sont respectivement de \EvLatVoneWallMedian,
+\EvLatVoneoneWallMedian{} et \EvLatVtwoWallMedian~s, et de \EvLatVoneExclMedian, \EvLatVoneoneExclMedian{} et \EvLatVtwoExclMedian~s
+hors attentes. Machine : \EvLatOs{} (chaîne renvoyée par Python), \EvLatCpus{} processeurs logiques, \EvLatRamTotal~Go de mémoire vive, Python \EvLatPython. La mémoire
+disponible au départ n'était pas la même : \EvLatVoneRamAvail~Go pour v1, \EvLatVoneoneRamAvail~Go pour v1.1, \EvLatVtwoRamAvail~Go pour v2.
+
+\input{generated/t_cost}
+
+\figfile{f14_cost}{Appels LLM et tokens du système par question avec réponse attendue (étape~1 : $n=\EvSoneVtwoCallsN$ ; étape~2 :
+$n=\EvStwoVtwoCallsN$ ; jeu bruité : $n=\EvSnoisyVtwoCallsN$). Traits : IC \EvLevel~\% par \emph{bootstrap} sur les questions. Le juge n'est
+pas compté. Source : \texttt{report/generated/per\_system.csv}.}{fig:cost}
+
+\input{generated/t_latency}
+
+\figfile{f15_latency}{Latence à chaud par système, avec et sans les attentes de limite de débit ($n=\EvLatVtwoFinished$ questions par
+système). Points : moyennes ; traits : IC \EvLevel~\% par \emph{bootstrap} sur les questions ; barres noires : médianes. Source :
+\texttt{results/latency\_benchmark.json}, \texttt{report/generated/latency.csv}.}{fig:latency}
+
+\subsubsection{Audit du juge}
+Sur \EvAuditRows{} lignes, \EvAuditCannot{} ont été marquées impossibles à vérifier par le relecteur (\EvAuditCannotVone{} par
+système ; \EvAuditCannotFr{} en français, \EvAuditCannotAr{} en arabe, \EvAuditCannotEn{} en anglais) ; \EvAuditUsed{} sont utilisées.
+L'accord vaut \EvAuditCorrectAgree~\% \EvAuditCorrectCI{} sur le correct (kappa \EvAuditCorrectKappa) et \EvAuditHallucAgree~\%
+\EvAuditHallucCI{} sur l'hallucination (kappa \EvAuditHallucKappa). Le seuil de \EvPreAudit~\% est atteint sur l'estimation ponctuelle
+dans les deux cas, mais la borne basse des intervalles reste en dessous (tableau~\ref{tab:audithuman}, figure~\ref{fig:audit}).
+Les désaccords portent sur \EvAuditCorrectDisagree{} lignes pour le correct (v1 : \EvAuditCorrectDisagreeVone ; v1.1 :
+\EvAuditCorrectDisagreeVoneone ; v2 : \EvAuditCorrectDisagreeVtwo) et \EvAuditHallucDisagree{} pour l'hallucination (v1 :
+\EvAuditHallucDisagreeVone ; v1.1 : \EvAuditHallucDisagreeVoneone ; v2 : \EvAuditHallucDisagreeVtwo).
+
+\input{generated/t_audit_human}
+
+\figfile{f16_audit}{Audit humain du juge ($n=\EvAuditUsed$ lignes utilisées sur \EvAuditRows). À gauche, accord et seuil pré-enregistré ;
+à droite, kappa de Cohen. Traits : IC \EvLevel~\% par \emph{bootstrap} sur les lignes (\EvBoot{} tirages) ; les intervalles du kappa sont
+calculés par \texttt{eval/make\_report\_numbers.py}. Source : \texttt{results/audit\_agreement.txt}, \texttt{results/audit\_sheet.csv},
+\texttt{results/audit\_key.csv}.}{fig:audit}
+
+% ----------------------------------------------------------------------
+\subsection{Interprétation prudente}\label{sec:interpretation}
+
+\begin{itemize}
+  \item \textbf{v1.1 par rapport à v1.} La récupération de v1.1 s'accompagne d'une hausse de la part de réponses correctes. L'intervalle
+        exclut zéro sur l'étape~2 (\EvDiffStwoVoneoneVoneCorrect{} points \EvDiffStwoVoneoneVoneCorrectCI). Sur l'étape~1, qui est l'étape
+        principale, l'écart va dans le même sens (\EvDiffSoneVoneoneVoneCorrect{} points \EvDiffSoneVoneoneVoneCorrectCI), mais son
+        intervalle contient zéro : pas de différence détectable sur cette étape.
+  \item \textbf{v2 par rapport à v1.1 sur les questions avec réponse.} v2 réutilise la récupération de v1.1. Sa part de réponses
+        correctes est légèrement supérieure dans les trois ensembles (\EvDiffSoneVtwoVoneoneCorrect, \EvDiffStwoVtwoVoneoneCorrect{} et
+        \EvDiffSnoisyVtwoVoneoneCorrect{} points), et aucun de ces intervalles n'exclut zéro : pas de différence détectable. Aux
+        étapes~1 et~2, il en va de même pour Hit@6, l'incorrect et l'hallucination, et l'incorrect de v2 n'y est pas toujours plus
+        bas (\EvDiffSoneVtwoVoneoneIncorrect{} points à l'étape~1). Sur le seul jeu bruité, les intervalles de Hit@6, de l'incorrect et de
+        l'hallucination excluent zéro en faveur de v2 ; nous le rapportons sans en tirer de conclusion générale, car cette comparaison
+        n'est pas l'analyse principale de ce jeu et ces mesures ne sont pas corrigées pour comparaisons multiples.
+  \item \textbf{Comportements ajoutés.} v2 possède la clarification, le refus explicite et la vérification affirmation par
+        affirmation, que v1 et v1.1 n'ont pas. Les chiffres ci-dessus décrivent donc une capacité, non une victoire sur une méthode
+        concurrente : les versions anciennes n'ont pas de porte à comparer.
+  \item \textbf{Formulations bruitées.} La différence de différences est limite : l'intervalle de Hit@6 touche zéro
+        (\EvDidVtwoVoneoneHitCI), et le résultat n'est pas confirmé sur les autres mesures. Les découpages par type de bruit et par
+        langue restent exploratoires. Décrire une infraction sans la nommer a été difficile pour toutes les versions.
+  \item \textbf{Coût.} v2 fait environ quatre appels LLM de plus que v1.1 par question (\EvDiffSoneVtwoVoneoneCalls,
+        \EvDiffStwoVtwoVoneoneCalls{} et \EvDiffSnoisyVtwoVoneoneCalls) et prend plus de temps. Une partie de ce temps est de l'attente de la limite
+        de débit du niveau gratuit : à chaud, \EvLatVtwoMeanWait~s sur \EvLatVtwoWallMean~s en moyenne.
+  \item \textbf{Refus.} Le critère « pas de réponse de fond » vaut \EvSoneVoneRefNoSubst~\% pour les trois systèmes et ne les sépare pas ;
+        seul le statut de refus explicite les sépare (\EvPreExplicitCount{} pour v2 sur les deux étapes, aucun pour v1 et v1.1).
+\end{itemize}
+
+% ----------------------------------------------------------------------
+\subsection{Limites}\label{sec:limites-finale}
+
+\begin{itemize}
+  \item \textbf{Taux absolus non validés.} Les niveaux de « correct » et d'« hallucination » dépendent du juge et des points de référence.
+        Le dépôt n'enregistre aucune validation de ces points par un juriste, alors que le prompt du juge les présente comme écrits par
+        un juriste (\emph{written by a lawyer}). Seules les différences entre systèmes sur les mêmes questions se prêtent à la lecture.
+  \item \textbf{Juge audité par un seul relecteur non spécialiste.} \EvAuditUsed{} lignes utilisées sur \EvAuditRows, \EvAuditCannot{} marquées
+        impossibles à vérifier ; accord de \EvAuditCorrectAgree~\% (kappa \EvAuditCorrectKappa) sur le correct et de \EvAuditHallucAgree~\% (kappa
+        \EvAuditHallucKappa) sur l'hallucination. L'échantillon vient de la seule étape~1 et exclut les trois paires à repli silencieux : l'accord
+        n'est pas mesuré sur l'étape~2 ni sur le jeu bruité.
+  \item \textbf{Petits sous-groupes.} Ambiguës sans réponse scriptée : $n=\EvSoneVtwoClarAskedN$ puis $n=\EvStwoVtwoClarAskedN$ ; hors champ :
+        $n=\EvSoneVtwoRefExplicitN$ puis $n=\EvStwoVtwoRefExplicitN$ ; environ \EvGroupTyposN{} questions par type de bruit. Une question déplace ces taux de
+        plusieurs points.
+  \item \textbf{Une seule exécution par question.} Le non-déterminisme n'est pas mesuré sur l'examen (section~\ref{sec:stabilite}).
+  \item \textbf{Le vérificateur contrôle l'appui, non l'applicabilité.} Un article peut appuyer une phrase sans s'appliquer au cas posé
+        (recel ; période d'essai, art.~370). Une date peut aussi être lue comme un numéro d'article.
+  \item \textbf{Porte d'ambiguïté.} Son rappel sur le jeu de porte séparé vaut \EvGateRecall/\EvGateRecallN.
+  \item \textbf{Peu de questions arabes et anglaises.} Questions avec réponse à l'étape~1 : \EvSoneAr{} en arabe et \EvSoneEn{} en anglais pour
+        \EvSoneFr{} en français ; à l'étape~2 : \EvStwoAr, \EvStwoEn{} et \EvStwoFr. Le vérificateur n'a été étalonné que sur des mutations
+        grossières en français.
+  \item \textbf{Juge de niveau gratuit.} Le juge est un modèle du niveau gratuit, sans contrôle de sa stabilité au-delà du contrôle initial.
+  \item \textbf{Temps.} Pendant l'examen, les arrêts sur quota ont séparé les systèmes dans le temps : la question ac02 a tourné sur v1 à
+        \EvFirstAcZeroTwoVone{} et sur v2 à \EvFirstAcZeroTwoVtwo. Les secondes de l'examen ne mesurent donc pas la latence seule, et les 429 et attentes de
+        v1 n'y sont pas observés. La mesure à chaud n'a que \EvLatQuestions{} questions et une seule exécution.
+  \item \textbf{Métrique sans donnée.} « Correct après la réponse scriptée » n'a aucune valeur ($n$ nul) : le harnais ne juge au fond que les
+        questions avec réponse attendue. Seul Hit@6 après la réponse scriptée est disponible, sur très peu de questions.
+\end{itemize}
+
+% ----------------------------------------------------------------------
+\subsection{Déviations par rapport au protocole}\label{sec:deviations}
+
+Cette liste ne retient que ce que le dépôt permet de vérifier (historique git, fichiers de résultats, journaux).
+
+\begin{enumerate}
+  \item \textbf{Plusieurs clés Groq.} Les lignes de résultats n'enregistrent pas la clé utilisée, ni leur nombre. Le dépôt montre cependant que le
+        quota d'une seule clé n'a pas pu suffire, et pas seulement à l'étape~1 : le modèle de l'agent a consommé \EvTokensDaySone{} tokens le
+        \EvTokensDayDateSone{} (étape~1), \EvTokensDayStwo{} le \EvTokensDayDateStwo{} (étape~2) et \EvTokensDaySnoisy{} le \EvTokensDayDateSnoisy{}
+        (jeu bruité), soit \EvTokensDayRatioSone, \EvTokensDayRatioStwo{} et \EvTokensDayRatioSnoisy{} fois la limite quotidienne de \EvTpd{} tokens
+        (tableau~\ref{tab:tokensday}), avec \EvQuotaStopsSone, \EvQuotaStopsStwo{} et \EvQuotaStopsSnoisy{} arrêts sur quota journaliers enregistrés dans les
+        journaux, dont certains suivis d'une reprise en quelques minutes. Le modèle reste le même partout (\texttt{\EvRowModel}). Le code de bascule automatique
+        (\texttt{eval/run\_batch.py}) a été ajouté au commit \EvCommitBackupKeys{} le \EvDateBackupKeys, donc pendant l'étape~2 et après la fin de l'étape~1
+        (\EvDateStageOneDone) ; il est toujours présent dans le dépôt, il n'a pas été retiré. La mesure de latence, elle, n'utilise qu'une clé.
+  \item \textbf{Trois paires de l'étape~1 terminées après un repli silencieux, non rejouées.} ac02 sur v2, ac29 sur v1 et c02 sur v1 sont listées comme replis connus
+        (\texttt{FALLBACK\_PAIRS} dans \texttt{eval/audit\_export.py}), alors que l'addendum dit qu'un élément dégradé est rejoué et non noté : ces lignes sont
+        notées. Les lignes elles-mêmes n'en gardent pas la trace, car l'enregistrement des replis (\EvCommitFallbackFlags, \EvDateFallbackFlags) est postérieur à
+        l'étape~1 : aucune ligne de l'étape~1 n'a ce champ, et d'autres replis silencieux n'y sont donc pas exclus. Deux indices seulement sont visibles dans les
+        lignes : \EvFallbackCZeroTwoCalls{} appel LLM pour c02 sur v1, sous le minimum attendu de \EvVoneCallsMin, et \EvFallbackAcZeroTwoSeconds~s pour ac02 sur v2.
+        Analyse de sensibilité sans ces trois questions (\EvCommitSensitivity, \texttt{results/stage1\_sensitivity\_excl\_ac02\_ac29\_c02.txt}) : sur \EvSensCompared{}
+        lignes de différences appariées, \EvSensFlipped{} changement de signe et \EvSensCrossed{} intervalle passé d'un côté à l'autre de zéro. \EvSensTouch{} intervalle
+        qui touchait zéro le traverse désormais : v2 $-$ v1.1 sur l'hallucination. Le temps moyen de v2 passe de \EvSensVtwoSecondsFull~s à \EvSensVtwoSeconds~s.
+  \item \textbf{Harnais modifié après le début de l'étape~1.} Deux commits (\texttt{d59e6a5}, \texttt{f23313e}) séparent l'addendum de la première ligne. Après la fin de
+        l'étape~1 : enregistrement des replis, options \texttt{--rerun-ids} et \texttt{--exclude-ids} (\EvCommitFallbackFlags, \EvDateFallbackFlags). Pendant l'étape~2 : clés
+        de secours (\EvCommitBackupKeys, \EvDateBackupKeys) et reprise du juge Gemini sur les expirations réseau (\EvCommitJudgeRetry, \EvDateJudgeRetry). Avant le jeu bruité :
+        fichier de verrou et \texttt{run\_batch --stage all} (\EvCommitLockFile, \EvDateLockFile). Ces changements touchent \texttt{eval/}, hors de l'empreinte du système, qui
+        reste unique. Conséquence : l'étape~2 et le jeu bruité détectent les replis, l'étape~1 non.
+  \item \textbf{Jugements différés.} Le juge s'est arrêté sur erreur (\EvJudgeErrorsSone{} fois à l'étape~1, \EvJudgeErrorsStwo{} à l'étape~2), et des réponses ont été jugées
+        plus tard par \texttt{--judge-only} : \EvJudgeOnlyRowsSone{} lignes en \EvJudgeOnlyRunsSone{} passage à l'étape~1, \EvJudgeOnlyRowsStwo{} lignes en \EvJudgeOnlyRunsStwo{} passages à
+        l'étape~2, \EvJudgeOnlyRowsSnoisy{} sur le jeu bruité. Le juge est resté le même.
+  \item \textbf{Lignes rejouées après un statut \emph{error} ou \emph{degraded}.} Conformément à l'addendum, la dernière ligne remplace la précédente (tableau~\ref{tab:reruns}). Aucune
+        ligne finale n'est dégradée, en erreur ou en échec.
+  \item \textbf{Jeu bruité ajouté après l'étape~1.} L'addendum ne le mentionne pas. Son brouillon date du \EvDateNoisyDraft{} (\EvCommitNoisyDraft), après la fin de l'étape~1
+        (\EvDateStageOneDone) et juste avant la première ligne de l'étape~2 (\EvStwoFirst). Il a cependant été relu, modifié et verrouillé le \EvDateNoisyLock{}
+        (\EvCommitNoisyLock), après la fin de l'étape~2 (\EvDateStageTwoDone) : \EvNoisyEdited{} formulations changées (\EvNoisyEditedIds) et \EvNoisySwapped{} types échangés
+        (\EvNoisySwappedIds). La relecture a été déléguée à Claude ; l'auteur n'a pas lu le tableau (\texttt{eval/noisy\_review.md}). Le hachage verrouillé commence par
+        \texttt{\EvNoisyHash}.
+  \item \textbf{Date de l'hypothèse du jeu bruité.} Selon l'auteur, l'hypothèse et sa différence de différences ont été posées avant les données de l'étape~2, mais le dépôt n'en garde pas de trace datée :
+        la première mention écrite de la différence de différences « pré-enregistrée » est dans \texttt{eval/noisy\_vs\_clean.py} (\EvCommitNoisyAnalysis, \EvDateNoisyAnalysis),
+        après les résultats du jeu bruité (\EvDateNoisyDone). Le brouillon indique qu'aucun addendum n'a été écrit pour ce jeu. L'étiquette « pré-enregistrée » ne peut donc pas être
+        établie à partir du dépôt.
+  \item \textbf{Deux jeux de seuils dans le même commit.} Une section de \texttt{agent/LEARNING.md}, aux valeurs marquées \texttt{[edit]}, vise \EvDraftHThree~\% de rappel d'ambiguïté,
+        \EvDraftHThreeOver~\% de fausse clarification et \EvDraftHFour~\% de refus, ainsi qu'un gain de \EvDraftHOne{} points sur le correct et une hallucination réduite de moitié. L'addendum, écrit
+        avant la première question, fixe \EvPreClarify~\%, \EvPreOver~\% et \EvPreRefuse~\% sur un critère plus faible, et aucun seuil sur le correct ni sur l'hallucination. Les deux sont entrés dans git au même
+        commit (\EvCommitAddendum), qui ne dit pas lequel a été écrit le premier. Nous tenons l'addendum pour la référence, et le tableau~\ref{tab:prereg} donne les deux lectures.
+  \item \textbf{Porte d'ambiguïté non validée sur toutes les répétitions.} Le contrôle préalable \texttt{results/gate\_check.json} (non suivi par git) indique \texttt{overall\_pass} à faux
+        (réussite globale : \EvGateOverall) : à la seconde des \EvGateRepeats{} répétitions, \EvGateRefusedLast{} questions hors champ sur \EvGateRefuseN{} ont été refusées, alors que la règle
+        \texttt{eval/gate\_rule.txt} les exige toutes. Le prompt n'a pas été modifié, et le dépôt n'enregistre pas la décision de continuer.
+  \item \textbf{Audit sur moins de lignes que prévu.} L'addendum prévoit \EvPreAuditPlanned{} réponses ; \EvAuditUsed{} sont utilisées, car \EvAuditCannot{} ont été marquées impossibles à vérifier. Le rapport d'accord a été
+        produit par une version de \texttt{eval/audit\_agreement.py} modifiée mais non engagée.
+  \item \textbf{Relecteur IA, hors protocole.} Avant la fin de l'audit humain, un relecteur IA a étiqueté le même échantillon (\texttt{results/audit\_claude\_agreement.txt}, non suivi par git) :
+        accord de \EvAuditAiCorrectAgree~\% sur le correct et \EvAuditAiHallucAgree~\% sur l'hallucination, $n=\EvAuditAiN$. Ce n'est pas l'audit pré-enregistré et ces valeurs n'y sont pas comptées.
+        Le dépôt n'indique pas si le relecteur humain a vu ces étiquettes.
+  \item \textbf{Mesure de latence.} Son script (\EvCommitLatencyScript, \EvDateLatencyScript) ajoute \texttt{eval/latency\_v1\_child.py}, qui observe les 429 et les attentes de v1 sans modifier
+        \texttt{eval/v1\_runner.py}, et compte aussi les attentes de \texttt{agent/llm\_retry.py}, que le harnais d'examen ne compte pas. Les temps hors attentes de la mesure à chaud ne sont donc pas
+        strictement comparables aux attentes annoncées dans l'examen. Elle a consommé \EvLatTokensTotal{} tokens.
+\end{enumerate}
+
+\input{generated/t_reruns}
+\input{generated/t_tokens_day}
 
 \subsection{Commandes}
 \begin{lstlisting}
-python eval/check_answer_set.py
-python eval/run_answer_eval.py --system v2 --dry-run
-python eval/run_answer_eval.py --system v2
-python eval/run_answer_eval.py --system v1.1
-python eval/run_answer_eval.py --system v1 --v1-worktree <dossier>
-python eval/run_answer_eval.py --summarize results/answer_eval_answer_set_v1.jsonl results/answer_eval_answer_set_v1.1.jsonl results/answer_eval_answer_set_v2.jsonl
-python eval/run_answer_eval.py --system v2 --export-audit 20
-python eval/audit_agreement.py results/audit_sample_v2.csv
+python eval/run_batch.py --stage 1 --judge-provider gemini --judge-model <id> --v1-worktree ../RAG_PDF_v1 --min-gap 3
+python eval/run_batch.py --stage 2 --judge-provider gemini --judge-model <id> --v1-worktree ../RAG_PDF_v1 --min-gap 3
+python eval/run_batch.py --stage all --set eval/noisy_set.json --results-dir results/noisy --judge-provider gemini --judge-model <id> --v1-worktree ../RAG_PDF_v1 --min-gap 3
+python eval/run_answer_eval.py --summarize
+python eval/noisy_vs_clean.py
+python eval/audit_agreement.py
+python eval/latency_benchmark.py --system v1
+python eval/latency_benchmark.py --system v1.1
+python eval/latency_benchmark.py --system v2
+python eval/make_report_numbers.py
+python eval/make_report_figures.py
+python eval/test_make_report_numbers.py
 \end{lstlisting}
-Le système v1 tourne dans un \texttt{git worktree} de l'étiquette \texttt{v1-baseline-runnable}, avec son ancien index ; le
-harnais affiche les commandes de préparation et ne les exécute pas lui-même.
-
-\subsection{Attentes pré-enregistrées}
-Le journal \texttt{agent/LEARNING.md} fixe le but de cette évaluation (mesurer v1, v1.1 et v2 : exactitude, taux de fausses
-citations, taux d'affirmations non appuyées, qualité des refus, comparaison des langues) mais ne contient pas encore
-d'attente chiffrée pour elle. \averifier{} Une attente chiffrée devrait y être écrite avant de lancer l'évaluation.
+Le script des figures demande un interpréteur disposant de matplotlib, absent de l'environnement \texttt{rag-app} ; il ne lit que
+\texttt{report/generated/*.csv}.

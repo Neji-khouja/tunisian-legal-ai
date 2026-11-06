@@ -1,0 +1,66 @@
+pair,metric,mean_full,lo_full,hi_full,mean_excl,lo_excl,hi_excl,excludes_zero_full,excludes_zero_excl,sign_flip
+v1 - v1.1,Hit@6 (gold in evidence),-0.133,-0.333,0.1,-0.107,-0.321,0.143,False,False,False
+v1 - v1.1,false clarify,0.0,0.0,0.0,0.0,0.0,0.0,False,False,False
+v1 - v1.1,false refuse,0.0,0.0,0.0,0.0,0.0,0.0,False,False,False
+v1 - v1.1,numeric check ok (answer),-0.167,-0.333,0.0,-0.143,-0.321,0.0,False,False,False
+v1 - v1.1,numeric check unverifiable (answer),0.0,0.0,0.0,0.0,0.0,0.0,False,False,False
+v1 - v1.1,numeric implicit reference (answer),0.0,0.0,0.0,0.0,0.0,0.0,False,False,False
+v1 - v1.1,numeric check ok (claim share),-0.167,-0.333,0.0,-0.143,-0.321,0.0,False,False,False
+v1 - v1.1,seconds,23.943,15.49,32.103,25.154,16.45,33.114,True,True,False
+v1 - v1.1,LLM calls,1.467,1.267,1.667,1.5,1.286,1.714,True,True,False
+v1 - v1.1,elapsed total (s),34.373,22.723,46.92,35.668,23.475,48.829,True,True,False
+v1 - v1.1,correct,-0.067,-0.267,0.133,-0.036,-0.25,0.179,False,False,False
+v1 - v1.1,partial,-0.1,-0.267,0.067,-0.107,-0.286,0.071,False,False,False
+v1 - v1.1,incorrect,0.167,-0.067,0.4,0.143,-0.107,0.393,False,False,False
+v1 - v1.1,hallucination (answer),0.033,-0.233,0.3,0.0,-0.25,0.25,False,False,False
+v1 - v1.1,gate accuracy (explicit status),0.0,0.0,0.0,0.0,0.0,0.0,False,False,False
+v1 - v1.1,clarify then answer: Hit@6 after the reply,0.333,0.0,1.0,0.333,0.0,1.0,False,False,False
+v1 - v1.1,clarify w/o reply: asked for clarification (status),0.0,0.0,0.0,0.0,0.0,0.0,False,False,False
+v1 - v1.1,clarify w/o reply: answered directly,0.143,0.0,0.429,0.167,0.0,0.5,False,False,False
+v1 - v1.1,clarify w/o reply: enumerated alternatives,0.143,0.0,0.429,0.167,0.0,0.5,False,False,False
+v1 - v1.1,refuse: no substantive answer,0.0,0.0,0.0,0.0,0.0,0.0,False,False,False
+v1 - v1.1,refuse: explicit refusal status,0.0,0.0,0.0,0.0,0.0,0.0,False,False,False
+v2 - v1.1,Hit@6 (gold in evidence),0.033,0.0,0.1,0.036,0.0,0.107,False,False,False
+v2 - v1.1,false clarify,0.0,0.0,0.0,0.0,0.0,0.0,False,False,False
+v2 - v1.1,false refuse,0.0,0.0,0.0,0.0,0.0,0.0,False,False,False
+v2 - v1.1,numeric check ok (answer),0.036,0.0,0.107,0.038,0.0,0.115,False,False,False
+v2 - v1.1,numeric check unverifiable (answer),0.067,0.0,0.167,0.071,0.0,0.179,False,False,False
+v2 - v1.1,numeric implicit reference (answer),0.0,0.0,0.0,0.0,0.0,0.0,False,False,False
+v2 - v1.1,numeric check ok (claim share),0.054,0.0,0.143,0.058,0.0,0.154,False,False,False
+v2 - v1.1,seconds,56.583,28.24,99.897,38.632,23.325,52.857,True,True,False
+v2 - v1.1,LLM calls,3.933,3.433,4.467,4.036,3.536,4.607,True,True,False
+v2 - v1.1,elapsed total (s),62.783,33.777,106.243,45.204,28.629,60.529,True,True,False
+v2 - v1.1,429 responses,1.8,1.1,2.533,1.786,1.036,2.571,True,True,False
+v2 - v1.1,client retry waits (s),14.753,8.6,21.657,14.293,8.043,21.521,True,True,False
+v2 - v1.1,correct,0.067,-0.067,0.2,0.071,-0.071,0.214,False,False,False
+v2 - v1.1,partial,-0.1,-0.233,0.033,-0.107,-0.286,0.036,False,False,False
+v2 - v1.1,incorrect,0.033,0.0,0.1,0.036,0.0,0.107,False,False,False
+v2 - v1.1,hallucination (answer),-0.2,-0.4,0.0,-0.179,-0.393,0.036,False,False,False
+v2 - v1.1,gate accuracy (explicit status),0.7,0.5,0.9,0.684,0.474,0.895,True,True,False
+v2 - v1.1,clarify then answer: Hit@6 after the reply,0.333,0.0,1.0,0.333,0.0,1.0,False,False,False
+v2 - v1.1,clarify w/o reply: asked for clarification (status),0.857,0.571,1.0,0.833,0.5,1.0,True,True,False
+v2 - v1.1,clarify w/o reply: answered directly,-0.714,-1.0,-0.429,-0.667,-1.0,-0.333,True,True,False
+v2 - v1.1,clarify w/o reply: enumerated alternatives,-0.143,-0.714,0.429,0.0,-0.667,0.667,False,False,False
+v2 - v1.1,refuse: no substantive answer,0.0,0.0,0.0,0.0,0.0,0.0,False,False,False
+v2 - v1.1,refuse: explicit refusal status,0.7,0.4,1.0,0.7,0.4,1.0,True,True,False
+v2 - v1,Hit@6 (gold in evidence),0.167,-0.067,0.4,0.143,-0.107,0.393,False,False,False
+v2 - v1,false clarify,0.0,0.0,0.0,0.0,0.0,0.0,False,False,False
+v2 - v1,false refuse,0.0,0.0,0.0,0.0,0.0,0.0,False,False,False
+v2 - v1,numeric check ok (answer),0.179,0.036,0.321,0.154,0.038,0.308,True,True,False
+v2 - v1,numeric check unverifiable (answer),0.067,0.0,0.167,0.071,0.0,0.179,False,False,False
+v2 - v1,numeric implicit reference (answer),0.0,0.0,0.0,0.0,0.0,0.0,False,False,False
+v2 - v1,numeric check ok (claim share),0.196,0.071,0.357,0.173,0.038,0.327,True,True,False
+v2 - v1,seconds,32.64,4.517,77.047,13.479,0.214,25.886,True,True,False
+v2 - v1,LLM calls,2.467,1.967,3.033,2.536,2.0,3.107,True,True,False
+v2 - v1,elapsed total (s),28.41,-5.377,73.627,9.536,-12.086,28.857,False,False,False
+v2 - v1,correct,0.133,-0.1,0.367,0.107,-0.143,0.357,False,False,False
+v2 - v1,partial,0.0,-0.167,0.167,0.0,-0.179,0.179,False,False,False
+v2 - v1,incorrect,-0.133,-0.4,0.133,-0.107,-0.357,0.179,False,False,False
+v2 - v1,hallucination (answer),-0.233,-0.5,0.067,-0.179,-0.464,0.107,False,False,False
+v2 - v1,gate accuracy (explicit status),0.7,0.5,0.9,0.684,0.474,0.895,True,True,False
+v2 - v1,clarify then answer: Hit@6 after the reply,0.0,0.0,0.0,0.0,0.0,0.0,False,False,False
+v2 - v1,clarify w/o reply: asked for clarification (status),0.857,0.571,1.0,0.833,0.5,1.0,True,True,False
+v2 - v1,clarify w/o reply: answered directly,-0.857,-1.0,-0.571,-0.833,-1.0,-0.5,True,True,False
+v2 - v1,clarify w/o reply: enumerated alternatives,-0.286,-0.714,0.286,-0.167,-0.667,0.333,False,False,False
+v2 - v1,refuse: no substantive answer,0.0,0.0,0.0,0.0,0.0,0.0,False,False,False
+v2 - v1,refuse: explicit refusal status,0.7,0.4,1.0,0.7,0.4,1.0,True,True,False
