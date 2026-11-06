@@ -1,0 +1,780 @@
+{
+ "pause_seconds": 5,
+ "selection": {
+  "stage": 2,
+  "seed": 20261022,
+  "pool_by_language": {
+   "ar": 9,
+   "en": 8,
+   "fr": 23
+  },
+  "questions_by_language": {
+   "ar": 2,
+   "en": 2,
+   "fr": 6
+  },
+  "question_ids": [
+   "ac27",
+   "ac01",
+   "ac64",
+   "ac12",
+   "ac25",
+   "ac65",
+   "ac50",
+   "ac48",
+   "ac09",
+   "ac30"
+  ],
+  "warmup_id": "ac57"
+ },
+ "machine": {
+  "os": "Windows-10-10.0.26300-SP0",
+  "machine": "AMD64",
+  "processor": "Intel64 Family 6 Model 165 Stepping 2, GenuineIntel",
+  "cpu_count": 8,
+  "ram_total_gb": 7.8,
+  "python": "3.11.15"
+ },
+ "systems": {
+  "v1": {
+   "provenance": {
+    "fingerprint": {
+     "sha256": "dc8fd664c66230b19fa88aad2195be1ab8b67c5be5540a010ba091c4537ec5ca",
+     "files": 22,
+     "index": {
+      "path": "db_v1_1",
+      "chunks": 6031
+     }
+    },
+    "commit": "902b348702d2a1483f9450e871aaa624facac2f2",
+    "tags": [],
+    "dirty_py": [
+     "val/audit_agreement.py",
+     "eval/test_audit.py",
+     "api/api.py"
+    ],
+    "agent_model": "openai/gpt-oss-120b",
+    "prompt_hashes": {
+     "analyze": "0bbb0226bdc9",
+     "plan": "04c1c55cf119",
+     "codes": "7f49e7a7c8c1",
+     "verify": "6568dc934538",
+     "grade": "4a25ce5f5b52",
+     "reformulate": "5d689216e8cc",
+     "answer": "3d116792e25a",
+     "condense": "b2ef6c23aa3b"
+    },
+    "exam_hashes": {
+     "eval/answer_set.json": "61939392c495ee52c528575dd2c286d4e35fbedf780cca58ed67baac777a1c6e",
+     "eval/stages.json": "621dd54387ae48abdd05c97d3b6fe946cf555a9700b41dd9b9be4a0949a7401b"
+    },
+    "judge": null,
+    "v1_worktree": {
+     "commit": "9a86ab2c59f1727f69eb8456bb0ddf73e55f57d9",
+     "tags": [
+      "v1-baseline-runnable"
+     ]
+    }
+   },
+   "runs": [
+    {
+     "started_at": "2026-11-06T22:14:42+01:00",
+     "ram_available_gb": 0.8,
+     "warmup": {
+      "id": "ac57",
+      "language": "fr",
+      "started_at": "2026-11-06T22:14:42+01:00",
+      "wall_seconds": 90.831,
+      "retry_wait_seconds": 0.0,
+      "groq_client_wait_seconds": 0,
+      "llm_retry_wait_seconds": 0.0,
+      "wall_excluding_retry_waits": 90.831,
+      "llm_calls": 3,
+      "tokens_total": 3955,
+      "tokens_source": "usage_metadata",
+      "n_429": 0,
+      "n_fallbacks": 0,
+      "status": "done"
+     },
+     "finished_at": "2026-11-06T22:22:44+01:00",
+     "exit_code": 0
+    }
+   ],
+   "questions": {
+    "ac27": {
+     "id": "ac27",
+     "language": "ar",
+     "started_at": "2026-11-06T22:16:18+01:00",
+     "wall_seconds": 35.816,
+     "retry_wait_seconds": 0.0,
+     "groq_client_wait_seconds": 0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 35.816,
+     "llm_calls": 3,
+     "tokens_total": 3863,
+     "tokens_source": "usage_metadata",
+     "n_429": 0,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac01": {
+     "id": "ac01",
+     "language": "fr",
+     "started_at": "2026-11-06T22:16:59+01:00",
+     "wall_seconds": 31.808,
+     "retry_wait_seconds": 0.0,
+     "groq_client_wait_seconds": 0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 31.808,
+     "llm_calls": 3,
+     "tokens_total": 8204,
+     "tokens_source": "usage_metadata",
+     "n_429": 0,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac64": {
+     "id": "ac64",
+     "language": "fr",
+     "started_at": "2026-11-06T22:17:36+01:00",
+     "wall_seconds": 37.849,
+     "retry_wait_seconds": 0.0,
+     "groq_client_wait_seconds": 0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 37.849,
+     "llm_calls": 3,
+     "tokens_total": 3961,
+     "tokens_source": "usage_metadata",
+     "n_429": 0,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac12": {
+     "id": "ac12",
+     "language": "fr",
+     "started_at": "2026-11-06T22:18:19+01:00",
+     "wall_seconds": 31.136,
+     "retry_wait_seconds": 0.0,
+     "groq_client_wait_seconds": 0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 31.136,
+     "llm_calls": 3,
+     "tokens_total": 3693,
+     "tokens_source": "usage_metadata",
+     "n_429": 0,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac25": {
+     "id": "ac25",
+     "language": "fr",
+     "started_at": "2026-11-06T22:18:55+01:00",
+     "wall_seconds": 30.954,
+     "retry_wait_seconds": 0.0,
+     "groq_client_wait_seconds": 0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 30.954,
+     "llm_calls": 3,
+     "tokens_total": 3079,
+     "tokens_source": "usage_metadata",
+     "n_429": 0,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac65": {
+     "id": "ac65",
+     "language": "fr",
+     "started_at": "2026-11-06T22:19:31+01:00",
+     "wall_seconds": 30.667,
+     "retry_wait_seconds": 0.0,
+     "groq_client_wait_seconds": 0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 30.667,
+     "llm_calls": 3,
+     "tokens_total": 4775,
+     "tokens_source": "usage_metadata",
+     "n_429": 0,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac50": {
+     "id": "ac50",
+     "language": "en",
+     "started_at": "2026-11-06T22:20:07+01:00",
+     "wall_seconds": 41.78,
+     "retry_wait_seconds": 0.0,
+     "groq_client_wait_seconds": 0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 41.78,
+     "llm_calls": 3,
+     "tokens_total": 3208,
+     "tokens_source": "usage_metadata",
+     "n_429": 0,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac48": {
+     "id": "ac48",
+     "language": "fr",
+     "started_at": "2026-11-06T22:20:53+01:00",
+     "wall_seconds": 32.216,
+     "retry_wait_seconds": 0.0,
+     "groq_client_wait_seconds": 0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 32.216,
+     "llm_calls": 3,
+     "tokens_total": 4066,
+     "tokens_source": "usage_metadata",
+     "n_429": 0,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac09": {
+     "id": "ac09",
+     "language": "en",
+     "started_at": "2026-11-06T22:21:31+01:00",
+     "wall_seconds": 36.56,
+     "retry_wait_seconds": 0.0,
+     "groq_client_wait_seconds": 0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 36.56,
+     "llm_calls": 3,
+     "tokens_total": 3545,
+     "tokens_source": "usage_metadata",
+     "n_429": 0,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac30": {
+     "id": "ac30",
+     "language": "ar",
+     "started_at": "2026-11-06T22:22:12+01:00",
+     "wall_seconds": 31.817,
+     "retry_wait_seconds": 0.0,
+     "groq_client_wait_seconds": 0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 31.817,
+     "llm_calls": 3,
+     "tokens_total": 3576,
+     "tokens_source": "usage_metadata",
+     "n_429": 0,
+     "n_fallbacks": 0,
+     "status": "done"
+    }
+   },
+   "superseded": []
+  },
+  "v1.1": {
+   "provenance": {
+    "fingerprint": {
+     "sha256": "dc8fd664c66230b19fa88aad2195be1ab8b67c5be5540a010ba091c4537ec5ca",
+     "files": 22,
+     "index": {
+      "path": "db_v1_1",
+      "chunks": 6031
+     }
+    },
+    "commit": "902b348702d2a1483f9450e871aaa624facac2f2",
+    "tags": [],
+    "dirty_py": [
+     "val/audit_agreement.py",
+     "eval/test_audit.py",
+     "api/api.py"
+    ],
+    "agent_model": "openai/gpt-oss-120b",
+    "prompt_hashes": {
+     "analyze": "0bbb0226bdc9",
+     "plan": "04c1c55cf119",
+     "codes": "7f49e7a7c8c1",
+     "verify": "6568dc934538",
+     "grade": "4a25ce5f5b52",
+     "reformulate": "5d689216e8cc",
+     "answer": "3d116792e25a",
+     "condense": "b2ef6c23aa3b"
+    },
+    "exam_hashes": {
+     "eval/answer_set.json": "61939392c495ee52c528575dd2c286d4e35fbedf780cca58ed67baac777a1c6e",
+     "eval/stages.json": "621dd54387ae48abdd05c97d3b6fe946cf555a9700b41dd9b9be4a0949a7401b"
+    },
+    "judge": null
+   },
+   "runs": [
+    {
+     "started_at": "2026-11-06T22:23:08+01:00",
+     "ram_available_gb": 2.5,
+     "warmup": {
+      "id": "ac57",
+      "language": "fr",
+      "started_at": "2026-11-06T22:23:08+01:00",
+      "wall_seconds": 120.137,
+      "retry_wait_seconds": 0.0,
+      "groq_client_wait_seconds": 0.0,
+      "llm_retry_wait_seconds": 0.0,
+      "wall_excluding_retry_waits": 120.137,
+      "llm_calls": 1,
+      "tokens_total": 1830,
+      "tokens_source": "usage_metadata",
+      "n_429": 0,
+      "n_fallbacks": 0,
+      "status": "done"
+     },
+     "finished_at": "2026-11-06T22:26:58+01:00",
+     "exit_code": 0
+    }
+   ],
+   "questions": {
+    "ac27": {
+     "id": "ac27",
+     "language": "ar",
+     "started_at": "2026-11-06T22:25:14+01:00",
+     "wall_seconds": 7.929,
+     "retry_wait_seconds": 0.0,
+     "groq_client_wait_seconds": 0.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 7.929,
+     "llm_calls": 2,
+     "tokens_total": 2863,
+     "tokens_source": "usage_metadata",
+     "n_429": 0,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac01": {
+     "id": "ac01",
+     "language": "fr",
+     "started_at": "2026-11-06T22:25:27+01:00",
+     "wall_seconds": 4.338,
+     "retry_wait_seconds": 0.0,
+     "groq_client_wait_seconds": 0.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 4.338,
+     "llm_calls": 1,
+     "tokens_total": 2921,
+     "tokens_source": "usage_metadata",
+     "n_429": 0,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac64": {
+     "id": "ac64",
+     "language": "fr",
+     "started_at": "2026-11-06T22:25:36+01:00",
+     "wall_seconds": 4.319,
+     "retry_wait_seconds": 0.0,
+     "groq_client_wait_seconds": 0.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 4.319,
+     "llm_calls": 1,
+     "tokens_total": 1927,
+     "tokens_source": "usage_metadata",
+     "n_429": 0,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac12": {
+     "id": "ac12",
+     "language": "fr",
+     "started_at": "2026-11-06T22:25:45+01:00",
+     "wall_seconds": 5.377,
+     "retry_wait_seconds": 0.0,
+     "groq_client_wait_seconds": 0.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 5.377,
+     "llm_calls": 1,
+     "tokens_total": 2005,
+     "tokens_source": "usage_metadata",
+     "n_429": 0,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac25": {
+     "id": "ac25",
+     "language": "fr",
+     "started_at": "2026-11-06T22:25:56+01:00",
+     "wall_seconds": 4.75,
+     "retry_wait_seconds": 0.0,
+     "groq_client_wait_seconds": 0.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 4.75,
+     "llm_calls": 1,
+     "tokens_total": 1759,
+     "tokens_source": "usage_metadata",
+     "n_429": 0,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac65": {
+     "id": "ac65",
+     "language": "fr",
+     "started_at": "2026-11-06T22:26:05+01:00",
+     "wall_seconds": 4.953,
+     "retry_wait_seconds": 0.0,
+     "groq_client_wait_seconds": 0.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 4.953,
+     "llm_calls": 1,
+     "tokens_total": 2260,
+     "tokens_source": "usage_metadata",
+     "n_429": 0,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac50": {
+     "id": "ac50",
+     "language": "en",
+     "started_at": "2026-11-06T22:26:15+01:00",
+     "wall_seconds": 6.465,
+     "retry_wait_seconds": 0.0,
+     "groq_client_wait_seconds": 0.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 6.465,
+     "llm_calls": 2,
+     "tokens_total": 2295,
+     "tokens_source": "usage_metadata",
+     "n_429": 0,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac48": {
+     "id": "ac48",
+     "language": "fr",
+     "started_at": "2026-11-06T22:26:27+01:00",
+     "wall_seconds": 4.133,
+     "retry_wait_seconds": 0.0,
+     "groq_client_wait_seconds": 0.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 4.133,
+     "llm_calls": 1,
+     "tokens_total": 1835,
+     "tokens_source": "usage_metadata",
+     "n_429": 0,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac09": {
+     "id": "ac09",
+     "language": "en",
+     "started_at": "2026-11-06T22:26:36+01:00",
+     "wall_seconds": 7.356,
+     "retry_wait_seconds": 2.0,
+     "groq_client_wait_seconds": 2.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 5.356,
+     "llm_calls": 2,
+     "tokens_total": 1696,
+     "tokens_source": "usage_metadata",
+     "n_429": 1,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac30": {
+     "id": "ac30",
+     "language": "ar",
+     "started_at": "2026-11-06T22:26:48+01:00",
+     "wall_seconds": 9.272,
+     "retry_wait_seconds": 4.0,
+     "groq_client_wait_seconds": 4.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 5.272,
+     "llm_calls": 2,
+     "tokens_total": 2124,
+     "tokens_source": "usage_metadata",
+     "n_429": 1,
+     "n_fallbacks": 0,
+     "status": "done"
+    }
+   },
+   "superseded": []
+  },
+  "v2": {
+   "provenance": {
+    "fingerprint": {
+     "sha256": "dc8fd664c66230b19fa88aad2195be1ab8b67c5be5540a010ba091c4537ec5ca",
+     "files": 22,
+     "index": {
+      "path": "db_v1_1",
+      "chunks": 6031
+     }
+    },
+    "commit": "902b348702d2a1483f9450e871aaa624facac2f2",
+    "tags": [],
+    "dirty_py": [
+     "val/audit_agreement.py",
+     "eval/test_audit.py",
+     "api/api.py"
+    ],
+    "agent_model": "openai/gpt-oss-120b",
+    "prompt_hashes": {
+     "analyze": "0bbb0226bdc9",
+     "plan": "04c1c55cf119",
+     "codes": "7f49e7a7c8c1",
+     "verify": "6568dc934538",
+     "grade": "4a25ce5f5b52",
+     "reformulate": "5d689216e8cc",
+     "answer": "3d116792e25a",
+     "condense": "b2ef6c23aa3b"
+    },
+    "exam_hashes": {
+     "eval/answer_set.json": "61939392c495ee52c528575dd2c286d4e35fbedf780cca58ed67baac777a1c6e",
+     "eval/stages.json": "621dd54387ae48abdd05c97d3b6fe946cf555a9700b41dd9b9be4a0949a7401b"
+    },
+    "judge": null
+   },
+   "runs": [
+    {
+     "started_at": "2026-11-06T22:27:12+01:00",
+     "ram_available_gb": 2.4,
+     "warmup": {
+      "id": "ac57",
+      "language": "fr",
+      "started_at": "2026-11-06T22:27:12+01:00",
+      "wall_seconds": 64.579,
+      "retry_wait_seconds": 20.0,
+      "groq_client_wait_seconds": 20.0,
+      "llm_retry_wait_seconds": 0.0,
+      "wall_excluding_retry_waits": 44.579,
+      "llm_calls": 6,
+      "tokens_total": 10506,
+      "tokens_source": "usage_metadata",
+      "n_429": 2,
+      "n_fallbacks": 0,
+      "status": "done"
+     },
+     "finished_at": "2026-11-06T22:41:26+01:00",
+     "exit_code": 0
+    }
+   ],
+   "questions": {
+    "ac27": {
+     "id": "ac27",
+     "language": "ar",
+     "started_at": "2026-11-06T22:28:22+01:00",
+     "wall_seconds": 54.977,
+     "retry_wait_seconds": 38.0,
+     "groq_client_wait_seconds": 38.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 16.977,
+     "llm_calls": 5,
+     "tokens_total": 8289,
+     "tokens_source": "usage_metadata",
+     "n_429": 6,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac01": {
+     "id": "ac01",
+     "language": "fr",
+     "started_at": "2026-11-06T22:29:22+01:00",
+     "wall_seconds": 95.334,
+     "retry_wait_seconds": 35.0,
+     "groq_client_wait_seconds": 35.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 60.334,
+     "llm_calls": 7,
+     "tokens_total": 13032,
+     "tokens_source": "usage_metadata",
+     "n_429": 6,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac64": {
+     "id": "ac64",
+     "language": "fr",
+     "started_at": "2026-11-06T22:31:02+01:00",
+     "wall_seconds": 140.198,
+     "retry_wait_seconds": 23.0,
+     "groq_client_wait_seconds": 23.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 117.198,
+     "llm_calls": 9,
+     "tokens_total": 18451,
+     "tokens_source": "usage_metadata",
+     "n_429": 5,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac12": {
+     "id": "ac12",
+     "language": "fr",
+     "started_at": "2026-11-06T22:33:28+01:00",
+     "wall_seconds": 85.319,
+     "retry_wait_seconds": 36.0,
+     "groq_client_wait_seconds": 36.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 49.319,
+     "llm_calls": 7,
+     "tokens_total": 12777,
+     "tokens_source": "usage_metadata",
+     "n_429": 6,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac25": {
+     "id": "ac25",
+     "language": "fr",
+     "started_at": "2026-11-06T22:34:58+01:00",
+     "wall_seconds": 94.056,
+     "retry_wait_seconds": 46.0,
+     "groq_client_wait_seconds": 46.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 48.056,
+     "llm_calls": 7,
+     "tokens_total": 12804,
+     "tokens_source": "usage_metadata",
+     "n_429": 6,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac65": {
+     "id": "ac65",
+     "language": "fr",
+     "started_at": "2026-11-06T22:36:37+01:00",
+     "wall_seconds": 44.61,
+     "retry_wait_seconds": 32.0,
+     "groq_client_wait_seconds": 32.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 12.61,
+     "llm_calls": 4,
+     "tokens_total": 6945,
+     "tokens_source": "usage_metadata",
+     "n_429": 4,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac50": {
+     "id": "ac50",
+     "language": "en",
+     "started_at": "2026-11-06T22:37:27+01:00",
+     "wall_seconds": 75.019,
+     "retry_wait_seconds": 58.0,
+     "groq_client_wait_seconds": 58.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 17.019,
+     "llm_calls": 7,
+     "tokens_total": 10303,
+     "tokens_source": "usage_metadata",
+     "n_429": 6,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac48": {
+     "id": "ac48",
+     "language": "fr",
+     "started_at": "2026-11-06T22:38:47+01:00",
+     "wall_seconds": 29.989,
+     "retry_wait_seconds": 17.0,
+     "groq_client_wait_seconds": 17.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 12.989,
+     "llm_calls": 4,
+     "tokens_total": 5760,
+     "tokens_source": "usage_metadata",
+     "n_429": 4,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac09": {
+     "id": "ac09",
+     "language": "en",
+     "started_at": "2026-11-06T22:39:22+01:00",
+     "wall_seconds": 79.897,
+     "retry_wait_seconds": 45.0,
+     "groq_client_wait_seconds": 45.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 34.897,
+     "llm_calls": 9,
+     "tokens_total": 13164,
+     "tokens_source": "usage_metadata",
+     "n_429": 7,
+     "n_fallbacks": 0,
+     "status": "done"
+    },
+    "ac30": {
+     "id": "ac30",
+     "language": "ar",
+     "started_at": "2026-11-06T22:40:47+01:00",
+     "wall_seconds": 39.427,
+     "retry_wait_seconds": 25.0,
+     "groq_client_wait_seconds": 25.0,
+     "llm_retry_wait_seconds": 0.0,
+     "wall_excluding_retry_waits": 14.427,
+     "llm_calls": 5,
+     "tokens_total": 6411,
+     "tokens_source": "usage_metadata",
+     "n_429": 5,
+     "n_fallbacks": 0,
+     "status": "done"
+    }
+   },
+   "superseded": []
+  }
+ },
+ "summary": {
+  "v1": {
+   "planned": 10,
+   "finished": 10,
+   "degraded": 0,
+   "error": 0,
+   "wall_seconds": {
+    "median": 32.017,
+    "mean": 34.06,
+    "min": 30.667,
+    "max": 41.78
+   },
+   "wall_excluding_retry_waits": {
+    "median": 32.017,
+    "mean": 34.06,
+    "min": 30.667,
+    "max": 41.78
+   },
+   "mean_llm_calls": 3.0,
+   "mean_tokens": 4197.0,
+   "mean_429": 0.0,
+   "questions_with_estimated_tokens": 0
+  },
+  "v1.1": {
+   "planned": 10,
+   "finished": 10,
+   "degraded": 0,
+   "error": 0,
+   "wall_seconds": {
+    "median": 5.165,
+    "mean": 5.889,
+    "min": 4.133,
+    "max": 9.272
+   },
+   "wall_excluding_retry_waits": {
+    "median": 5.113,
+    "mean": 5.289,
+    "min": 4.133,
+    "max": 7.929
+   },
+   "mean_llm_calls": 1.4,
+   "mean_tokens": 2168.5,
+   "mean_429": 0.2,
+   "questions_with_estimated_tokens": 0
+  },
+  "v2": {
+   "planned": 10,
+   "finished": 10,
+   "degraded": 0,
+   "error": 0,
+   "wall_seconds": {
+    "median": 77.458,
+    "mean": 73.883,
+    "min": 29.989,
+    "max": 140.198
+   },
+   "wall_excluding_retry_waits": {
+    "median": 25.958,
+    "mean": 38.383,
+    "min": 12.61,
+    "max": 117.198
+   },
+   "mean_llm_calls": 6.4,
+   "mean_tokens": 10793.6,
+   "mean_429": 5.5,
+   "questions_with_estimated_tokens": 0
+  }
+ }
+}
