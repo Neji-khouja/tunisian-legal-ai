@@ -7,7 +7,6 @@
     python eval/run_answer_eval.py --summarize [results/answer_eval_answer_set_stage1_v2.jsonl ...]   # no path: all stage files
     python eval/run_answer_eval.py --stage 1 --summarize --exclude-ids ac02,ac29   # sensitivity: items left out everywhere
     python eval/run_answer_eval.py --stage 1 --system v1 --rerun-ids ac29 --v1-worktree ../RAG_PDF_v1   # run a pair again
-    python eval/run_answer_eval.py --stage 1 --system v2 --export-audit 20   # CSV for a human check of the judge
     python eval/run_answer_eval.py --set eval/plumbing_set.json --system all --results-dir results/plumbing --dry-run
 
 Run mechanics (eval/harness_core.py): question-major order (for each question: v1, v1.1, v2); one result file per stage
@@ -66,7 +65,6 @@ v1 needs a git worktree of tag v1-baseline-runnable with the old index (the scri
 import os
 import re
 import sys
-import csv
 import json
 import time
 import random
@@ -680,31 +678,6 @@ def summarize(paths: list[Path], exclude=()):
                 print(f"  {name:<52} n={len(d):<4} {sum(d) / len(d):+8.3f}   [{lo:+.3f}, {hi:+.3f}]")
 
 
-# ---------------------------------------------------------------- audit export
-
-def export_audit(path: Path, system: str, n: int):
-    rows = [r for r in {r["id"]: r for r in read_jsonl(path)}.values()
-            if r["expected"] == "answer" and r.get("status") not in NO_ANSWER]
-    pick = random.Random(SEED).sample(rows, min(n, len(rows)))
-    out = ROOT / "results" / f"audit_sample_{system}.csv"
-    with out.open("w", encoding="utf-8-sig", newline="") as f:
-        w = csv.writer(f)
-        per_claim = [h for k in range(1, 7) for h in (f"claim_{k}", f"claim_{k}_relevant_to_question (y/n)")]
-        w.writerow(["id", "question", "answer", "cited_article_pdf_text", "judge_verdict", "judge_hallucination",
-                    "human_correct", "human_hallucination"] + per_claim)
-        for r in pick:
-            cited = r.get("cited") if r.get("cited") is not None else r.get("evidence_ids") or []
-            texts = " || ".join(f"{c}: {normalize(pdf_text(c) or '(no PDF text)')[:600]}" for c in cited)
-            j = r.get("judge") or {}
-            claims = [c["text"] for c in r.get("claims") or []][:6]          # Answer allows at most 6 claims
-            claims += [""] * (6 - len(claims))
-            w.writerow([r["id"], r["question"], r.get("text"), texts, j.get("verdict", ""),
-                        "" if r.get("hallucinated") is None else int(r["hallucinated"]), "", ""]
-                       + [x for c in claims for x in (c, "")])
-    print(f"wrote {out.relative_to(ROOT)} ({len(pick)} rows); fill human_correct / human_hallucination with 1 or 0, "
-          f"then run: python eval/audit_agreement.py {out.relative_to(ROOT)}")
-
-
 # ---------------------------------------------------------------- main
 
 CALL_RANGES = {   # (min, max) Groq calls per question, without the judge
@@ -984,13 +957,15 @@ def parse_args(argv=None):
     ap.add_argument("--allow-mixed", action="store_true")
     ap.add_argument("--allow-changed-exam", action="store_true")
     ap.add_argument("--summarize", nargs="*", metavar="JSONL")
-    ap.add_argument("--export-audit", type=int, metavar="N")
+    ap.add_argument("--export-audit", type=int, metavar="N", help="replaced by eval/audit_export.py; writes nothing")
     ap.add_argument("--v1-worktree", help=f"git worktree of {V1_TAG} with the old index in db/ (for --system v1)")
     return ap.parse_args(argv)
 
 
 def main(argv=None):
     args = parse_args(argv)
+    if args.export_audit:
+        sys.exit("--export-audit was replaced by eval/audit_export.py (blind mixed-system sheet and key file)")
     set_thinking(args.judge_thinking)
     set_path, results_dir = Path(args.set), Path(args.results_dir)
     system_arg = args.system or "v2"
@@ -1014,9 +989,6 @@ def main(argv=None):
     if mixing:
         sys.exit("REFUSED: " + mixing)
     files = {s: hc.ResultFile(out_path(set_path, s, args.stage, results_dir)) for s in systems}
-    if args.export_audit:
-        export_audit(files[systems[0]].path, systems[0], args.export_audit)
-        return
 
     if is_exam(set_path):
         cur_hashes, diffs = hc.exam_check(set_path, args.stages_file, args.hashes_file)
