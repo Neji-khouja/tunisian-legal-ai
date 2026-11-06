@@ -1,0 +1,685 @@
+﻿Column1,Column2,Column3,Column4,Column5,Column6,Column7,Column8,Column9,Column10
+row_id,language,question,answer,cited_articles,reference_points,human_correct,human_hallucination,human_cannot_verify,notes
+r01,en,What fine can someone face for knowingly taking on the job of valuing contributions in kind to a company when the law bars them from that role?,"**Direct Answer:**  
+The person can be fined between 1,000 and 10,000 dinars.
+
+**Applicable Articles:**  
+- **Article 184**, *societeFr.pdf*: Punishes with a fine of 1,000 to 10,000 dinars anyone who knowingly accepts or retains the functions of “commissaire aux apports” contrary to the provisions of Article 174.
+
+**Source(s):**  
+- *societeFr.pdf* – Article 184.
+
+**Explanation:**  
+Article 184 expressly states that a person who knowingly takes on the role of “commissaire aux apports” (the officer responsible for valuing contributions in kind) in violation of the law is subject to a monetary penalty ranging from 1,000 to 10,000 dinars. No other conditions or exceptions are mentioned in the cited text.","[COC, article 1250]
+Article 1250.- La participation aux bénéfices accordée aux employés et représentants d'une personne ou d'une société, à titre de rétribution totale ou partielle de leurs services, ne suffit pas à leur conférer la qualité d'associés, à défaut de toute autre circonstance.
+
+[societeFr, article 184]
+Article 184.- Est puni d'une amende de 1.000 à 10.000 dinars quiconque a sciemment accepté ou conservé les fonctions de commissaire aux apports contrairement aux dispositions de l'article 174 ci-dessus.
+
+[PenalFr, article 85]
+Article 85 (Modifié par la loi n° 98-33 du 23 mai 1998).- Si le fonctionnaire public ou assimilé a accepté des dons, promesses, présents ou avantages de quelque nature que ce soit en récompense d'actes qu'il a accomplis et qui sont liés à sa fonction, mais non sujet à contre partie, ou d'un acte qu'il s'est abstenu de faire alors qu'il est tenu de ne pas faire, est puni de cinq ans d'emprisonnement et de cinq mille dinars d'amende.
+
+[societeFr, article 135]
+Article 135.- Au cas où l'augmentation du capital a été réalisée, en tout ou partie par des apports en nature, l'évaluation de ces apports sera effectuée conformément aux dispositions de l'article 100 du présent code. Lorsque la valeur retenue est différente de celle proposée par le commissaire aux apports, les associés au jour de l'augmentation et les personnes ayant souscrit à l'augmentation du capital sont solidairement responsables à l'égard des tiers de l'évaluation de l'apport en nature pour une période de trois ans.
+
+[societeFr, article 306]
+Article 306.- En cas d'apport en nature, un ou plusieurs commissaires aux apports sont désignés à la demande du conseil d'administration ou du directoire conformément aux dispositions de l'article 173 du présent code. L'assemblée extraordinaire délibère sur l'évaluation des apports en nature. Si cette approbation a lieu, elle déclare la réalisation de l'augmentation du capital. Si l'assemblée réduit l'évaluation de l'apport en nature, l'approbation expresse de l'apporteur est requise. A défaut, l'augmentation du capital n'est pas réalisée. Les actions d'apport doivent être intégralement libérées dès leur émission.
+
+[ProcedurepenaleFr, article 97]
+Article 97.- Est puni d'un an à cinq ans d'emprisonnement et d'une amende de cinq mille dinars à cinquante mille dinars quiconque s'abstient délibérément de se soumettre à l'obligation de déclaration au sens des dispositions de l'article 85 de la présente loi.","1. Est puni d’une amende de 1.000 à 10.000 dinars
+2. quiconque a sciemment accepté ou conservé les fonctions de commissaire aux apports",1,0,0,
+r02,ar,"صدر حكم في بلد أجنبي يضر بمصالحي مع أنني لم أكن طرفاً في القضية. هل يمكنني أن أطلب عدم الاحتجاج به ضدي في تونس، وأمام أي محكمة؟","**الإجابة المباشرة:**  
+نعم، يمكن للغير طرف في القضية أن يطلب إعلان عدم الاحتجاج بالحكم الأجنبي ضده في تونس، ويُقدَّم الطلب أمام المحكمة المختصة (محكمة أول درجة).
+
+**الفصول المنطبقة:**  
+- **المادة 15** (دستور المعاهدات الدولية – DIPFR) : تُنص على أن «أي طرف ثالث مهتم يمكنه طلب إعلان عدم الاحتجاج بالحكم أو القرار الأجنبي ضده». تُعلن عدم الاحتجاج إذا كان أحد الشروط المطلوبة للاعتماد (exequatur) غير متوفر في الحكم أو القرار الأجنبي.  
+
+**المصدر(ات):**  
+- DIPFR.pdf — المادة 15.
+
+**الشرح:**  
+المادة 15 تتيح للغير طرف (أي شخص لم يكن طرفًا في الدعوى الأصلية) الحق في طلب إعلان عدم الاحتجاج بالحكم الصادر في دولة أخرى إذا لم يستوفِ الحكم شروط الاعتماد في تونس. لا تحدد النص صراحةً المحكمة المختصة، لكن عادةً ما يُرفع هذا الطلب إلى المحكمة الابتدائية المختصة (محكمة أول درجة) التي تنظر في القضايا المتعلقة بالاعتراف بالأحكام الأجنبية وإجراءات عدم الاحتجاج. بمجرد صدور قرار المحكمة بإعلان عدم الاحتجاج، يصبح الحكم الأجنبي غير قابل للتنفيذ ضدك في تونس.","[dtreelFr, article 204]
+Article 204.- Tous ceux qui, aux termes des articles 566 à 570 du code des obligations et des contrats, ne peuvent se rendre acquéreurs de certains biens, ne peuvent non plus les recevoir en nantissement.
+
+[NationaliteFr, article 65]
+Article 65 (Modifié par la loi n° 71-12 du 9 mars 1971). -Lorsque le ministre de la justice, le s agents diplomatique s et consulaires représentant la Tunisie à l'étranger ou les juges cantonaux refusent de délivrer un certificat de nationalité, l'intéressé peut se pourvoir devant le tribunal de première instance compétent, conformément aux articles 48 et suivants du présent Code. Le silence, gardé par les autorités visées à l'alinéa précédent, pendant le délai d'un mois à compter de la demande, équivaut à un refus. )1( Dans la version arabe, on parle du gouvernement. (*) Lire : Ministre ou Ministère selon le cas. TABLE DES MATIERES Libellé Articles Pages Décret-loi n° 63-6 du 28 février 1963 (4 chaoual 1382), portant refonte du code de la nationalité tunisienne ……………………………………………. 1 à 4 3 Loi n° 63-7 du 22 avril 1963, (28 doul kaada 1382), ratifiant le décret-loi n° 63-6 du 28 février 1963 (4 chaoual 1382), portant refonte du code de la nationalité ……………………………………….. Article unique 5 CODE DE LA NATIONALITE TUNISIENNE 1 à 65 7 TITRE PRELIMINAIRE - DISPOSITIONS GENERALES ……………………………………… 1 à 5 7 TITRE PREMIER - DE LA NATIONALITE TUNISIENNE ……………………………………… 6 à 38 8 Chapitre I - De la nationalité tunisienne d'origine …. 6 à 11 8 Section I - Attribution en raison de la filiation …6 8 Section II - attribution en raison de la natalité en Tunisie ……………………………….……….…….... 7 à 10 8 Section III - Dispositions communes………….… 11 9 Chapitre II - De l'acquisition de la nationalité tunisienne ………………………………………..….. 12 à 29 9 Section I - Acquisition par le bienfait de la loi ……. 12 à 18 9 Section II - Acquisition par voie de naturalisation………….…………………..…….... 19 à 23 10 Section III - Des effets de l'acquisition de la nationalité tunisienne ……………….……………. 24 à 27 11 Section IV - Dispositions communes ………..…... 28 et 29 12 Libellé Articles Pages Chapitre III - De la perte, de la déchéance et du retrait de la nationalité tunisienne ……………...…… 30 à 38 12 Section I - Perte de la nationalité tunisienne ……... 30 à 32 12 Section II - Déchéance de la nationalité tunisienne 33 à 35 13 Section III - Retrait de la nationalité tunisienne ….. 36 à 38 14 TITRE II - DE LA PROCEDURE ADMINISTRATIVE …………………….…...…… 39 à 47 14 Chapitre I - Des déclarations de la nationalité …...… 39 à 41 14 Chapitre II - Des décisions relatives aux naturalisations ………….…………………………… 42 à 45 15 Chapitre III - Des décrets en matière de nationalité ... 46 et 47 16 TITRE III - DU CONTENIEUX DE LA NATIONALITE ………………………….…...…… 48 à 65 17 Chapitre I - De la compétence des tribunaux judiciaires …………………………………………… 48 à 50 17 Chapitre II - De la procédure devant les tribunaux judiciaires ………………..…………………….……. 51 à 58 18 Chapitre III - De la preuve de la nationalité .……...... 59 à 62 19 Chapitre IV - Des certificats de nationalité tunisienne …………………..……………………….. 63 à 65 20
+
+[DIPFR, article 15]
+Article 15.- Tout tiers intéressé peut demander la déclaration d'inopposabilité à son égard du jugement ou de la décision étrangère. L'inopposabilité sera déclarée si l'une des conditions requises pour l'exequatur fait défaut au jugement ou à la décision étrangère.
+
+[Statutpersonnel, article 2]
+(article text missing)
+
+[Procedurecivilecom, article 9]
+Article 9 (Modifié par la loi n° 2002-82 du 3 août 2002).- Si le requis ne réside pas en Tunisie et a un domicile connu à l'étranger, une copie de l'acte lui est adressée par lettre recommandée. La production de l'accusé de réception n'est pas exigée dans les affaires examinées en référé ainsi qu'en cas d'impossibilité de le produire.
+
+[dtreelFr, article 26]
+(article text missing)","1. Tout tiers intéressé peut demander la déclaration d'inopposabilité à son égard du jugement ou de la décision étrangère
+2. si l'une des conditions requises pour l'exequatur fait défaut
+3. sont introduites devant le tribunal de première instance au lieu du domicile de la partie contre laquelle la décision étrangère est invoquée
+4. A défaut d'un domicile en Tunisie, l'action est portée devant le tribunal de première instance de Tunis",0,1,1,
+r03,fr,"Dans un procès civil, l'autre partie conteste que je sois de nationalité tunisienne. Le parquet doit-il intervenir, et faut-il accomplir une formalité auprès du ministère avant que le tribunal ne statue ?","**Réponse directe :**  
+Le parquet (procureur de la République) est le seul habilité à **intenter** une action visant à établir la nationalité tunisienne (art. 52), mais son intervention n’est pas obligatoire ; il peut toutefois intervenir en tant que partie intéressée. Avant que le tribunal ne statue, il faut déposer la déclaration de nationalité (ou le certificat) auprès du secrétariat d’État à la Justice conformément aux formalités prévues (arts. 39 et 60).  
+
+**Articles applicables :**  
+
+- **Article 52 (Code de la nationalité tunisienne)** – « Le procureur de la République a seul qualité pour intenter contre tout individu une action dont l’objet principal et direct est d’établir si le défendeur a ou n’a pas la nationalité tunisienne, sans préjudice du droit d’intervention de toute personne intéressée. »  
+- **Article 48** – « Le tribunal de première instance, statuant en matière civile, est, seul, compétent pour connaître des contestations sur la nationalité… »  
+- **Article 39** – Conditions de forme de la déclaration de nationalité : papier timbré, élection de domicile, signature légalisée, pièces justificatives, dépôt au secrétariat d’État à la Justice.  
+- **Article 60** – La preuve de la déclaration résulte de la production d’un exemplaire enregistré au secrétariat d’État à la Justice.  
+- **Article 65** – En cas de refus de délivrance d’un certificat de nationalité par le ministre de la Justice ou les autorités compétentes, l’intéressé peut saisir le tribunal de première instance.  
+
+**Source(s) :**  
+- *Code de la nationalité tunisienne* (articles 39, 48, 52, 60, 65) – extrait du document **NationaliteFr.pdf**.  
+
+**Explication :**  
+L’article 52 confère au procureur la compétence exclusive pour **intenter** une action visant à déterminer la nationalité, mais il ne crée pas une obligation d’intervention dans chaque litige ; il peut toutefois se joindre à la procédure en tant que partie intéressée. La compétence juridictionnelle revient au tribunal de première instance (art. 48). Avant que le tribunal puisse examiner la contestation, la partie qui revendique la nationalité doit respecter les formalités de dépôt de la déclaration ou du certificat auprès du secrétariat d’État à la Justice (arts. 39 et 60). Si le certificat est refusé, l’article 65 prévoit la possibilité de saisir directement le tribunal. Ainsi, la procédure nécessite d’abord le dépôt de la déclaration (ou du certificat) ; le parquet n’est pas automatiquement requis, mais il possède le pouvoir exclusif d’initier l’action et peut intervenir s’il le juge nécessaire.","[NationaliteFr, article 4]
+(article text missing)
+
+[NationaliteFr, article 65]
+Article 65 (Modifié par la loi n° 71-12 du 9 mars 1971). -Lorsque le ministre de la justice, le s agents diplomatique s et consulaires représentant la Tunisie à l'étranger ou les juges cantonaux refusent de délivrer un certificat de nationalité, l'intéressé peut se pourvoir devant le tribunal de première instance compétent, conformément aux articles 48 et suivants du présent Code. Le silence, gardé par les autorités visées à l'alinéa précédent, pendant le délai d'un mois à compter de la demande, équivaut à un refus. )1( Dans la version arabe, on parle du gouvernement. (*) Lire : Ministre ou Ministère selon le cas. TABLE DES MATIERES Libellé Articles Pages Décret-loi n° 63-6 du 28 février 1963 (4 chaoual 1382), portant refonte du code de la nationalité tunisienne ……………………………………………. 1 à 4 3 Loi n° 63-7 du 22 avril 1963, (28 doul kaada 1382), ratifiant le décret-loi n° 63-6 du 28 février 1963 (4 chaoual 1382), portant refonte du code de la nationalité ……………………………………….. Article unique 5 CODE DE LA NATIONALITE TUNISIENNE 1 à 65 7 TITRE PRELIMINAIRE - DISPOSITIONS GENERALES ……………………………………… 1 à 5 7 TITRE PREMIER - DE LA NATIONALITE TUNISIENNE ……………………………………… 6 à 38 8 Chapitre I - De la nationalité tunisienne d'origine …. 6 à 11 8 Section I - Attribution en raison de la filiation …6 8 Section II - attribution en raison de la natalité en Tunisie ……………………………….……….…….... 7 à 10 8 Section III - Dispositions communes………….… 11 9 Chapitre II - De l'acquisition de la nationalité tunisienne ………………………………………..….. 12 à 29 9 Section I - Acquisition par le bienfait de la loi ……. 12 à 18 9 Section II - Acquisition par voie de naturalisation………….…………………..…….... 19 à 23 10 Section III - Des effets de l'acquisition de la nationalité tunisienne ……………….……………. 24 à 27 11 Section IV - Dispositions communes ………..…... 28 et 29 12 Libellé Articles Pages Chapitre III - De la perte, de la déchéance et du retrait de la nationalité tunisienne ……………...…… 30 à 38 12 Section I - Perte de la nationalité tunisienne ……... 30 à 32 12 Section II - Déchéance de la nationalité tunisienne 33 à 35 13 Section III - Retrait de la nationalité tunisienne ….. 36 à 38 14 TITRE II - DE LA PROCEDURE ADMINISTRATIVE …………………….…...…… 39 à 47 14 Chapitre I - Des déclarations de la nationalité …...… 39 à 41 14 Chapitre II - Des décisions relatives aux naturalisations ………….…………………………… 42 à 45 15 Chapitre III - Des décrets en matière de nationalité ... 46 et 47 16 TITRE III - DU CONTENIEUX DE LA NATIONALITE ………………………….…...…… 48 à 65 17 Chapitre I - De la compétence des tribunaux judiciaires …………………………………………… 48 à 50 17 Chapitre II - De la procédure devant les tribunaux judiciaires ………………..…………………….……. 51 à 58 18 Chapitre III - De la preuve de la nationalité .……...... 59 à 62 19 Chapitre IV - Des certificats de nationalité tunisienne …………………..……………………….. 63 à 65 20
+
+[NationaliteFr, article 39]
+Article 39.- Toute déclaration en vue de réclamer ou de répudier la nationalité tunisienne doit satisfaire aux conditions suivantes: 1) être dressée sur papier timbré en double exemplaire, 2) comporter élection de domicile de la part de l'intéressé, 3) comporter la signature légalisée de l'intéressé, à défaut d'être établie par un officier public, 4) être accompagnée de toutes pièces justificatives, et notamment des pièces de l'état civil, 5) être déposée au secrétariat d'Etat à la justice (*) ou adressée à ce département par lettre recommandée avec accusé de réception.
+
+[NationaliteFr, article 52]
+Article 52.- Le procureur de la République a seul qualité pour intenter contre tout individu une action dont l'objet principal et direct est d'établir si le défendeur a ou n'a pas la nationalité tunisienne, sans préjudice du droit d'intervention de toute personne intéressée.
+
+[NationaliteFr, article 48]
+Article 48.- Le tribunal de première instance, statuant en matière civile, est, seul, compétent pour connaître des contestations sur la nationalité, et ce, à charge d'appel. L'action est portée devant le tribunal du lieu de la résidence de celui dont la nationalité est en cause ou, s'il n'a pas de résidence en Tunisie, devant le tribunal du lieu de la résidence du demandeur.
+
+[NationaliteFr, article 60]
+Article 60.- La preuve d'une déclaration, tendant à réclamer ou à répudier la nationalité tunisienne, résulte de la production d'un exemplaire enregistré au secrétariat d'Etat à la justice (*) de cette déclaration.","1. le ministère public doit toujours être mis en cause et présenter des conclusions motivées
+2. une copie de la requête est déposée au secrétariat d’État à la justice
+3. Aucune décision au fond ne peut intervenir avant l’expiration du délai de trente jours à dater dudit dépôt",0,1,0,
+r04,en,My brothers and I can't agree on who should keep our late father's family papers and keepsakes. What can the court decide?," - When heirs disagree about the division of family papers or keepsakes, the court may order either their sale or their allocation to one heir, with or without crediting the value against that heir’s share of the inheritance. [dtreelFr art. 141]","[dtreelFr, article 141]
+Article 141.- Lorsqu'il y a désaccord sur le partage des papiers de famille ou des objets auxquels peuvent tenir les héritiers par affection pour le défunt, le tribunal, compte tenu des usages et des circonstances personnelles propres aux héritiers, ordonne, soit la vente de ces papiers ou objets, soit leur attribution à l'un des héritiers, avec ou sans imputation de leur valeur sur sa part héréditaire. Titre Troisième De l'usufruit, de l'usage et de l'habitation Chapitre Premier De l'usufruit","1. le tribunal, compte tenu des usages et des circonstances personnelles propres aux héritiers
+2. ordonne, soit la vente de ces papiers ou objets, soit leur attribution à l'un des héritiers
+3. avec ou sans imputation de leur valeur sur sa part héréditaire",1,0,0,
+r05,fr,"Le juge a confié un bien disputé à une tierce personne en attendant la fin du procès, et ce bien a été détruit dans un incendie. Dans quels cas ce gardien doit-il quand même en répondre ?","**Réponse directe :**  
+Le gardien ne peut s’exonérer que s’il prouve que la destruction résulte d’un cas fortuit ou de la force majeure et qu’il n’est pas en demeure de restituer le bien ; il doit en répondre lorsqu’il est en demeure de le restituer, lorsqu’il a accepté d’être gardien provisoire, ou si le sinistre est imputable à sa faute ou à celle des personnes dont il doit répondre.  
+
+**Articles applicables :**  
+
+- **Article 1050 du Code des Obligations Civiles (COC)** – « Il répond de la force majeure et du cas fortuit, s’il est en demeure de restituer la chose, si, étant partie au procès, il a accepté d’être constitué gardien provisoire, ou si la force majeure a été occasionnée par son fait, sa faute ou par le fait ou la faute des personnes dont il doit répondre. »  
+
+- **Article 1061 du Code des Obligations Civiles (COC)** – « L’emprunteur est tenu de veiller avec diligence à la conservation de la chose prêtée. Il ne peut en confier la garde à une autre personne, à moins de nécessité urgente ; il répond, en cas de contravention, du cas fortuit et de la force majeure. »  
+
+**Source(s) :** COC.pdf (Articles 1050 et 1061).  
+
+**Explication :**  
+L’article 1050 précise les cas où le gardien (ou l’emprunteur devenu gardien provisoire) reste responsable même en présence d’un événement de force majeure ou de cas fortuit : il doit répondre s’il est **en demeure de restituer** le bien, s’il a **accepté d’être gardien provisoire** dans le cadre du procès, ou si le sinistre résulte de **sa faute** ou de celle des personnes dont il est responsable. L’article 1061 rappelle que la garde confiée à un tiers n’est admise qu’en cas d’urgence et que le gardien reste responsable, sauf s’il peut invoquer le cas fortuit ou la force majeure. Ainsi, si le bien confié à un tiers est détruit par un incendie, le gardien devra répondre sauf s’il prouve que l’incendie constitue un cas fortuit ou une force majeure et qu’il n’est pas tenu de le restituer, ou que le sinistre est dû à sa propre faute.","[COC, article 1061]
+Article 1061.- L'emprunteur est tenu de veiller avec diligence à la conservation de la chose prêtée. Il ne peut en confier la garde à une autre personne, à moins de nécessité urgente ; il répond, en cas de contravention, du cas fortuit et de la force majeure.
+
+[CommerceFr, article 611]
+Article 611 Le courtier répond des effets, objets, valeurs et documents qui lui sont confiés, et qui concernent les affaires par lui traitées, s'il ne prouve qu'ils ont été perdus ou détériorés par une cause fortuite ou de force majeure.
+
+[COC, article 1050]
+Article 1050.- Il répond de la force majeure et du cas fortuit, s'il est en demeure de restituer la chose, si, étant partie au procès, il a accepté d'être constitué gardien provisoire, ou si la force majeure a été occasionnée par son fait, sa faute ou par le fait ou la faute des personnes dont il doit répondre.
+
+[COC, article 1206]
+Article 1206.- Le gérant répond de tous les dommages résultant de son fait ou de sa faute d'après les règles du mandat salarié.
+
+[dtreelFr, article 63]
+Article 63.- Chacun des coindivisaires est tenu à peine de dommages-intérêts, de veiller à la conservation de la chose commune avec la même diligence qu'il apporte à la conservation de ses biens propres.
+
+[travailFr, article 12]
+Article 12.- Il ne répond pas de la détérioration et de la perte provenant d'un cas fortuit ou de force majeure, sauf le cas où il serait en demeure de restituer les choses qui lui ont été confiées. La perte de la chose, en conséquence des vices ou de l'extrême fragilité de la matière, est assimilée au cas fortuit, s'il n'y a faute de l'ouvrier.","1. Il répond de la force majeure et du cas fortuit, s'il est en demeure de restituer la chose
+2. étant partie au procès, il a accepté d'être constitué gardien provisoire
+3. si la force majeure a été occasionnée par son fait, sa faute",1,1,0,
+r06,ar,"بعد صدور الحكم في توزيع ثمن عقار بيع بالمزاد بين الدائنين، ما الذي يجب تقديمه لإدارة الملكية العقارية حتى تشطب الرهون المرسمة؟","**الإجابة المباشرة:**  
+يجب تقديم «محضر المزايدة» (procès‑verbal d’adjudication) مع إثبات إيداع ثمن البيع والرسوم (شهادة الإيداع أو ما يثبت القيد المالي) إلى إدارة الملكية العقارية لتشطب الرهون المرسمة.  
+
+**الفصول المنطبقة:**  
+- **المادة 481** (قانون الإجراءات المدنية والتجارية) – تنص على أن البيع بالمزاد العام يُلغي تلقائيًا جميع الرهون والحقوق، ولا يبقى للدائنين حق إلا على ثمن المزايدة، ويُشطب التسجيل تلقائيًا عند تقديم محضر المزايدة وإثبات إيداع الثمن والرسوم.  
+
+**المصدر(ات):**  
+- Procedurecivilecom.pdf — المادة 481.  
+
+**شرح:**  
+بعد صدور الحكم بتوزيع ثمن العقار المبيع بالمزاد، تقوم إدارة الملكية العقارية بإلغاء جميع الرهون والحقوق المرتبطة بالعقار إذا استلمت مستندين أساسيين: (1) محضر المزايدة الذي يثبت نتيجة البيع، و(2) وثيقة تثبت إيداع ثمن المزايدة والرسوم المستحقة (مثل شهادة من الصندوق أو إيصال الإيداع). بناءً على المادة 481، يُشطب التسجيل تلقائيًا بمجرد تقديم هذين المستندين، ولا يبقى للدائنين أي إجراء إلا على ثمن المزايدة.","[dtreelFr, article 296]
+Article 296.- Dans les quarante jours de la notification faite à la requête du nouveau propriétaire, tout créancier dont l'hypothèque ou l'opposition est inscrite peut demander la vente de l'immeuble, aux enchères publiques et à la barre du tribunal, en offrant de porter le prix soit personnellement, soit par une personne présentée par lui et dont il se portera solidaire, à un sixième au moins en sus et de donner caution pour le paiement du prix et des charges, le tout à peine de nullité.
+
+[CommerceFr, article 569]
+Article 569 Après la vente des immeubles et le règlement définitif de l'ordre entre les créanciers privilégiés ou hypothécaires, ceux d'entre eux qui viendront en ordre utile sur le prix des immeubles pour la totalité de leur créance ne toucheront le montant de leur collocation hypothécaire que sous la déduction des sommes par eux perçues dans la masse chirographaire. Les sommes ainsi déduites ne resteront point dans la masse hypothécaire, mais retourneront à la masse chirographaire, au profit de laquelle il en sera fait distraction.
+
+[Procedurecivilecom, article 481]
+Article 481.- La vente aux enchères publiques d'un immeuble à la barre du tribunal ou suivant la procédure prévue par l'article 450, purge de plein droit tous les privilèges et hypothèques et, d'une manière générale, toutes les inscriptions relatives aux créances. Les créanciers n'ont plus d'action que sur le prix d'adjudication. Après inscription du procès-verbal d'adjudication, le conservateur de la propriété foncière procède d'office à la radiation des susdites inscriptions, sur la simple justification de la consignation du prix d'adjudication et des frais et honoraires prévus à l'article 429, sous déduction, le cas échéant, des sommes que l'adjudicataire est légalement autorisé à acquitter et à précompter sur le prix.
+
+[Procedurecivilecom, article 475]
+Article 475.- En cas d'aliénation d'un immeuble immatriculé et s'il y a des créanciers inscrits, tout intéressé peut, après inscription de l'acte d'aliénation sur le titre foncier et consignation du prix à la caisse des dépôts et consignations, demander l'ouverture d'un ordre aux fins de distribution du prix entre les créanciers, d'après le rang de leur créance. Cette demande est formée par requête déposée au greffe du tribunal de première instance du lieu de la situation de l'immeuble, sous la constitution d'un avocat en l'étude duquel domicile est élu de droit pour le requérant. A la requête doivent être joints : 1) un état des inscriptions relatives aux créances, délivré par la Conservation de la Propriété Foncière et précisant les nom, prénom, profession, domicile réel et domicile élu des créanciers. 2) un certificat d'inscription de l'acte d'aliénation sur le livre foncier ; 3) un certificat de la caisse des dépôts et consignations, attestant le montant, la cause, la date et le numéro de la consignation.
+
+[dtreelFr, article 299]
+Article 299.- A défaut par l'un des créanciers, qualifiés pour ce faire, d'avoir requis la vente de l'immeuble aux enchères dans le délai et les formes prescrites, la valeur de l'immeuble demeure définitivement fixée au prix stipulé au contrat ou déclaré par le nouveau propriétaire. Les inscriptions qui ne viennent pas en ordre utile sur le prix seront rayées pour la partie qui l'excédera, en suite de l'ordre amiable ou judiciaire dressé en application du code de procédure civile et commerciale. Le nouveau propriétaire se libèrera des hypothèques, soit en payant aux créanciers inscrits en ordre utile les créances exigibles ou dont l'acquittement lui est facultatif, soit en consignant le prix jusqu'à concurrence de ces créances. Il reste soumis aux hypothèques venant en ordre utile, à raison des créances non exigibles dont il ne voudrait ou ne pourrait se libérer.
+
+[CommerceFr, article 568]
+Article 568 Si une ou plusieurs distributions des deniers mobiliers précèdent la distribution du prix des immeubles, les créanciers privilégiés ou hypothécaires, vérifiés et admis, concourent aux répartitions dans la proportion de leurs créances totales, et sauf, le cas échéant, les distractions visées aux articles suivants.","1. ordonne la radiation de toutes les inscriptions relatives aux créances
+2. Le conservateur de la propriété foncière procède à cette radiation au vu d'une expédition dudit procès-verbal ou jugement
+3. L'expédition du jugement doit être accompagnée d'un certificat de non appel",0,1,0,
+r07,fr,"À la fin d'un bail de bétail, comment le propriétaire récupère-t-il son troupeau et que devient le surplus des animaux ?"," - À la fin du bail ou lors de sa résolution, le bailleur prélève des animaux de chaque espèce afin de reconstituer un fonds de bétail identique à celui qu’il a remis, en termes de nombre, de race, d’âge, de poids et de qualité. [COC art. 1441]
+- L’excédent d’animaux au‑delà du fonds de bétail ainsi reconstitué se partage. [COC art. 1441]
+- Lorsque le nombre d’animaux n’est pas suffisant pour reconstituer le fonds de bétail tel que défini, pour les baux antérieurs au 1er septembre 1939, le règlement entre les parties se fait par comparaison de la valeur des animaux à la fin du bail avec leur valeur calculée d’après le cours des marchés au 31 août 1939. [COC art. 1441]
+- L’état numératif, descriptif et estimatif des animaux remis, figurant au bail, ne transfère pas la propriété au preneur ; il ne sert que de base au règlement à intervenir à la fin du contrat. [COC art. 1431]","[COC, article 1431]
+Article 1431 (Modifié par le décret du 28 mars 1942).- L'état numératif descriptif et estimatif des animaux remis, figurant au bail, n'en transporte pas la propriété au preneur. Il n'a d'autre objet que de servir de base au règlement à intervenir au jour où le contrat prend fin.
+
+[COC, article 1441]
+Article 1441 (Modifié par le décret du 28 mars 1942).- A la fin du bail ou lors de sa résolution, le bailleur prélève des animaux de chaque espèce de manière à obtenir un même fonds de bétail que celui qu'il a remis, notamment quant au nombre, à la race, à l'âge, au poids et à la qualité des bêtes ; l'excédent se partage. S'il n'existe pas assez d'animaux pour reconstituer le fonds de bétail tel qu'il est ci-dessus défini, le règlement entre les parties se fera, pour les baux antérieurs au 1 er septembre 1939, par comparaison entre la valeur des animaux à la fin du bail et leur valeur calculée d'après le cours des marchés au 31 août 1939. Toute convention, aux termes de laquelle le preneur à la fin du bail ou lors de sa résolution, doit laisser un fonds de bétail d'une valeur égale au prix de l'estimation de celui qu'il aura reçu, est nulle. Section II De la société coopérative de travail","1. le bailleur prélève des animaux de chaque espèce de manière à obtenir un même fonds de bétail que celui qu'il a remis
+2. notamment quant au nombre, à la race, à l'âge, au poids et à la qualité des bêtes
+3. l'excédent se partage",1,0,0,
+r08,en,"I bought a property at a court auction. How long do I have to record the sale on the land title, and what does the land registry do if the price has not yet been paid?","**Direct Answer:**  
+You must have the adjudication record entered on the land title within **two months** of the adjudication date. The provided sources do not specify what the land registry does if the purchase price has not yet been paid.
+
+**Applicable Articles:**  
+- **Article 457, Code de procédure civile** – The adjudicant (buyer at auction) is required to have the adjudication report entered on the land title within two months of its date; otherwise any interested party may request that entry by producing the adjudication report.  
+
+**Source(s):**  
+- *Procedurecivilecom.pdf* – Article 457  
+
+**Explanation:**  
+Article 457 sets a clear deadline of two months for the successful bidder to register the adjudication act on the title deed. Failure to do so allows any interested person to petition the registry for the entry, using the adjudication report as proof. The excerpts provided contain no provision describing the registry’s handling of a situation where the sale price remains unpaid; therefore, that aspect cannot be answered from the given material.","[Procedurecivilecom, article 453]
+Article 453.- Le commandement doit être inscrit sur le titre foncier dans les quatre-vingt dix jours de sa date, à peine de nullité. L'inscription vaut saisie. Aucune inscription nouvelle ne peut être prise sur l'immeuble du chef du débiteur saisi, pendant le cours des poursuites.
+
+[CommerceFr, article 206]
+Article 206 L'inscription doit être prise, à peine de nullité, dans la quinzaine de l'acte de vente. Le délai reste applicable même en cas de jugement déclaratif de faillite. Cette nullité peut être invoquée par tout intéressé, même par le débiteur. L'inscription, ainsi prise, prime toute autre, prise du chef de l'acquéreur. Elle est opposable à la faillite de l'acquéreur.
+
+[CommerceFr, article 245]
+Article 245 Le poursuivant fait sommation au propriétaire du fonds et aux créanciers inscrits antérieurement à la décision qui a ordonné la vente, aux domiciles élus par eux dans leurs inscriptions, quinze jours au moins avant la vente, de prendre communication du cahier des charges, de fournir leurs dires et observations et d'assister à l'adjudication si bon leur semble. La vente a lieu dix jours au moins après l'apposition d'affiches indiquant les noms, professions, domiciles du poursuivant et du propriétaire du fonds, la décision en vertu de laquelle on agit, une élection de domicile dans le lieu où siège le Tribunal dans le ressort duquel le fonds est exploité, les divers éléments constitutifs dudit fonds, la nature de ses opérations, sa situation, les mises à prix, les lieu, jour et heure de l'adjudication, les nom et domicile de l'Officier commis et dépositaire du cahier des charges. Ces affiches sont obligatoirement apposées, à la diligence de l'Officier commis, à la porte principale de l'immeuble, et, si le fonds est exploité dans une commune, à la Municipalité, sinon à la Délégation, à la porte principale du Tribunal dans le ressort duquel se trouve le fonds et à la porte de l'étude de l'Officier commis. L'affiche est insérée, dix jours aussi avant la vente, dans le Journal Officiel de la République tunisienne et dans un journal quotidien. La publicité sera constatée par une mention faite dans le procès-verbal de vente. Il sera statué, s'il y a lieu, sur les moyens de nullité de la procédure de vente antérieure à l'adjudication, et sur les dépens, par le Président du Tribunal dans le ressort duquel le fonds est exploité. Ces moyens devront être opposés, à peine de déchéance, huit jours au moins avant l'adjudication. L'alinéa 8 de l'article 243 est applicable à l'ordonnance rendue par le Président.
+
+[Procedurecivilecom, article 457]
+Article 457.- L'adjudicataire est tenu de faire inscrire sur le titre foncier le procès-verbal d'adjudication, dans les deux mois de sa date, faute de quoi tout intéressé pourra requérir cette inscription, en produisant une expédition du procès-verbal d'adjudication.
+
+[Procedurecivilecom, article 425]
+Article 425 (Modifié par la loi n° 2002-82 du 3 août 2002).- Le débiteur saisi peut procéder, lui même, à la vente de l'immeuble saisi avant l'audience de l'adjudication. Dans ce cas, il demeure garant de ce qui peut survenir à l'immeuble jusqu'à consignation du prix et des frais de la saisie. Le prix consigné doit être suffisant pour désintéresser tous les créanciers saisissants et opposants et êt re consigné au plus tard dix jours avant l'audience d'adjudication. Si le poursuivant n'a pas été désintéressé avant le jour et l'heure fixés pour l'adjudication, son avocat, après avoir annoncé à l'audience, l'immeuble à adjuger, les charges qui le grèvent, la mise à prix, le montant des frais et honoraires taxés et, le cas échéant, les dires insérés au cahier des charges, procède à l'adjudication au plus fort et au dernier enchérisseur. Aussitôt que les enchères sont ouvertes, il est allumé successivement trois feux, d'une durée d'environ une minute chacun. L'enchérisseur cesse d'être obligé si son enchère est couverte par une autre, lors même que cette dernière serait déclarée nulle. L'adjudication ne peut être prononcée qu'après l'extinction de trois feux allumés successivement. S'il intervient une enchère avant l'extinction d'un feu, l'adjudication ne peut être prononcée qu'après l'extinction de deux autres feux, sans nouvelles enchères. "" S'il n'intervient pas d'enchère pendant la durée des trois feux et si le poursuivant n'accepte pas que l'immeuble soit adjugé à son profit à la mise à prix, le tribunal doit ajourner l'audience d'adjudication une fois et rabaisser de quarante pour cent (40%) la mise à prix initiale et fixer une nouvelle audience qui doit se tenir dans un délai ne dépassant pas soixante jours. Cette date doit être annoncée quinze jours au moins à l'avance par les moyens de publicité prévus aux articles 418 à 420 du présent code "". (Modifié par la loi n° 2005-79 du 4 août 2005). Les enchères sont portées par l'intermédiaire d'un avocat et ne peuvent y prendre part que les personnes ayant consigné au moins le tiers de la mise à prix à la caisse des dépôts et des consignations, ou ayant présenté à cet effet un chèque certifié ou une garantie bancaire irrévocable. Est exempté des dispositions de cet alinéa le saisissant poursuivant ainsi que le copropriétaire en cas de licitation.
+
+[Procedurecivilecom, article 411]
+Article 411 (Modifié par la loi n° 2002-82 du 3 août 2002).- Dans les soixante jours au plus tard, après la saisie-exécution ou sa signification au saisi, s'il s'agit d'un immeuble non immatriculé, ou après l'inscription du commandement sur le registre foncier s'il s'agit d'un immeuble immatriculé, l'avocat du saisissant dépose au greffe du tribunal devant lequel l'adjudication aura lieu, un cahier des charges daté et signé par lui. Le cahier des charges doit être accompagné d'un rapport d'expertise établi sur ordre du juge et comportant la détermination de la valeur réelle de l'immeuble objet de l'adjudication, pour l'évaluation, sont prises en considération notamment les données relatives à la situation de l'immeuble, sa superficie, ses composantes, ses accessoires, le mode de son exploitation, et, le cas échéant, ses revenus habituels ainsi que le prix d'immeubles similaires vendus dans la même région au cours de l'année précédant l'expertise.","1. L'adjudicataire est tenu de faire inscrire sur le titre foncier le procès-verbal d'adjudication, dans les deux mois de sa date
+2. faute de quoi tout intéressé pourra requérir cette inscription
+3. une hypothèque pour sûreté du paiement du prix d'adjudication",0,0,0,
+r09,ar,"بعد صدور الحكم في توزيع ثمن عقار بيع بالمزاد بين الدائنين، ما الذي يجب تقديمه لإدارة الملكية العقارية حتى تشطب الرهون المرسمة؟","**الإجابة المباشرة:**  
+بعد صدور الحكم، يجب تقديم نسخة من الحكم (إصدار الحكم) وشهادة عدم الاستئناف إلى إدارة الملكية العقارية لتشطب الرهون المرسمة.
+
+**الفصول المنطبقة:**  
+- **المادة 484** (قانون الإجراءات المدنية والتجارية) : تنص على أن «المحافظ العقاري يقوم بإجراء شطب جميع الإعلانات المتعلقة بالديون عند الاطلاع على نسخة من الحكم وشهادة عدم الاستئناف».  
+
+**المصدر:**  
+- Procedurecivilecom.pdf — المادة 484.
+
+**الشرح:**  
+المادة 484 توضح أن إلغاء الرهون يتطلب من المشتري (أو الطرف المعني) تقديم الحكم الصادر عن المحكمة بالإضافة إلى شهادة تثبت أن الحكم لم يُستأنف. عند استلام هذين المستندين، يقوم المحافظ العقاري (المحافظ على السجل العقاري) بإصدار أمر الشطب، مع بقاء أثر الرهون على الثمن المودع. لا يلزم تقديم مستندات أخرى وفق ما جاء في النص.","[CommerceFr, article 261]
+Article 261 Le juge commis, dans la quinzaine du dépôt des pièces au greffe, fixe le jour auquel les créanciers devront présenter leurs demandes de collocation. Le greffier convoque le vendeur, l'acquéreur et les créanciers, par lettres recommandées avec avis de réception, aux domiciles élus dans leurs inscriptions, oppositions et actes de vente. La convocation indique la nature et la situation du fonds dont le prix est en distribution, les noms, prénoms, domiciles de l'ancien et du nouveau propriétaire, le montant de la somme à distribuer, le jour, l'heure et le lieu de la réunion, l'état sommaire des oppositions et inscriptions, avec mention des sommes dues à chaque créancier, d'après les oppositions et les inscriptions, et l'obligation de se présenter devant le juge et de déposer entre ses mains une demande de collocation avec pièces à l'appui contenant élection de domicile dans le ressort du Tribunal. Elle mentionne expressément que les créanciers non produisants ne seront pas compris dans la répartition. La convocation doit être adressée vingt jours au moins avant la date de la réunion. Cette réunion devra avoir lieu dans un délai de trente jours au moins et soixante jours au plus, après le dépôt des pièces au greffe. Pendant ce délai, tout créancier, même non opposant ni inscrit, peut présenter au greffe, avec pièces à l'appui, sa demande de collocation contenant élection de domicile dans le ressort du tribunal. Il doit dans tous les cas, remettre ces pièces au juge commis, au plus tard au cours de la réunion.
+
+[dtreelFr, article 299]
+Article 299.- A défaut par l'un des créanciers, qualifiés pour ce faire, d'avoir requis la vente de l'immeuble aux enchères dans le délai et les formes prescrites, la valeur de l'immeuble demeure définitivement fixée au prix stipulé au contrat ou déclaré par le nouveau propriétaire. Les inscriptions qui ne viennent pas en ordre utile sur le prix seront rayées pour la partie qui l'excédera, en suite de l'ordre amiable ou judiciaire dressé en application du code de procédure civile et commerciale. Le nouveau propriétaire se libèrera des hypothèques, soit en payant aux créanciers inscrits en ordre utile les créances exigibles ou dont l'acquittement lui est facultatif, soit en consignant le prix jusqu'à concurrence de ces créances. Il reste soumis aux hypothèques venant en ordre utile, à raison des créances non exigibles dont il ne voudrait ou ne pourrait se libérer.
+
+[Procedurecivilecom, article 475]
+Article 475.- En cas d'aliénation d'un immeuble immatriculé et s'il y a des créanciers inscrits, tout intéressé peut, après inscription de l'acte d'aliénation sur le titre foncier et consignation du prix à la caisse des dépôts et consignations, demander l'ouverture d'un ordre aux fins de distribution du prix entre les créanciers, d'après le rang de leur créance. Cette demande est formée par requête déposée au greffe du tribunal de première instance du lieu de la situation de l'immeuble, sous la constitution d'un avocat en l'étude duquel domicile est élu de droit pour le requérant. A la requête doivent être joints : 1) un état des inscriptions relatives aux créances, délivré par la Conservation de la Propriété Foncière et précisant les nom, prénom, profession, domicile réel et domicile élu des créanciers. 2) un certificat d'inscription de l'acte d'aliénation sur le livre foncier ; 3) un certificat de la caisse des dépôts et consignations, attestant le montant, la cause, la date et le numéro de la consignation.
+
+[Procedurecivilecom, article 396]
+Article 396 (Modifié par la loi n° 2002-82 du 3 août 2002).- La vente aux enchères a lieu au marché public le plus proche ou en tout autre lieu où elle est susceptible de donner le meilleur résultat. Elle est annoncée quatre jours au moins à l'avance, à la diligence de l'huissier de justice, par un avis publié dans deux journaux quotidiens paraissant en Tunisie dont un en langue arabe. L'annonce indique obligatoirement l'identité complète, les professions, domiciles et, s'ils en ont, les noms commerciaux du saisissant et du saisi, ainsi que les jour, heure et lieu de la vente, la désignation sommaire des objets saisis, les conditions de leur visite, la mise à prix, la date de leur levée et l'avance qui doit être consignée. Il pourra être procédé, en vertu d'une ordonnance sur-requête, non susceptible de voies de recours, à une publicité complémentaire en rapport avec l'importance des objets saisis.
+
+[CommerceFr, article 224]
+Article 224 Lorsque la vente d'un fonds est poursuivie aux enchères publiques, soit à la requête d'un syndic de faillite, de tout liquidateur ou administrateur judiciaire, soit judiciairement à la requête de tout ayant - droit, le poursuivant doit la notifier, par acte extrajudiciaire, aux précédents vendeurs, aux domiciles élus dans leurs inscriptions, avec déclaration que, faute par eux d'intenter l'action résolutoire dans le mois de la notification, ils seront déchus, à l'égard de l'adjudicataire, du droit de l'exercer.
+
+[Procedurecivilecom, article 484]
+Article 484.- Dans le cas prévu à l'article précédent, l'acquéreur, qui après avoir rempli les formalités de la purge, veut obtenir la libération définitive des inscriptions relatives aux créances avant le règlement de l'ordre, doit consigner le prix à la caisse des dépôts et consignations et assigner les créanciers inscrits et le vendeur devant le tribunal de première instance du lieu de la situation de l'immeuble, en validité de la consignation. Si le tribunal estime que la consignation est valable, il prononce la radiation de toutes les inscriptions relatives aux créances, avec maintien de leur effet sur le prix. Le conservateur de la propriété foncière procède à cette radiation au vu d'une expédition du jugement et d'un certificat de non appel. Les frais de l'instance en validité de consignation, lorsque celle-ci est déclarée valable, sont colloqués au même rang que ceux de la procédure d'ordre. Section III. - Dispositions communes à la distribution des deniers et à l'ordre","1. ordonne la radiation de toutes les inscriptions relatives aux créances
+2. Le conservateur de la propriété foncière procède à cette radiation au vu d'une expédition dudit procès-verbal ou jugement
+3. L'expédition du jugement doit être accompagnée d'un certificat de non appel",1,0,0,
+r10,fr,"Après une condamnation pour trafic de stupéfiants, la personne est-elle surveillée par l'administration une fois sa peine purgée, et pendant combien de temps ?","**Réponse directe :**  
+Oui. Après une condamnation pour infraction à la législation sur les stupéfiants, la personne est placée de plein droit sous surveillance administrative pendant dix ans, sauf si le tribunal en décide autrement.
+
+**Articles applicables :**  
+- **Article 26** (PenalFr.pdf) : « A moins que le tribunal n’en ait autrement ordonnée, la surveillance administrative est encourue de plein droit pendant dix années en cas de condamnation … ou pour infraction à la législation sur les stupéfiants. »  
+- **Article 25** (PenalFr.pdf) : prévoit que le tribunal *peut* ordonner une surveillance administrative d’une durée maximale de cinq ans lorsque l’infraction comporte une peine supérieure à deux ans de prison ou constitue une deuxième récidive. (Mentionné pour compléter le cadre, mais l’article 26 impose déjà une durée de dix ans pour les stupéfiants.)
+
+**Source(s) :**  
+- PenalFr.pdf (Articles 26 et 25)
+
+**Explication :**  
+L’article 26 du Code pénal stipule que, pour toute condamnation liée à la législation sur les stupéfiants, la surveillance administrative s’applique automatiquement pendant dix ans, sauf décision contraire du tribunal. Ainsi, même après l’exécution de la peine principale, le condamné reste sous contrôle administratif pendant cette période. L’article 25 indique une possibilité de surveillance de cinq ans dans d’autres cas (peine > 2 ans ou récidive), mais il ne modifie pas la règle de dix ans prévue par l’article 26 pour les infractions aux stupéfiants.","[PenalFr, article 26]
+Article 26 (Modifié par la loi n° 66-63 du 5 juillet 1966).- A moins que le tribunal n'en ait autrement ordonnée, la surveillance administratif est encourue de plein droit pendant dix années en cas de condamnation prononcée en application des articles 60 à 79 ou 231 à 235 du présent code ou pour infraction à la législation sur les stupéfiants.
+
+[PenalFr, article 25]
+Article 25 (Modifié par le décret du 22 octobre 1940).- Lorsque l'infraction comporte une peine supérieure à deux ans de prison ou constitue une deuxième récidive, le tribunal peut ordonner que le condamné soit placé sous la surveillance administrative pour une période dont le maximum ne dépasse pas cinq ans.
+
+[PenalFr, article 150]
+Article 150.- Est puni de l'emprisonnement pendant un an, le condamné qui contrevient à l'interdiction de séjour ou qui, placé sous la surveillance administrative, enfreint les obligations qui y sont attachées.
+
+[PenalFr, article 30]
+Article 30 (Modifié par la loi n° 89-23 du 27 février 1989).- Est de plein droit en état d'interdiction légale, à partir du jugement et pour la durée de sa peine, tout condamné, pour un seul crime, à une peine d'emprisonnement de plus de dix ans. Il est nommé un tuteur pour administrer ses biens, il ne peut en disposer que par voie de testament et ne peut percevoir aucun montant, même partiel, de ses revenus. Ses biens lui sont restitués à l'expiration de sa peine et le tuteur lui rend compte de son administration.
+
+[ProcedurepenaleFr, article 369-bis]
+Article 369 bis (Ajouté par la loi n° 93-114 du 22 novembre 1993).- Est réhabilité de plein droit le condamné qui n'a dans les délais ci- après déterminés, subi aucune condamnation nouvelle pour crime ou délit: 1) Pour la condamnation à l'amende, après un délai d'un an à compter du jour du paiement de l'amende, de l'expiration de la contrainte par corps ou de la prescription.. 2) Pour la condamnation à une peine d'emprisonnement pour délit, après un délai de deux ans à compter de l'exécution de la peine ou de sa prescription. 3) Pour la condamnation à une peine d'emprisonnement pour crime, après un délai de cinq ans à compter de l'exécution de la peine ou de sa prescription. (Les numéros 1 , 2 et 3 ont été modifié par la loi n°2008-75 du 11 décembre 2008) La remise totale ou partielle d'une peine par voie de grâce équivaut à son exécution totale ou partielle.
+
+[ProcedurepenaleFr, article 67]
+Article 67.- Le tribunal doit ordonner la confiscation des biens objet du blanchiment ainsi que le produit généré directement ou indirectement par l'infraction de blanchiment et sa liquidation au profit de l'Etat. Si la saisie effective n'a pas été rendue possible, une amende valant liquidation est prononcée sans qu'elle puisse être inférieure, en tout état de cause, à la valeur des fonds sur lesquels a porté l'infraction. Le tribunal peut également interdire, à l'auteur de l'infraction, d'exercer les fonctions ou les activités professionnelles ou sociales qui lui ont procuré les facilités utilisées pour commettre une ou plusieurs opérations de blanchiment pour une période n'excédant pas cinq ans. Les auteurs des infractions de blanchiment peuvent être placés sous surveillance administrative pour une durée de cinq ans. Ceci ne préjudicie pas de leur condamnation à une ou à toutes les autres peines complémentaires prévues par la loi. Chapitre troisième Dispositions communes a la lutte contre le financement du terrorisme et au blanchiment d'argent Section première De l'interdiction des circuits financiers illicites","1. la surveillance administratif est encourue de plein droit pendant dix années
+2. pour infraction à la législation sur les stupéfiants
+3. A moins que le tribunal n’en ait autrement ordonnée",1,0,0,
+r11,fr,"Lors d'une augmentation de capital d'une société anonyme, que se passe-t-il si une partie des nouvelles actions ne trouve pas preneur ?"," - Si les souscriptions atteignent au moins les trois quarts de l’augmentation décidée et que l’assemblée générale extraordinaire l’a prévu expressément, le montant de l’augmentation du capital peut être limité au montant des souscriptions réalisées. [societeFr art. 298]
+- Les actions non souscrites peuvent être redistribuées totalement ou partiellement entre les actionnaires, sauf décision contraire de l’assemblée générale extraordinaire. [societeFr art. 298]
+- Les actions non souscrites peuvent être offertes au public, totalement ou partiellement, lorsque l’assemblée générale extraordinaire a expressément admis cette possibilité. [societeFr art. 298]
+
+Remarque: Les articles fournis ne précisent pas les modalités de mise en œuvre ni les effets juridiques supplémentaires de ces options.","[societeFr, article 298]
+Article 298.- Si les souscriptions réalisées n'atteignent pas la totalité de l'augmentation du capital social : 1) le montant de l'augmentation du capital social peut être limité au montant des souscriptions sous la double condition que celui-ci atteigne les trois quarts au moins de l'augmentation décidée et que cette faculté ait été prévue expressément par l'assemblée générale extraordinaire qui a décidé ladite augmentation. )1( à lire en conformité avec la version arabe : "" de six mois "", sauf faute de mention dans celle-ci. 2) les actions non souscrites peuvent être totalement ou partiellement redistribuées entre les actionnaires, à moins que l'assemblée générale extraordinaire en ait décidé autrement. 3) les actions non souscrites peuvent être offertes au public totalement ou partiellement, lorsque l'assemblée générale extraordinaire a expressément admis cette possibilité.","1. n’atteint pas la totalité de l’augmentation de capital ou les trois quarts de cette augmentation
+2. limiter l’augmentation du capital au montant de la souscription lorsque les actions non souscrites représentent moins de cinq pour cent de l’augmentation de capital",0,0,0,
+r12,en,My brothers and I can't agree on who should keep our late father's family papers and keepsakes. What can the court decide?,"**Direct Answer:**  
+The court can decide how the family papers and keepsakes are to be divided among you and your brothers as part of the succession, applying the rules that obligations extend to heirs unless otherwise stipulated.
+
+**Applicable Articles / Articles applicables:**  
+- **Article 241 – Code des Obligations et des Contrats (COC.pdf)** – States that obligations have effect not only between the parties themselves but also between their heirs or successors, unless the contrary is expressed or results from the nature of the obligation or the law. It also limits heirs’ liability to the value of the inheritance.
+
+**Source(s):**  
+- COC.pdf – Article 241
+
+**Explanation / Explication:**  
+Article 241 indicates that, in matters of succession, the obligations and rights of the deceased pass to the heirs. Consequently, a Tunisian court may allocate the deceased’s family papers and keepsakes among the heirs (you and your brothers) according to the succession rules, provided no contrary stipulation exists. The heirs are only responsible up to the value of the estate, meaning the court’s decision will respect the limits of the inheritance’s “forces héréditaires.”","[CommerceFr, article 217]
+Article 217 Le vendeur est, nonobstant toute stipulation contraire, tenu de la garantie à raison de l'inexactitude de ses énonciations dans les conditions édictées par les articles 630 et suivants du Code des Obligations et des Contrats. Les rédacteurs d'actes, les intermédiaires et leurs préposés sont tenus solidairement avec lui, s'ils connaissent l'inexactitude des énonciations faites.
+
+[COC, article 3]
+(article text missing)
+
+[COC, article 241]
+Article 241.- Les obligations ont effet non seulement entre les parties elles-mêmes, mais aussi entre leurs héritiers ou ayants cause, à moins que le contraire ne soit exprimé ou ne résulte de la nature de l'obligation, ou de la loi. Les héritiers ne sont tenus, toutefois, que jusqu'à concurrence des forces héréditaires, et proportionnellement à l'émolument de chacun d'eux. Lorsque les héritiers refusent d'accepter la succession, ils ne peuvent y être contraints et ils ne sont nullement tenus des dettes héréditaires, les créanciers ne peuvent, dans ce cas, que poursuivre leurs droits contre la succession.
+
+[CommerceFr, article 1104]
+(article text missing)
+
+[travailFr, article 146]
+Article 146 (Modifié par la loi n° 96-62 du 15 juillet 1996).- Les formes légales, selon lesquelles doit s'effectuer le paiement aux travailleurs de leurs droits, ne font pas obstacle à l'application des règles prévues par le Code des Obligations et des Contrats en matière de preuve.
+
+[NationaliteFr, article 481]
+(article text missing)","1. le tribunal, compte tenu des usages et des circonstances personnelles propres aux héritiers
+2. ordonne, soit la vente de ces papiers ou objets, soit leur attribution à l'un des héritiers
+3. avec ou sans imputation de leur valeur sur sa part héréditaire",0,1,0,
+r13,en,Someone who illegally held a person captive lets them go of their own accord on the third day. What sentence do they face?,"**Direct Answer:**  
+The offender faces a prison term of **two to five years of imprisonment**.
+
+**Applicable Articles:**  
+- **Article 252** (Penal Code, PenalFr.pdf) – Provides a penalty of two to five years’ imprisonment when the perpetrator releases the captured, arrested, detained or seized person **before the fifth day** after the act, provided they renounce any conditions or orders that may have been imposed.
+
+**Source(s):**  
+- PenalFr.pdf — Article 252
+
+**Explanation:**  
+Article 252 expressly states that if the person who illegally held another captive frees them **within the first five days** (the third day qualifies) and abandons any imposed conditions, the prescribed punishment is a term of **two to five years’ imprisonment**. No other articles in the provided context modify this penalty for the described situation.","[PenalFr, article 252]
+Article 252 (Modifié par la loi n° 77-56 du 3 août 1977 et par la loi n° 2005-45 du 6 juin 2005).- La peine est de deux à cinq ans d'emprisonnement, si l'auteur de l'infraction a remis en liberté la personne capturée, arrêtée, détenue ou séquestrée dans les conditions prévues à l'article 250 du présent code avant le cinquième jour écoulé, à partir du jour de la perpétration de l'un de ces faits, en renonçant, si tel a été le cas, aux conditions dictées ou à l'ordre donné. Sont exemptés des peines prévues aux articles 237, 250 et 251 du présent code, ceux des coupables qui, avant toute exécution et avant toute poursuite commencée, ont les premiers, donné aux autorités connaissance des infractions prévues aux articles précités, ou dénoncé leurs auteurs ou complices ou, depuis le commencement des poursuites, procuré leur arrestation. Section VII - Détournement de correspondance, révélation de secrets
+
+[ProcedurepenaleFr, article 358]
+Article 358.- L'exécution des peines complémentaires auxquelles se trouverait condamné le détenu à libérer commence à la date de sa libération conditionnelle.
+
+[PenalFr, article 176]
+Article 176.- Celui qui, sciemment, détient un titre faux, est pour le simple fait de cette détention, puni de l'emprisonnement pendant 10 ans.
+
+[tun_RecAcFreeLi, article 35]
+Art. 35 - Aucune personne ne peut être arrêtée ou détenue, sauf en cas de flagrant délit ou en vertu d'une décision judiciaire. Elle est immédiatement informée de ses droits et de l'accusation qui lui est adressée. Elle a le droit de se faire représenter par un avocat. La durée de l'arrestation et de la détention est fixée par loi.
+
+[PenalFr, article 253]
+Article 253.- Celui qui, sans y être autorisé, divulgue le contenu d'une lettre, d'un télégramme ou de tout autre document appartenant à autrui, est puni de l'emprisonnement pendant 3 mois.
+
+[PenalFr, article 251]
+Article 251 (Modifié par la loi n° 2005-45 du 6 juin 2005).- La peine est de vingt ans d'emprisonnement et de vingt mille dinars d'amende : a) si la capture, arrestation, détention ou séquestration a été accompagnée de violences ou de menaces, b) si cette opération a été exécutée à main armée ou par plusieurs auteurs, c) si la victime est un fonctionnaire ou membre du corps diplomatique ou consulaire ou membres de leurs familles à condition que le coupable connaisse au préalable l'identité de sa victime. d) si l'un de ces faits a été accompagné de menaces de tuer l'otage, de porter atteinte à son intégrité physique ou de continuer à le séquestrer, aux fins de contraindre une tierce partie, qu'elle soit un Etat, une organisation internationale gouvernementale, une personne physique ou morale ou un groupe de personnes, à faire un acte déterminé ou à s'y abstenir comme condition expresse ou tacite de remise en liberté de l'otage. La peine est de l'emprisonnement à vie si la capture, arrestation, détention, ou séquestration a duré plus d'un mois ou s'il en est résulté une incapacité corporelle ou maladie ou si l'opération a eu pour but soit de préparer ou faciliter la commission d'un crime ou délit, soit de favoriser la fuite ou d'assurer l'impunité des auteurs et complices d'un crime ou délit, soit de répondre à l'exécution d'un ordre ou condition, soit de porter atteinte à l'intégrité physique de la victime ou des victimes. La peine de mort est encourue si ces infractions ont été accompagnées ou suivies de mort.","1. La peine est de deux à cinq ans d'emprisonnement, si l'auteur de l'infraction a remis en liberté la personne
+2. avant le cinquième jour écoulé
+3. ceux des coupables qui, avant toute exécution et avant toute poursuite commencée, ont les premiers, donné aux autorités connaissance des infractions",0,0,0,
+r14,fr,J'ai eu un accident de voiture en Libye avec un autre automobiliste ; nous habitons tous les deux en Tunisie et nos véhicules y sont immatriculés. Quelle loi s'applique à l'indemnisation ?,"**Réponse directe :**  
+L’indemnisation sera régie par la législation libyenne, car l’accident s’est produit hors du territoire tunisien et, selon le droit tunisien, la responsabilité civile délictuelle n’est reconnue que lorsque le fait générateur ou le préjudice a eu lieu en Tunisie.
+
+**Articles applicables :**  
+- **Article 5, DIPFR** – « Des actions relatives à la responsabilité civile délictuelle si le fait générateur de responsabilité ou le préjudice est survenu sur le territoire tunisien. »
+
+**Source(s) :**  
+- DIPFR.pdf — Article 5
+
+**Explication :**  
+L’article 5 du Code de procédure civile tunisien précise que les juridictions tunisiennes connaissent les actions en responsabilité civile délictuelle uniquement lorsque le fait générateur ou le préjudice s’est produit sur le sol tunisien. Dans le cas présent, l’accident a eu lieu en Libye ; par conséquent, les tribunaux tunisiens ne sont pas compétents pour statuer sur l’indemnisation et la loi applicable sera celle du pays où le dommage s’est produit, c’est‑à‑dire la législation libyenne. Aucun autre article fourni ne prévoit une exception ou une compétence tunisienne pour les faits survenus à l’étranger.","[CommerceFr, article 411]
+Article 411 (Modifié par la loi n° 96-28 du 3 avril 1996 et par la loi n°2007-37 du 4 juin 2007) Est puni d'un emprisonnement pour une durée de cinq ans et d'une amende égale à quarante pour cent du montant du chèque ou du reliquat de la provision à condition qu'elle ne soit pas inférieure à vingt pour cent du montant du chèque ou du reliquat de la provision : - celui qui a, soit émis un chèque sans provision préalable et disponible ou dont la provision est inférieure au montant du chèque, soit retiré après l'émission du chèque tout ou partie de la provision, soit fait opposition auprès du tiré de le payer en dehors des cas prévus à l'article 374 du présent code, - celui qui, en connaissance de cause, a accepté un chèque émis dans les conditions visées à l'alinéa précédent. - celui qui a aidé sciemment, dans l'exercice de sa profession, le tireur du chèque, dans les cas visés à l'alinéa premier ci-dessus, à dissimuler l'infraction soit en s'abstenant de procéder aux mesures que la loi prescrit de prendre, soit en contrevenant aux règlements et obligations de la profession. Les dispositions de l'article 53 du code pénal ne s'appliquent pas à l'amende prévue à l'alinéa premier du présent article. Est puni d'une amende égale à quarante pour cent du montant du chèque ou du reliquat de la provision sans qu'elle puisse excéder trois milles dinars, tout établissement bancaire qui refuse le paiement d'un chèque émis par le tireur ayant compté sur : - un crédit qui lui a été ouvert par cet établissement bancaire et qui ne l'a pas révoqué d'une façon légale, - ou des facilités de caisse que cet établissement bancaire a pris l'habitude de lui consentir pour des montants dont la moyenne est au moins égale au montant du chèque ou du reliquat de la provision, et sans qu'il ne rapporte la preuve de la notification au tireur de la révocation desdites facilités.
+
+[DIPFR, article 5]
+Article 5.- Les juridictions tunisiennes connaissent également : 1 - Des actions relatives à la responsabilité civile délictuelle si le fait générateur de responsabilité ou le préjudice est survenu sur le territoire tunisien. 2 - Si l'action est relative à un contrat exécuté ou devant être exécuté en Tunisie, sauf clause attributive de compétence en faveur d'un for étranger. 3 - Dans les litiges ayant pour objet un droit mobilier situé en Tunisie. 4 - Dans les litiges portant sur la propriété intellectuelle, si sa protection est invoquée en Tunisie.
+
+[EnfantFr, article 123]
+Article 123.- Si un incident à la liberté surveillée révèle un défaut de surveillance caractérisé de la part des parents, du tuteur, ou de la personne qui en a la garde, ou des entraves systématiques à l'exercice de la mission du délégué, le juge des enfants, quelle que soit la décision prise à l'égard de l'enfant, peut condamner, suivant le cas, les parents, le tuteur, ou la personne qui en a la garde d'une amende civile de 10 dinars à 50 dinars. ANNEXES - Publication de la convention des Nations Unies sur les droits de l'enfant…………………………….….……. - Loi relative au soutien des efforts internationaux de lutte contre le terrorisme et à la rép ression d u blanchiment d'argent …………………………………. - Approbation de la réorganisation de quelques dispositions du code pénal et leur rédaction ….………. - Loi modifiant et complétant la loi relative à la drogue .. 91 - Loi portant approbation de la réorganisation de certaines dispositions du ""code des obligations et des contrats tunisiens"" ……………………………..……… - Règlement intérieur des centres de rééducation des délinquants mineurs………………….………………... - Création de l'observatoire d'information, de formation, de documentation et d'études pour la protection des droits de l'enfant…………………….………………... - Création des Conseils supérieurs consultatifs ……..….. 127 - l'attribution d'un nom patrony mique aux enfants abandonnés ou de filiation inconnue …………………. Convention des Nations Unies sur les Droits de l'Enfant PUBLICATION DE LA CONVENTION DES NATIONS UNIES SUR LES DROITS DE L'ENFANT Décret n° 91-1865 du 10 décembre 1991, portant publication de la convention des Nations Unies sur les Droits de l'Enfant. (JORT n° 84 du 18 décembre 1991, Page 1946). Le Président de la République, Sur proposition du ministre de la Jeunesse et de l'Enfance, Vu la loi n° 91-92 du 29 novembre 1991, portant ratification de la convention des Nations Unies sur les droits de l'enfant, Vu l'avis du ministre des affaires étrangères, Vu l'avis du tribunal administratif. Décrète :
+
+[ProcedurepenaleFr, article 15]
+(article text missing)
+
+[ArbitrageFr, article 81]
+Article 81 La reconnaissance ou l'exécution d'une sentence arbitrale, quel que soit le pays où elle a été rendue, ne peut être refusée que dans les deux cas suivants : I- Sur la demande de la partie contre laquelle elle est invoquée, si cette dernière présente à la cour d'appel de Tunis saisie de la demande de reconnaissance ou d'exécution, une preuve établissant l'un des cas ci-après : a) qu'une partie à la convention d'arbitrage visée à l'article 52 du présent code était frappée d'une incapacité, ou que cette convention n'est pas valable au regard de la loi à laquelle les parties l'ont soumise ou, à défaut d'une telle indication au regard des règles du droit international privé, b) que la partie contre laquelle la sentence est invoquée, n'a pas été dûment informée de la désignation de l'arbitre ou de la procédure arbitrale, ou qu'il lui a été impossible, pour une autre raison, de faire valoir ses droits, c) que la sentence arbitrale porte sur un différend non visé par le compromis ou non compris dans la clause compromissoire ou qu'elle a statué sur des questions n'entrant pas dans le cadre du compromis ou de la clause compromissoire. Toutefois, si les dispositions de la sentence qui ont trait à des questions soumises à l'arbitrage peuvent être dissociées de celles qui ont trait à des questions non soumises à l'arbitrage, seule la partie de la sentence statuant sur les questions soumises à l'arbitrage, pourra être reconnue et exécutée, d) que la constitution du tribunal arbitral ou (*) la procédure arbitrale suivie n'était pas conforme aux stipulations d'une convention d'arbitrage en général, à un règlement d'arbitrage choisi, à la loi d'un pays retenue comme applicable ou aux règles édictées par les dispositions du présent chapitre relatives à la constitution du tribunal arbitral, **(( ) Le texte paru au JORT stipule que : ""… ou dans la procedure…"" e) que la sentence arbitrale a été annulée ou suspendue par une juridiction du pays dans lequel, ou en vertu de la loi duquel, elle a été rendue. II- Si la cour estime que la reconnaissance ou l'exécution de la sentence arbitrale est contraire à l'ordre public au sens du droit international privé.
+
+[ArbitrageFr, article 20]
+(article text missing)","1. est soumise à la loi du lieu de l'accident
+2. La victime peut se prévaloir de la loi du lieu du dommage
+3. lorsque toutes les parties sont résidentes dans le pays qui est en même temps celui où sont immatriculés le ou les véhicules en rapport avec l'accident, la loi de ce pays est applicable",0,1,1,
+r15,fr,"Lors d'une augmentation de capital d'une société anonyme, que se passe-t-il si une partie des nouvelles actions ne trouve pas preneur ?","**Réponse directe :**  
+Si les nouvelles actions ne sont pas entièrement souscrites, l’augmentation de capital peut être limitée au montant effectivement souscrit (à condition que ce montant représente au moins les trois quarts de l’augmentation prévue et que cela ait été prévu par l’assemblée générale extraordinaire) ; les actions non souscrites peuvent être redistribuées aux actionnaires existants ou, si l’assemblée le décide, être offertes au public.
+
+**Articles applicables :**  
+- **Article 298** (Code des sociétés – societeFr.pdf) : prévoit la limitation de l’augmentation au montant des souscriptions lorsque celles‑ci atteignent au moins les trois quarts de l’augmentation décidée et que cette condition a été expressément prévue par l’assemblée générale extraordinaire. Il indique également que les actions non souscrites peuvent être redistribuées entre les actionnaires ou offertes au public, sauf décision contraire de l’assemblée générale extraordinaire.  
+
+**Source(s) :**  
+- societeFr.pdf  
+
+**Explication :**  
+L’article 298 précise les deux issues possibles en cas de sous‑souscription : (1) la société peut réduire le capital augmenté au niveau des souscriptions réalisées, à condition que le seuil de trois quarts soit atteint et que l’assemblée générale extraordinaire l’ait prévu ; (2) les actions qui restent non souscrites peuvent être soit réattribuées aux actionnaires actuels, soit proposées au public, selon la décision de l’assemblée générale extraordinaire. Ces dispositions encadrent la gestion des actions non souscrites lors d’une augmentation de capital.","[societeFr, article 292]
+Article 292.- L'augmentation du capital social pourra être réalisée par l'émission de nouvelles actions ou par l'augmentation de la valeur nominale de celles existantes. Les nouvelles actions peuvent être libérées en numéraire, par compensation de créances certaines, échues et dont le montant est connu par la société, par incorporation "" des réserves "" )1( , de bénéfices et des primes d'émission, par des actions d'apport ou par conversion d'obligations. L'augmentation du capital social par majoration de la valeur nominative des actions est décidée à l'unanimité des actionnaires, sauf si l'augmentation a été réalisée par incorporation "" des réserves "" (1), des bénéfices ou des primes d'émission.
+
+[societeFr, article 134]
+Article 134.- Si l'augmentation de capital est effectuée au moyen de souscription de parts sociales en numéraire, les fonds recueillis seront déposés auprès d'un établissement financier conformément aux dispositions de l'article 98 du présent code. Si l'augmentation n'est pas réalisée dans un délai de six mois à compter de la date de l'assemblée générale qui l'a décidée, tout apporteur pourra demander, l'autorisation de retirer le montant de son apport, par ordonnance rendue par le juge des référés, si l'un ou plusieurs associés "" refusent "" )1( la souscription et la libération du montant impayé de l'augmentation du capital social.
+
+[societeFr, article 346]
+Article 346.- Les statuts des sociétés anonymes peuvent prévoir la création d'actions à dividende prioritaire sans droit de vote.
+
+[societeFr, article 366]
+Article 366.- En cas d'augmentation du capital par apport en numéraire, les titulaires d'actions à dividende prioritaire sans droit de vote bénéficient dans les mêmes conditions que les actionnaires ordinaires, d'un droit préférentiel de souscription. L'attribution gratuite d'actions nouvelles émises à la suite d'une augmentation de capital par incorporation de réserves, bénéfices ou primes d'émission, s'applique aux titulaires d'actions à dividende prioritaire sans droit de vote. Toutefois, l'assemblée générale extraordinaire peut décider, après avis de l'assemblée spéciale, que les titulaires d'actions à dividende prioritaire sans droit de vote auront un droit préférentiel à souscrire ou à recevoir des actions à dividende prioritaire sans droit de vote qui seront émises dans la même proportion. Toute majoration du montant nominal des actions existantes à la suite d'une augmentation de capital par incorporation de réserves, ou bénéfices, s'applique aux actions à dividende prioritaire sans droit de vote. Le dividende prioritaire est alors calculé à compter de la date de la réalisation de l'augmentation du capital, sur la base du montant nominal des actions nouvelles.
+
+[societeFr, article 298]
+Article 298.- Si les souscriptions réalisées n'atteignent pas la totalité de l'augmentation du capital social : 1) le montant de l'augmentation du capital social peut être limité au montant des souscriptions sous la double condition que celui-ci atteigne les trois quarts au moins de l'augmentation décidée et que cette faculté ait été prévue expressément par l'assemblée générale extraordinaire qui a décidé ladite augmentation. )1( à lire en conformité avec la version arabe : "" de six mois "", sauf faute de mention dans celle-ci. 2) les actions non souscrites peuvent être totalement ou partiellement redistribuées entre les actionnaires, à moins que l'assemblée générale extraordinaire en ait décidé autrement. 3) les actions non souscrites peuvent être offertes au public totalement ou partiellement, lorsque l'assemblée générale extraordinaire a expressément admis cette possibilité.
+
+[societeFr, article 160]
+Article 160.- La société anonyme est une société par actions dotée de la personnalité morale constituée par sept actionnaires au moins qui ne sont tenus qu'à concurrence de leurs apports. La société anonyme est désignée par une dénomination sociale précédée ou suivie de la forme de la société et du montant du capital social. Cette dénomination doit être différente de celle de toute société préexistante.","1. n’atteint pas la totalité de l’augmentation de capital ou les trois quarts de cette augmentation
+2. limiter l’augmentation du capital au montant de la souscription lorsque les actions non souscrites représentent moins de cinq pour cent de l’augmentation de capital",0,0,1,
+r16,fr,Que risque un salarié qui participe à une grève illégale ou qui occupe les locaux de l'entreprise pendant cette grève ?," - Participer à une grève ou à un lock‑out illégaux expose le salarié à une peine d’emprisonnement de trois à huit mois et à une amende de cent à cinq cents dinars. [travailFr art. 388]
+- En cas de récidive, les peines prévues pour la participation à une grève ou à un lock‑out illégaux sont portées au double. [travailFr art. 388]
+- Occuper les lieux de travail pendant une grève ou un lock‑out illégaux entraîne les mêmes peines que pour la participation, soit trois à huit mois d’emprisonnement et une amende de cent à cinq cents dinars. [travailFr art. 388]","[travailFr, article 388]
+Article 388 (Modifié par la loi n°73-77 du 8 décembre 1973).- I - Lorsque la grève ou le lock-out sont illégaux, quiconque aura incité à la poursuite de la grève ou du lock-out, ou y aura participé, sera passible d'un emprisonnement de trois à huit mois et d'une amende de cent à cinq cent dinars. En cas de récidive, ces peines sont portées au double. II. - Quiconque aura occupé les lieux de travail, pendant la grève ou le lock-out illégaux, sera passible des peines prévues au paragraphe précédent. III. - Quiconque aura utilisé les machines, appareils ou instruments appartenant à l'entreprise, à des fins autres que celles pour lesquels ils sont destinés, est passible des peines prévues au paragraphe I du présent article, lorsque cette utilisation a pour effet, soit de perturber le fonctionnement de l'entreprise, soit de porter atteinte à l'ordre public. IV . - Quiconque aura détérioré ou tenté de détériorer, pendant la grève ou le lock-out, tous objets, machines, matières, marchandises, appareils ou instruments appartenant à l'entreprise, sera passible des peines prévues par l'article 137 du Code Pénal. L'article 53 dudit code n'est pas applicable. V . - La procédure applicable pour réprimer les délits prévus par le présent article est celle du flagrant délit.","1. sera passible d'un emprisonnement de trois à huit mois et d'une amende de cent à cinq cent dinars
+2. En cas de récidive, ces peines sont portées au double
+3. Quiconque aura occupé les lieux de travail, pendant la grève ou le lock-out illégaux",1,0,0,
+r17,en,"I contributed a machine to a partnership as my share, and it turns out to have a hidden defect. What am I liable for toward my partners?","**Direct Answer:**  
+You are liable to the partners for the damages caused by the hidden defect in the machine, because as a contributor of a non‑cash asset you are treated as a guarantor of that asset in the same way as a seller.
+
+**Applicable Articles / Articles applicables:**  
+- **Article 6** (societeFr.pdf) – “Each associate is debtor of his contribution to the company. The company may claim damages for any delay in the liberation of his contribution. If the contribution is in kind, the contributor is guarantor toward the company under the same conditions as the seller.”  
+- **Article 1264** (COC.pdf) – “The associate who brings a claim against third parties is only released when the company receives payment of the sum for which the claim was contributed; he also answers for damages if the claim is not paid at maturity.” *(relevant to liability for defects in contributed assets).*
+
+**Source(s):**  
+- societeFr.pdf (Article 6)  
+- COC.pdf (Article 1264)
+
+**Explanation:**  
+When you contributed the machine as an “apport en nature,” Article 6 makes you a guarantor of that asset to the company, just as a seller guarantees the goods he sells. Therefore, if the machine later shows a hidden defect that harms the company (and consequently the partners), you must answer for the resulting damages. Article 1264 reinforces this principle by stating that an associate who brings a claim (or asset) remains liable for damages if the claim/asset does not fulfill its economic purpose. Consequently, you are responsible for compensating the partnership for any loss or damage caused by the defective machine.","[COC, article 1264]
+Article 1264.- L'associé, qui apporte à la société une ou plusieurs créances contre des tiers, n'est libéré que le jour où la société reçoit le paiement de la somme pour laquelle ces créances lui ont été apportées ; il répond, en outre, des dommages si la créance dont il a fait l'apport n'est pas payée à l'échéance.
+
+[societeFr, article 24]
+(article text missing)
+
+[societeFr, article 85]
+Article 85.- La distribution des bénéfices et la répartition des pertes entre les associés se font conformément aux statuts. En cas de silence des statuts, la règle de l'égalité entre tous les associés s'applique.
+
+[societeFr, article 6]
+(article text missing)
+
+[COC, article 1446]
+Article1446.- Chaque associé est tenu de deux obligations principales : a) celle de donner son travail à l'avantage exclusif de la société, et de ne pas l'employer ailleurs à son profit personnel. Il peut travailler cependant à son profit personnel lorsqu'il a accompli tout ce qu'il doit à la société ; b) celle de garantir, solidairement avec les autres associés, le travail ou l'ouvrage exécuté par eux, dans les cas de détérioration, de malfaçon ou de vice qui leur seraient imputables. Cette obligation existe même après la dissolution de la société.
+
+[societeFr, article 173]
+Article 173 (Alinéa 2 modifié par l'art premier de la loi n° 2005-65 du 27 juillet 2005).- En cas d'apport en nature et préalablement à la constitution de la société un ou plusieurs commissaires aux apports sont désignés par ordonnance sur requête du président du tribunal de première instance au lieu du siège social parmi les experts judiciaires et ce, à la demande des fondateurs. Les commissaires aux apports év aluent sous leur responsabilité les apports en nature dans un rapport qui doit conten ir la description de chaque apport en nature, sa consistance, son mode d'évaluation ainsi que l'intérêt qu'il présente pour la société, avec indication de la nature des avantages particuliers prévus au n° 11 de l'article 164 du présent code. Le rapport doit être déposé au siège de la société et mis à la disposition des souscripteurs qui peuvent en obtenir communication quinze jours au moins avant la date de l'assemblée générale constitutive. L'assemblée générale constitutive statue sur l'évaluation des apports en nature. Elle ne peut réduire l'évaluation faite par les commissaires aux apports qu'à l'unanimité de tous les souscripteurs. L'apporteur en nature ne peut prendre part au vote relatif à l'évaluation de son apport. Le procès-verbal de l'assemblée générale constitutive doit mentionner expressément l'approbation des apports en nature, à défaut la société ne peut se constituer légalement.","1. l’associé doit aux autres la même garantie que le vendeur, du chef des vices cachés et de l’éviction de la chose
+2. l’associé est tenu de la même garantie que le bailleur",0,1,0,
+r18,ar,ما هي الهياكل التي تتولى رعاية المصالح المحلية والجهوية في تونس؟, - المجالس البلدية والجهوية ومجالس الأقاليم والهيئات التي تُمنحها القانون صفة جماعة محلية هي التي تُعنى بالمصالح المحلية والجهوية في تونس. [tun_RecAcFreeLi art. 133],"[tun_RecAcFreeLi, article 133]
+Art. 133 - Les conseils municipaux et régionaux, les conseils des districts et les organismes que la loi leur confère le statut de collectivité locale, veillent aux intérêts locaux et régionaux dans les conditions fixées par la loi. Chapitre VIII - L'Instance supérieure indépendante pour les élections","1. Les conseils municipaux et régionaux, les conseils des districts
+2. veillent aux intérêts locaux et régionaux dans les conditions fixées par la loi",1,0,1,
+r19,fr,"Mon cocontractant s'était réservé le droit de mettre fin à notre contrat, mais il a perdu la raison. Qui va décider à sa place s'il faut maintenir ou rompre le contrat ?","**Réponse directe :**  
+En cas de démence ou d’incapacité du cocontractant qui s’est réservé la faculté de résiliation, c’est le **curateur ad hoc nommé par le tribunal** qui décidera, avec l’autorisation du tribunal, de maintenir ou de résilier le contrat.
+
+**Articles applicables :**  
+- **Article 125 du Code des Obligations Civiles (COC)** – prévoit la nomination d’un curateur ad hoc par le tribunal, à la requête de l’autre partie ou de tout intéressé, pour décider du maintien ou de la résiliation du contrat lorsque la partie réservée à la résiliation est en démence ou autre incapacité.  
+
+**Source(s) :**  
+- COC.pdf — Article 125  
+
+**Explication :**  
+L’article 125 indique clairement que, lorsqu’une partie qui détient le droit de résilier devient incapable (démence ou autre cause), le tribunal, sur demande, désigne un curateur ad hoc. Ce curateur, avec l’accord du tribunal, examine l’intérêt de la personne incapable et décide s’il convient de maintenir le contrat ou de le résilier. Aucun autre mécanisme n’est prévu dans le texte fourni pour cette situation.","[COC, article 124]
+Article 124.- Si la partie qui s'est réservée à la faculté de résiliation meurt avant le délai, sans avoir exprimé sa volonté, ses héritiers ont la faculté de maintenir ou de résilier le contrat pour le temps qui restait encore à leur auteur. En cas de désaccord, les héritiers qui voudront maintenir le contrat ne pourront contraindre les autres à l'accepter, mais ils pourront prendre tout le contrat à leur compte personnel.
+
+[COC, article 871]
+Article 871.- S'il est nécessaire, pour l'exécution de l'ouvrage, que le commettant accomplisse quelque chose de son côté, le locateur d'ouvrage aura le droit de l'inviter formellement à l'accomplir. Après un délai raisonnable et si le commettant n'a pas fait ce qu'il doit, le locateur d'ouvrage a le choix soit de maintenir le contrat, soit d'en poursuivre la résolution, avec les dommages-intérêts dans les deux cas, s'il y a lieu.
+
+[COC, article 125]
+Article 125.- Si la partie qui s'est réservé la faculté de résiliation tombe en démence ou est atteinte d'une autre cause d'incapacité, le tribunal nommera, à la requête de l'autre partie ou de tout autre intéressé, un curateur ad hoc lequel décidera, avec l'autorisation du tribunal, s'il y a lieu d'accepter ou de résilier le contrat, selon que l'intérêt de l'incapable l'exigera. En cas de faillite, le curateur sera de droit le syndic ou autre représentant de la masse.
+
+[CommerceFr, article 618]
+Article 618 Si le contrat vient à être résolu par la suite, soit volontairement par l'accord des parties, soit pour l'une des causes de rescision prévues par la loi, le courtier ne perd pas le droit de réclamer sa rémunération et il ne doit pas restituer celle qu'il a déjà reçue, le tout à moins de dol ou de faute lourde imputable au courtier lui-même.
+
+[COC, article 821]
+Article 821.- Le preneur d'un fonds rural, dont la récolte n'a pas été levée à l'expiration de son bail, a le droit de rester sur les lieux en payant au bailleur un loyer égal à celui établi dans le contrat, s'il a eu soin de constater, à la fin de son bail, l'état de la récolte. Le tout, sauf le cas de dol ou de faute à lui imputable. (*) Cette modification porte sur l'abrogation des alinéas 2 et 4.
+
+[COC, article 801]
+Article 801.- En cas d'éviction de la chose louée, l'évinçant a le choix ou de maintenir les locations en cours ou de les résoudre ; mais il devra, dans ce dernier cas, observer les délais établis pour les congés, si le preneur est de bonne foi. Le preneur n'aura de recours, pour les loyers et les indemnités à lui dus que contre le bailleur, s'il y a lieu.","1. le tribunal nommera, à la requête de l'autre partie ou de tout autre intéressé, un curateur ad hoc
+2. décidera, avec l'autorisation du tribunal, s'il y a lieu d'accepter ou de résilier le contrat
+3. En cas de faillite, le curateur sera de droit le syndic",0,0,0,
+r20,ar,"هل يجب على صاحب العمل أن يكون قادراً على إثبات أنه صرّح بمؤسسته وبالانتدابات التي قام بها، وأمام من؟","**الإجابة المباشرة:**  
+نعم، يُلزم القانون صاحب العمل أن يكون قادراً على إثبات أنه قد صرّح بمؤسسته وبالانتدابات التي قام بها، ويجب أن يقدّم هذا الإثبات أمام وكلاء تطبيق أحكام الفصل (وكلاء التفتيش العمالي) وكذلك أمام أي إدارة أو مؤسسة عامة عندما يتقدم بطلب للحصول على فائدة قانونية أو تنظيمية.
+
+**الفصول المنطبقة:**  
+- **المادة 286** (قانون العمل) – تُلزم صاحب العمل بـ«تبرير» (إثبات) أنه قد أجرى التصريحات المنصوص عليها في المادتين 278 و280، ويجب أن يقدّم هذا التبرير «في أي وقت أمام وكلاء تطبيق أحكام هذا الفصل»، كما يجب أن يبرره «كلما تقدم إلى إدارة أو مؤسسة عامة للحصول على فائدة قانونية أو تنظيمية».  
+
+**المصدر:**  
+- *travailFr.pdf* (قانون العمل)
+
+**الشرح:**  
+المادة 286 تنص صراحةً على وجوب قدرة صاحب العمل على إثبات قيامه بالتصريحات المطلوبة (المرتبطة بالمؤسسة والانتدابات) أمام الجهات المختصة بتطبيق القانون، أي وكلاء التفتيش العمالي. بالإضافة إلى ذلك، يُطلب منه تقديم هذا الإثبات كلما طلب الاستفادة من أي نص قانوني أو تنظيمي من خلال التوجه إلى إدارة أو مؤسسة عامة. وبالتالي، فإن عدم القدرة على تقديم هذا الإثبات قد يُعَدّ مخالفة للالتزام القانوني.","[travailFr, article 286]
+Article 286 (Modifié par la loi n° 96-62 du 15 juillet 1996).- L'employeur est tenu de justifier, à tout moment aux agents chargés de l'application des dispositions du présent chapitre, avoir fait les déclarations énoncées aux articles 278 et 280 du présent code. Il doit également justifier avoir fait ces déclarations chaque fois qu'il se mettra en instance auprès d'une administration ou d'un établissement public, à l'effet d'obtenir le bénéfice d'une disposition légale ou réglementaire.
+
+[travailFr, article 352]
+Article 352.- Le maître est tenu de délivrer à l'apprenti ou à son représentant à la fin de l'apprentissage, un certificat constatant l'exécution du contrat.
+
+[travailFr, article 284]
+Article 284.- Dans le cas où un chef d'établissement ou son gérant responsable charge un préposé de la mission d'embaucher le personnel considéré dudit établissement, il doit faire connaître au Bureau Public de Placement ou à défaut à l'Inspection régionale du travail territorialement compétente, les nom, prénom, nationalité et adresse du préposé. L'embauchage par l'intermédiaire de toute autre personne que celles visées ci-dessus, notamment par les caporaux, est interdit.
+
+[COC, article 420]
+Article 420.- La preuve de l'obligation doit être faite par celui qui s'en prévaut.
+
+[travailFr, article 27]
+Article 27.- Tout salarié peut, à l'expiration du contrat de travail, exiger de son employeur un certificat contenant exclusivement la date de son entrée, celle de sa sortie, la nature de l'emploi, ou, le cas échéant, des emplois successivement occupés, ainsi que les périodes pendant lesquelles ces emplois ont été tenus. Sont exempts de timbre et d'enregistrement, les certificats de travail délivrés aux salariés encore qu'ils contiennent d'autres mentions que celles prévues à l'alinéa précédent, toutes les fois que ces mentions ne renferment ni obligation, ni quittance, ni aucune convention donnant lieu au droit proportionnel. La formule "" libre de tout engagement "" et toute autre constatant l'expiration du contrat de travail, les qualités professionnelles et les services rendus, sont compris dans l'exemption. Dans les cas prévus à l'article 15, le dernier employeur est tenu de délivrer au salarié qui quitte l'entreprise un certificat de travail unique faisant état de ses services depuis son entrée dans l'établissement. Le salarié ne peut renoncer par avance au droit éventuel de demander des dommages et intérêts en vertu des dispositions du présent article. TITRE II SOUS - ENTREPRISE DE MAIN - D'ŒUVRE
+
+[travailFr, article 86]
+Article 86.- En cas d'organisation du travail par équipes, la liste nominative de chaque équipe est affichée dans les conditions prévues à l'article précédent. Doivent être également affichés les noms des salariés auxquels s'appliquent les dérogations permanentes prévues à l'article 83, 2°). Le chef d'entreprise ou, sous sa responsabilité, la personne à laquelle il aura délégué ses pouvoirs à cet effet, doit être en mesure de faire la preuve, devant l'agent chargé de l'Inspection du travail, de l'identité des salariés dont les noms sont portés sur les listes ci-dessus, sans préjudice du droit pour cet agent de demander aux salariés de prouver leur identité.","1. L'employeur est tenu de justifier, à tout moment aux agents chargés de l'application des dispositions du présent chapitre, avoir fait les déclarations
+2. chaque fois qu'il se mettra en instance auprès d'une administration ou d'un établissement public",1,0,0,
+r21,fr,Quelle peine encourt un parent qui prive régulièrement son enfant de nourriture et de soins ?," - Le parent qui prive régulièrement son enfant de nourriture ou de soins est puni de cinq ans d'emprisonnement et de cent vingt dinars d'amende. [PenalFr art. 224, EnfantFr art. 224]
+- Si cette privation habituelle cause un taux d'incapacité supérieur à 20 % ou est commise en usant d'une arme, la peine est portée au double. [PenalFr art. 224, EnfantFr art. 224]
+- Si la privation habituelle entraîne la mort de l'enfant, la peine est l'emprisonnement à vie. [PenalFr art. 224, EnfantFr art. 224]","[EnfantFr, article 224]
+Article 224 (Modifié par la loi n° 95-93 du 9 novembre 1995).- Est puni de cinq ans d'emprisonnement et de cent vingt dinars d'amende, quiconque maltraite habituellement un enfant ou tout autre incapable de l'un ou l'autre sexe, placé sous son autorité ou sa surveillance, sans préjudice, le cas échéant, des peines plus sévères prévues pour les violences et voies de fait. Est considérée mauvais traitement, la privation habituelle d'aliments ou de soins. La peine est portée au double si l'usage habituel de mauvais traitements a provoqué un taux d'incapacité supérieur à 20% ou si le fait a été commis en usant d'une arme. La peine est de l'emprisonnement à vie, s'il est résulté de l'usage habituel de mauvais traitements la mort.
+
+[PenalFr, article 224]
+Article 224 (Les paragraphes 3 et 4 sont ajoutés par la loi n° 95- 93 du 9 novembre 1995).- Est puni de cinq ans d'emprisonnement et de cent vingt dinars d'amende, quiconque maltraite habituellement un enfant ou tout autre incapable de l'un ou l'autre sexe, placé sous son autorité ou sa surveillance, sans préjudice, le cas échéant, des peines plus sévères prévues pour les violences et voies de fait. Est considérée mauvais traitement, la privation habituelle d'aliments ou de soins. La peine est portée au double si l'usage habituel de mauvais traitements a provoqué un taux d'incapacité supérieur à 20% ou si le fait a été commis en usant d'une arme. La peine est de l'emprisonnement à vie, s'il est résulté de l'usage habituel de mauvais traitements la mort.","1. Est puni de cinq ans d’emprisonnement et de cent vingt dinars d'amende, quiconque maltraite habituellement un enfant
+2. Est considérée mauvais traitement, la privation habituelle d'aliments ou de soins
+3. La peine est portée au double si l'usage habituel de mauvais traitements a provoqué un taux d'incapacité supérieur à 20%",0,0,0,
+r22,fr,"J'ai demandé à ma banque de virer une somme à un fournisseur, et j'apprends qu'il vient d'être déclaré en faillite. Puis-je encore m'opposer à ce virement ?","**Réponse directe :**  
+Oui, vous pouvez vous opposer à l’exécution du virement dès le jour où le jugement déclarant la faillite du bénéficiaire est prononcé.
+
+**Articles applicables :**  
+- **Article 687 du Code de commerce** – « Le donneur d'ordre peut valablement s'opposer à l'exécution de l'ordre de virement, même constaté par un titre délivré au bénéficiaire, à compter du jour du prononcé du jugement déclarant la faillite de celui‑ci. »
+
+**Source(s) :**  
+- *CommerceFr.pdf — Article 687*
+
+**Explication :**  
+L’article 687 prévoit expressément que le donneur d’ordre (vous) conserve le droit de s’opposer à l’exécution d’un ordre de virement même si le bénéficiaire a déjà reçu le titre de paiement, dès que le bénéficiaire est déclaré en faillite par jugement. Cette opposition est valable à compter du jour même du prononcé du jugement de faillite, sans condition supplémentaire. Ainsi, même si le virement a déjà été initié, vous pouvez demander à votre banque de le bloquer ou de l’annuler sur la base de cet article.","[CommerceFr, article 374]
+Article 374 (Modifié par la loi n° 2007-37 DU 4 juin 2007) L'établissement bancaire tiré doit payer, même après l'expiration du délai de présentation, il n'est admis d'opposition au paiement du chèque par le tireur qu'en cas de perte ou de vol du chèque ou de faillite du porteur. L'opposition doit être formulée par un écrit adressé à l'établissement bancaire tiré ou par tout autre moyen laissant une trace écrite. Si malgré cette défense, le tireur fait une opposition pour d'autres causes que celles visées à l'alinéa 1er, le juge des référés, même dans le cas où une instance au principal serait engagée, doit, sur la demande du porteur, ordonner la mainlevée de cette opposition. L'établissement bancaire doit payer, nonobstant l'absence ou l'insuffisance de la provision, tout chèque tiré sur lui par le moyen de formule délivré par lui au tireur, d'un montant inférieur ou égal à 20 dinars. Les dispositions du précédent alinéa ne s'appliquent pas aux chèques tirés sur les comptes en devise ou en dinars convertible. L'effet de cette obligation de payer prend fin un mois après l'expiration du délai prévu par l'article 372 du présent code. Cette obligation ne s'impose pas à l'établissement bancaire si le refus de payement du chèque est justifié pour cause autre que le défaut ou l'insuffisance de la provision. Par ce payement, l'établissement bancaire se substitue légalement au bénéficiaire, dans toutes les actions et droits à l'encontre du tireur du chèque dans les limites de ce qu'il a payé. Il peut récupérer le montant qu'il a avancé par le retrait direct du compte du tireur.
+
+[CommerceFr, article 687]
+Article 687 Le donneur d'ordre peut valablement s'opposer à l'exécution de l'ordre de virement, même constaté par un titre délivré au bénéficiaire, à compter du jour du prononcé du jugement déclarant la faillite de celui-ci.
+
+[CommerceFr, article 682]
+Article 682 Il peut être stipulé que les ordres de virement ne seront pas adressés directement à la banque, mais seront présentés à celle- ci par le bénéficiaire lui-même. Il peut être également stipulé que certains virements ne seront point passés en écriture dès réception des ordres directs de l'émetteur ou présentation des titres de virement par les bénéficiaires, mais seulement en fin de journée et avec tous les ordres de virement de la même catégorie, reçus au cours de cette journée.
+
+[CommerceFr, article 678]
+Article 678 Le virement est l'opération bancaire par laquelle le compte d'un donneur d'ordre est, sur l'ordre écrit de celui-ci, débité pour un montant destiné à être porté au crédit d'un autre compte. Cette opération permet : 1) d'opérer des transferts de fonds entre deux personnes distinctes ayant leurs comptes chez le même banquier ou chez deux banquiers différents; 2) d'opérer également des transferts de fonds entre comptes différents ouverts par une même personne chez le même banquier ou chez deux banquiers différents. Les conditions de l'émission des ordres de virement sont réglées par la convention des parties. Toutefois, le virement au porteur est interdit. Si le bénéficiaire du virement est chargé d'en porter le montant au crédit du compte d'un tiers, le nom de celui-ci doit obligatoirement figurer sur l'ordre de virement.
+
+[CommerceFr, article 683]
+Article 683 S'il n'y a pas provision suffisante, la banque peut rejeter les ordres de virement adressés directement par le donneur d'ordre, à condition de l'informer sans délai de ce rejet. S'il s'agit d'un ordre de virement présenté par le bénéficiaire, celui-ci est crédité du montant de la provision partielle à moins de refus de sa part. Mention est faite sur le titre présenté, soit du règlement de la provision partielle, soit du refus du bénéficiaire. Au cas de rejet de l'ordre de virement ou de refus de la provision, conformément aux alinéas qui précèdent du présent article, aucun blocage de la provision partielle n'est opéré.
+
+[CommerceFr, article 372]
+Article 372. (Paragraphe 2 modifié par la loi n°96-28 du 3 avril 1996) Le chèque émis et payable en Tunisie doit être présenté au paiement dans le délai de huit jours. Ce délai est porté à soixante jours si le chèque est émis hors du territoire tunisien. Le point de départ des délais sus-indiqués est le jour porté sur le chèque comme date d'émission.","1. Le donneur d'ordre peut valablement s'opposer à l'exécution de l'ordre de virement
+2. même constaté par un titre délivré au bénéficiaire
+3. à compter du jour du prononcé du jugement déclarant la faillite de celui-ci",1,0,0,
+r23,en,"When a debtor's property is sold and the money isn't enough to pay everyone, how is it shared among the creditors?"," - If a creditor obtains court authorization to sell the pledged property, he may apply the sale proceeds to pay his claim with privilege over all other creditors. [COC art. 323]
+- The sale proceeds, being the common pledge of the debtor's creditors, are distributed among them by contribution, unless there are legitimate causes of preference between the creditors. [dtreelFr art. 192]","[COC, article 323]
+Article 323.- A défaut de paiement de ce qui lui est dû, le créancier peut, après une simple sommation faite au débiteur, se faire autoriser par le tribunal à vendre les choses dont il est nanti, et à appliquer le produit de la vente au paiement de sa créance par privilège sur tous autres créanciers. Il est soumis, en ce qui concerne cette liquidation et ses suites, à toutes les obligations du créancier gagiste.
+
+[dtreelFr, article 192]
+Article 192.- Les biens du débiteur sont le gage commun de ses créanciers et le prix s'en distribue entre eux par contribution, à moins qu'il n'y ait entre les créanciers des causes légitimes de préférence.","1. Les biens du débiteur sont le gage commun de ses créanciers
+2. le prix s'en distribue entre eux par contribution
+3. à moins qu'il n'y ait entre les créanciers des causes légitimes de préférence",0,0,1,
+r24,ar,"هل يجب على صاحب العمل أن يكون قادراً على إثبات أنه صرّح بمؤسسته وبالانتدابات التي قام بها، وأمام من؟","**الإجابة المباشرة:**  
+نعم، يجب على صاحب العمل أن يكون قادراً على إثبات أنه صرّح بمؤسسته وبالانتدابات التي قام بها، ويجب أن يقدّم هذا الإثبات أمام وكلاء تطبيق أحكام الفصل (وكلاء التفتيش العمالي) وأي إدارة أو مؤسسة عامة يتعامل معها للحصول على فائدة قانونية أو تنظيمية.
+
+**الفصول المنطبقة:**  
+- **المادة 286 (قانون العمل)** – تُلزم صاحب العمل بضرورة تبرير، في أي وقت، أنه قد أجرى التصريحات المنصوص عليها في المادتين 278 و 280 أمام وكلاء تطبيق أحكام هذا الفصل، وكذلك أمام أي إدارة أو مؤسسة عامة عندما يتقدم للحصول على فائدة قانونية أو تنظيمية.  
+- **المادة 278 (قانون العمل)** – تحدد ما يجب أن يتضمنه إعلان المؤسسة (البيانات عن raison sociale، العنوان، رقم التسجيل في الضمان الاجتماعي، عدد الوظائف، بيانات العمال، وغيرها)، وهو ما يُطلب من صاحب العمل إعلانه لدى التفتيش العمالي.
+
+**المصدر(ات):**  
+- *travailFr.pdf* (قانون العمل التونسي)
+
+**الشرح:**  
+المادة 286 تفرض على صاحب العمل إثبات قيامه بالتصريحات المطلوبة (المحددة في المادة 278) أمام وكلاء التفتيش العمالي، أي الجهات المختصة بتطبيق أحكام قانون العمل. بالإضافة إلى ذلك، يُطلب منه تقديم هذا الإثبات كلما تقدم أمام أي إدارة أو مؤسسة عامة للحصول على امتياز أو استثناء قانوني. وبالتالي، فإن القدرة على إثبات هذه التصريحات أمام الجهات المذكورة هي شرط قانوني واضح.","[travailFr, article 286]
+Article 286 (Modifié par la loi n° 96-62 du 15 juillet 1996).- L'employeur est tenu de justifier, à tout moment aux agents chargés de l'application des dispositions du présent chapitre, avoir fait les déclarations énoncées aux articles 278 et 280 du présent code. Il doit également justifier avoir fait ces déclarations chaque fois qu'il se mettra en instance auprès d'une administration ou d'un établissement public, à l'effet d'obtenir le bénéfice d'une disposition légale ou réglementaire.
+
+[travailFr, article 278]
+Article 278 (Modifié par la loi n° 96-62 du 15 juillet 1996).- Tout employeur, dans toutes les activités autres que les professions domestiques, qui occupe ou envisage d'occuper des travailleurs permanents ou non permanents, à plein temps ou à temps partiel et quel que soit leur nombre et le mode de leur recrutement, est tenu de déclarer son établissement auprès de l'inspection du travail territorialement compétente. Cette déclaration adressée sous pli recommandé en trois exemplaires, doit être datée et signée par l'employeur. La déclaration comporte obligatoirement les indications suivantes : a) raison sociale, siège et activité de l'entreprise, adresse des locaux de travail et leurs dépendances, b) nom, âge, nationalité et adresse du directeur de l'établissement ou de son gérant, c) numéro d'affiliation de l'établissement au régime de sécurité sociale, d) nombre des emplois permanents, saisonniers et occasionnels existants à la date de la déclaration et nom, âge, nationalité et qualification professionnelle des travailleurs occupant ces emplois. Pour les travailleurs étrangers doivent être également indiqués le numéro de la carte de séjour, la date de sa délivrance et la durée de sa validité.
+
+[travailFr, article 283]
+Article 283 (Modifié par la loi n° 96-62 du 15 juillet 1996).- L'employeur n'est pas obligé de recruter le travailleur qui lui est présenté par le bureau de placement. Le travailleur n'est pas également obligé d'admettre l'emploi qui lui est présenté par ce bureau.
+
+[travailFr, article 422]
+Article 422.- Si la maison représentée est située dans un pays lié à la Tunisie par une convention, les déclarations de l'établissement employeur doivent être visées par la chambre de commerce dans le ressort de laquelle se trouve la maison représentée.
+
+[travailFr, article 21]
+Article 21. (Modifié par la loi n° 96-62 du 15 juillet 1996).- Tout employeur qui a l'intention de licencier ou de mettre en chômage pour des raisons économiques ou technologiques tout ou partie de son personnel permanent, est tenu de la notifier au préalable à l'inspection du travail territorialement compétente. La notification doit comprendre les indications suivantes : - le nom et l'adresse de l'entreprise, les nom et prénom de son responsable, la date de démarrage de son activité et la nature de celle-ci, - les raisons de la demande de licenciement ou de mise en chômage. La notification doit être également accompagnée par les justifications nécessaires de la demande de licenciement ou de mise en chômage et par la liste de tous les travailleurs de l'entreprise avec indication de leur état civil, de la date de leur recrutement et de leurs qualifications professionnelles ainsi que des travailleurs concernés par le licenciement ou la mise en chômage.
+
+[travailFr, article 27]
+Article 27.- Tout salarié peut, à l'expiration du contrat de travail, exiger de son employeur un certificat contenant exclusivement la date de son entrée, celle de sa sortie, la nature de l'emploi, ou, le cas échéant, des emplois successivement occupés, ainsi que les périodes pendant lesquelles ces emplois ont été tenus. Sont exempts de timbre et d'enregistrement, les certificats de travail délivrés aux salariés encore qu'ils contiennent d'autres mentions que celles prévues à l'alinéa précédent, toutes les fois que ces mentions ne renferment ni obligation, ni quittance, ni aucune convention donnant lieu au droit proportionnel. La formule "" libre de tout engagement "" et toute autre constatant l'expiration du contrat de travail, les qualités professionnelles et les services rendus, sont compris dans l'exemption. Dans les cas prévus à l'article 15, le dernier employeur est tenu de délivrer au salarié qui quitte l'entreprise un certificat de travail unique faisant état de ses services depuis son entrée dans l'établissement. Le salarié ne peut renoncer par avance au droit éventuel de demander des dommages et intérêts en vertu des dispositions du présent article. TITRE II SOUS - ENTREPRISE DE MAIN - D'ŒUVRE","1. L'employeur est tenu de justifier, à tout moment aux agents chargés de l'application des dispositions du présent chapitre, avoir fait les déclarations
+2. chaque fois qu'il se mettra en instance auprès d'une administration ou d'un établissement public",1,0,0,
+r25,fr,"Dans mon procès civil, le juge chargé de préparer le dossier nous a convoqués mais aucune des parties ne s'est présentée. L'affaire est-elle bloquée ?"," - Si le défendeur, bien que personnellement touché, ne se présente pas et aucun avocat ne le représente, l'affaire est jugée comme s'il était présent. [Procedurecivilecom art. 49, Procedurecivilecom art. 205]
+- En l'absence de comparution des parties ou de leurs mandataires régulièrement désignés à la date fixée, le juge peut poursuivre immédiatement les opérations, charger un avocat d'assigner la partie absente par huissier‑notaire et fixer les frais d'instructions et d'expertises. [Procedurecivilecom art. 89]
+
+1 affirmation(s) retirée(s) car non confirmée(s) par les articles cités.","[Procedurecivilecom, article 205]
+Article 205.- Si le demandeur ne se présente pas ou si aucun mandataire ne se présente pour lui, l'affaire est rayée. Si le défendeur, bien que régulièrement touché, ne se présente pas ou si aucun mandataire ne se présente pour lui, l'affaire est jugée comme s'il était présent.
+
+[Procedurecivilecom, article 49]
+Article 49.- Les parties comparaissent en personne ou chargent un avocat de les représenter devant le juge cantonal, au jour fixé par la convocation ou convenu entre elles. Si le demandeur ne comparaît pa s en personne ou si son avocat ne se présente pas, l'affaire est rayée. Si, bien que touché personnellement, ni le défendeur, ni son avocat ne se présente, il est statué comme s'il était présent.
+
+[Procedurecivilecom, article 89]
+Article 89.- A défaut de comparution des parties ou de leur mandataire, régulièrement désigné, à la date fixée ou s'ils ne donnent pas suite à ce qui leur a été demandé, le juge, sans plus attendre, poursuit ses opérations. Il peut charger l'avocat de l'une des parties d'assigner par huissier- notaire la partie intéressée. Il fixe les frais devant être avancés pour l'accomplissement des instructions et expertises ordonnées par lui ou par le tribunal.","1. A défaut de comparution des parties ou de leur mandataire
+2. le juge, sans plus attendre, poursuit ses opérations
+3. Il peut charger l'avocat de l'une des parties d'assigner par huissier- notaire la partie intéressée",1,0,0,
+r26,fr,"J'ai demandé à ma banque de virer une somme à un fournisseur, et j'apprends qu'il vient d'être déclaré en faillite. Puis-je encore m'opposer à ce virement ?"," - L'ordre de virement peut être révoqué jusqu'au moment où la banque débite le compte du donneur d'ordre, moment où le bénéficiaire devient propriétaire de la somme transférée. [CommerceFr art. 681]
+- Lorsque l'ordre de virement a été émis dans les conditions de l'article 682 alinéa 1, la révocation est définitivement renoncée, sous réserve de ce qui est dit à l'article 687. [CommerceFr art. 681]
+
+Remarque: Les articles présentés ne prévoient pas de règle permettant d'opposer le virement en raison de la faillite du bénéficiaire.
+
+1 affirmation(s) retirée(s) car non confirmée(s) par les articles cités.","[CommerceFr, article 681]
+Article 681 Le bénéficiaire d'un virement devient propriétaire de la somme à transférer au moment où la banque en débite le compte du donneur d'ordre. L'ordre de virement peut être révoqué jusqu'à ce moment. Toutefois, l'émission d'un ordre de virement, dans les conditions prévues à l'article 682, alinéa 1er, ci-après, emporte renonciation définitive à la faculté de révocation, sous réserve de ce qui est dit à l'article 687 ci-dessous.","1. Le donneur d'ordre peut valablement s'opposer à l'exécution de l'ordre de virement
+2. même constaté par un titre délivré au bénéficiaire
+3. à compter du jour du prononcé du jugement déclarant la faillite de celui-ci",0,1,0,
+r27,fr,"Dans mon procès civil, le juge chargé de préparer le dossier nous a convoqués mais aucune des parties ne s'est présentée. L'affaire est-elle bloquée ?","**Réponse directe :**  
+Non, l’affaire n’est pas bloquée ; le juge doit poursuivre les opérations même si aucune des parties ne se présente.
+
+**Articles applicables :**  
+
+- **Article 89** – *Procedurecivilecom.pdf* : « A défaut de comparution des parties ou de leur mandataire, régulièrement désigné, à la date fixée ou s’ils ne donnent pas suite à ce qui leur a été demandé, le juge, sans plus attendre, poursuit ses opérations. Il peut charger l’avocat de l’une des parties d’assigner par huissier‑notaire la partie intéressée… »  
+
+- **Article 49** – *Procedurecivilecom.pdf* : prévoit la radiation de l’affaire si le demandeur ne comparaît pas en personne ou si son avocat ne se présente pas. (Applicable uniquement à la comparution en audience, pas à la phase de préparation du dossier.)  
+
+- **Article 205** – *Procedurecivilecom.pdf* : même principe que l’article 49 pour le demandeur, mais indique que le défaut de comparution du défendeur entraîne un jugement comme s’il était présent. (Encore une fois, concerne l’audience.)
+
+**Source(s) :**  
+- *Procedurecivilecom.pdf* (articles 49, 89, 205)  
+
+**Explication :**  
+L’article 89 précise que, lorsqu’aucune partie ne se présente à la date de convocation prévue pour la préparation du dossier, le juge ne suspend pas la procédure ; il continue immédiatement les démarches, pouvant même ordonner, via l’avocat d’une partie, la signification par huissier‑notaire de la partie absente et fixer les frais afférents. Les articles 49 et 205 concernent la comparution lors de l’audience et prévoient la radiation ou le jugement par défaut, mais ils ne s’appliquent pas à la phase de constitution du dossier décrite dans votre situation. Ainsi, la procédure civile n’est pas bloquée ; elle se poursuit conformément à l’article 89.","[EnfantFr, article 89]
+Article 89.- Le juge des enfants, une fois les diligences prévues à l'article 87 accomplies, doit déposer le dossier au greffe du tribunal et le mettre à la disposition de toutes les parties concernées y compris le parquet et la victime.
+
+[Procedurecivilecom, article 49]
+Article 49.- Les parties comparaissent en personne ou chargent un avocat de les représenter devant le juge cantonal, au jour fixé par la convocation ou convenu entre elles. Si le demandeur ne comparaît pa s en personne ou si son avocat ne se présente pas, l'affaire est rayée. Si, bien que touché personnellement, ni le défendeur, ni son avocat ne se présente, il est statué comme s'il était présent.
+
+[Procedurecivilecom, article 133]
+Article 133.- Dès l'arrivée du dossier au greffe, le président désigne le conseiller ou le juge qui aura à faire un rapport, le cas échéant. L'affaire est ensuite fixée à l'audience que le président désignera et à laquelle le greffier convoque l'avocat de l'appelant, en la forme prévue à l'article 44.
+
+[Procedurecivilecom, article 241]
+Article 241.- L'instance est interrompue et le dossier est provisoirement classé au greffe à la suite du décès de l'une des parties ou la perte de sa capacité d'ester en justice, du décès du représentant légal ou la perte par celui-ci de cette qualité, à moins que l'affaire ne soit déjà en état, auquel cas le tribunal peut statuer. L'affaire est réputée "" en état "" (*) quand toutes les parties ont déjà conclu et "" qu'elle ""(**) a été fixée à l'audience de plaidoirie.
+
+[Procedurecivilecom, article 205]
+Article 205.- Si le demandeur ne se présente pas ou si aucun mandataire ne se présente pour lui, l'affaire est rayée. Si le défendeur, bien que régulièrement touché, ne se présente pas ou si aucun mandataire ne se présente pour lui, l'affaire est jugée comme s'il était présent.
+
+[Procedurecivilecom, article 89]
+Article 89.- A défaut de comparution des parties ou de leur mandataire, régulièrement désigné, à la date fixée ou s'ils ne donnent pas suite à ce qui leur a été demandé, le juge, sans plus attendre, poursuit ses opérations. Il peut charger l'avocat de l'une des parties d'assigner par huissier- notaire la partie intéressée. Il fixe les frais devant être avancés pour l'accomplissement des instructions et expertises ordonnées par lui ou par le tribunal.","1. A défaut de comparution des parties ou de leur mandataire
+2. le juge, sans plus attendre, poursuit ses opérations
+3. Il peut charger l'avocat de l'une des parties d'assigner par huissier- notaire la partie intéressée",1,0,1,
+r28,fr,"J'ai payé un effet de commerce à la place d'un des signataires pour lui rendre service. Quels recours ai-je ensuite, et puis-je le remettre en circulation en le transmettant à quelqu'un ?","**Réponse directe :**  
+Vous pouvez demander le remboursement du montant que vous avez payé au signataire pour qui vous avez réglé l’effet, mais l’effet déjà payé ne peut plus être remis en circulation ; il est considéré comme libératoire.
+
+**Articles applicables :**  
+
+- **Article 396 – Code de commerce** : « Le paiement fait sur un des exemplaires est libératoire, alors même qu’il n’est pas stipulé que ce paiement annule l’effet des autres exemplaires. L’endosseur qui a transmis les exemplaires à différentes personnes, ainsi que les endosseurs subséquents, sont tenus à raison de tous les exemplaires portant leurs signatures qui n’ont pas été restitués. »
+
+**Source(s) :**  
+CommerceFr.pdf — Article 396  
+
+**Explication :**  
+L’article 396 précise que le paiement d’un exemplaire d’un effet de commerce libère le payeur ; le fait de payer une copie suffit à éteindre l’obligation relative à cet exemplaire, même si aucune clause ne prévoit l’annulation des autres copies. En contrepartie, l’endosseur (ou le signataire) qui a transmis les exemplaires reste responsable des copies qui n’ont pas été restituées. Ainsi, après avoir réglé l’effet à la place du signataire, vous avez le droit d’exiger de ce dernier le remboursement du montant avancé, puisqu’il demeure débiteur envers vous. En revanche, l’effet déjà payé étant libératoire, il ne peut plus être remis en circulation ; il ne constitue plus un titre à transférer, car son obligation a été satisfaite. Vous ne pouvez donc pas le transmettre à un tiers comme moyen de paiement.","[CommerceFr, article 396]
+Article 396 Le paiement fait sur un des exemplaires est libératoire, alors même qu'il n'est pas stipulé que ce paiement annule l'effet des autres exemplaires. L'endosseur qui a transmis les exemplaires à différentes personnes, ainsi que les endosseurs subséquents, sont tenus à raison de tous les exemplaires portant leurs signatures qui n'ont pas été restitués. Section VII. - Des altérations
+
+[COC, article 1147]
+Article 1147.- Le mandataire a le droit de retenir les effets mobiliers ou marchandises du mandant à lui expédiés ou remis pour se rembourser de ce qui est dû par le mandant, d'après l'article 1142. Section II Des effets du mandat à l'égard des tiers
+
+[CommerceFr, article 323]
+Article 323 L'acceptation par intervention peut avoir lieu dans tous les cas où des recours sont ouverts, avant l'échéance, au porteur d'une lettre de change acceptable. Lorsqu'il a été indiqué sur la lettre de change une personne pour l'accepter ou la payer au besoin, au lieu du payement, le porteur ne peut exercer, avant l'échéance, ses droits de recours contre celui qui a apposé l'indication et contre les signataires subséquents, à moins qu'il n'ait présenté la lettre de change à la personne désignée et que, celle-ci ayant refusé l'acceptation, ce refus n'ait été constaté par un protêt. Dans les autres cas d'intervention, le porteur peut refuser l'acceptation par intervention. Toutefois, s'il l'admet, il perd les recours qui lui appartiennent avant l'échéance contre celui pour qui l'acceptation a été donnée et contre les signataires subséquents. L'acceptation par intervention est mentionnée sur la lettre de change; elle est signée par l'intervenant. Elle indique pour le compte de qui elle a lieu; à défaut de cette indication, l'acceptation est réputée donnée pour le tireur. L'accepteur par intervention est obligé envers le porteur et envers les endosseurs postérieurs à celui pour le compte duquel il est intervenu, de la même manière que celui-ci. Malgré l'acceptation par intervention, celui pour lequel elle a été faite et ses garants peuvent exiger du porteur, contre remboursement de la somme indiquée à l'article 311, la remise de la lettre de change, du protêt et d'un compte acquitté, s'il y a lieu. 2. - Payement par intervention :
+
+[COC, article 664]
+Article 664.- Lorsque la chose vendue et délivrée est atteinte d'un vice rédhibitoire et qu'il survient un vice nouveau non imputable à l'acheteur, celui-ci a le choix soit de garder la chose en exerçant son recours tel que de droit du chef de l'ancien vice, soit de la rendre au vendeur en subissant sur le prix qu'il a payé une diminution proportionnelle au vice nouveau qui a surgi depuis la vente. Cependant, le vendeur peut offrir de reprendre la chose en l'état où elle se trouve, en renonçant à toute compensation pour le vice qui a surgi ; dans ce cas, l'acheteur aura le choix soit de retenir la chose dans l'état où elle se trouve, en renonçant à un recours, soit de la restituer, sans payer d'indemnité.
+
+[COC, article 1012]
+Article 1012.- Le dépositaire doit restituer le dépôt au déposant, ou à celui au nom duquel le dépôt a été fait, ou à la personne indiquée pour le recevoir. Il ne peut pas exiger que le déposant justifie qu'il était propriétaire de la chose déposée. La personne indiquée pour recevoir le dépôt a une action directe contre le dépositaire pour le contraindre à exécuter son mandat.
+
+[CommerceFr, article 273]
+Article 273 Les lettres de change souscrites par des mineurs non commerçants sont nulles à leur égard, sauf les droits respectifs des parties, conformément à l'article 13 du Code des obligations et des contrats. Si la lettre de change porte des signatures de personnes incapables de s'obliger par lettre de change, des signatures fausses ou des signatures de personnes imaginaires ou des signatures qui, pour toute autre raison, ne sauraient obliger les personnes qui ont signé la lettre de change, ou au nom desquelles elle a été signée, les obligations des autres signataires n'en sont pas moins valables. Quiconque appose sa signature sur une lettre de change, comme représentant d'une personne pour laquelle il n'avait pas le pouvoir d'agir, est obligé à lui-même en vertu de la lettre et, s'il a payé, a les mêmes droits qu'aurait eus le prétendu représenté. Il en est de même du représentant qui a dépassé ses pouvoirs.","1. acquiert les droits résultant de la lettre de change contre celui pour lequel il a payé
+2. il ne peut endosser la lettre de change à nouveau
+3. Les endosseurs postérieurs au signataire, pour qui le payement a eu lieu, sont libérés",0,1,0,
+r29,fr,Dans quels cas la Tunisie refuse-t-elle de livrer à un autre pays une personne qu'il réclame pour la juger ?,"**Réponse directe :**  
+La Tunisie refuse d’extrader une personne lorsque :  
+
+1. c’est un citoyen tunisien au moment de la décision ;  
+2. les faits reprochés ont été commis sur le territoire tunisien ;  
+3. les mêmes faits ont déjà fait l’objet d’une poursuite et d’un jugement définitif en Tunisie ;  
+4. l’action publique ou la peine est prescrite selon le droit tunisien ou celui de l’État requérant.  
+
+---
+
+**Articles applicables :**  
+
+- **Article 312**, *Code de procédure pénale* (ProcedurepenaleFr.pdf) – énumère les quatre cas où l’extradition n’est pas accordée.  
+- **Article 310**, *Code de procédure pénale* (ProcedurepenaleFr.pdf) – précise que l’extradition n’est accordée que si l’infraction répond à certaines conditions (contexte de refus).  
+
+---
+
+**Source(s) :**  
+- *ProcedurepenaleFr.pdf* – Articles 310 et 312.  
+
+---
+
+**Explication :**  
+L’article 312 stipule explicitement les motifs de refus d’extradition. Le premier motif protège les ressortissants tunisiens (« lorsque l’individu réclamé est un citoyen tunisien »). Le deuxième exclut les faits commis sur le sol tunisien, car la juridiction tunisienne a compétence territoriale. Le troisième empêche la double poursuite en interdisant l’extradition si les faits ont déjà été jugés définitivement en Tunisie. Enfin, le quatrième motif repose sur la prescription, que ce soit selon la législation tunisienne ou celle de l’État requérant, rendant la poursuite impossible. Ainsi, dès que l’une de ces conditions est remplie, la Tunisie refuse de livrer la personne demandée.","[ProcedurepenaleFr, article 310]
+Article 310.- Le gouvernement peut livrer, sur leur demande, aux gouvernements des pays étrangers, toute personne non tunisienne qui, étant l'objet d'une poursuite intentée au nom de l'Etat requérant ou d'une condamnation prononcée par les juridictions de cet Etat, est trouvée sur le territoire de la République Tunisienne. Toutefois, l'extradition n'est accordée que si l'infraction motivant la demande a été commise : - soit sur le territoire de l'Etat requérant par un sujet de cet Etat ou par un étranger, - soit en dehors de son territoire par un sujet de cet Etat, - soit en dehors de son territoire par un étranger à cet Etat, quand l'infraction est au nombre de celles dont la loi tunisienne autorise la poursuite en Tunisie, alors même qu'elles ont été commises par un étranger à l'étranger.
+
+[ProcedurepenaleFr, article 312]
+Article 312.- L'extradition n'est pas accordée : 1) lorsque l'individu réclamé est un citoyen tunisien, cette qualité étant appréciée au moment de la décision sur l'extradition; 2) lorsque les crimes ou délits ont été commis en Tunisie; 3) lorsque les crimes ou délits, quoique commis hors de Tunisie, y ont été poursuivis et jugés définitivement; 4) lorsque l'action publique ou la peine sont prescrites aux termes de la loi tunisienne ou de la loi de l'Etat requérant.
+
+[ProcedurepenaleFr, article 334]
+Article 334.- Si dans une cause pénale, la comparution personnelle d'un témoin résidant en Tunisie est jugée nécessaire par un Gouvernement étranger, le Gouvernement Tunisien, saisi de la citation par la voie diplomatique, l'engage à se rendre à l'invitation qui lui est adressée. Néanmoins, la citation n'est reçue et signifiée qu'à la condition que le témoin ne puisse être poursuivi ou détenu pour des faits ou condamnations antérieures à sa comparution.
+
+[ArbitrageFr, article 81]
+Article 81 La reconnaissance ou l'exécution d'une sentence arbitrale, quel que soit le pays où elle a été rendue, ne peut être refusée que dans les deux cas suivants : I- Sur la demande de la partie contre laquelle elle est invoquée, si cette dernière présente à la cour d'appel de Tunis saisie de la demande de reconnaissance ou d'exécution, une preuve établissant l'un des cas ci-après : a) qu'une partie à la convention d'arbitrage visée à l'article 52 du présent code était frappée d'une incapacité, ou que cette convention n'est pas valable au regard de la loi à laquelle les parties l'ont soumise ou, à défaut d'une telle indication au regard des règles du droit international privé, b) que la partie contre laquelle la sentence est invoquée, n'a pas été dûment informée de la désignation de l'arbitre ou de la procédure arbitrale, ou qu'il lui a été impossible, pour une autre raison, de faire valoir ses droits, c) que la sentence arbitrale porte sur un différend non visé par le compromis ou non compris dans la clause compromissoire ou qu'elle a statué sur des questions n'entrant pas dans le cadre du compromis ou de la clause compromissoire. Toutefois, si les dispositions de la sentence qui ont trait à des questions soumises à l'arbitrage peuvent être dissociées de celles qui ont trait à des questions non soumises à l'arbitrage, seule la partie de la sentence statuant sur les questions soumises à l'arbitrage, pourra être reconnue et exécutée, d) que la constitution du tribunal arbitral ou (*) la procédure arbitrale suivie n'était pas conforme aux stipulations d'une convention d'arbitrage en général, à un règlement d'arbitrage choisi, à la loi d'un pays retenue comme applicable ou aux règles édictées par les dispositions du présent chapitre relatives à la constitution du tribunal arbitral, **(( ) Le texte paru au JORT stipule que : ""… ou dans la procedure…"" e) que la sentence arbitrale a été annulée ou suspendue par une juridiction du pays dans lequel, ou en vertu de la loi duquel, elle a été rendue. II- Si la cour estime que la reconnaissance ou l'exécution de la sentence arbitrale est contraire à l'ordre public au sens du droit international privé.
+
+[ProcedurepenaleFr, article 315]
+Article 315.- Dans le cas où un étranger est poursuivi ou a été condamné en Tunisie, et où son extradition est demandée au gouvernement Tunisien à raison d'une infraction différente, la remise n'est effectuée qu'après que la poursuite est terminée, et en cas de condamnation, après que la peine a été exécutée. Toutefois, cette disposition ne fait pas obstacle à ce que l'étranger puisse être envoyé temporairement pour comparaître devant les juridictions de l'Etat requérant, sous la condition expresse qu'il sera renvoyé dès que la justice étrangère aura statué. Section II. - De la procédure de l'extradition
+
+[ProcedurepenaleFr, article 329]
+Article 329.- L'extradé ne peut être poursuivi ou condamné pour une infraction antérieure à la remise, autre que celle ayant motivé l'extradition. Il en est autrement, en cas de consentement spécial donné par le gouvernement Tunisien. Dans ce cas, l'avis de la chambre d'accusation peut être formulé sur la seule production des pièces transmises à l'appui de la nouvelle demande. Le mémoire en défense de l'individu peut être développé par un avocat choisi par lui.","1. lorsque l'individu réclamé est un citoyen tunisien
+2. lorsque les crimes ou délits ont été commis en Tunisie
+3. lorsque l'action publique ou la peine sont prescrites
+4. lorsque le crime ou le délit a un caractère politique",0,0,0,
+r30,fr,"Quel est le rôle du Président de la République à l'égard de la Constitution, des traités et de la sécurité du pays ?"," - Le Président de la République est le garant du respect de la Constitution. [tun_RecAcFreeLi art. 91]
+- Il préside le Conseil de sécurité national. [tun_RecAcFreeLi art. 91]
+
+2 affirmation(s) retirée(s) car non confirmée(s) par les articles cités.","[tun_RecAcFreeLi, article 91]
+Art. 91 - Le Président de la République est le garant de l'indépendance nationale, de l'intégrité du territoire, du respect de la Constitution et de la loi ainsi que de l'exécution des traités. Il veille au fonctionnement régulier des pouvoirs publics et assure la continuité de l'Etat. Le Président de la République préside le Conseil de sécurité national.","1. Le Président de la République est le garant de l'indépendance nationale, de l'intégrité du territoire
+2. du respect de la Constitution et de la loi ainsi que de l'exécution des traités
+3. Le Président de la République préside le Conseil de sécurité national",0,0,0,

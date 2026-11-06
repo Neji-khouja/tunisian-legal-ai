@@ -1,0 +1,17 @@
+rows in the sheet: 30; left out as human_cannot_verify: 6; rows used: 24
+
+correct: n=24  agreement 87.5%  95% CI [75.0%, 100.0%]  Cohen's kappa 0.753
+  confusion: judge 1 / human 1: 11; judge 1 / human 0: 3; judge 0 / human 1: 0; judge 0 / human 0: 10
+  pre-registered threshold >= 80%: MET (point estimate 87.5%; 95% CI [75.0%, 100.0%])
+
+hallucination (answer): n=24  agreement 83.3%  95% CI [66.7%, 95.8%]  Cohen's kappa 0.628
+  confusion: judge 1 / human 1: 6; judge 1 / human 0: 3; judge 0 / human 1: 1; judge 0 / human 0: 14
+  pre-registered threshold >= 80%: MET (point estimate 83.3%; 95% CI [66.7%, 95.8%])
+
+hallucination (LLM judge only): n=24  agreement 87.5%  95% CI [75.0%, 100.0%]  Cohen's kappa 0.710
+  confusion: judge 1 / human 1: 6; judge 1 / human 0: 2; judge 0 / human 1: 1; judge 0 / human 0: 15
+  pre-registered threshold >= 80%: MET (point estimate 87.5%; 95% CI [75.0%, 100.0%])
+
+automatic checks (not part of the LLM judge), against human_hallucination:
+  numeric check failed: 2 of 24 rows where the check applies; of those 2, the human marked hallucination on 1
+  cited article not in the evidence: 0 of 8 rows where the check applies; of those 0, the human marked hallucination on 0
