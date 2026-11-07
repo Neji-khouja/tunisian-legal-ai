@@ -1,0 +1,633 @@
+{
+ "analyze_prompt_sha1": "0bbb0226bdc9",
+ "repeat": 2,
+ "min_gap": 3.0,
+ "items": [
+  {
+   "id": "g01",
+   "question": "Quelle majorité est nécessaire pour décider ?",
+   "language": "fr",
+   "gold": "ambiguous",
+   "repeats": [
+    {
+     "intent": "ambiguous",
+     "language": "fr",
+     "target_codes": [
+      "constitution",
+      "societes",
+      "travail",
+      "procedure_civile",
+      "commerce"
+     ],
+     "clarification_question": "De quel type de décision s'agit‑il (assemblée générale d’une société, vote parlementaire, décision judiciaire, etc.) ?"
+    },
+    {
+     "intent": "ambiguous",
+     "language": "fr",
+     "target_codes": [
+      "constitution",
+      "societes",
+      "travail",
+      "procedure_civile",
+      "commerce"
+     ],
+     "clarification_question": "De quel type de décision s'agit‑il (assemblée générale d’une société, vote parlementaire, décision judiciaire, etc.) ?"
+    }
+   ]
+  },
+  {
+   "id": "g02",
+   "question": "Quel tribunal est compétent ?",
+   "language": "fr",
+   "gold": "ambiguous",
+   "repeats": [
+    {
+     "intent": "ambiguous",
+     "language": "fr",
+     "target_codes": [
+      "procedure_civile",
+      "procedure_penale",
+      "travail",
+      "commerce",
+      "societes",
+      "statut_personnel"
+     ],
+     "clarification_question": "De quel type de litige s'agit‑il (civil, pénal, commercial, travail, etc.) ?"
+    },
+    {
+     "intent": "ambiguous",
+     "language": "fr",
+     "target_codes": [
+      "arbitrage",
+      "obligations_contrats",
+      "commerce",
+      "droit_international_prive",
+      "droits_reels",
+      "protection_enfant",
+      "nationalite",
+      "penal",
+      "procedure_civile",
+      "procedure_penale",
+      "societes",
+      "statut_personnel",
+      "travail",
+      "constitution"
+     ],
+     "clarification_question": "De quel type de litige s'agit-il (civil, pénal, commercial, travail, etc.) ?"
+    }
+   ]
+  },
+  {
+   "id": "g03",
+   "question": "J'ai arrêté mon activité : pendant combien de temps dois-je encore conserver les documents ?",
+   "language": "fr",
+   "gold": "ambiguous",
+   "repeats": [
+    {
+     "intent": "clear",
+     "language": "fr",
+     "target_codes": [
+      "commerce",
+      "obligations_contrats"
+     ],
+     "clarification_question": null
+    },
+    {
+     "intent": "clear",
+     "language": "fr",
+     "target_codes": [
+      "obligations_contrats",
+      "commerce"
+     ],
+     "clarification_question": null
+    }
+   ]
+  },
+  {
+   "id": "g04",
+   "question": "Qui doit payer les frais ?",
+   "language": "fr",
+   "gold": "ambiguous",
+   "repeats": [
+    {
+     "intent": "ambiguous",
+     "language": "fr",
+     "target_codes": [
+      "arbitrage",
+      "obligations_contrats",
+      "commerce",
+      "droit_international_prive",
+      "droits_reels",
+      "protection_enfant",
+      "nationalite",
+      "penal",
+      "procedure_civile",
+      "procedure_penale",
+      "societes",
+      "statut_personnel",
+      "travail",
+      "constitution"
+     ],
+     "clarification_question": "Dans quel contexte ou quelle procédure s'agit‑il (par exemple, frais de justice, frais contractuels, etc.) ?"
+    },
+    {
+     "intent": "ambiguous",
+     "language": "fr",
+     "target_codes": [
+      "arbitrage",
+      "obligations_contrats",
+      "commerce",
+      "droit_international_prive",
+      "droits_reels",
+      "protection_enfant",
+      "nationalite",
+      "penal",
+      "procedure_civile",
+      "procedure_penale",
+      "societes",
+      "statut_personnel",
+      "travail",
+      "constitution"
+     ],
+     "clarification_question": "De quels frais s'agit‑il (frais de justice, frais de contrat, etc.) ?"
+    }
+   ]
+  },
+  {
+   "id": "g05",
+   "question": "I want to get my name taken off the register; what is the procedure?",
+   "language": "en",
+   "gold": "ambiguous",
+   "repeats": [
+    {
+     "intent": "ambiguous",
+     "language": "en",
+     "target_codes": [
+      "droits_reels",
+      "societes",
+      "procedure_civile"
+     ],
+     "clarification_question": "Which register do you want to be removed from?"
+    },
+    {
+     "intent": "ambiguous",
+     "language": "en",
+     "target_codes": [
+      "droits_reels",
+      "societes",
+      "procedure_civile"
+     ],
+     "clarification_question": "Which register do you want to be removed from?"
+    }
+   ]
+  },
+  {
+   "id": "g06",
+   "question": "Is it a crime if I don't pay?",
+   "language": "en",
+   "gold": "ambiguous",
+   "repeats": [
+    {
+     "intent": "ambiguous",
+     "language": "en",
+     "target_codes": [
+      "obligations_contrats",
+      "penal",
+      "commerce"
+     ],
+     "clarification_question": "What kind of payment are you referring to (e.g., tax, rent, loan, fine)?"
+    },
+    {
+     "intent": "ambiguous",
+     "language": "en",
+     "target_codes": [
+      "obligations_contrats",
+      "penal",
+      "procedure_civile",
+      "commerce"
+     ],
+     "clarification_question": "What type of payment are you referring to (e.g., tax, rent, debt, contract)?"
+    }
+   ]
+  },
+  {
+   "id": "g07",
+   "question": "How much compensation can I get?",
+   "language": "en",
+   "gold": "ambiguous",
+   "repeats": [
+    {
+     "intent": "ambiguous",
+     "language": "en",
+     "target_codes": [
+      "obligations_contrats",
+      "travail",
+      "penal",
+      "procedure_civile"
+     ],
+     "clarification_question": "Could you specify the type of compensation you are referring to (e.g., employment termination, contract breach, personal injury, etc.)?"
+    },
+    {
+     "intent": "ambiguous",
+     "language": "en",
+     "target_codes": [
+      "obligations_contrats",
+      "travail",
+      "penal",
+      "procedure_civile"
+     ],
+     "clarification_question": "Could you specify the type of compensation you are referring to (e.g., employment termination, contract breach, personal injury, etc.)?"
+    }
+   ]
+  },
+  {
+   "id": "g08",
+   "question": "ما هي مسؤولية الشريك؟",
+   "language": "ar",
+   "gold": "ambiguous",
+   "repeats": [
+    {
+     "intent": "clear",
+     "language": "ar",
+     "target_codes": [
+      "societes"
+     ],
+     "clarification_question": null
+    },
+    {
+     "intent": "clear",
+     "language": "ar",
+     "target_codes": [
+      "societes"
+     ],
+     "clarification_question": null
+    }
+   ]
+  },
+  {
+   "id": "g09",
+   "question": "كم يجب أن يكون عمري؟",
+   "language": "ar",
+   "gold": "ambiguous",
+   "repeats": [
+    {
+     "intent": "ambiguous",
+     "language": "ar",
+     "target_codes": [
+      "statut_personnel",
+      "travail",
+      "nationalite",
+      "penal",
+      "constitution"
+     ],
+     "clarification_question": "لأي غرض تريد معرفة الحد الأدنى للسن؟"
+    },
+    {
+     "intent": "ambiguous",
+     "language": "ar",
+     "target_codes": [
+      "statut_personnel",
+      "travail",
+      "nationalite",
+      "penal",
+      "constitution"
+     ],
+     "clarification_question": "لأي غرض تريد معرفة الحد الأدنى للسن؟"
+    }
+   ]
+  },
+  {
+   "id": "g10",
+   "question": "هل يمكن إلغاء الحكم؟",
+   "language": "ar",
+   "gold": "ambiguous",
+   "repeats": [
+    {
+     "intent": "ambiguous",
+     "language": "ar",
+     "target_codes": [
+      "procedure_civile",
+      "procedure_penale"
+     ],
+     "clarification_question": "ما هو نوع الحكم الذي تريد إلغاءه؟ (جنائي أم مدني؟)"
+    },
+    {
+     "intent": "ambiguous",
+     "language": "ar",
+     "target_codes": [
+      "procedure_civile",
+      "procedure_penale"
+     ],
+     "clarification_question": "ما هو نوع الحكم الذي تريد إلغاءه؟ (جنائي أم مدني؟)"
+    }
+   ]
+  },
+  {
+   "id": "g11",
+   "question": "Quelle est la peine pour l'émission d'un chèque sans provision ?",
+   "language": "fr",
+   "gold": "clear",
+   "repeats": [
+    {
+     "intent": "clear",
+     "language": "fr",
+     "target_codes": [
+      "penal",
+      "commerce"
+     ],
+     "clarification_question": null
+    },
+    {
+     "intent": "clear",
+     "language": "fr",
+     "target_codes": [
+      "penal"
+     ],
+     "clarification_question": null
+    }
+   ]
+  },
+  {
+   "id": "g12",
+   "question": "Quelle est la peine pour outrage à un fonctionnaire public ?",
+   "language": "fr",
+   "gold": "clear",
+   "repeats": [
+    {
+     "intent": "clear",
+     "language": "fr",
+     "target_codes": [
+      "penal"
+     ],
+     "clarification_question": null
+    },
+    {
+     "intent": "clear",
+     "language": "fr",
+     "target_codes": [
+      "penal"
+     ],
+     "clarification_question": null
+    }
+   ]
+  },
+  {
+   "id": "g13",
+   "question": "What is the penalty for counterfeiting money?",
+   "language": "en",
+   "gold": "clear",
+   "repeats": [
+    {
+     "intent": "clear",
+     "language": "en",
+     "target_codes": [
+      "penal"
+     ],
+     "clarification_question": null
+    },
+    {
+     "intent": "clear",
+     "language": "en",
+     "target_codes": [
+      "penal"
+     ],
+     "clarification_question": null
+    }
+   ]
+  },
+  {
+   "id": "g14",
+   "question": "Is begging in public punishable under Tunisian law?",
+   "language": "en",
+   "gold": "clear",
+   "repeats": [
+    {
+     "intent": "clear",
+     "language": "en",
+     "target_codes": [
+      "penal"
+     ],
+     "clarification_question": null
+    },
+    {
+     "intent": "clear",
+     "language": "en",
+     "target_codes": [
+      "penal"
+     ],
+     "clarification_question": null
+    }
+   ]
+  },
+  {
+   "id": "g15",
+   "question": "ما هي عقوبة شهادة الزور؟",
+   "language": "ar",
+   "gold": "clear",
+   "repeats": [
+    {
+     "intent": "clear",
+     "language": "ar",
+     "target_codes": [
+      "penal"
+     ],
+     "clarification_question": null
+    },
+    {
+     "intent": "clear",
+     "language": "ar",
+     "target_codes": [
+      "penal"
+     ],
+     "clarification_question": null
+    }
+   ]
+  },
+  {
+   "id": "g16",
+   "question": "ما هو السن الأدنى لتشغيل الأطفال؟",
+   "language": "ar",
+   "gold": "clear",
+   "repeats": [
+    {
+     "intent": "clear",
+     "language": "ar",
+     "target_codes": [
+      "travail",
+      "protection_enfant"
+     ],
+     "clarification_question": null
+    },
+    {
+     "intent": "clear",
+     "language": "ar",
+     "target_codes": [
+      "travail",
+      "protection_enfant"
+     ],
+     "clarification_question": null
+    }
+   ]
+  },
+  {
+   "id": "g17",
+   "question": "Quel est le taux de TVA appliqué aux restaurants ?",
+   "language": "fr",
+   "gold": "out_of_scope",
+   "repeats": [
+    {
+     "intent": "out_of_scope",
+     "language": "fr",
+     "target_codes": [],
+     "clarification_question": null
+    },
+    {
+     "intent": "out_of_scope",
+     "language": "fr",
+     "target_codes": [],
+     "clarification_question": null
+    }
+   ]
+  },
+  {
+   "id": "g18",
+   "question": "What is the speed limit on Tunisian motorways?",
+   "language": "en",
+   "gold": "out_of_scope",
+   "repeats": [
+    {
+     "intent": "out_of_scope",
+     "language": "en",
+     "target_codes": [],
+     "clarification_question": null
+    },
+    {
+     "intent": "clear",
+     "language": "en",
+     "target_codes": [
+      "penal"
+     ],
+     "clarification_question": null
+    }
+   ]
+  },
+  {
+   "id": "g19",
+   "question": "كيف أحصل على تأشيرة شنغن؟",
+   "language": "ar",
+   "gold": "out_of_scope",
+   "repeats": [
+    {
+     "intent": "out_of_scope",
+     "language": "ar",
+     "target_codes": [],
+     "clarification_question": null
+    },
+    {
+     "intent": "out_of_scope",
+     "language": "ar",
+     "target_codes": [],
+     "clarification_question": null
+    }
+   ]
+  },
+  {
+   "id": "g20",
+   "question": "ما هي أفضل طريقة لتعلم البرمجة؟",
+   "language": "ar",
+   "gold": "out_of_scope",
+   "repeats": [
+    {
+     "intent": "out_of_scope",
+     "language": "ar",
+     "target_codes": [],
+     "clarification_question": null
+    },
+    {
+     "intent": "out_of_scope",
+     "language": "ar",
+     "target_codes": [],
+     "clarification_question": null
+    }
+   ]
+  }
+ ],
+ "per_repeat": [
+  {
+   "confusion": {
+    "ambiguous": {
+     "ambiguous": 8,
+     "clear": 2,
+     "out_of_scope": 0,
+     "error": 0
+    },
+    "clear": {
+     "ambiguous": 0,
+     "clear": 6,
+     "out_of_scope": 0,
+     "error": 0
+    },
+    "out_of_scope": {
+     "ambiguous": 0,
+     "clear": 0,
+     "out_of_scope": 4,
+     "error": 0
+    }
+   },
+   "ambiguity_recall": 8,
+   "n_ambiguous": 10,
+   "over_clarification": 0,
+   "n_clear": 6,
+   "refused": 4,
+   "n_out_of_scope": 4,
+   "language_errors": [],
+   "checks": {
+    "ambiguity recall >= 7/10": true,
+    "at most 1 clear flagged ambiguous": true,
+    "all out_of_scope refused": true,
+    "language correct on all": true
+   },
+   "pass": true
+  },
+  {
+   "confusion": {
+    "ambiguous": {
+     "ambiguous": 8,
+     "clear": 2,
+     "out_of_scope": 0,
+     "error": 0
+    },
+    "clear": {
+     "ambiguous": 0,
+     "clear": 6,
+     "out_of_scope": 0,
+     "error": 0
+    },
+    "out_of_scope": {
+     "ambiguous": 0,
+     "clear": 1,
+     "out_of_scope": 3,
+     "error": 0
+    }
+   },
+   "ambiguity_recall": 8,
+   "n_ambiguous": 10,
+   "over_clarification": 0,
+   "n_clear": 6,
+   "refused": 3,
+   "n_out_of_scope": 4,
+   "language_errors": [],
+   "checks": {
+    "ambiguity recall >= 7/10": true,
+    "at most 1 clear flagged ambiguous": true,
+    "all out_of_scope refused": false,
+    "language correct on all": true
+   },
+   "pass": false
+  }
+ ],
+ "disagreements": [
+  "g18"
+ ],
+ "overall_pass": false
+}

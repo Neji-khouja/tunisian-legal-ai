@@ -1,0 +1,23 @@
+RATER: AI, NOT A HUMAN AUDIT
+rows in the sheet: 30; left out as ai_cannot_verify: 0; rows used: 30
+
+correct: n=30  agreement 86.7%  95% CI [73.3%, 96.7%]  Cohen's kappa 0.738
+  confusion: judge 1 / ai 1: 13; judge 1 / ai 0: 4; judge 0 / ai 1: 0; judge 0 / ai 0: 13
+  pre-registered threshold: not assessed, it applies to a human audit
+
+hallucination (answer): n=30  agreement 76.7%  95% CI [60.0%, 90.0%]  Cohen's kappa 0.502
+  confusion: judge 1 / ai 1: 7; judge 1 / ai 0: 6; judge 0 / ai 1: 1; judge 0 / ai 0: 16
+  pre-registered threshold: not assessed, it applies to a human audit
+
+hallucination (LLM judge only): n=30  agreement 80.0%  95% CI [63.3%, 93.3%]  Cohen's kappa 0.559
+  confusion: judge 1 / ai 1: 7; judge 1 / ai 0: 5; judge 0 / ai 1: 1; judge 0 / ai 0: 17
+  pre-registered threshold: not assessed, it applies to a human audit
+
+automatic checks (not part of the LLM judge), against ai_hallucination:
+  numeric check failed: 2 of 30 rows where the check applies; of those 2, the ai rater marked hallucination on 1
+  cited article not in the evidence: 0 of 10 rows where the check applies; of those 0, the ai rater marked hallucination on 0
+
+rows that disagree on correct: ['r04', 'r05', 'r19', 'r30']
+rows that disagree on hallucination (answer): ['r01', 'r05', 'r15', 'r25', 'r26', 'r27', 'r29']
+rows that disagree on hallucination (LLM judge only): ['r05', 'r15', 'r25', 'r26', 'r27', 'r29']
+rows with any disagreement on correct or hallucination (answer): ['r01', 'r04', 'r05', 'r15', 'r19', 'r25', 'r26', 'r27', 'r29', 'r30'] 10

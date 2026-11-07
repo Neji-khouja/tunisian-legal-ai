@@ -1,0 +1,114 @@
+{
+ "note": [
+  "gemini-3.8-flash minimal: 0/6, 400 + 429",
+  "qwen/qwen3.8-27b: 4/6, json errors, one 'partial' verdict on the wrong canned answer"
+ ],
+ "attempts": [
+  {
+   "candidate": "gemini:gemini-3.1-flash-lite",
+   "provider": "gemini",
+   "model": "gemini-3.1-flash-lite",
+   "thinking_requested": "auto",
+   "thinking_effective": {
+    "thinking_level": "minimal"
+   },
+   "time": "2026-11-01T00:37:22",
+   "min_gap": 5.0,
+   "prompt_sha": "57e75ea73744",
+   "summary": {
+    "successes": 6,
+    "calls": 6,
+    "median_latency": 2.05,
+    "verdicts_as_expected": true,
+    "passes": true
+   },
+   "results": [
+    {
+     "ok": true,
+     "verdict": "correct",
+     "error": null,
+     "error_type": null,
+     "error_text": null,
+     "case": "correct answer",
+     "expected": "correct",
+     "repeat": 1,
+     "latency": 14.1,
+     "thinking": {
+      "thinking_level": "minimal"
+     }
+    },
+    {
+     "ok": true,
+     "verdict": "incorrect",
+     "error": null,
+     "error_type": null,
+     "error_text": null,
+     "case": "wrong answer",
+     "expected": "incorrect",
+     "repeat": 1,
+     "latency": 2.8,
+     "thinking": {
+      "thinking_level": "minimal"
+     }
+    },
+    {
+     "ok": true,
+     "verdict": "correct",
+     "error": null,
+     "error_type": null,
+     "error_text": null,
+     "case": "correct answer",
+     "expected": "correct",
+     "repeat": 2,
+     "latency": 49.0,
+     "thinking": {
+      "thinking_level": "minimal"
+     }
+    },
+    {
+     "ok": true,
+     "verdict": "incorrect",
+     "error": null,
+     "error_type": null,
+     "error_text": null,
+     "case": "wrong answer",
+     "expected": "incorrect",
+     "repeat": 2,
+     "latency": 1.2,
+     "thinking": {
+      "thinking_level": "minimal"
+     }
+    },
+    {
+     "ok": true,
+     "verdict": "correct",
+     "error": null,
+     "error_type": null,
+     "error_text": null,
+     "case": "correct answer",
+     "expected": "correct",
+     "repeat": 3,
+     "latency": 1.3,
+     "thinking": {
+      "thinking_level": "minimal"
+     }
+    },
+    {
+     "ok": true,
+     "verdict": "incorrect",
+     "error": null,
+     "error_type": null,
+     "error_text": null,
+     "case": "wrong answer",
+     "expected": "incorrect",
+     "repeat": 3,
+     "latency": 1.2,
+     "thinking": {
+      "thinking_level": "minimal"
+     }
+    }
+   ],
+   "errors": {}
+  }
+ ]
+}
