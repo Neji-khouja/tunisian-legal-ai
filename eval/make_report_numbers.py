@@ -392,6 +392,9 @@ def latency(nb: Numbers):
                                   "mean_llm_calls": x["mean_llm_calls"], "mean_tokens": x["mean_tokens"], "mean_429": x["mean_429"],
                                   "ram_available_gb": sd["runs"][-1]["ram_available_gb"], "tokens_spent_with_warmup": spent})
     nb.m("EvLatTokensTotal", tokens_text(total_tokens))
+    calls = {s: doc["summary"][s]["mean_llm_calls"] for s in SYSTEMS}
+    nb.m("EvLatCallsDiff", signed(calls["v2"] - calls["v1.1"], 2))
+    nb.lat_calls = calls
     nb.m("EvLatAvailable", 1)
     return doc
 
@@ -507,6 +510,11 @@ def provenance(nb: Numbers, data: dict, facts: dict):
     nb.m("EvAddendumTag", tex_id(", ".join(tags)) or "aucune")
     keys_at_head = "GROQ_API_KEY_" in hc.git(ROOT, "show", f"HEAD:eval/run_batch.py")
     nb.m("EvBackupCodeAtHead", "oui" if keys_at_head else "non")
+    # the commits that added and removed the rotation: the newest commit changing its marker is the removal
+    changes = hc.git(ROOT, "log", "--format=%h|%ad", "--date=format:%Y-%m-%d %H:%M", "-S", "GROQ_API_KEY_2", "--", "eval/run_batch.py").splitlines()
+    removed = changes[0].split("|") if changes and not keys_at_head and len(changes) >= 2 else None
+    nb.m("EvCommitBackupRemoved", rf"\texttt{{{removed[0]}}}" if removed else MISSING)
+    nb.m("EvDateBackupRemoved", removed[1] if removed else MISSING)
     nb.m("EvNoisyHash", hc.read_hashes(ROOT / "eval" / "noisy_set_hashes.txt").get("noisy_set.json", "")[:12])
     body = hc.git(ROOT, "log", "-1", "--format=%b", COMMITS["NoisyLock"])
     edited = re.search(r"(\d+) wordings changed.*?\(([^)]+)\)", body, re.S)
@@ -759,7 +767,9 @@ def tables(nb: Numbers, lat) -> dict:
             rows.append([r["system"], f"{r['n']}", f"{number(r['wall_median'], 1)} / {number(r['wall_mean'], 1)} / {number(r['wall_min'], 1)} / {number(r['wall_max'], 1)}",
                          f"{number(r['excl_median'], 1)} / {number(r['excl_mean'], 1)} / {number(r['excl_min'], 1)} / {number(r['excl_max'], 1)}",
                          number(r["mean_llm_calls"], 2), tokens_text(r["mean_tokens"]), number(r["mean_429"], 2)])
-        t["t_latency"] = table("t_latency", "Mesure de latence à chaud : médiane / moyenne / min / max en secondes, avec et sans les attentes de limite de débit. Questions terminées sur le nombre prévu, appels LLM, tokens et réponses 429 moyens par question. Source : \\texttt{results/latency\\_benchmark.json}.", "tab:latency", "lcccccc", ["Système", "$n$", "Temps total", "Hors attentes", "Appels", "Tokens", "429"], rows)
+        ram = ", ".join(f"{r['system']} {number(r['ram_available_gb'], 1)}~Go" for r in nb.csv["latency"])
+        t["t_latency"] = table("t_latency", "Mesure de latence à chaud : médiane / moyenne / min / max en secondes, avec et sans les attentes de limite de débit. Questions terminées sur le nombre prévu, appels LLM, tokens et réponses 429 moyens par question. "
+                               f"Mémoire vive libre au départ de chaque système, différente : {ram} ; les temps de v1 peuvent être gonflés par la pagination mémoire, qui n'a pas été mesurée. Source : \\texttt{{results/latency\\_benchmark.json}}.", "tab:latency", "lcccccc", ["Système", "$n$", "Temps total", "Hors attentes", "Appels", "Tokens", "429"], rows)
     rows = []
     for r in nb.csv["audit"]:
         name = {"correct": "Correct", "hallucination (answer)": "Hallucination (réponse)", "hallucination (LLM judge only)": "Hallucination (juge LLM seul)"}[r["measure"]]

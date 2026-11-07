@@ -173,7 +173,11 @@ def test_claims(nb):
           all(nb.stats[k, s, "refuse: no substantive answer"]["mean"] == 1 for k in ("S1", "S2") for s in mnr.SYSTEMS))
     check("explicit refusal and clarification status: 0% for v1 and v1.1",
           all(nb.stats[k, s, m]["mean"] == 0 for k in ("S1", "S2") for s in ("v1", "v1.1") for m in ("refuse: explicit refusal status", "clarify w/o reply: asked for clarification (status)")))
-    check("LLM calls, v2 - v1.1: about 4 more in every set", all(3.5 <= d[k, "v2", "v1.1", "LLM calls"]["mean"] <= 5 for k in mnr.SETS))
+    check("LLM calls, v2 - v1.1: more calls in every set, interval above zero", all(ex(d[k, "v2", "v1.1", "LLM calls"]) and d[k, "v2", "v1.1", "LLM calls"]["mean"] > 0 for k in mnr.SETS))
+    check("LLM calls in the benchmark: 6.4 for v2 against 1.4 for v1.1 (the text gives both figures)",
+          round(nb.lat_calls["v2"], 2) == 6.4 and round(nb.lat_calls["v1.1"], 2) == 1.4 and nb.macros["EvLatCallsDiff"] == "+5{,}00")
+    check("free RAM at the start of the benchmark: v1 0.8, v1.1 2.5, v2 2.4 GB (the text gives them)",
+          (nb.macros["EvLatVoneRamAvail"], nb.macros["EvLatVoneoneRamAvail"], nb.macros["EvLatVtwoRamAvail"]) == ("0{,}8", "2{,}5", "2{,}4"))
     s = nb.sensitivity
     check("sensitivity: no interval changes side of zero, no sign flip, one touching interval crosses",
           not s["crossed"] and not s["flipped"] and [(r["pair"], r["metric"]) for r in s["touch"]] == [("v2 - v1.1", A)])
@@ -184,7 +188,8 @@ def test_claims(nb):
     check("draft refusal threshold is not met, clarification ones are", not next(met for _, c, _, met in rows if c.startswith("H4"))
           and all(met for _, c, _, met in rows if c.startswith("H3")))
     check("all rows carry the addendum's fingerprint", nb.macros["EvRowFingerprintMatches"] == "oui" and nb.macros["EvRowFingerprintCount"] == "1")
-    check("backup-key code is still in HEAD (the text says so)", nb.extra["keys_at_head"])
+    check("backup-key code is gone from HEAD and its removal commit is named (the text says so)",
+          not nb.extra["keys_at_head"] and nb.macros["EvCommitBackupRemoved"] != mnr.MISSING)
     reruns = {(r["set"], r["system"], r["id"]) for r in nb.csv["reruns"]}
     check("rows rerun by the harness", reruns == {("S1", "v1", "ac24"), ("S1", "v1", "ac41"), ("S1", "v1", "c01"), ("S1", "v2", "ac11"), ("S1", "v2", "ac33"), ("S2", "v2", "ac20"), ("N", "v2", "n_ac70")}, reruns)
     check("no row left unscored", all(nb.macros[f"Ev{mnr.SETS[k][0]}{mnr.SYS_MACRO[x]}NotScored"] == "0" for k in mnr.SETS for x in mnr.SYSTEMS))

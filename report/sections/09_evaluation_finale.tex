@@ -176,7 +176,10 @@ La mesure à chaud (tableau~\ref{tab:latency}, figure~\ref{fig:latency}) sépare
 \EvLatVoneExclMean, \EvLatVoneoneExclMean{} et \EvLatVtwoExclMean~s. Les médianes sont respectivement de \EvLatVoneWallMedian,
 \EvLatVoneoneWallMedian{} et \EvLatVtwoWallMedian~s, et de \EvLatVoneExclMedian, \EvLatVoneoneExclMedian{} et \EvLatVtwoExclMedian~s
 hors attentes. Machine : \EvLatOs{} (chaîne renvoyée par Python), \EvLatCpus{} processeurs logiques, \EvLatRamTotal~Go de mémoire vive, Python \EvLatPython. La mémoire
-disponible au départ n'était pas la même : \EvLatVoneRamAvail~Go pour v1, \EvLatVoneoneRamAvail~Go pour v1.1, \EvLatVtwoRamAvail~Go pour v2.
+vive libre au départ n'était pas la même : \EvLatVoneRamAvail~Go pour v1, \EvLatVoneoneRamAvail~Go pour v1.1, \EvLatVtwoRamAvail~Go pour v2. Les
+temps de v1 peuvent donc être gonflés par la pagination mémoire, qui n'a pas été mesurée ; la comparaison des temps entre systèmes
+doit être lue avec cette réserve. Dans cette mesure, v2 fait \EvLatVtwoCalls{} appels LLM par question contre \EvLatVoneoneCalls{} pour v1.1
+(\EvLatCallsDiff) et \EvLatVoneCalls{} pour v1, sur \EvLatQuestions{} questions qui ne sont pas celles de l'examen.
 
 \input{generated/t_cost}
 
@@ -187,8 +190,9 @@ pas compté. Source : \texttt{report/generated/per\_system.csv}.}{fig:cost}
 \input{generated/t_latency}
 
 \figfile{f15_latency}{Latence à chaud par système, avec et sans les attentes de limite de débit ($n=\EvLatVtwoFinished$ questions par
-système). Points : moyennes ; traits : IC \EvLevel~\% par \emph{bootstrap} sur les questions ; barres noires : médianes. Source :
-\texttt{results/latency\_benchmark.json}, \texttt{report/generated/latency.csv}.}{fig:latency}
+système). Points : moyennes ; traits : IC \EvLevel~\% par \emph{bootstrap} sur les questions ; barres noires : médianes. Mémoire vive
+libre au départ : v1 \EvLatVoneRamAvail~Go, v1.1 \EvLatVoneoneRamAvail~Go, v2 \EvLatVtwoRamAvail~Go ; les temps de v1 peuvent être gonflés par la
+pagination mémoire. Source : \texttt{results/latency\_benchmark.json}, \texttt{report/generated/latency.csv}.}{fig:latency}
 
 \subsubsection{Audit du juge}
 Sur \EvAuditRows{} lignes, \EvAuditCannot{} ont été marquées impossibles à vérifier par le relecteur (\EvAuditCannotVone{} par
@@ -228,9 +232,11 @@ calculés par \texttt{eval/make\_report\_numbers.py}. Source : \texttt{results/a
   \item \textbf{Formulations bruitées.} La différence de différences est limite : l'intervalle de Hit@6 touche zéro
         (\EvDidVtwoVoneoneHitCI), et le résultat n'est pas confirmé sur les autres mesures. Les découpages par type de bruit et par
         langue restent exploratoires. Décrire une infraction sans la nommer a été difficile pour toutes les versions.
-  \item \textbf{Coût.} v2 fait environ quatre appels LLM de plus que v1.1 par question (\EvDiffSoneVtwoVoneoneCalls,
-        \EvDiffStwoVtwoVoneoneCalls{} et \EvDiffSnoisyVtwoVoneoneCalls) et prend plus de temps. Une partie de ce temps est de l'attente de la limite
-        de débit du niveau gratuit : à chaud, \EvLatVtwoMeanWait~s sur \EvLatVtwoWallMean~s en moyenne.
+  \item \textbf{Coût.} v2 fait plus d'appels LLM que v1.1 par question : à l'étape~2, \EvStwoVtwoCalls{} contre \EvStwoVoneoneCalls{}
+        (\EvDiffStwoVtwoVoneoneCalls{} \EvDiffStwoVtwoVoneoneCallsCI) ; dans la mesure à chaud, sur d'autres questions, \EvLatVtwoCalls{} contre
+        \EvLatVoneoneCalls{} (\EvLatCallsDiff). Il prend aussi plus de temps. Une partie de ce temps est de l'attente de la limite de débit du niveau
+        gratuit : à chaud, \EvLatVtwoMeanWait~s sur \EvLatVtwoWallMean~s en moyenne. Les temps de v1 de la mesure à chaud sont à lire avec réserve :
+        v1 a démarré avec \EvLatVoneRamAvail~Go de mémoire libre, contre \EvLatVoneoneRamAvail{} et \EvLatVtwoRamAvail~Go pour v1.1 et v2.
   \item \textbf{Refus.} Le critère « pas de réponse de fond » vaut \EvSoneVoneRefNoSubst~\% pour les trois systèmes et ne les sépare pas ;
         seul le statut de refus explicite les sépare (\EvPreExplicitCount{} pour v2 sur les deux étapes, aucun pour v1 et v1.1).
 \end{itemize}
@@ -277,7 +283,8 @@ Cette liste ne retient que ce que le dépôt permet de vérifier (historique git
         (tableau~\ref{tab:tokensday}), avec \EvQuotaStopsSone, \EvQuotaStopsStwo{} et \EvQuotaStopsSnoisy{} arrêts sur quota journaliers enregistrés dans les
         journaux, dont certains suivis d'une reprise en quelques minutes. Le modèle reste le même partout (\texttt{\EvRowModel}). Le code de bascule automatique
         (\texttt{eval/run\_batch.py}) a été ajouté au commit \EvCommitBackupKeys{} le \EvDateBackupKeys, donc pendant l'étape~2 et après la fin de l'étape~1
-        (\EvDateStageOneDone) ; il est toujours présent dans le dépôt, il n'a pas été retiré. La mesure de latence, elle, n'utilise qu'une clé.
+        (\EvDateStageOneDone). Il a été retiré après toutes les exécutions (\EvCommitBackupRemoved, \EvDateBackupRemoved) ; l'historique git le conserve.
+        La mesure de latence, elle, n'utilise qu'une clé.
   \item \textbf{Trois paires de l'étape~1 terminées après un repli silencieux, non rejouées.} ac02 sur v2, ac29 sur v1 et c02 sur v1 sont listées comme replis connus
         (\texttt{FALLBACK\_PAIRS} dans \texttt{eval/audit\_export.py}), alors que l'addendum dit qu'un élément dégradé est rejoué et non noté : ces lignes sont
         notées. Les lignes elles-mêmes n'en gardent pas la trace, car l'enregistrement des replis (\EvCommitFallbackFlags, \EvDateFallbackFlags) est postérieur à

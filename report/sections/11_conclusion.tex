@@ -11,8 +11,8 @@ fausses construites par mutation, et un contrôle numérique sans LLM contre les
 L'évaluation finale (section~\ref{sec:finale}) confirme cette prudence. Sur la part de réponses correctes, v1.1 dépasse v1 de
 \EvDiffStwoVoneoneVoneCorrect{} points \EvDiffStwoVoneoneVoneCorrectCI{} sur l'étape~2, mais l'écart de l'étape~1, principale, reste sans
 différence détectable. Entre v2 et v1.1, aucun intervalle sur le correct n'exclut zéro. v2 apporte des comportements que les versions
-précédentes n'ont pas (clarification, refus explicite, vérification de chaque affirmation), au prix d'environ quatre appels LLM de plus par
-question. Plusieurs écarts au protocole sont consignés dans la section~\ref{sec:deviations}.
+précédentes n'ont pas (clarification, refus explicite, vérification de chaque affirmation), au prix de plus d'appels LLM par question :
+\EvStwoVtwoCalls{} contre \EvStwoVoneoneCalls{} pour v1.1 à l'étape~2, \EvLatVtwoCalls{} contre \EvLatVoneoneCalls{} dans la mesure à chaud. Plusieurs écarts au protocole sont consignés dans la section~\ref{sec:deviations}.
 
 \paragraph{Travaux futurs.}
 \begin{itemize}
