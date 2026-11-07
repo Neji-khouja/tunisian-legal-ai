@@ -11,3 +11,5 @@ db_v1_1/
 results/*.err
 results/item5_done
 results/audit_key.csv
+
+_to_delete/
