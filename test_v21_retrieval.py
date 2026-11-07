@@ -286,6 +286,39 @@ def test_misc():
     check("bm25: fold", R.bm25_tokens(s, "fold") == ["l", "article", "penal", "l", "emprisonnement", "des", "condamnes"])
     check("bm25: elision", R.bm25_tokens(s, "elision") == ["article", "penal", "emprisonnement", "des", "condamnes"])
     check("bm25: stem", R.bm25_tokens(s, "stem") == ["articl", "penal", "emprisonn", "des", "condamn"], R.bm25_tokens(s, "stem"))
+    # header modes (config.EVIDENCE_CONTEXT_HEADER)
+    m = {"chunk_id": "X/s00/5", "context": "Code Pénal > LIVRE II > Section III - La concussion",
+         "hierarchy": "LIVRE II > Section III - La concussion"}
+    d = Document(page_content="Article 5.- x", metadata=m)
+    for mode, want in (("full", "Contexte : Code Pénal > LIVRE II > Section III - La concussion\nArticle 5.- x"),
+                       ("deepest", "Contexte : Section III - La concussion\nArticle 5.- x"), ("none", "Article 5.- x"),
+                       (True, "Contexte : Code Pénal > LIVRE II > Section III - La concussion\nArticle 5.- x"), (False, "Article 5.- x")):
+        with flags(EVIDENCE_CONTEXT_HEADER=mode):
+            check(f"header mode {mode!r}", P.evidence_text(d) == want, P.evidence_text(d))
+    with flags(EVIDENCE_CONTEXT_HEADER="deepest"):
+        check("header deepest without headings = code name",
+              P.evidence_text(Document(page_content="T", metadata={"context": "Code Pénal", "hierarchy": ""})) == "Contexte : Code Pénal\nT")
+        check("header: v1.1 document has none", P.evidence_text(Document(page_content="T", metadata={})) == "T")
+    # expansion token cap (pipeline.cap_added); stub length = words
+    length = lambda t: len(t.split())
+    added = [Document(page_content="un deux trois quatre cinq six sept huit", metadata={"chunk_id": "X/s00/2", "cited_by": "1"}),
+             Document(page_content="a b c d e f g h i j", metadata={"chunk_id": "X/s00/3", "cited_by": "1"}),
+             Document(page_content="z y x", metadata={"chunk_id": "X/s00/4", "cited_by": "1"})]
+    with flags(EVIDENCE_CONTEXT_HEADER="none"):
+        hdr = length(P.evidence_text(Document(page_content="", metadata={"cited_by": "1"})))      # 5 words of header
+        full = [length(P.evidence_text(x)) for x in added]
+        out = P.cap_added(added, 1000, length)
+        check("cap: everything fits -> unchanged", out == added)
+        out = P.cap_added(added, full[0] + hdr + 3, length)
+        check("cap: second article cut to the tokens left, header kept, third not added",
+              len(out) == 2 and out[0] == added[0] and out[1].metadata["xref_truncated"]
+              and out[1].page_content.startswith("a b") and out[1].page_content.endswith("[…]")
+              and P.evidence_text(out[1]).startswith("Article cité par l'article 1")
+              and sum(length(P.evidence_text(x)) for x in out) <= full[0] + hdr + 3, [x.page_content for x in out])
+        out = P.cap_added(added, hdr, length)
+        check("cap: no room for any text -> nothing added", out == [])
+        check("cap: the added articles' total never exceeds the cap",
+              all(sum(length(P.evidence_text(x)) for x in P.cap_added(added, c, length)) <= c for c in range(0, 40)))
     for target in (C.DB_V11, str(C.DB_V11)):
         try:
             P.build_vectorstore(db_dir=target)

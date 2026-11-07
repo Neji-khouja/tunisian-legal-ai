@@ -312,7 +312,46 @@ def evidence_docs(docs: list[Document], vectorstore: Chroma | None = None) -> li
     if not any(parse_references(d.page_content) for d in docs):     # no reference: the index is not opened
         return list(docs)
     vs = vectorstore or _VS["vs"] or load_vectorstore()
-    return list(docs) + expand_cross_references(vs, docs)
+    added = expand_cross_references(vs, docs)
+    if added and C.XREF_TOKEN_CAP is not None:
+        added = cap_added(added, C.XREF_TOKEN_CAP, _token_len())
+    return list(docs) + added
+
+
+def _token_len():
+    tok = get_embeddings()._client.tokenizer
+    return lambda t: len(tok(t, add_special_tokens=True)["input_ids"])
+
+
+def cap_added(added: list[Document], cap: int, length) -> list[Document]:
+    """At most cap tokens (length = embedding tokens of the evidence text, header lines included) for the added
+    cross-referenced articles of one question, in order: an article that does not fit is cut (text only, never its
+    header lines) to the tokens left; once no text fits, the following articles are not added. The citing evidence
+    articles are never cut."""
+    out, left = [], cap
+    for d in added:
+        full = length(evidence_text(d))
+        if full <= left:
+            out.append(d)
+            left -= full
+            continue
+        head = length(evidence_text(Document(page_content="", metadata=d.metadata)))
+        if head >= left:
+            break
+        lo, hi, text = 0, len(d.page_content), d.page_content
+        while lo < hi:                                    # longest prefix whose evidence text fits
+            mid = (lo + hi + 1) // 2
+            cand = Document(page_content=text[:mid].rstrip() + " […]", metadata={**d.metadata, "parts": 1})
+            if length(evidence_text(cand)) <= left:
+                lo = mid
+            else:
+                hi = mid - 1
+        if lo == 0:
+            break
+        out.append(Document(page_content=text[:lo].rstrip() + " […]",
+                            metadata={**d.metadata, "parts": 1, "xref_truncated": True}))
+        break
+    return out
 
 
 def _window(text: str, match: str | None, cap: int) -> str:
@@ -328,6 +367,22 @@ def _window(text: str, match: str | None, cap: int) -> str:
     return f"{first}\n[…] {text[start:start + room]} […]"
 
 
+def context_header(meta: dict, mode=None) -> str:
+    """What the "Contexte :" line shows (config.EVIDENCE_CONTEXT_HEADER): "full" = the indexed context line
+    (code > headings), "deepest" = the deepest heading only (the code name when the article has no heading),
+    "none" = nothing. True / False are read as "full" / "none". Empty for a v1.1 document (no context)."""
+    import config as C
+    mode = C.EVIDENCE_CONTEXT_HEADER if mode is None else mode
+    mode = {True: "full", False: "none", None: "none"}.get(mode, mode)
+    ctx = meta.get("context") or ""
+    if not ctx or mode == "none":
+        return ""
+    if mode == "deepest":
+        h = meta.get("hierarchy") or ""
+        return h.split(" > ")[-1] if h else ctx
+    return ctx
+
+
 def evidence_text(doc: Document) -> str:
     """Evidence text: "Article cité par l'article N" (an added cross-referenced article), "Contexte : <code > headings>"
     (config.EVIDENCE_CONTEXT_HEADER, v1.2 index), then the article text (config.EVIDENCE_TEXT_CAP characters of a long
@@ -337,8 +392,9 @@ def evidence_text(doc: Document) -> str:
     lines = []
     if m.get("cited_by"):
         lines.append(f"Article cité par l'article {m['cited_by']}")
-    if C.EVIDENCE_CONTEXT_HEADER and m.get("context"):
-        lines.append(f"Contexte : {m['context']}")
+    ctx = context_header(m)
+    if ctx:
+        lines.append(f"Contexte : {ctx}")
     text = doc.page_content
     if C.EVIDENCE_TEXT_CAP and m.get("parts", 1) > 1:
         text = _window(text, m.get("match_text"), C.EVIDENCE_TEXT_CAP)

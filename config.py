@@ -24,7 +24,10 @@ XREF_EXPAND            = True    # articles referenced by an evidence article ar
 XREF_PER_ARTICLE       = 2       # added articles per evidence article
 XREF_TOTAL             = 6       # added articles per question
 XREF_RANGE_MAX         = 4       # "articles N à M" is expanded only when it names at most this many articles
-EVIDENCE_CONTEXT_HEADER = True   # "Contexte : ..." line at the top of each evidence text
+EVIDENCE_CONTEXT_HEADER = "deepest"   # "Contexte : ..." line of each evidence text: "full" (code > all headings),
+                                      # "deepest" (deepest heading only; the code name without headings), "none"
+XREF_TOKEN_CAP         = 300     # embedding tokens of the added cross-referenced articles per question (None = no cap);
+                                 # 300 = smallest cap losing <= 1 dev item vs no cap (diagnostics/EVIDENCE_BUDGET.md)
 EVIDENCE_TEXT_CAP      = 3000    # characters of a long article shown in the evidence (window around the match)
 BM25_TOKENIZER         = "whitespace"   # "whitespace" (v1.1) | "lower" | "fold" | "elision" | "stem" (retriever.py)
 
