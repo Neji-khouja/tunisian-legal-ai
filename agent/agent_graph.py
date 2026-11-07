@@ -120,14 +120,17 @@ def clarify(state: AgentState) -> dict:
     }
 
 def to_evidence(docs) -> dict:
+    """v2.1: the documents plus the articles they reference (pipeline.evidence_docs, config.XREF_EXPAND), each text
+    with its labelled header lines (pipeline.evidence_text: "Article cité par l'article N", "Contexte : ...")."""
+    from pipeline import evidence_docs, evidence_text
     return {
         d.metadata["chunk_id"]: {
             "source": d.metadata.get("source"),
             "article": d.metadata.get("article"),
             "law_type": d.metadata.get("law_type"),
-            "text": d.page_content,
+            "text": evidence_text(d),
         }
-        for d in docs
+        for d in evidence_docs(docs)
     }
 
 def retrieve_node(state: AgentState) -> dict:
