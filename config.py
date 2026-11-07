@@ -7,7 +7,28 @@ load_dotenv()
 
 ROOT_DIR = Path(__file__).resolve().parent   # absolute, so scripts started from agent/ open the same index
 DATA_DIR = ROOT_DIR / "data"
-DB_DIR   = ROOT_DIR / "db_v1_1"   # v1 index stays untouched in ./db (rebuilt chunks go here)
+DB_V11   = ROOT_DIR / "db_v1_1"   # v1.1 / v2 index: never rebuilt or written (v1 index stays untouched in ./db)
+DB_V12   = ROOT_DIR / "db_v1_2"   # v2.1 index: headings moved forward, context in the indexed text, sub-chunks
+
+# ── v2.1 wave 1 (branch agent-v2.1). Every switch can be turned off; all False = the v2 retrieval on db_v1_1.
+INDEX_V12 = True                 # use db_v1_2 (built with SPLIT_HEADINGS_FORWARD, INDEX_CONTEXT, SUBCHUNK_LONG)
+# build time (pipeline.build_vectorstore, splitter.split_by_article)
+SPLIT_HEADINGS_FORWARD = True    # a book/title/chapter/section heading belongs to the articles after it
+INDEX_CONTEXT          = True    # embedded and BM25 text = "<code> > <headings>\n<article>"; plain text kept in metadata
+SUBCHUNK_LONG          = True    # articles over the embedding limit are split into sub-chunks (parent id kept)
+SUBCHUNK_MAX_TOKENS    = 500     # embedding tokens per indexed text, special tokens included (Solon limit 512)
+# query time
+DIRECT_LOOKUP_STRICT   = True    # direct article lookup only for a number after an article marker (art., article, الفصل)
+DIRECT_LOOKUP_UNION    = True    # direct-lookup articles are added to the hybrid pool instead of replacing it
+XREF_EXPAND            = True    # articles referenced by an evidence article are added to the evidence
+XREF_PER_ARTICLE       = 2       # added articles per evidence article
+XREF_TOTAL             = 6       # added articles per question
+XREF_RANGE_MAX         = 4       # "articles N à M" is expanded only when it names at most this many articles
+EVIDENCE_CONTEXT_HEADER = True   # "Contexte : ..." line at the top of each evidence text
+EVIDENCE_TEXT_CAP      = 3000    # characters of a long article shown in the evidence (window around the match)
+BM25_TOKENIZER         = "whitespace"   # "whitespace" (v1.1) | "lower" | "fold" | "elision" | "stem" (retriever.py)
+
+DB_DIR   = DB_V12 if INDEX_V12 else DB_V11
 
 GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
 
