@@ -1,0 +1,10 @@
+# Lu quand Streamlit est lancé depuis ui/ (voir README).
+[browser]
+gatherUsageStats = false      # aucune statistique d'usage envoyée à Streamlit
+
+[client]
+toolbarMode = "minimal"
+showErrorDetails = "none"     # jamais de trace d'erreur dans le navigateur
+
+[server]
+headless = true
