@@ -15,6 +15,8 @@ It equals the fingerprint of the pre-registration addendum (agent/LEARNING.md).
 | File | What it is |
 |---|---|
 | `retrieval_diagnostic.py` | Retrieval funnel of the v1.1 path (existing functions imported, not modified), cross-references in the index and in the articles cited by saved v2 answers, chunk structure. No LLM call. `--md-only` rewrites the .md from the .json without opening the index. |
+| `translate_skipped.py` | One call of `translate.translate_to_french` per Arabic/English answerable item (47; the only Groq use, key GROQ_API_KEY, exit 75 on a daily quota). Resumable. |
+| `translations.json` | Its output: set, item id, language, query, French query. Used by `retrieval_diagnostic.py`. |
 | `funnel_core.py` | Pure helpers (ranks, funnel classes, summaries, Hit@k, reference patterns). |
 | `test_funnel.py` | Funnel arithmetic and reference patterns on a stub index. |
 | `chroma_open_check.py` | Which sqlite tables one Chroma open changes, measured on a temporary copy of db_v1_1. |
@@ -30,7 +32,10 @@ set PYTHONIOENCODING=utf-8
 set HF_HUB_OFFLINE=1
 set TRANSFORMERS_OFFLINE=1
 python diagnostics\test_funnel.py
-python diagnostics\retrieval_diagnostic.py
+python diagnostics\translate_skipped.py
+rem open a byte copy of db_v1_1 so the real index is never written (one Chroma open adds an acquire_write row)
+xcopy /e /i /q db_v1_1 %TEMP%\db_v1_1_copy
+python diagnostics\retrieval_diagnostic.py --db %TEMP%\db_v1_1_copy
 python diagnostics\chroma_open_check.py
 python diagnostics\retrieval_diagnostic.py --md-only
 ```
@@ -40,6 +45,8 @@ python diagnostics\retrieval_diagnostic.py --md-only
 - Only the result files and eval/ exam files are read; result rows are used for ids and metrics only (gold_hit,
   evidence_ids, cited), never for answer text.
 - Opening the index through Chroma (as every run of the harness and the UI does) appends one row to its internal
-  `acquire_write` table; the other tables are unchanged (`chroma_open_check.json`). The retrieval run opened
-  db_v1_1 once.
+  `acquire_write` table; the other tables are unchanged (`chroma_open_check.json`). The first retrieval run opened
+  db_v1_1 once; the second (all 110 items) opened a byte copy, and db_v1_1's files hashed the same before and after.
+- Arabic/English items: the translation is not deterministic, so the reproduced Hit@6 can differ from the saved v1.1
+  row (2 of 47 translated items; listed in RETRIEVAL_DIAGNOSTIC.md).
 - `chroma_open_check.py` leaves its temporary copy in %TEMP% when Chroma still holds the files open (Windows).

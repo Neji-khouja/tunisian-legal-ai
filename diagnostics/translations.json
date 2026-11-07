@@ -1,0 +1,383 @@
+{
+ "model": "openai/gpt-oss-120b",
+ "items": [
+  {
+   "set": "S1",
+   "id": "ac02",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "في تحكيم دولي، لاحظت أن أحد شروط اتفاق التحكيم لم يُحترم لكنني واصلت الإجراءات دون أن أحتج. هل يمكنني التمسك بهذه المخالفة لاحقاً؟",
+   "french_query": "Dans un arbitrage international, j’ai remarqué qu’une clause du compromis d’arbitrage n’a pas été respectée, mais j’ai poursuivi la procédure sans m’y opposer. Puis-je invoquer cette violation ultérieurement ?"
+  },
+  {
+   "set": "S1",
+   "id": "ac10",
+   "language": "en",
+   "detected": "english",
+   "query": "I contributed a machine to a partnership as my share, and it turns out to have a hidden defect. What am I liable for toward my partners?",
+   "french_query": "J'ai apporté une machine à une société de personnes comme ma part, et il s'avère qu'elle présente un défaut caché. De quoi suis-je responsable envers mes associés ?"
+  },
+  {
+   "set": "S1",
+   "id": "ac21",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "صدر حكم في بلد أجنبي يضر بمصالحي مع أنني لم أكن طرفاً في القضية. هل يمكنني أن أطلب عدم الاحتجاج به ضدي في تونس، وأمام أي محكمة؟",
+   "french_query": "Un jugement rendu dans un pays étranger porte préjudice à mes intérêts alors que je n’étais pas partie à l’affaire. Puis-je demander qu’il ne soit pas invoqué contre moi en Tunisie, et devant quel tribunal ?"
+  },
+  {
+   "set": "S1",
+   "id": "ac23",
+   "language": "en",
+   "detected": "english",
+   "query": "My brothers and I can't agree on who should keep our late father's family papers and keepsakes. What can the court decide?",
+   "french_query": "Mes frères et moi ne pouvons pas nous mettre d'accord sur qui doit garder les papiers et souvenirs familiaux de notre père décédé. Que peut décider le tribunal ?"
+  },
+  {
+   "set": "S1",
+   "id": "ac24",
+   "language": "en",
+   "detected": "english",
+   "query": "When a debtor's property is sold and the money isn't enough to pay everyone, how is it shared among the creditors?",
+   "french_query": "Lorsque la propriété d'un débiteur est vendue et que l'argent n'est pas suffisant pour payer tout le monde, comment est‑il partagé entre les créanciers ?"
+  },
+  {
+   "set": "S1",
+   "id": "ac35",
+   "language": "en",
+   "detected": "english",
+   "query": "Someone who illegally held a person captive lets them go of their own accord on the third day. What sentence do they face?",
+   "french_query": "Quel châtiment encourt une personne qui a détenu illégalement quelqu’un et le libère de son propre gré au troisième jour ?"
+  },
+  {
+   "set": "S1",
+   "id": "ac43",
+   "language": "en",
+   "detected": "english",
+   "query": "I bought a property at a court auction. How long do I have to record the sale on the land title, and what does the land registry do if the price has not yet been paid?",
+   "french_query": "J'ai acheté un bien immobilier lors d'une vente aux enchères judiciaires. Combien de temps ai-je pour enregistrer la vente sur le titre foncier, et que fait le registre foncier si le prix n'a pas encore été payé ?"
+  },
+  {
+   "set": "S1",
+   "id": "ac44",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "بعد صدور الحكم في توزيع ثمن عقار بيع بالمزاد بين الدائنين، ما الذي يجب تقديمه لإدارة الملكية العقارية حتى تشطب الرهون المرسمة؟",
+   "french_query": "Après le prononcé du jugement de répartition du prix d’un bien immobilier vendu aux enchères entre les créanciers, que faut‑il présenter à l’administration de la propriété immobilière afin d’effacer les hypothèques inscrites ?"
+  },
+  {
+   "set": "S1",
+   "id": "ac47",
+   "language": "en",
+   "detected": "english",
+   "query": "How many judges sit on the Court of Cassation when it hears a criminal appeal, and can a judge who dealt with the case earlier take part?",
+   "french_query": "Combien de juges siègent à la Cour de cassation lorsqu'elle entend un appel pénal, et un juge qui a traité l'affaire auparavant peut-il y participer ?"
+  },
+  {
+   "set": "S1",
+   "id": "ac51",
+   "language": "en",
+   "detected": "english",
+   "query": "What fine can someone face for knowingly taking on the job of valuing contributions in kind to a company when the law bars them from that role?",
+   "french_query": "Quelle amende une personne peut-elle encourir pour avoir délibérément assumé le rôle d'évaluation des contributions en nature à une entreprise alors que la loi lui interdit ce poste ?"
+  },
+  {
+   "set": "S1",
+   "id": "ac63",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "هل يجب على صاحب العمل أن يكون قادراً على إثبات أنه صرّح بمؤسسته وبالانتدابات التي قام بها، وأمام من؟",
+   "french_query": "L'employeur doit-il être capable de prouver qu'il a déclaré son établissement et les missions qu'il a effectuées, et devant qui ?"
+  },
+  {
+   "set": "S1",
+   "id": "ac66",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "ما هي واجبات العامل في مجال الصحة والسلامة المهنية داخل المؤسسة؟",
+   "french_query": "Quelles sont les obligations du travailleur dans le domaine de la santé et de la sécurité au travail au sein de l'entreprise ?"
+  },
+  {
+   "set": "S1",
+   "id": "ac68",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "ما هي الهياكل التي تتولى رعاية المصالح المحلية والجهوية في تونس؟",
+   "french_query": "Quelles sont les structures qui prennent en charge les intérêts locaux et régionaux en Tunisie ?"
+  },
+  {
+   "set": "S2",
+   "id": "ac04",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "أعطيت شخصاً مبلغاً من المال ليتاجر به على أن نقتسم الربح، فقام بعمليات تفوق المبلغ الذي سلمته إياه. من يتحمل تبعات هذه العمليات الزائدة؟",
+   "french_query": "J'ai donné à une personne une somme d'argent pour qu'elle la commerce en convenant de partager le profit, et elle a effectué des opérations dépassant le montant que je lui ai remis. Qui supporte les conséquences de ces opérations excédentaires ?"
+  },
+  {
+   "set": "S2",
+   "id": "ac07",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "اتفقت مع شخص على أن يحرس أمتعتي لمدة سنة مقابل أجر، لكن العقد انتهى بعد أربعة أشهر فقط. هل يستحق الأجر المتفق عليه كاملاً؟",
+   "french_query": "Ai-je droit à la totalité du salaire convenu si j'ai conclu un accord avec une personne pour garder mes biens pendant un an contre rémunération, mais que le contrat a pris fin après seulement quatre mois ?"
+  },
+  {
+   "set": "S2",
+   "id": "ac09",
+   "language": "en",
+   "detected": "english",
+   "query": "Two people each hold a written deed for the same property and neither of them occupies it. Whose claim prevails?",
+   "french_query": "Deux personnes détiennent chacune un acte écrit pour le même bien et aucune d’elles ne l’occupe. Laquelle des réclamations prévaut‑elle ?"
+  },
+  {
+   "set": "S2",
+   "id": "ac16",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "فتح البنك لفائدتي اعتماداً مستندياً غير قابل للإلغاء. هل يمكن للبنك أن يلغيه أو يغيّر شروطه دون موافقتي؟",
+   "french_query": "Ouvrir la banque pour mon bénéfice en me basant sur un document non annulable. La banque peut-elle l'annuler ou modifier ses conditions sans mon accord ?"
+  },
+  {
+   "set": "S2",
+   "id": "ac18",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "أرسلت بضاعة مع شركة نقل على أن يدفع المرسَل إليه أجرة النقل عند الاستلام. من الملزم فعلاً بدفع أجرة النقل؟",
+   "french_query": "J'ai envoyé une marchandise avec une société de transport en stipulant que le destinataire paierait le frais de transport à la réception. Qui est réellement obligé de payer le frais de transport ?"
+  },
+  {
+   "set": "S2",
+   "id": "ac27",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "هل يمكن الطعن بالتعقيب في حكم المحكمة العقارية الذي يأذن بتسجيل عقار، وفي أي حالات؟",
+   "french_query": "Peut-on faire appel par réexamen du jugement du tribunal immobilier qui autorise l'enregistrement d'un bien, et dans quels cas ?"
+  },
+  {
+   "set": "S2",
+   "id": "ac30",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "إذا ضُبط طفل وهو يتعاطى المخدرات، هل يمكن للمحكمة أن تُلزمه بالخضوع للعلاج؟",
+   "french_query": "Si un enfant est arrêté en train de consommer de la drogue, le tribunal peut-il l’obliger à suivre un traitement ?"
+  },
+  {
+   "set": "S2",
+   "id": "ac37",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "ما هي عقوبة من يحرق أو يتلف سجلات أو وثائق أصلية صادرة عن السلطة العمومية؟",
+   "french_query": "Quelle est la peine de celui qui brûle ou détruit des registres ou des documents originaux émis par l'autorité publique ?"
+  },
+  {
+   "set": "S2",
+   "id": "ac40",
+   "language": "en",
+   "detected": "english",
+   "query": "Several creditors have registered seizure orders against my land title. Can the seizure be removed from the title if just one of them agrees?",
+   "french_query": "Plusieurs créanciers ont inscrit des ordonnances de saisie contre le titre de ma terre. La saisie peut-elle être retirée du titre si un seul d'entre eux accepte ?"
+  },
+  {
+   "set": "S2",
+   "id": "ac42",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "أريد رفع دعوى نفقة على طليقي الذي يسكن في ولاية أخرى. هل يمكنني رفعها أمام محكمة المكان الذي أقيم فيه؟",
+   "french_query": "Je veux déposer une demande de pension alimentaire contre mon ex-mari qui vit dans un autre État. Puis-je la déposer devant le tribunal du lieu où je réside ?"
+  },
+  {
+   "set": "S2",
+   "id": "ac50",
+   "language": "en",
+   "detected": "english",
+   "query": "Can a prisoner held in Tunisia be sent abroad to be confronted with someone in a foreign case, and how is that requested?",
+   "french_query": "Un prisonnier détenu en Tunisie peut-il être envoyé à l'étranger pour être confronté à quelqu'un dans une affaire étrangère, et comment cela est-il demandé ?"
+  },
+  {
+   "set": "S2",
+   "id": "ac52",
+   "language": "en",
+   "detected": "english",
+   "query": "In a limited liability company, who calls the members' general meeting and how much notice must be given? Can minority members force the manager to call one?",
+   "french_query": "Dans une société à responsabilité limitée, qui convoque l'assemblée générale des associés et quel délai de convocation doit être respecté ? Les associés minoritaires peuvent-ils obliger le gérant à en convoquer une ?"
+  },
+  {
+   "set": "S2",
+   "id": "ac54",
+   "language": "en",
+   "detected": "english",
+   "query": "Can members of a company's supervisory board be held liable for decisions taken by the management board?",
+   "french_query": "Les membres du conseil de surveillance d'une entreprise peuvent-ils être tenus responsables des décisions prises par le conseil de direction ?"
+  },
+  {
+   "set": "S2",
+   "id": "ac58",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "متى يصبح الطفل الموضوع تحت الولاية راشداً وقادراً على التصرف في كل شؤونه المدنية بنفسه؟",
+   "french_query": "Quand l'enfant placé sous tutelle devient-il majeur et capable de gérer toutes ses affaires civiles lui-même ?"
+  },
+  {
+   "set": "S2",
+   "id": "ac61",
+   "language": "en",
+   "detected": "english",
+   "query": "If a young person attends vocational training courses without signing an apprenticeship contract, do the apprenticeship rules still apply to them?",
+   "french_query": "Si une jeune personne suit des cours de formation professionnelle sans signer de contrat d'apprentissage, les règles de l'apprentissage s'appliquent‑elles toujours à elle ?"
+  },
+  {
+   "set": "S2",
+   "id": "ac69",
+   "language": "en",
+   "detected": "english",
+   "query": "What does the Tunisian flag look like?",
+   "french_query": "À quoi ressemble le drapeau tunisien ?"
+  },
+  {
+   "set": "S2",
+   "id": "ac70",
+   "language": "en",
+   "detected": "english",
+   "query": "When does Tunisia's parliament hold its regular yearly session, and who can call it back during the recess?",
+   "french_query": "Quand le parlement de la Tunisie tient-il sa session annuelle régulière, et qui peut le rappeler pendant la pause ?"
+  },
+  {
+   "set": "N",
+   "id": "n_ac04",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "أعطيت صديقي مالاً ليشتغل به في البيع والشراء ونتقاسم ما يربحه، لكنه دخل في صفقات أكبر من المال الذي سلّمته له. هل أتحمل أنا نتيجة تلك الصفقات أم هو؟",
+   "french_query": "J'ai donné de l'argent à mon ami pour qu'il l'utilise dans le commerce et nous partageons les bénéfices, mais il a conclu des transactions plus importantes que la somme que je lui ai remise. Dois-je supporter les conséquences de ces transactions ou lui ?"
+  },
+  {
+   "set": "N",
+   "id": "n_ac07",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "اتفقت مع شخص علي ان يحرس امتعتي لمده سنه مقابل اجر لكن العقد انتهي بعد اربعه اشهر فقط هل يستحق الاجر المتفق عليه كاملا",
+   "french_query": "J'ai convenu avec une personne de garder mon bien pendant un an contre rémunération, mais le contrat a pris fin après seulement quatre mois. La personne a-t-elle droit à la rémunération convenue en totalité ?"
+  },
+  {
+   "set": "N",
+   "id": "n_ac09",
+   "language": "en",
+   "detected": "english",
+   "query": "Two people each have a signed paper saying the same house is theirs, and nobody is living there. Which of the two wins?",
+   "french_query": "Deux personnes ont chacune un papier signé disant que la même maison est à elles, et personne n’y vit. Qui des deux gagne ?"
+  },
+  {
+   "set": "N",
+   "id": "n_ac16",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "فتح البنك لفائدتي اعتمادا مستنديا غير قابل للالغاء هل يمكن للبنك ان يلغيه او يغير شروطه دون موافقتى",
+   "french_query": "Ouvrir la banque pour mon bénéfice en se basant sur un document non annulable, la banque peut-elle l'annuler ou modifier ses conditions sans mon accord ?"
+  },
+  {
+   "set": "N",
+   "id": "n_ac18",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "أرسلت سلعة مع شركة شحن واتفقنا أن الزبون يدفع ثمن التوصيل عند الاستلام. من هو المطالب في الحقيقة بدفع ثمن التوصيل؟",
+   "french_query": "J’ai envoyé une marchandise avec une société de transport et nous avons convenu que le client paierait le prix de la livraison à la réception. Qui est réellement le demandeur du paiement du prix de la livraison ?"
+  },
+  {
+   "set": "N",
+   "id": "n_ac27",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "المحكمة التي تنظر في قضايا الأراضي أصدرت حكماً يسمح بقيد أرض باسم شخص في السجل. هل يمكن الاعتراض على هذا الحكم أمام أعلى محكمة في البلاد، وفي أي حالات؟",
+   "french_query": "Le tribunal qui examine les affaires foncières a rendu un jugement autorisant l'inscription d'un terrain au nom d'une personne au registre. Peut-on contester ce jugement devant la plus haute cour du pays, et dans quels cas ?"
+  },
+  {
+   "set": "N",
+   "id": "n_ac30",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "اذا ضبط طفل وهو يتعاطي المخدرات هل يمكن للمحكمه ان تلزمه بالخضوع للعلاج",
+   "french_query": "Si un enfant est appréhendé en train de consommer de la drogue, la cour peut-elle l’obliger à suivre un traitement ?"
+  },
+  {
+   "set": "N",
+   "id": "n_ac37",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "ماهي عقوبه من يحرق او يتلف سجلات او وثائق اصليه صادره عن السلطه العموميه",
+   "french_query": "Quelle est la peine de celui qui brûle ou détruit des registres ou des documents originaux émis par l'autorité publique ?"
+  },
+  {
+   "set": "N",
+   "id": "n_ac40",
+   "language": "en",
+   "detected": "english",
+   "query": "a bunch of ppl i owe money to put seizures on my land papers... if just one of them says ok can it get taken off??",
+   "french_query": "Un groupe de personnes à qui je dois de l'argent a mis des saisies sur les titres de propriété de mon terrain... si l'une d'entre elles dit d'accord, cela peut-il être retiré ?"
+  },
+  {
+   "set": "N",
+   "id": "n_ac42",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "طليقي ساكن في ولاية أخرى ونحب نرفع عليه قضية نفقة... نجم نرفعها في محكمة البلاصة اللي نسكن فيها؟",
+   "french_query": "Mon ex-conjoint vit dans un autre État et je veux intenter une action en pension alimentaire... Puis-je la déposer devant le tribunal du lieu où j'habite ?"
+  },
+  {
+   "set": "N",
+   "id": "n_ac50",
+   "language": "en",
+   "detected": "english",
+   "query": "can a prisonner held in tunisia be sent abroad to be confronted with somone in a foriegn case and how is that requestd",
+   "french_query": "Un prisonnier détenu en Tunisie peut-il être envoyé à l'étranger pour être confronté à quelqu'un dans une affaire étrangère et comment cela est-il demandé ?"
+  },
+  {
+   "set": "N",
+   "id": "n_ac52",
+   "language": "en",
+   "detected": "english",
+   "query": "In an LLC, who calls the shareholders' meeting and how much notice must be given? Can the minority shareholders force the director to call one?",
+   "french_query": "Dans une SARL, qui convoque l'assemblée des actionnaires et quel délai de préavis doit être donné ? Les actionnaires minoritaires peuvent-ils obliger le directeur à en convoquer une ?"
+  },
+  {
+   "set": "N",
+   "id": "n_ac54",
+   "language": "en",
+   "detected": "english",
+   "query": "can the ppl on a company's supervisory board get in trouble for stuff the management board decided??",
+   "french_query": "Les membres du conseil de surveillance d'une entreprise peuvent-ils être poursuivis pour des décisions prises par le conseil de direction ?"
+  },
+  {
+   "set": "N",
+   "id": "n_ac58",
+   "language": "ar",
+   "detected": "arabic",
+   "query": "متى يصبح الطفل الذي تحت الوصاية كبيراً ويستطيع أن يتصرف في كل أموره بنفسه؟",
+   "french_query": "Quand l'enfant sous tutelle devient-il majeur et peut-il gérer toutes ses affaires lui-même ?"
+  },
+  {
+   "set": "N",
+   "id": "n_ac61",
+   "language": "en",
+   "detected": "english",
+   "query": "my kid goes to job training classes but never signed any apprentice contract, do the apprentice rules still apply to them or nah?",
+   "french_query": "Mon enfant suit des cours de formation professionnelle mais n'a jamais signé de contrat d'apprentissage, les règles d'apprentissage s'appliquent-elles toujours à lui ou nah?"
+  },
+  {
+   "set": "N",
+   "id": "n_ac69",
+   "language": "en",
+   "detected": "english",
+   "query": "What design is on the official cloth banner that represents Tunisia as a state?",
+   "french_query": "Quel design figure sur la bannière en tissu officielle qui représente la Tunisie en tant qu'État ?"
+  },
+  {
+   "set": "N",
+   "id": "n_ac70",
+   "language": "en",
+   "detected": "english",
+   "query": "when do tunisia's MPs actually sit every year, and if they're on vacation who can make them come back?",
+   "french_query": "Quand les députés tunisiens s'asseyent-ils réellement chaque année, et si ils sont en vacances qui peut les faire revenir ?"
+  }
+ ],
+ "reasoning_effort": "low",
+ "function": "translate.translate_to_french (pipeline.step_query for Arabic/English questions)"
+}

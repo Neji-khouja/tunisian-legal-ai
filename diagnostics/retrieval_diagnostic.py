@@ -1,10 +1,12 @@
 """Retrieval funnel of v1.1, cross-references and chunk structure. Local compute only: no LLM call, the index is read.
 
-    python diagnostics/retrieval_diagnostic.py    -> diagnostics/retrieval_funnel.json, diagnostics/RETRIEVAL_DIAGNOSTIC.md
+    python diagnostics/retrieval_diagnostic.py [--db COPY_OF_DB_V1_1]
+        -> diagnostics/retrieval_funnel.json, diagnostics/RETRIEVAL_DIAGNOSTIC.md
 
 v1.1 path reproduced with the existing functions (pipeline.py, retriever.py, reranker.py; imported, not modified), as
-pipeline.ask_question runs it with law_type None: French query = the question (raw-first; Arabic and English need an
-LLM translation that the saved rows do not store: skipped and counted); if pipeline._ARTICLE_RE finds a number in the
+pipeline.ask_question runs it with law_type None: French query = the question (raw-first); Arabic and English items use
+the French query stored in diagnostics/translations.json (translate_skipped.py; items without one are skipped and
+counted) plus the original-language dense list (k=10) of retriever.hybrid_retrieve; if pipeline._ARTICLE_RE finds a number in the
 question, retriever._direct_lookup and, when it returns documents, these are the pool ("direct" path); else
 _semantic_search (k=MMR_K) + _bm25_search (k=BM25_K) -> _fuse -> _deduplicate -> first RERANK_POOL ("hybrid" path).
 The pool is then ordered by reranker.rerank with top_k = pool size (the system keeps the first RERANK_TOP_K = 6).
@@ -26,6 +28,7 @@ import funnel_core as fc
 
 OUT_JSON = ROOT / "diagnostics" / "retrieval_funnel.json"
 OUT_MD = ROOT / "diagnostics" / "RETRIEVAL_DIAGNOSTIC.md"
+TRANSLATIONS = ROOT / "diagnostics" / "translations.json"
 SEED = 20261022
 SETS = {"S1": "Stage 1", "S2": "Stage 2", "N": "Noisy set"}
 TITLE = re.compile(r"^\s*(chapitre|section|sous-section|titre|livre|paragraphe|partie|chap\.)\b", re.I)
@@ -51,6 +54,13 @@ def sha(p: Path) -> str:
     return hashlib.sha256(p.read_bytes()).hexdigest()
 
 
+def load_translations() -> dict:
+    """(set, id) -> French query, from diagnostics/translations.json (diagnostics/translate_skipped.py)."""
+    if not TRANSLATIONS.exists():
+        return {}
+    return {(x["set"], x["id"]): x["french_query"] for x in json.loads(TRANSLATIONS.read_text(encoding="utf-8"))["items"]}
+
+
 def funnel(vs, items: dict, rows11: dict, rows2: dict) -> tuple[list, list]:
     from pipeline import _ARTICLE_RE
     from retriever import (_semantic_search, _bm25_search, _get_bm25, _fuse, _deduplicate, _direct_lookup,
@@ -59,28 +69,39 @@ def funnel(vs, items: dict, rows11: dict, rows2: dict) -> tuple[list, list]:
     from config import MMR_K, BM25_K, RERANK_POOL
     bm25 = _get_bm25(vs)
     keys = lambda docs: [rae.key(d.metadata["chunk_id"]) for d in docs]
+    translations = load_translations()
     records, skipped = [], []
     for s, its in items.items():
         for it in its:
             q, base = it["question"], {"set": s, "id": it["id"], "language": it.get("language"), "noise_type": it.get("noise_type")}
-            if detect_arabic(q) or detect_english(q):
-                why = "Arabic: needs the LLM translation" if detect_arabic(q) else "detected as English: needs the LLM translation"
-                skipped.append(base | {"reason": why + " (French query not stored in the saved rows)"})
-                continue
+            other_lang = detect_arabic(q) or detect_english(q)
+            fq = q
+            if other_lang:
+                if (s, it["id"]) not in translations:
+                    why = "Arabic: needs the LLM translation" if detect_arabic(q) else "detected as English: needs the LLM translation"
+                    skipped.append(base | {"reason": why + " (no French query in diagnostics/translations.json)"})
+                    continue
+                fq = translations[(s, it["id"])]
             gold = rae.gold_set(it)
-            dense = _semantic_search(vs, q, None, k=MMR_K)
-            bm = _bm25_search(bm25, q, None, k=BM25_K) if bm25 else []
-            fused_full = _deduplicate(_fuse([dense, bm]))
+            dense = _semantic_search(vs, fq, None, k=MMR_K)
+            bm = _bm25_search(bm25, fq, None, k=BM25_K) if bm25 else []
+            lists = [dense, bm]
+            orig = []
+            if other_lang:                               # retriever.hybrid_retrieve: original-language dense list, k=10
+                orig = _semantic_search(vs, q, None, k=10)
+                lists.append(orig)
+            fused_full = _deduplicate(_fuse(lists))
             path, number, pool = "hybrid", None, fused_full[:RERANK_POOL]
             m = _ARTICLE_RE.search(q)
             if m:
                 direct = _direct_lookup(vs, m.group(0), None, MMR_K)
                 if direct:
                     path, number, pool = "direct", m.group(0), direct
-            reranked = rerank(q, pool, top_k=len(pool))
-            r = base | {"path": path, "direct_number": number,
+            reranked = rerank(fq, pool, top_k=len(pool))
+            r = base | {"path": path, "direct_number": number, "query_source": "translation" if other_lang else "as written",
                         "rank_dense": fc.rank_of(keys(dense), gold), "n_dense": len(dense),
                         "rank_bm25": fc.rank_of(keys(bm), gold), "n_bm25": len(bm),
+                        "rank_orig_lang": fc.rank_of(keys(orig), gold) if other_lang else None,
                         "rank_fused_full": fc.rank_of(keys(fused_full), gold), "n_fused_full": len(fused_full),
                         "pool_size": len(pool), "rank_pool": fc.rank_of(keys(pool), gold),
                         "rank_reranked": fc.rank_of(keys(reranked), gold)}
@@ -195,7 +216,7 @@ def class_rows(groups: dict) -> list:
 
 def markdown(doc: dict) -> str:
     recs, skipped = doc["records"], doc["skipped"]
-    L = ["# Retrieval diagnostic (v1.1 path, Stage 1, Stage 2, noisy set)", ""]
+    L = ["# Retrieval diagnostic (v1.1 path, db_v1_1, Stage 1, Stage 2, noisy set: answerable items, all languages)", ""]
     L += table("Definitions", ["Term", "Definition"],
                [[fc.CLASS_LABELS[c], {"top6": "gold rank 1-6 in the cross-encoder order of the pool used",
                                       "rerank_7_10": "gold in the pool, cross-encoder rank 7-10",
@@ -204,7 +225,8 @@ def markdown(doc: dict) -> str:
                                       "absent_from_pool": "gold in no candidate list (hybrid), or not in the direct-lookup pool (direct)"}[c]]
                 for c in fc.CLASSES] +
                [["direct path", "a number in the question (pipeline._ARTICLE_RE = \\b\\d+\\b) and retriever._direct_lookup returned documents: they are the pool"],
-                ["hybrid path", "dense (k=20) + BM25 (k=15) lists, reciprocal rank fusion, deduplication, first 20"],
+                ["hybrid path", "dense (k=20) + BM25 (k=15) lists on the French query (+ dense k=10 on the original question for Arabic/English), reciprocal rank fusion, deduplication, first 20"],
+                ["French query", "French items: the question as written; Arabic/English items: translate.translate_to_french, run once and stored in diagnostics/translations.json"],
                 ["Hit@k", "gold within the first k of the cross-encoder order of the pool used (the system keeps 6)"],
                 ["gold match", "source stem + article label (run_answer_eval.key / gold_set)"]])
     L += table("Items analysed and skipped", ["Set", "Answerable items", "Analysed", "Skipped", "Skip reasons"],
@@ -212,13 +234,22 @@ def markdown(doc: dict) -> str:
                  "; ".join(f"{why}: {n}" for why, n in Counter(k["reason"] for k in skipped if k["set"] == s).items()) or "-"]
                 for s in SETS])
     L += table("Skipped items by language", ["Set", "Language", "Skipped"],
-               [[SETS[s], lang, n] for (s, lang), n in sorted(Counter((k["set"], k["language"]) for k in skipped).items())])
+               [[SETS[s], lang, n] for (s, lang), n in sorted(Counter((k["set"], k["language"]) for k in skipped).items())]
+               or [["-", "-", 0]])
     hdr = ["Group", "n"] + [fc.CLASS_LABELS[c] for c in fc.CLASSES] + ["Hit@6", "Hit@8", "Hit@10"]
     L += table("Funnel classes per set", hdr, class_rows({SETS[s]: [r for r in recs if r["set"] == s] for s in SETS}))
     by_lang = defaultdict(list)
     for r in recs:
         by_lang[f"{SETS[r['set']]}, {r['language']}"].append(r)
     L += table("Funnel classes per set and language", hdr, class_rows(dict(sorted(by_lang.items()))))
+    L += table("Funnel classes per language (all three sets)", hdr,
+               class_rows({lang: [r for r in recs if r["language"] == lang] for lang in sorted({r["language"] for r in recs})}))
+    xl = [r for r in recs if r.get("query_source") == "translation"]
+    if xl:
+        L += table("Original-language dense list (Arabic/English items, k=10)",
+                   ["Set", "items", "gold in the original-language list", "gold only there (not in dense or BM25 on the French query)"],
+                   [[SETS[s], len(rs := [r for r in xl if r["set"] == s]), sum(r["rank_orig_lang"] is not None for r in rs),
+                     sum(r["rank_orig_lang"] is not None and r["list_flag"] == "absent_both" for r in rs)] for s in SETS])
     by_noise = defaultdict(list)
     for r in recs:
         if r["set"] == "N":
@@ -240,6 +271,11 @@ def markdown(doc: dict) -> str:
                  sum(r["saved_v11_hit6"] is not None and bool(fc.hit_at(r["rank_reranked"], 6)) == r["saved_v11_hit6"] for r in rs),
                  sum(r["saved_v11_hit6"] is not None and bool(fc.hit_at(r["rank_reranked"], 6)) != r["saved_v11_hit6"] for r in rs),
                  sum(r["saved_v11_hit6"] is None for r in rs)] for s in SETS])
+    diff = [r for r in recs if r["saved_v11_hit6"] is not None and bool(fc.hit_at(r["rank_reranked"], 6)) != r["saved_v11_hit6"]]
+    L += table("Items whose reproduced Hit@6 differs from the saved v1.1 row",
+               ["Set", "Id", "Language", "French query", "Saved v1.1 Hit@6", "Reproduced Hit@6", "Reproduced class"],
+               [[SETS[r["set"]], r["id"], r["language"], r.get("query_source", "as written"), r["saved_v11_hit6"],
+                 bool(fc.hit_at(r["rank_reranked"], 6)), fc.CLASS_LABELS[r["class"]]] for r in diff] or [["-"] * 7])
     L += table("v2 evidence where the reproduced v1.1 funnel missed (analysed items, not in top 6)",
                ["Set", "v1.1 missed", "v2 evidence has the gold", "v2 status clarify/refuse", "v2 row missing"],
                [[SETS[s], len(ms := [r for r in recs if r["set"] == s and r["class"] != "top6"]),
@@ -293,8 +329,14 @@ def markdown(doc: dict) -> str:
     return "\n".join(L)
 
 
+def open_index(path: Path):
+    from langchain_chroma import Chroma
+    from pipeline import get_embeddings
+    return Chroma(persist_directory=str(path), embedding_function=get_embeddings())
+
+
 def main():
-    from pipeline import load_vectorstore, get_embeddings
+    from pipeline import get_embeddings
     from config import DB_DIR, MMR_K, BM25_K, RERANK_POOL, RERANK_TOP_K, EMBEDDING_MODEL, RERANKER_MODEL
     import harness_core as hc
     db = Path(DB_DIR) / "chroma.sqlite3"
@@ -302,7 +344,9 @@ def main():
     items = items_by_set()
     rows11 = {s: saved_rows(s, "v1.1") for s in SETS}
     rows2 = {s: saved_rows(s, "v2") for s in SETS}
-    vs = load_vectorstore()
+    # --db COPY: open a byte copy of the index instead of config.DB_DIR (a Chroma open writes a row in acquire_write)
+    opened = Path(sys.argv[sys.argv.index("--db") + 1]) if "--db" in sys.argv else Path(DB_DIR)
+    vs = open_index(opened)
     records, skipped = funnel(vs, items, rows11, rows2)
     docs = index_docs(vs)
     client = get_embeddings()._client
@@ -314,10 +358,12 @@ def main():
     after = sha(db)
     fp = hc.system_fingerprint(ROOT, Path(DB_DIR))
     doc["run"] = {"index": f"{Path(DB_DIR).name} ({len(docs)} chunks)",
-                  "index file bytes identical before and after the run": before == after,
+                  "index opened": "byte copy of " + Path(DB_DIR).name if opened != Path(DB_DIR) else Path(DB_DIR).name,
+                  f"{Path(DB_DIR).name}/chroma.sqlite3 bytes identical before and after the run": before == after,
+                  "French queries of Arabic/English items": f"diagnostics/translations.json ({len(load_translations())} items)",
                   "system fingerprint": fp["sha256"], "embedding model": EMBEDDING_MODEL, "reranker": RERANKER_MODEL,
                   "MMR_K / BM25_K / RERANK_POOL / RERANK_TOP_K": f"{MMR_K} / {BM25_K} / {RERANK_POOL} / {RERANK_TOP_K}",
-                  "LLM calls": 0}
+                  "LLM calls in this run": "0 (translations made once by diagnostics/translate_skipped.py)"}
     OUT_JSON.write_text(json.dumps(doc, ensure_ascii=False, indent=1), encoding="utf-8")
     OUT_MD.write_text(markdown(doc) + "\n", encoding="utf-8")
     print(f"wrote {OUT_JSON.name}, {OUT_MD.name}; analysed {len(records)}, skipped {len(skipped)}; index unchanged: {before == after}")
