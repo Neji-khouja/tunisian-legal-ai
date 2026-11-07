@@ -10,6 +10,15 @@ reranker.py, pipeline.py, index path and chunk count):
 
 It equals the fingerprint of the pre-registration addendum (agent/LEARNING.md).
 
+## v2.1-dev wave 1
+
+System fingerprint after wave 1 (headings forward, index db_v1_2 with context and sub-chunks, strict direct lookup +
+union, cross-reference expansion, evidence headers; BM25 tokenizer unchanged), as printed by `python eval/preflight.py`:
+
+    v2.1-dev wave 1: d9ab1df83cb3c23dd0a53fa11241c5381b9dd0d703b3e1809dd4e783f54aa944   (index db_v1_2, 6112 entries / 6031 articles)
+
+All v2.1 switches are in config.py; INDEX_V12 = False and the other switches False give the v2 retrieval on db_v1_1.
+
 ## Files
 
 | File | What it is |
@@ -23,6 +32,9 @@ It equals the fingerprint of the pre-registration addendum (agent/LEARNING.md).
 | `retrieval_funnel.json` | Per-item records, skipped items, summaries, cross-reference and chunk statistics. |
 | `chroma_open_check.json` | Output of chroma_open_check.py. |
 | `RETRIEVAL_DIAGNOSTIC.md` | Tables. |
+| `build_v12.py` | Builds db_v1_2 (pipeline.build_index_v12; refuses db_v1_1) and appends the build facts to `index_v12_build.json`. |
+| `compare_v12.py` | Offline comparison on the 110 dev items: db_v1_1 with the switches off vs db_v1_2 with them on, BM25 tokenizer variants, evidence window 6/8/10. `--v11` takes a byte copy of db_v1_1. |
+| `compare_v12.json`, `COMPARISON_V12.md` | Its output (development data, not evidence of generalisation). |
 
 ## Commands (Windows cmd, from the repository root)
 
@@ -38,6 +50,9 @@ xcopy /e /i /q db_v1_1 %TEMP%\db_v1_1_copy
 python diagnostics\retrieval_diagnostic.py --db %TEMP%\db_v1_1_copy
 python diagnostics\chroma_open_check.py
 python diagnostics\retrieval_diagnostic.py --md-only
+python test_v21_retrieval.py
+python diagnostics\build_v12.py
+python diagnostics\compare_v12.py --v11 %TEMP%\db_v1_1_copy
 ```
 
 ## Notes on the run
