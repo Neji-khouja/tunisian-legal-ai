@@ -23,7 +23,7 @@ again and keeps the old row under "superseded".
 
 results/latency_benchmark.json is rewritten atomically after each question; the same command resumes. A Groq daily-quota
 error discards the question in progress and exits 75. Exit 1: a question ended in error, or a refusal (changed exam, other
-fingerprint, other selection). Only GROQ_API_KEY is used: this script has no key rotation, run_batch.py is never imported,
+fingerprint, other selection). Only GROQ_API_KEY is used: this script has no key rotation, run_batch.py (which once had one) is never imported,
 and any GROQ_API_KEY_<n> is removed from the environment of this process and of the v1 process.
 """
 import os
@@ -350,7 +350,7 @@ def prepare(system: str, worktree: Path, questions: list, warmup: dict, selectio
     import config  # noqa: F401  (load_dotenv, as in a harness run; the v1 process gets GROQ_API_KEY from this environment)
     drop_backup_keys()
     if "run_batch" in sys.modules:
-        sys.exit("REFUSED: run_batch.py (backup keys) is loaded")
+        sys.exit("REFUSED: run_batch.py is loaded (this script runs on its own, one key)")
     if not os.environ.get("GROQ_API_KEY"):
         sys.exit("REFUSED: GROQ_API_KEY is unset")
     hashes, diffs = hc.exam_check(ROOT / "eval" / "answer_set.json", ROOT / "eval" / "stages.json", ROOT / "eval" / "exam_hashes.txt")

@@ -31,8 +31,7 @@
     row degraded with the list in "fallbacks", re-run on resume; other warnings are not captured; --rerun-ids re-runs
     finished pairs (old row kept, the new one marked rerun/supersedes, the same command resumes); --exclude-ids drops
     items from --summarize
-(v) run_batch backup Groq keys: an agent daily quota stop reruns the system with the next key; other stops
-    (judge quota) or the last key: exit 75
+(v) run_batch has no Groq key rotation: an agent daily quota stop exits 75 at once, every run inherits the environment
 (r) system fingerprint: a harness (eval/) or agent test file change keeps it, an agent file or index change does not;
     --judge-only ignores provenance
 """
@@ -495,7 +494,6 @@ def test_reply_gold():
 
 def test_run_batch():
     import run_batch as rb
-    rb.groq_keys = lambda: []            # never the real .env in a test
     with tempfile.TemporaryDirectory() as d:
         tmp = Path(d)
         setup(tmp)
@@ -757,7 +755,6 @@ def test_judge_thinking_retry():
 def test_run_batch_loop():
     import os
     import run_batch as rb
-    rb.groq_keys = lambda: []            # never the real .env in a test
     import preflight
     with tempfile.TemporaryDirectory() as d:
         tmp = Path(d)
@@ -926,53 +923,31 @@ def test_fallbacks_rerun_exclude():
 
 
 
-def test_backup_keys():
+def test_no_key_rotation():
     import run_batch as rb
     with tempfile.TemporaryDirectory() as d:
         tmp = Path(d)
         setup(tmp)
         res = tmp / "results"
         res.mkdir()
+        calls = []
 
-        def go(keys, quota_on, reason):
-            """quota_on: the keys whose runs stop with 75 and run_state reason; other keys finish their rows."""
-            for p_ in res.glob("*.jsonl"):
-                p_.unlink()
-            rb.groq_keys, rb.KEY["i"], calls = (lambda: list(keys)), 0, []
-
-            def run(cmd, cwd=None, env=None):
-                sysname, key = cmd[cmd.index("--system") + 1], (env or {}).get("GROQ_API_KEY")
-                calls.append((sysname, key))
-                if key in quota_on:
-                    hc.write_state(res, {"reason": reason})
-                    return SimpleNamespace(returncode=hc.EXIT_QUOTA)
-                f = hc.ResultFile(rae.out_path(tmp / "answer_set.json", sysname, "1", res))
-                for i in cmd[cmd.index("--only-ids") + 1].split(","):
-                    if i not in f.finished():
-                        f.append({"id": i, "status": "done"})
-                return SimpleNamespace(returncode=0)
-            rb.RUN = run
-            buf, code = io.StringIO(), None
-            with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
-                try:
-                    rb.main(["--stage", "1", "--set", str(tmp / "answer_set.json"), "--stages-file",
-                             str(tmp / "stages.json"), "--results-dir", str(res), "--questions-per-run", "9", "--loop"])
-                except SystemExit as e:
-                    code = e.code
-            return code, buf.getvalue(), calls
-        code, out, calls = go(["k1", "k2"], {"k1"}, "agent daily quota")
-        check("(v) agent daily quota on key 1: the same system runs again with key 2, then key 2 for the rest, exit 0",
-              code in (None, 0) and calls == [("v1", "k1"), ("v1", "k2"), ("v1.1", "k2"), ("v2", "k2")]
-              and "switching to key 2" in out and "k1" not in out and "k2" not in out, f"{code!r} {calls}")
-        code, out, calls = go(["k1", "k2"], {"k1", "k2"}, "agent daily quota")
-        check("(v) every key at its quota: exit 75 after the last one", code == 75 and calls == [("v1", "k1"), ("v1", "k2")],
-              f"{code!r} {calls}")
-        code, out, calls = go(["k1", "k2"], {"k1"}, "judge daily quota")
-        check("(v) a judge quota stop does not switch the Groq key: exit 75", code == 75 and calls == [("v1", "k1")],
-              f"{code!r} {calls}")
-        code, out, calls = go([], set(), "")
-        check("(v) no key found: the runs inherit the environment unchanged", code in (None, 0) and
-              [k for _, k in calls] == [None] * 3, f"{code!r} {calls}")
+        def run(cmd, cwd=None, env=None):
+            calls.append((cmd[cmd.index("--system") + 1], env))
+            hc.write_state(res, {"reason": "agent daily quota"})
+            return SimpleNamespace(returncode=hc.EXIT_QUOTA)
+        rb.RUN = run
+        buf, code = io.StringIO(), None
+        with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
+            try:
+                rb.main(["--stage", "1", "--set", str(tmp / "answer_set.json"), "--stages-file",
+                         str(tmp / "stages.json"), "--results-dir", str(res), "--questions-per-run", "9", "--loop"])
+            except SystemExit as e:
+                code = e.code
+        check("(v) agent daily quota: exit 75 at once, the system is not run again, the environment is inherited",
+              code == 75 and calls == [("v1", None)], f"{code!r} {calls}")
+        check("(v) run_batch has no key rotation left", not hasattr(rb, "groq_keys") and not hasattr(rb, "KEY")
+              and "GROQ_API_KEY_" not in Path(rb.__file__).read_text(encoding="utf-8"))
 
 
 def test_judge_check():
@@ -1110,7 +1085,7 @@ def test_usage_in_graph():
 if __name__ == "__main__":
     for t in (test_quota_and_resume, test_per_minute_retry, test_changed_exam, test_other_set, test_judge_only,
               test_judge_errors, test_gate_judge, test_clarify_subsets, test_reply_gold, test_run_batch, test_crash_isolation, test_fingerprint,
-              test_judge_thinking_retry, test_run_batch_loop, test_backup_keys, test_fallbacks_rerun_exclude, test_judge_check,
+              test_judge_thinking_retry, test_run_batch_loop, test_no_key_rotation, test_fallbacks_rerun_exclude, test_judge_check,
               test_wait_and_budget,
               test_classes, test_usage_in_graph):
         t()

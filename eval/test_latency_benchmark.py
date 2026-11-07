@@ -382,7 +382,7 @@ def test_keys():
         del os.environ["GROQ_API_KEY"]
     else:
         os.environ["GROQ_API_KEY"] = keep
-    check("keys: run_batch.py (the only key rotation) is not loaded", "run_batch" not in sys.modules)
+    check("keys: run_batch.py is not loaded", "run_batch" not in sys.modules)
     os.environ["GROQ_API_KEY_3"] = "z"
     lb.measure(items(1)[0], Fake(), lambda: {"n429": 0, "client_wait": 0.0, "llm_retry_wait": 0.0})
     check("keys: a backup that load_dotenv brought back is removed before the next question", "GROQ_API_KEY_3" not in os.environ)
