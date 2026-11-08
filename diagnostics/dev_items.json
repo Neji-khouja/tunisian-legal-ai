@@ -1,0 +1,2080 @@
+[
+ {
+  "set": "S1",
+  "id": "ac02",
+  "language": "ar",
+  "question": "في تحكيم دولي، لاحظت أن أحد شروط اتفاق التحكيم لم يُحترم لكنني واصلت الإجراءات دون أن أحتج. هل يمكنني التمسك بهذه المخالفة لاحقاً؟",
+  "gold": [
+   {
+    "source": "ArbitrageFr.pdf",
+    "article": "50",
+    "chunk_ids": [
+     "ArbitrageFr/s01/50"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac06",
+  "language": "fr",
+  "question": "Le juge a confié un bien disputé à une tierce personne en attendant la fin du procès, et ce bien a été détruit dans un incendie. Dans quels cas ce gardien doit-il quand même en répondre ?",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "1050",
+    "chunk_ids": [
+     "COC/s02/1050"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac10",
+  "language": "en",
+  "question": "I contributed a machine to a partnership as my share, and it turns out to have a hidden defect. What am I liable for toward my partners?",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "1265",
+    "chunk_ids": [
+     "COC/s02/1265"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac11",
+  "language": "fr",
+  "question": "À la fin d'un bail de bétail, comment le propriétaire récupère-t-il son troupeau et que devient le surplus des animaux ?",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "1441",
+    "chunk_ids": [
+     "COC/s02/1441"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac13",
+  "language": "fr",
+  "question": "Mon cocontractant s'était réservé le droit de mettre fin à notre contrat, mais il a perdu la raison. Qui va décider à sa place s'il faut maintenir ou rompre le contrat ?",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "125",
+    "chunk_ids": [
+     "COC/s02/125"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac14",
+  "language": "fr",
+  "question": "J'ai demandé à ma banque de virer une somme à un fournisseur, et j'apprends qu'il vient d'être déclaré en faillite. Puis-je encore m'opposer à ce virement ?",
+  "gold": [
+   {
+    "source": "CommerceFr.pdf",
+    "article": "687",
+    "chunk_ids": [
+     "CommerceFr/s01/687"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac15",
+  "language": "fr",
+  "question": "J'ai payé un effet de commerce à la place d'un des signataires pour lui rendre service. Quels recours ai-je ensuite, et puis-je le remettre en circulation en le transmettant à quelqu'un ?",
+  "gold": [
+   {
+    "source": "CommerceFr.pdf",
+    "article": "328",
+    "chunk_ids": [
+     "CommerceFr/s01/328"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac17",
+  "language": "fr",
+  "question": "J'ai reçu une traite payable à vue. Dans quel délai dois-je la présenter pour être payé ?",
+  "gold": [
+   {
+    "source": "CommerceFr.pdf",
+    "article": "291",
+    "chunk_ids": [
+     "CommerceFr/s01/291"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac21",
+  "language": "ar",
+  "question": "صدر حكم في بلد أجنبي يضر بمصالحي مع أنني لم أكن طرفاً في القضية. هل يمكنني أن أطلب عدم الاحتجاج به ضدي في تونس، وأمام أي محكمة؟",
+  "gold": [
+   {
+    "source": "DIPFR.pdf",
+    "article": "15",
+    "chunk_ids": [
+     "DIPFR/s01/15"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "DIPFR.pdf",
+    "article": "16",
+    "chunk_ids": [
+     "DIPFR/s01/16"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac22",
+  "language": "fr",
+  "question": "J'ai eu un accident de voiture en Libye avec un autre automobiliste ; nous habitons tous les deux en Tunisie et nos véhicules y sont immatriculés. Quelle loi s'applique à l'indemnisation ?",
+  "gold": [
+   {
+    "source": "DIPFR.pdf",
+    "article": "73",
+    "chunk_ids": [
+     "DIPFR/s01/73"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac23",
+  "language": "en",
+  "question": "My brothers and I can't agree on who should keep our late father's family papers and keepsakes. What can the court decide?",
+  "gold": [
+   {
+    "source": "dtreelFr.pdf",
+    "article": "141",
+    "chunk_ids": [
+     "dtreelFr/s01/141"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac24",
+  "language": "en",
+  "question": "When a debtor's property is sold and the money isn't enough to pay everyone, how is it shared among the creditors?",
+  "gold": [
+   {
+    "source": "dtreelFr.pdf",
+    "article": "192",
+    "chunk_ids": [
+     "dtreelFr/s01/192"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac29",
+  "language": "fr",
+  "question": "Quelle peine encourt un parent qui prive régulièrement son enfant de nourriture et de soins ?",
+  "gold": [
+   {
+    "source": "EnfantFr.pdf",
+    "article": "224",
+    "chunk_ids": [
+     "EnfantFr/s04/224"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "PenalFr.pdf",
+    "article": "224",
+    "chunk_ids": [
+     "PenalFr/s02/224"
+    ],
+    "role": "alternative"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac33",
+  "language": "fr",
+  "question": "Dans un procès civil, l'autre partie conteste que je sois de nationalité tunisienne. Le parquet doit-il intervenir, et faut-il accomplir une formalité auprès du ministère avant que le tribunal ne statue ?",
+  "gold": [
+   {
+    "source": "NationaliteFr.pdf",
+    "article": "55",
+    "chunk_ids": [
+     "NationaliteFr/s01/55"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "NationaliteFr.pdf",
+    "article": "56",
+    "chunk_ids": [
+     "NationaliteFr/s01/56"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac35",
+  "language": "en",
+  "question": "Someone who illegally held a person captive lets them go of their own accord on the third day. What sentence do they face?",
+  "gold": [
+   {
+    "source": "PenalFr.pdf",
+    "article": "252",
+    "chunk_ids": [
+     "PenalFr/s02/252"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac36",
+  "language": "fr",
+  "question": "Après une condamnation pour trafic de stupéfiants, la personne est-elle surveillée par l'administration une fois sa peine purgée, et pendant combien de temps ?",
+  "gold": [
+   {
+    "source": "PenalFr.pdf",
+    "article": "26",
+    "chunk_ids": [
+     "PenalFr/s02/26"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac41",
+  "language": "fr",
+  "question": "Dans mon procès civil, le juge chargé de préparer le dossier nous a convoqués mais aucune des parties ne s'est présentée. L'affaire est-elle bloquée ?",
+  "gold": [
+   {
+    "source": "Procedurecivilecom.pdf",
+    "article": "89",
+    "chunk_ids": [
+     "Procedurecivilecom/s01/89"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac43",
+  "language": "en",
+  "question": "I bought a property at a court auction. How long do I have to record the sale on the land title, and what does the land registry do if the price has not yet been paid?",
+  "gold": [
+   {
+    "source": "Procedurecivilecom.pdf",
+    "article": "457",
+    "chunk_ids": [
+     "Procedurecivilecom/s01/457"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "Procedurecivilecom.pdf",
+    "article": "458",
+    "chunk_ids": [
+     "Procedurecivilecom/s01/458"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac44",
+  "language": "ar",
+  "question": "بعد صدور الحكم في توزيع ثمن عقار بيع بالمزاد بين الدائنين، ما الذي يجب تقديمه لإدارة الملكية العقارية حتى تشطب الرهون المرسمة؟",
+  "gold": [
+   {
+    "source": "Procedurecivilecom.pdf",
+    "article": "480",
+    "chunk_ids": [
+     "Procedurecivilecom/s01/480"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac47",
+  "language": "en",
+  "question": "How many judges sit on the Court of Cassation when it hears a criminal appeal, and can a judge who dealt with the case earlier take part?",
+  "gold": [
+   {
+    "source": "ProcedurepenaleFr.pdf",
+    "article": "268",
+    "chunk_ids": [
+     "ProcedurepenaleFr/s02/268"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac49",
+  "language": "fr",
+  "question": "Dans quels cas la Tunisie refuse-t-elle de livrer à un autre pays une personne qu'il réclame pour la juger ?",
+  "gold": [
+   {
+    "source": "ProcedurepenaleFr.pdf",
+    "article": "312",
+    "chunk_ids": [
+     "ProcedurepenaleFr/s02/312"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "ProcedurepenaleFr.pdf",
+    "article": "313",
+    "chunk_ids": [
+     "ProcedurepenaleFr/s02/313"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac51",
+  "language": "en",
+  "question": "What fine can someone face for knowingly taking on the job of valuing contributions in kind to a company when the law bars them from that role?",
+  "gold": [
+   {
+    "source": "societeFr.pdf",
+    "article": "184",
+    "chunk_ids": [
+     "societeFr/s01/184"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac55",
+  "language": "fr",
+  "question": "Que doit obligatoirement contenir le compte rendu écrit d'une assemblée générale d'actionnaires ?",
+  "gold": [
+   {
+    "source": "societeFr.pdf",
+    "article": "285",
+    "chunk_ids": [
+     "societeFr/s01/285"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac56",
+  "language": "fr",
+  "question": "Lors d'une augmentation de capital d'une société anonyme, que se passe-t-il si une partie des nouvelles actions ne trouve pas preneur ?",
+  "gold": [
+   {
+    "source": "societeFr.pdf",
+    "article": "299",
+    "chunk_ids": [
+     "societeFr/s01/299"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac59",
+  "language": "fr",
+  "question": "Mon père a prévu dans son testament de prêter une grosse somme d'argent à un ami. Cette clause doit-elle être exécutée en entier ?",
+  "gold": [
+   {
+    "source": "Statutpersonnel.pdf",
+    "article": "190",
+    "chunk_ids": [
+     "Statutpersonnel/s01/190"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "Statutpersonnel.pdf",
+    "article": "179",
+    "chunk_ids": [
+     "Statutpersonnel/s01/179"
+    ],
+    "role": "alternative"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac62",
+  "language": "fr",
+  "question": "Que risque un salarié qui participe à une grève illégale ou qui occupe les locaux de l'entreprise pendant cette grève ?",
+  "gold": [
+   {
+    "source": "travailFr.pdf",
+    "article": "388",
+    "chunk_ids": [
+     "travailFr/s01/388"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac63",
+  "language": "ar",
+  "question": "هل يجب على صاحب العمل أن يكون قادراً على إثبات أنه صرّح بمؤسسته وبالانتدابات التي قام بها، وأمام من؟",
+  "gold": [
+   {
+    "source": "travailFr.pdf",
+    "article": "286",
+    "chunk_ids": [
+     "travailFr/s01/286"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac66",
+  "language": "ar",
+  "question": "ما هي واجبات العامل في مجال الصحة والسلامة المهنية داخل المؤسسة؟",
+  "gold": [
+   {
+    "source": "travailFr.pdf",
+    "article": "152-3",
+    "chunk_ids": [
+     "travailFr/s01/152-3"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac67",
+  "language": "fr",
+  "question": "Quel est le rôle du Président de la République à l'égard de la Constitution, des traités et de la sécurité du pays ?",
+  "gold": [
+   {
+    "source": "tun_RecAcFreeLi.pdf",
+    "article": "91",
+    "chunk_ids": [
+     "tun_RecAcFreeLi/s00/91"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S1",
+  "id": "ac68",
+  "language": "ar",
+  "question": "ما هي الهياكل التي تتولى رعاية المصالح المحلية والجهوية في تونس؟",
+  "gold": [
+   {
+    "source": "tun_RecAcFreeLi.pdf",
+    "article": "133",
+    "chunk_ids": [
+     "tun_RecAcFreeLi/s00/133"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac01",
+  "language": "fr",
+  "question": "J'ai signé avec une société étrangère un contrat qui prévoit un arbitrage international, mais elle m'a assigné devant un tribunal tunisien. Jusqu'à quand puis-je demander que l'affaire soit renvoyée aux arbitres ?",
+  "gold": [
+   {
+    "source": "ArbitrageFr.pdf",
+    "article": "52",
+    "chunk_ids": [
+     "ArbitrageFr/s01/52"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac03",
+  "language": "fr",
+  "question": "Une sentence arbitrale a été rendue en ma faveur à l'étranger. Puis-je la faire exécuter en Tunisie, devant quelle juridiction et avec quels documents ?",
+  "gold": [
+   {
+    "source": "ArbitrageFr.pdf",
+    "article": "79",
+    "chunk_ids": [
+     "ArbitrageFr/s01/79"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "ArbitrageFr.pdf",
+    "article": "80",
+    "chunk_ids": [
+     "ArbitrageFr/s01/80"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac04",
+  "language": "ar",
+  "question": "أعطيت شخصاً مبلغاً من المال ليتاجر به على أن نقتسم الربح، فقام بعمليات تفوق المبلغ الذي سلمته إياه. من يتحمل تبعات هذه العمليات الزائدة؟",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "1203",
+    "chunk_ids": [
+     "COC/s02/1203"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac05",
+  "language": "fr",
+  "question": "J'ai confié à un ami, sans rien signer, des bijoux qui valent environ 3 000 dinars. La loi exigeait-elle un écrit pour cette remise en garde, et y a-t-il des situations où l'on peut s'en passer ?",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "1003",
+    "chunk_ids": [
+     "COC/s02/1003"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "COC.pdf",
+    "article": "473",
+    "chunk_ids": [
+     "COC/s02/473"
+    ],
+    "role": "alternative"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac07",
+  "language": "ar",
+  "question": "اتفقت مع شخص على أن يحرس أمتعتي لمدة سنة مقابل أجر، لكن العقد انتهى بعد أربعة أشهر فقط. هل يستحق الأجر المتفق عليه كاملاً؟",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "1030",
+    "chunk_ids": [
+     "COC/s02/1030"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac08",
+  "language": "fr",
+  "question": "J'ai chargé quelqu'un de régler une affaire en mon nom. Une fois sa mission terminée, qu'est-ce que je lui dois, même si l'affaire n'a pas abouti ?",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "1142",
+    "chunk_ids": [
+     "COC/s02/1142"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac09",
+  "language": "en",
+  "question": "Two people each hold a written deed for the same property and neither of them occupies it. Whose claim prevails?",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "490",
+    "chunk_ids": [
+     "COC/s02/490"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac12",
+  "language": "fr",
+  "question": "J'avais confié mon capital à un commerçant pour qu'il le fasse travailler contre une part des bénéfices. Combien de temps après la fin de cet accord puis-je encore agir en justice contre lui ?",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "1225",
+    "chunk_ids": [
+     "COC/s02/1225"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac16",
+  "language": "ar",
+  "question": "فتح البنك لفائدتي اعتماداً مستندياً غير قابل للإلغاء. هل يمكن للبنك أن يلغيه أو يغيّر شروطه دون موافقتي؟",
+  "gold": [
+   {
+    "source": "CommerceFr.pdf",
+    "article": "724",
+    "chunk_ids": [
+     "CommerceFr/s01/724"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac18",
+  "language": "ar",
+  "question": "أرسلت بضاعة مع شركة نقل على أن يدفع المرسَل إليه أجرة النقل عند الاستلام. من الملزم فعلاً بدفع أجرة النقل؟",
+  "gold": [
+   {
+    "source": "CommerceFr.pdf",
+    "article": "632",
+    "chunk_ids": [
+     "CommerceFr/s01/632"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac19",
+  "language": "fr",
+  "question": "Après la faillite d'un commerçant, un paiement qu'il avait fait par chèque juste avant est annulé. Contre qui peut-on agir pour récupérer la somme ?",
+  "gold": [
+   {
+    "source": "CommerceFr.pdf",
+    "article": "464",
+    "chunk_ids": [
+     "CommerceFr/s01/464"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac20",
+  "language": "fr",
+  "question": "Un État étranger refuse de payer ce qu'il me doit malgré une décision de justice. Puis-je faire saisir des biens qu'il possède en Tunisie ?",
+  "gold": [
+   {
+    "source": "DIPFR.pdf",
+    "article": "23",
+    "chunk_ids": [
+     "DIPFR/s01/23"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "DIPFR.pdf",
+    "article": "24",
+    "chunk_ids": [
+     "DIPFR/s01/24"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac25",
+  "language": "fr",
+  "question": "J'ai un appartement dans un immeuble en copropriété et je voudrais le louer meublé à des touristes pour quelques jours à chaque fois. Ai-je besoin d'une autorisation ?",
+  "gold": [
+   {
+    "source": "dtreelFr.pdf",
+    "article": "102",
+    "chunk_ids": [
+     "dtreelFr/s01/102"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac26",
+  "language": "fr",
+  "question": "J'ai acheté une terre agricole vendue par l'État et je l'ai louée à un voisin. Quelle amende est-ce que je risque ?",
+  "gold": [
+   {
+    "source": "dtreelFr.pdf",
+    "article": "27-bis",
+    "chunk_ids": [
+     "dtreelFr/s06/27-bis"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac27",
+  "language": "ar",
+  "question": "هل يمكن الطعن بالتعقيب في حكم المحكمة العقارية الذي يأذن بتسجيل عقار، وفي أي حالات؟",
+  "gold": [
+   {
+    "source": "dtreelFr.pdf",
+    "article": "357-bis",
+    "chunk_ids": [
+     "dtreelFr/s01/357-bis"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac28",
+  "language": "fr",
+  "question": "Un journal a publié la photo et le nom d'un adolescent poursuivi devant le juge. Que risque l'auteur de la publication ?",
+  "gold": [
+   {
+    "source": "EnfantFr.pdf",
+    "article": "121",
+    "chunk_ids": [
+     "EnfantFr/s01/121"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac30",
+  "language": "ar",
+  "question": "إذا ضُبط طفل وهو يتعاطى المخدرات، هل يمكن للمحكمة أن تُلزمه بالخضوع للعلاج؟",
+  "gold": [
+   {
+    "source": "EnfantFr.pdf",
+    "article": "19-bis",
+    "chunk_ids": [
+     "EnfantFr/s04/19-bis"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac31",
+  "language": "fr",
+  "question": "Un site internet diffuse des photos et des informations sur un enfant mêlé à une affaire judiciaire. Que peut faire le tribunal pour faire cesser cela et, en cas d'extrême urgence, qui peut saisir le juge des référés ?",
+  "gold": [
+   {
+    "source": "EnfantFr.pdf",
+    "article": "97",
+    "chunk_ids": [
+     "EnfantFr/s01/97"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "EnfantFr.pdf",
+    "article": "98",
+    "chunk_ids": [
+     "EnfantFr/s01/98"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac32",
+  "language": "fr",
+  "question": "J'ai déposé une demande de naturalisation tunisienne. Comment est-elle examinée, et que se passe-t-il si je ne remplis pas les conditions ?",
+  "gold": [
+   {
+    "source": "NationaliteFr.pdf",
+    "article": "42",
+    "chunk_ids": [
+     "NationaliteFr/s01/42"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "NationaliteFr.pdf",
+    "article": "43",
+    "chunk_ids": [
+     "NationaliteFr/s01/43"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac34",
+  "language": "fr",
+  "question": "Un mariage célébré à l'étranger compte-t-il pour la nationalité tunisienne, quelle que soit la façon dont il a été célébré ?",
+  "gold": [
+   {
+    "source": "NationaliteFr.pdf",
+    "article": "29",
+    "chunk_ids": [
+     "NationaliteFr/s01/29"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac37",
+  "language": "ar",
+  "question": "ما هي عقوبة من يحرق أو يتلف سجلات أو وثائق أصلية صادرة عن السلطة العمومية؟",
+  "gold": [
+   {
+    "source": "PenalFr.pdf",
+    "article": "160",
+    "chunk_ids": [
+     "PenalFr/s02/160"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac38",
+  "language": "fr",
+  "question": "Quelqu'un emmène, sans violence ni ruse, un enfant de 12 ans loin de la famille à qui il était confié. Quelle peine risque-t-il ?",
+  "gold": [
+   {
+    "source": "PenalFr.pdf",
+    "article": "238",
+    "chunk_ids": [
+     "PenalFr/s02/238"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac39",
+  "language": "fr",
+  "question": "Que risque une personne qui s'évade de prison, selon qu'elle attend encore son jugement ou qu'elle purge déjà sa peine ?",
+  "gold": [
+   {
+    "source": "PenalFr.pdf",
+    "article": "146",
+    "chunk_ids": [
+     "PenalFr/s02/146"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "PenalFr.pdf",
+    "article": "147",
+    "chunk_ids": [
+     "PenalFr/s02/147"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac40",
+  "language": "en",
+  "question": "Several creditors have registered seizure orders against my land title. Can the seizure be removed from the title if just one of them agrees?",
+  "gold": [
+   {
+    "source": "Procedurecivilecom.pdf",
+    "article": "455",
+    "chunk_ids": [
+     "Procedurecivilecom/s01/455"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac42",
+  "language": "ar",
+  "question": "أريد رفع دعوى نفقة على طليقي الذي يسكن في ولاية أخرى. هل يمكنني رفعها أمام محكمة المكان الذي أقيم فيه؟",
+  "gold": [
+   {
+    "source": "Procedurecivilecom.pdf",
+    "article": "36",
+    "chunk_ids": [
+     "Procedurecivilecom/s01/36"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac45",
+  "language": "fr",
+  "question": "Un créancier a fait inscrire une opposition sur mon terrain. Puis-je encore le vendre ou l'hypothéquer et faire enregistrer l'opération ?",
+  "gold": [
+   {
+    "source": "Procedurecivilecom.pdf",
+    "article": "328",
+    "chunk_ids": [
+     "Procedurecivilecom/s01/328"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac46",
+  "language": "fr",
+  "question": "J'ai demandé la révision de ma condamnation pénale. Comment la juridiction va-t-elle examiner ma demande ?",
+  "gold": [
+   {
+    "source": "ProcedurepenaleFr.pdf",
+    "article": "281",
+    "chunk_ids": [
+     "ProcedurepenaleFr/s02/281"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac48",
+  "language": "fr",
+  "question": "Un juge étranger veut faire accomplir un acte d'enquête en Tunisie dans une affaire pénale. Par quelle voie sa demande doit-elle passer ?",
+  "gold": [
+   {
+    "source": "ProcedurepenaleFr.pdf",
+    "article": "331",
+    "chunk_ids": [
+     "ProcedurepenaleFr/s02/331"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac50",
+  "language": "en",
+  "question": "Can a prisoner held in Tunisia be sent abroad to be confronted with someone in a foreign case, and how is that requested?",
+  "gold": [
+   {
+    "source": "ProcedurepenaleFr.pdf",
+    "article": "335",
+    "chunk_ids": [
+     "ProcedurepenaleFr/s02/335"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac52",
+  "language": "en",
+  "question": "In a limited liability company, who calls the members' general meeting and how much notice must be given? Can minority members force the manager to call one?",
+  "gold": [
+   {
+    "source": "societeFr.pdf",
+    "article": "126",
+    "chunk_ids": [
+     "societeFr/s01/126"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "societeFr.pdf",
+    "article": "127",
+    "chunk_ids": [
+     "societeFr/s01/127"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac53",
+  "language": "fr",
+  "question": "Je possède des actions privilégiées qui ne me donnent pas le droit de voter. Si l'assemblée décide de dissoudre la société avant son terme, puis-je m'y opposer ?",
+  "gold": [
+   {
+    "source": "societeFr.pdf",
+    "article": "362",
+    "chunk_ids": [
+     "societeFr/s01/362"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac54",
+  "language": "en",
+  "question": "Can members of a company's supervisory board be held liable for decisions taken by the management board?",
+  "gold": [
+   {
+    "source": "societeFr.pdf",
+    "article": "255",
+    "chunk_ids": [
+     "societeFr/s01/255"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac57",
+  "language": "fr",
+  "question": "Une femme est décédée en laissant son mari, sa mère, son grand-père paternel, un frère germain et deux frères utérins. Comment sa succession est-elle partagée ?",
+  "gold": [
+   {
+    "source": "Statutpersonnel.pdf",
+    "article": "145",
+    "chunk_ids": [
+     "Statutpersonnel/s01/145"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac58",
+  "language": "ar",
+  "question": "متى يصبح الطفل الموضوع تحت الولاية راشداً وقادراً على التصرف في كل شؤونه المدنية بنفسه؟",
+  "gold": [
+   {
+    "source": "Statutpersonnel.pdf",
+    "article": "157",
+    "chunk_ids": [
+     "Statutpersonnel/s01/157"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "Statutpersonnel.pdf",
+    "article": "153",
+    "chunk_ids": [
+     "Statutpersonnel/s01/153"
+    ],
+    "role": "alternative"
+   },
+   {
+    "source": "COC.pdf",
+    "article": "7",
+    "chunk_ids": [
+     "COC/s02/7"
+    ],
+    "role": "alternative"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac60",
+  "language": "fr",
+  "question": "Dans quels cas un legs prévu dans un testament devient-il sans effet ?",
+  "gold": [
+   {
+    "source": "Statutpersonnel.pdf",
+    "article": "197",
+    "chunk_ids": [
+     "Statutpersonnel/s01/197"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac61",
+  "language": "en",
+  "question": "If a young person attends vocational training courses without signing an apprenticeship contract, do the apprenticeship rules still apply to them?",
+  "gold": [
+   {
+    "source": "travailFr.pdf",
+    "article": "363",
+    "chunk_ids": [
+     "travailFr/s01/363"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac64",
+  "language": "fr",
+  "question": "Je suis représentant de commerce : qui me délivre ma carte professionnelle et dois-je la faire renouveler ?",
+  "gold": [
+   {
+    "source": "travailFr.pdf",
+    "article": "423",
+    "chunk_ids": [
+     "travailFr/s01/423"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "travailFr.pdf",
+    "article": "424",
+    "chunk_ids": [
+     "travailFr/s01/424"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac65",
+  "language": "fr",
+  "question": "Mon entreprise veut, à titre exceptionnel, prolonger la durée du travail de ses salariés comme le permet l'arrêté de sa profession. Quelles démarches doit-elle accomplir auprès de l'inspection du travail ?",
+  "gold": [
+   {
+    "source": "travailFr.pdf",
+    "article": "87",
+    "chunk_ids": [
+     "travailFr/s01/87"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac69",
+  "language": "en",
+  "question": "What does the Tunisian flag look like?",
+  "gold": [
+   {
+    "source": "tun_RecAcFreeLi.pdf",
+    "article": "8",
+    "chunk_ids": [
+     "tun_RecAcFreeLi/s00/8"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "S2",
+  "id": "ac70",
+  "language": "en",
+  "question": "When does Tunisia's parliament hold its regular yearly session, and who can call it back during the recess?",
+  "gold": [
+   {
+    "source": "tun_RecAcFreeLi.pdf",
+    "article": "71",
+    "chunk_ids": [
+     "tun_RecAcFreeLi/s00/71"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": null
+ },
+ {
+  "set": "N",
+  "id": "n_ac01",
+  "language": "fr",
+  "question": "jai signe avec une societe etrangere un contrat qui prevoit un arbitrage internationnal mais elle ma assigné devant un tribunal tunisien jusqua quand je peux demander que laffaire soit renvoyee aux arbitres",
+  "gold": [
+   {
+    "source": "ArbitrageFr.pdf",
+    "article": "52",
+    "chunk_ids": [
+     "ArbitrageFr/s01/52"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "typos"
+ },
+ {
+  "set": "N",
+  "id": "n_ac03",
+  "language": "fr",
+  "question": "J'ai obtenu à l'étranger un jugement d'arbitrage en ma faveur. Est-ce que je peux le faire appliquer en Tunisie, auprès de quel tribunal et avec quels papiers ?",
+  "gold": [
+   {
+    "source": "ArbitrageFr.pdf",
+    "article": "79",
+    "chunk_ids": [
+     "ArbitrageFr/s01/79"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "ArbitrageFr.pdf",
+    "article": "80",
+    "chunk_ids": [
+     "ArbitrageFr/s01/80"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "wrong_term"
+ },
+ {
+  "set": "N",
+  "id": "n_ac04",
+  "language": "ar",
+  "question": "أعطيت صديقي مالاً ليشتغل به في البيع والشراء ونتقاسم ما يربحه، لكنه دخل في صفقات أكبر من المال الذي سلّمته له. هل أتحمل أنا نتيجة تلك الصفقات أم هو؟",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "1203",
+    "chunk_ids": [
+     "COC/s02/1203"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "describe"
+ },
+ {
+  "set": "N",
+  "id": "n_ac05",
+  "language": "fr",
+  "question": "g filé mes bijoux à un pote pr qu'il me les garde, genre 3000 dinars, on a rien signé... fallait un papier écrit ou pas ? et y a des cas où c pas obligé ?",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "1003",
+    "chunk_ids": [
+     "COC/s02/1003"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "COC.pdf",
+    "article": "473",
+    "chunk_ids": [
+     "COC/s02/473"
+    ],
+    "role": "alternative"
+   }
+  ],
+  "noise_type": "informal"
+ },
+ {
+  "set": "N",
+  "id": "n_ac07",
+  "language": "ar",
+  "question": "اتفقت مع شخص علي ان يحرس امتعتي لمده سنه مقابل اجر لكن العقد انتهي بعد اربعه اشهر فقط هل يستحق الاجر المتفق عليه كاملا",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "1030",
+    "chunk_ids": [
+     "COC/s02/1030"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "typos"
+ },
+ {
+  "set": "N",
+  "id": "n_ac08",
+  "language": "fr",
+  "question": "J'ai pris un intermédiaire pour régler une affaire à ma place. Une fois son travail fini, qu'est-ce que je lui dois, même si l'affaire n'a pas réussi ?",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "1142",
+    "chunk_ids": [
+     "COC/s02/1142"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "wrong_term"
+ },
+ {
+  "set": "N",
+  "id": "n_ac09",
+  "language": "en",
+  "question": "Two people each have a signed paper saying the same house is theirs, and nobody is living there. Which of the two wins?",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "490",
+    "chunk_ids": [
+     "COC/s02/490"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "describe"
+ },
+ {
+  "set": "N",
+  "id": "n_ac12",
+  "language": "fr",
+  "question": "j'avais filé mon argent à un commerçant pour qu'il le fasse tourner et on partageait les bénefs. c fini maintenant, j'ai combien de temps pour le trainer au tribunal ?",
+  "gold": [
+   {
+    "source": "COC.pdf",
+    "article": "1225",
+    "chunk_ids": [
+     "COC/s02/1225"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "informal"
+ },
+ {
+  "set": "N",
+  "id": "n_ac16",
+  "language": "ar",
+  "question": "فتح البنك لفائدتي اعتمادا مستنديا غير قابل للالغاء هل يمكن للبنك ان يلغيه او يغير شروطه دون موافقتى",
+  "gold": [
+   {
+    "source": "CommerceFr.pdf",
+    "article": "724",
+    "chunk_ids": [
+     "CommerceFr/s01/724"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "typos"
+ },
+ {
+  "set": "N",
+  "id": "n_ac18",
+  "language": "ar",
+  "question": "أرسلت سلعة مع شركة شحن واتفقنا أن الزبون يدفع ثمن التوصيل عند الاستلام. من هو المطالب في الحقيقة بدفع ثمن التوصيل؟",
+  "gold": [
+   {
+    "source": "CommerceFr.pdf",
+    "article": "632",
+    "chunk_ids": [
+     "CommerceFr/s01/632"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "wrong_term"
+ },
+ {
+  "set": "N",
+  "id": "n_ac19",
+  "language": "fr",
+  "question": "Un commerçant a coulé son affaire et ne peut plus payer personne ; juste avant, il avait réglé quelqu'un avec un papier de paiement tiré sur sa banque, et ce paiement a été remis en cause. Qui peut-on poursuivre pour récupérer l'argent ?",
+  "gold": [
+   {
+    "source": "CommerceFr.pdf",
+    "article": "464",
+    "chunk_ids": [
+     "CommerceFr/s01/464"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "describe"
+ },
+ {
+  "set": "N",
+  "id": "n_ac20",
+  "language": "fr",
+  "question": "un pays étranger me doit de l'argent, g gagné au tribunal mais il veut tjs pas payer... je peux faire saisir ses trucs qu'il a en tunisie ou pas ?",
+  "gold": [
+   {
+    "source": "DIPFR.pdf",
+    "article": "23",
+    "chunk_ids": [
+     "DIPFR/s01/23"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "DIPFR.pdf",
+    "article": "24",
+    "chunk_ids": [
+     "DIPFR/s01/24"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "informal"
+ },
+ {
+  "set": "N",
+  "id": "n_ac25",
+  "language": "fr",
+  "question": "jai un apartement dans un imeuble en copropriete et je voudrai le louer meuble a des touristes pour quelques jours a chaque fois est ce que jai besoin dune autorisation",
+  "gold": [
+   {
+    "source": "dtreelFr.pdf",
+    "article": "102",
+    "chunk_ids": [
+     "dtreelFr/s01/102"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "typos"
+ },
+ {
+  "set": "N",
+  "id": "n_ac26",
+  "language": "fr",
+  "question": "J'ai acheté à l'état un champ domanial et je l'ai donné en fermage à un voisin. Quelle pénalité financière je risque ?",
+  "gold": [
+   {
+    "source": "dtreelFr.pdf",
+    "article": "27-bis",
+    "chunk_ids": [
+     "dtreelFr/s06/27-bis"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "wrong_term"
+ },
+ {
+  "set": "N",
+  "id": "n_ac27",
+  "language": "ar",
+  "question": "المحكمة التي تنظر في قضايا الأراضي أصدرت حكماً يسمح بقيد أرض باسم شخص في السجل. هل يمكن الاعتراض على هذا الحكم أمام أعلى محكمة في البلاد، وفي أي حالات؟",
+  "gold": [
+   {
+    "source": "dtreelFr.pdf",
+    "article": "357-bis",
+    "chunk_ids": [
+     "dtreelFr/s01/357-bis"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "describe"
+ },
+ {
+  "set": "N",
+  "id": "n_ac28",
+  "language": "fr",
+  "question": "un journal a mis la photo et le nom d'un ado qui passe devant le juge, celui qui a publié ça il risque koi ?",
+  "gold": [
+   {
+    "source": "EnfantFr.pdf",
+    "article": "121",
+    "chunk_ids": [
+     "EnfantFr/s01/121"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "informal"
+ },
+ {
+  "set": "N",
+  "id": "n_ac30",
+  "language": "ar",
+  "question": "اذا ضبط طفل وهو يتعاطي المخدرات هل يمكن للمحكمه ان تلزمه بالخضوع للعلاج",
+  "gold": [
+   {
+    "source": "EnfantFr.pdf",
+    "article": "19-bis",
+    "chunk_ids": [
+     "EnfantFr/s04/19-bis"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "typos"
+ },
+ {
+  "set": "N",
+  "id": "n_ac31",
+  "language": "fr",
+  "question": "Un site internet balance des photos et des infos sur un enfant impliqué dans un procès. Que peut faire la justice pour arrêter ça et, si c'est très urgent, qui peut porter plainte devant le juge de permanence ?",
+  "gold": [
+   {
+    "source": "EnfantFr.pdf",
+    "article": "97",
+    "chunk_ids": [
+     "EnfantFr/s01/97"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "EnfantFr.pdf",
+    "article": "98",
+    "chunk_ids": [
+     "EnfantFr/s01/98"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "wrong_term"
+ },
+ {
+  "set": "N",
+  "id": "n_ac32",
+  "language": "fr",
+  "question": "Je suis étranger et j'ai fait une demande pour devenir tunisien. Comment cette demande est-elle étudiée, et que se passe-t-il si je n'ai pas ce qu'il faut pour l'obtenir ?",
+  "gold": [
+   {
+    "source": "NationaliteFr.pdf",
+    "article": "42",
+    "chunk_ids": [
+     "NationaliteFr/s01/42"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "NationaliteFr.pdf",
+    "article": "43",
+    "chunk_ids": [
+     "NationaliteFr/s01/43"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "describe"
+ },
+ {
+  "set": "N",
+  "id": "n_ac34",
+  "language": "fr",
+  "question": "un mariage celebre a letranger compte t il pour la nationalite tunisienne quelle que soit la facon dont il a ete celebre",
+  "gold": [
+   {
+    "source": "NationaliteFr.pdf",
+    "article": "29",
+    "chunk_ids": [
+     "NationaliteFr/s01/29"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "typos"
+ },
+ {
+  "set": "N",
+  "id": "n_ac37",
+  "language": "ar",
+  "question": "ماهي عقوبه من يحرق او يتلف سجلات او وثائق اصليه صادره عن السلطه العموميه",
+  "gold": [
+   {
+    "source": "PenalFr.pdf",
+    "article": "160",
+    "chunk_ids": [
+     "PenalFr/s02/160"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "typos"
+ },
+ {
+  "set": "N",
+  "id": "n_ac38",
+  "language": "fr",
+  "question": "Quelqu'un part en fugue avec un enfant de 12 ans, sans le forcer ni le tromper, loin de la famille à qui l'enfant était confié. Quelle sanction risque-t-il ?",
+  "gold": [
+   {
+    "source": "PenalFr.pdf",
+    "article": "238",
+    "chunk_ids": [
+     "PenalFr/s02/238"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "wrong_term"
+ },
+ {
+  "set": "N",
+  "id": "n_ac39",
+  "language": "fr",
+  "question": "Que risque quelqu'un qui s'enfuit de l'endroit où il est enfermé, selon qu'on ne l'a pas encore jugé ou qu'il est déjà en train de faire ses années derrière les barreaux ?",
+  "gold": [
+   {
+    "source": "PenalFr.pdf",
+    "article": "146",
+    "chunk_ids": [
+     "PenalFr/s02/146"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "PenalFr.pdf",
+    "article": "147",
+    "chunk_ids": [
+     "PenalFr/s02/147"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "describe"
+ },
+ {
+  "set": "N",
+  "id": "n_ac40",
+  "language": "en",
+  "question": "a bunch of ppl i owe money to put seizures on my land papers... if just one of them says ok can it get taken off??",
+  "gold": [
+   {
+    "source": "Procedurecivilecom.pdf",
+    "article": "455",
+    "chunk_ids": [
+     "Procedurecivilecom/s01/455"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "informal"
+ },
+ {
+  "set": "N",
+  "id": "n_ac42",
+  "language": "ar",
+  "question": "طليقي ساكن في ولاية أخرى ونحب نرفع عليه قضية نفقة... نجم نرفعها في محكمة البلاصة اللي نسكن فيها؟",
+  "gold": [
+   {
+    "source": "Procedurecivilecom.pdf",
+    "article": "36",
+    "chunk_ids": [
+     "Procedurecivilecom/s01/36"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "informal"
+ },
+ {
+  "set": "N",
+  "id": "n_ac45",
+  "language": "fr",
+  "question": "Quelqu'un à qui je dois de l'argent a mis un blocage sur mon terrain. Est-ce que je peux encore le vendre ou le mettre en gage et faire passer ça au cadastre ?",
+  "gold": [
+   {
+    "source": "Procedurecivilecom.pdf",
+    "article": "328",
+    "chunk_ids": [
+     "Procedurecivilecom/s01/328"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "wrong_term"
+ },
+ {
+  "set": "N",
+  "id": "n_ac46",
+  "language": "fr",
+  "question": "J'ai été déclaré coupable au pénal et, après coup, j'ai demandé qu'on rouvre mon affaire déjà jugée définitivement. Comment les juges vont-ils traiter ma demande ?",
+  "gold": [
+   {
+    "source": "ProcedurepenaleFr.pdf",
+    "article": "281",
+    "chunk_ids": [
+     "ProcedurepenaleFr/s02/281"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "describe"
+ },
+ {
+  "set": "N",
+  "id": "n_ac48",
+  "language": "fr",
+  "question": "un juge d'un autre pays veut faire une enquête ici en tunisie pour une affaire pénale, sa demande elle doit passer par où ?",
+  "gold": [
+   {
+    "source": "ProcedurepenaleFr.pdf",
+    "article": "331",
+    "chunk_ids": [
+     "ProcedurepenaleFr/s02/331"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "informal"
+ },
+ {
+  "set": "N",
+  "id": "n_ac50",
+  "language": "en",
+  "question": "can a prisonner held in tunisia be sent abroad to be confronted with somone in a foriegn case and how is that requestd",
+  "gold": [
+   {
+    "source": "ProcedurepenaleFr.pdf",
+    "article": "335",
+    "chunk_ids": [
+     "ProcedurepenaleFr/s02/335"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "typos"
+ },
+ {
+  "set": "N",
+  "id": "n_ac52",
+  "language": "en",
+  "question": "In an LLC, who calls the shareholders' meeting and how much notice must be given? Can the minority shareholders force the director to call one?",
+  "gold": [
+   {
+    "source": "societeFr.pdf",
+    "article": "126",
+    "chunk_ids": [
+     "societeFr/s01/126"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "societeFr.pdf",
+    "article": "127",
+    "chunk_ids": [
+     "societeFr/s01/127"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "wrong_term"
+ },
+ {
+  "set": "N",
+  "id": "n_ac53",
+  "language": "fr",
+  "question": "J'ai des parts dans une entreprise qui me donnent un avantage sur les bénéfices mais pas le droit de voter. Si les autres décident de fermer définitivement l'entreprise plus tôt que prévu, est-ce que je peux les en empêcher ?",
+  "gold": [
+   {
+    "source": "societeFr.pdf",
+    "article": "362",
+    "chunk_ids": [
+     "societeFr/s01/362"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "describe"
+ },
+ {
+  "set": "N",
+  "id": "n_ac54",
+  "language": "en",
+  "question": "can the ppl on a company's supervisory board get in trouble for stuff the management board decided??",
+  "gold": [
+   {
+    "source": "societeFr.pdf",
+    "article": "255",
+    "chunk_ids": [
+     "societeFr/s01/255"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "informal"
+ },
+ {
+  "set": "N",
+  "id": "n_ac57",
+  "language": "fr",
+  "question": "une femme est decedee en laissant son mari sa mere son grand pere paternel un frere germain et deux freres uterins comment sa sucession est elle partagee",
+  "gold": [
+   {
+    "source": "Statutpersonnel.pdf",
+    "article": "145",
+    "chunk_ids": [
+     "Statutpersonnel/s01/145"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "typos"
+ },
+ {
+  "set": "N",
+  "id": "n_ac58",
+  "language": "ar",
+  "question": "متى يصبح الطفل الذي تحت الوصاية كبيراً ويستطيع أن يتصرف في كل أموره بنفسه؟",
+  "gold": [
+   {
+    "source": "Statutpersonnel.pdf",
+    "article": "157",
+    "chunk_ids": [
+     "Statutpersonnel/s01/157"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "Statutpersonnel.pdf",
+    "article": "153",
+    "chunk_ids": [
+     "Statutpersonnel/s01/153"
+    ],
+    "role": "alternative"
+   },
+   {
+    "source": "COC.pdf",
+    "article": "7",
+    "chunk_ids": [
+     "COC/s02/7"
+    ],
+    "role": "alternative"
+   }
+  ],
+  "noise_type": "wrong_term"
+ },
+ {
+  "set": "N",
+  "id": "n_ac60",
+  "language": "fr",
+  "question": "Quelqu'un a mis par écrit qu'à sa mort un de ses biens irait à une certaine personne. Dans quels cas cette promesse tombe à l'eau ?",
+  "gold": [
+   {
+    "source": "Statutpersonnel.pdf",
+    "article": "197",
+    "chunk_ids": [
+     "Statutpersonnel/s01/197"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "describe"
+ },
+ {
+  "set": "N",
+  "id": "n_ac61",
+  "language": "en",
+  "question": "my kid goes to job training classes but never signed any apprentice contract, do the apprentice rules still apply to them or nah?",
+  "gold": [
+   {
+    "source": "travailFr.pdf",
+    "article": "363",
+    "chunk_ids": [
+     "travailFr/s01/363"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "informal"
+ },
+ {
+  "set": "N",
+  "id": "n_ac64",
+  "language": "fr",
+  "question": "je suis representant de comerce qui me delivre ma carte profesionnelle et est ce que je dois la faire renouveller",
+  "gold": [
+   {
+    "source": "travailFr.pdf",
+    "article": "423",
+    "chunk_ids": [
+     "travailFr/s01/423"
+    ],
+    "role": "main"
+   },
+   {
+    "source": "travailFr.pdf",
+    "article": "424",
+    "chunk_ids": [
+     "travailFr/s01/424"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "typos"
+ },
+ {
+  "set": "N",
+  "id": "n_ac65",
+  "language": "fr",
+  "question": "Mon entreprise veut exceptionnellement allonger les horaires de ses employés comme le permet le règlement de son secteur. Quelles formalités doit-elle faire auprès du bureau du travail ?",
+  "gold": [
+   {
+    "source": "travailFr.pdf",
+    "article": "87",
+    "chunk_ids": [
+     "travailFr/s01/87"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "wrong_term"
+ },
+ {
+  "set": "N",
+  "id": "n_ac69",
+  "language": "en",
+  "question": "What design is on the official cloth banner that represents Tunisia as a state?",
+  "gold": [
+   {
+    "source": "tun_RecAcFreeLi.pdf",
+    "article": "8",
+    "chunk_ids": [
+     "tun_RecAcFreeLi/s00/8"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "describe"
+ },
+ {
+  "set": "N",
+  "id": "n_ac70",
+  "language": "en",
+  "question": "when do tunisia's MPs actually sit every year, and if they're on vacation who can make them come back?",
+  "gold": [
+   {
+    "source": "tun_RecAcFreeLi.pdf",
+    "article": "71",
+    "chunk_ids": [
+     "tun_RecAcFreeLi/s00/71"
+    ],
+    "role": "main"
+   }
+  ],
+  "noise_type": "informal"
+ }
+]
