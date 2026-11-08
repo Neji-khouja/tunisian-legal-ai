@@ -1,5 +1,6 @@
 """Read-only: extract example questions from the agent prompts, compare gate/candidate (and extra) questions to them.
     python eval/prompt_overlap.py [--extra "question|lang" ...]
+    python eval/prompt_overlap.py --prompt agent/normalize.py:NORMALIZE_PROMPT   # one prompt vs every corpus question; writes nothing
 """
 import re, sys, json, unicodedata
 from pathlib import Path
@@ -64,6 +65,74 @@ def extract():
 def load_set(path):
     return json.loads((ROOT / path).read_text(encoding="utf-8"))
 
+
+def corpus_questions():
+    """Every question of the eval/*.json files (exam, development, noisy, gate, candidates, ...), the development
+    items and the cached French translations: (file, id, question, language)."""
+    out = []
+    for f in sorted((ROOT / "eval").glob("*.json")) + [ROOT / "diagnostics" / "dev_items.json"]:
+        if not f.exists():
+            continue
+        d = json.loads(f.read_text(encoding="utf-8"))
+        for it in d if isinstance(d, list) else []:
+            if isinstance(it, dict) and isinstance(it.get("question"), str):
+                out.append((f.name, it.get("id"), it["question"], it.get("language") or lang_of(it["question"])))
+    tr = ROOT / "diagnostics" / "translations.json"
+    if tr.exists():
+        out += [("translations.json", x["id"], x["french_query"], "fr")
+                for x in json.loads(tr.read_text(encoding="utf-8"))["items"]]
+    return out
+
+
+def prompt_examples(text):
+    """Example questions (as extract()) and example outputs ({"legal_query": "..."}) of one prompt text."""
+    found = []
+    for line in text.splitlines():
+        m = re.match(r'\s*(Question|User|New message):\s*"?(.+?)"?\s*$', line)
+        if m:
+            found.append(("question", m.group(2)))
+    found += [("output", q) for q in re.findall(r'"legal_query":\s*"([^"]+)"', text) if q != "..."]
+    return [(kind, q, lang_of(q)) for kind, q in dict.fromkeys(found)]
+
+
+def check_prompt(spec):
+    """--prompt FILE.py:NAME: overlap of that prompt's examples with every corpus question. Writes nothing.
+    -> (report lines, max Jaccard, number of pairs >= 0.4)."""
+    import importlib.util
+    path, _, name = spec.partition(":")
+    path = (ROOT / path).resolve()
+    sys.path.insert(0, str(path.parent))
+    s = importlib.util.spec_from_file_location(path.stem, path)
+    mod = importlib.util.module_from_spec(s)
+    s.loader.exec_module(mod)
+    text = getattr(mod, name)
+    qs = corpus_questions()
+    df = {}
+    for _, _, q, lang in qs:
+        for w in words(q, lang if lang in STOP else "fr"):
+            df[w] = df.get(w, 0) + 1
+    L = [f"prompt {spec}: {len(text)} characters; {len(qs)} corpus questions "
+         f"({len({f for f, *_ in qs})} files)"]
+    worst, pairs = 0.0, 0
+    for kind, ex, lang in prompt_examples(text):
+        we = words(ex, lang)
+        scored = sorted(((jac(we, words(q, l if l in STOP else "fr")), f, i, q) for f, i, q, l in qs if l == lang or
+                         (lang == "fr" and f == "translations.json")), key=lambda x: -x[0])
+        top = scored[0] if scored else (0.0, "-", "-", "-")
+        worst = max(worst, top[0])
+        pairs += sum(1 for x in scored if x[0] >= 0.4)
+        shared = sorted((w, df[w]) for w in we if w in df)
+        L += [f"{kind:<8} {lang}  {ex}",
+              f"         max Jaccard {top[0]:.2f} with {top[1]} {top[2]} {top[3][:110]!r}",
+              f"         pairs >= 0.4: {sum(1 for x in scored if x[0] >= 0.4)}",
+              f"         content words shared with corpus questions (word, number of questions): {shared or '-'}"]
+    L.append(f"overall: max Jaccard {worst:.2f}; pairs >= 0.4: {pairs}")
+    return L, worst, pairs
+
+
+if __name__ == "__main__" and "--prompt" in sys.argv:
+    print("\n".join(check_prompt(sys.argv[sys.argv.index("--prompt") + 1])[0]))
+    sys.exit(0)
 
 if __name__ == "__main__":
     ex = extract()
