@@ -1,0 +1,108 @@
+{
+ "model": "OrdalieTech/Solon-embeddings-large-0.1",
+ "rule": "The threshold: the largest value (step 0.01) that still flags at least 90% of the same-language known\n    near-duplicates (noisy rewrites of an exam question), reported with the share of distinct exam pairs it flags.",
+ "threshold": 0.68,
+ "positives_noisy": {
+  "n": 40,
+  "min": 0.46874510471865993,
+  "p10": 0.6859696651538678,
+  "median": 0.8203479145325776,
+  "flagged": 36,
+  "by_noise_type": {
+   "describe": {
+    "n": 10,
+    "flagged": 7
+   },
+   "informal": {
+    "n": 10,
+    "flagged": 9
+   },
+   "typos": {
+    "n": 10,
+    "flagged": 10
+   },
+   "wrong_term": {
+    "n": 10,
+    "flagged": 10
+   }
+  },
+  "by_language": {
+   "fr": {
+    "n": 23,
+    "flagged": 20
+   },
+   "en": {
+    "n": 8,
+    "flagged": 8
+   },
+   "ar": {
+    "n": 9,
+    "flagged": 8
+   }
+  }
+ },
+ "positives_translation": {
+  "n": 47,
+  "median": 0.7953228104328827,
+  "flagged": 43,
+  "by_language": {
+   "ar": {
+    "n": 24,
+    "flagged": 22
+   },
+   "en": {
+    "n": 23,
+    "flagged": 21
+   }
+  }
+ },
+ "negatives_same_language": {
+  "n": 1825,
+  "max": 0.6803800289466478,
+  "p99": 0.5353150105667128,
+  "flagged": 1
+ },
+ "negatives_cross_language": {
+  "n": 3125,
+  "max": 0.7207978639364763,
+  "flagged": 1
+ },
+ "grid": [
+  {
+   "threshold": 0.8,
+   "noisy_flagged": 22,
+   "translations_flagged": 20,
+   "distinct_same_language_flagged": 0
+  },
+  {
+   "threshold": 0.85,
+   "noisy_flagged": 9,
+   "translations_flagged": 3,
+   "distinct_same_language_flagged": 0
+  },
+  {
+   "threshold": 0.88,
+   "noisy_flagged": 3,
+   "translations_flagged": 0,
+   "distinct_same_language_flagged": 0
+  },
+  {
+   "threshold": 0.9,
+   "noisy_flagged": 3,
+   "translations_flagged": 0,
+   "distinct_same_language_flagged": 0
+  },
+  {
+   "threshold": 0.92,
+   "noisy_flagged": 3,
+   "translations_flagged": 0,
+   "distinct_same_language_flagged": 0
+  },
+  {
+   "threshold": 0.95,
+   "noisy_flagged": 0,
+   "translations_flagged": 0,
+   "distinct_same_language_flagged": 0
+  }
+ ]
+}
