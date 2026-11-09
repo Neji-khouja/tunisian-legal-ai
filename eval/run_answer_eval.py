@@ -213,6 +213,8 @@ def run_v2(item) -> dict:
            "first_verdicts": s.get("first_verdicts") or []}
     if s.get("status") == "clarify":
         rec["clarification_question"] = s.get("text")
+    if s.get("normalize"):                      # config.NORMALIZE_QUERY == "v3" only (its tokens are in the usage callback)
+        rec["normalize"] = s["normalize"]
     rec["_evidence_text"] = {cid: e["text"] for cid, e in ev.items()}
     return rec | (first or {})
 

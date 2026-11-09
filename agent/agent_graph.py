@@ -18,6 +18,11 @@ def fresh_state() -> dict:
             "retries": 0, "tried": [], "missing": "", "enough": False, "sub_queries": [],
             "text": "", "status": "", "first_verdicts": []}
 
+def _fresh() -> dict:
+    """fresh_state, plus (config.NORMALIZE_QUERY == "v3" only) an empty normalization record for the new turn."""
+    import config as C
+    return fresh_state() | ({"normalize": {}} if getattr(C, "NORMALIZE_QUERY", "off") == "v3" else {})
+
 REFUSE = {"fr": "Cette question sort du cadre des codes tunisiens que je couvre.",
           "en": "This is outside the Tunisian legal codes I cover.",
           "ar": "هذا السؤال خارج نطاق القوانين التونسية التي أغطيها."}
@@ -60,6 +65,7 @@ class AgentState(TypedDict):
     history: list[dict]          # last 2 answered turns {"q": standalone question, "a": answer text[:600]}
     condensed_from: str          # the raw message when condense rewrote it, else ""
     is_followup: bool
+    normalize: dict              # config.NORMALIZE_QUERY == "v3" only: the normalization record of the turn
 
 def remember(state, text) -> list[dict]:
     return (state.get("history", []) + [{"q": state["full_question"], "a": text[:600]}])[-2:]
@@ -88,7 +94,7 @@ def analyze_node(state: AgentState) -> dict:
         hint = state.get("language") if state.get("clarify_count", 0) > 0 else None
         r = analyze(full_question, hint)
         return {
-            **fresh_state(),
+            **_fresh(),
             "language": r.language,
             "intent": r.intent,
             "target_codes": r.target_codes,
@@ -99,7 +105,7 @@ def analyze_node(state: AgentState) -> dict:
     except Exception as e:
         print("Analyze failed:", e)
         return {
-            **fresh_state(),
+            **_fresh(),
             "language": "en",
             "intent": "clear",
             "target_codes": [],
@@ -134,10 +140,20 @@ def to_evidence(docs) -> dict:
     }
 
 def retrieve_node(state: AgentState) -> dict:
-    docs = retrieve_g(state["full_question"], state["target_codes"])
+    import config as C
+    info = {}                                   # filled only when config.NORMALIZE_QUERY == "v3"
+    if getattr(C, "NORMALIZE_QUERY", "off") == "v3":
+        docs = retrieve_g(state["full_question"], state["target_codes"], info)
+    else:                                       # off: the call of v2.1-dev wave 1b, unchanged
+        docs = retrieve_g(state["full_question"], state["target_codes"])
     evidence = to_evidence(docs)
-    return {"docs": docs, "evidence": evidence, "retries": 0, "tried": [], "missing": "",
-            "status": "answer", "clarify_count": 0, "original_question": None}
+    out = {"docs": docs, "evidence": evidence, "retries": 0, "tried": [], "missing": "",
+           "status": "answer", "clarify_count": 0, "original_question": None}
+    if info:                                    # V3: the record, and a visible event when it fell back
+        out["normalize"] = info
+        if info.get("fell_back"):
+            out["degraded"] = list(state.get("degraded") or []) + [f"normalize_failed: {info.get('status')}"]
+    return out
 
 def grade_node(state: AgentState) -> dict:
     g = grade(state["full_question"], state["evidence"])

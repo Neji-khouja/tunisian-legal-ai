@@ -420,6 +420,25 @@ def _fuse(ranked_lists: list[list[Document]]) -> list[Document]:
     return [first[k] for k in sorted(scores, key=lambda k: -scores[k])]
 
 
+def fuse_pools(pool_a: list[Document], pool_b: list[Document], k: int = RRF_K) -> list[Document]:
+    """Wave 2 V3 (config.NORMALIZE_QUERY = "v3"): reciprocal rank fusion of two candidate pools, score = sum of
+    1 / (k + rank), ties in order of first appearance (pool_a first), cut to the larger pool size (the reranker
+    scores no more candidates than for one query). Same as diagnostics/wave2_core.fused_pool (tested)."""
+    scores: dict = {}
+    first: dict = {}
+    order: list = []
+    for pool in (pool_a, pool_b):
+        for rank, doc in enumerate(pool, 1):
+            key = _doc_key(doc)
+            if key not in scores:
+                scores[key], first[key] = 0.0, doc
+                order.append(key)
+            scores[key] += 1.0 / (k + rank)
+    pos = {key: i for i, key in enumerate(order)}
+    merged = [first[key] for key in sorted(order, key=lambda x: (-scores[x], pos[x]))]
+    return merged[:max(len(pool_a), len(pool_b))]
+
+
 def hybrid_retrieve(
     vectorstore: Chroma,
     queries: list[str],

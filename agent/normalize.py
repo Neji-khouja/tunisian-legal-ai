@@ -138,3 +138,18 @@ def normalize(question: str, llm=None, fatal=lambda e: False, sleep=time.sleep) 
             return {"legal_query": q, "status": "ok", "error": None, "attempts": attempt, "tokens": tokens, "raw": raw}
         status, error = "invalid", err
     return {"legal_query": None, "status": status, "error": error, "attempts": attempt, "tokens": tokens, "raw": raw}
+
+
+def normalize_for_retrieval(query: str, llm=None) -> tuple:
+    """For the agent (config.NORMALIZE_QUERY = "v3"). Never raises. -> (query to use, record): the legal_query when
+    the normalization succeeded, else the input query (record["fell_back"] True: failure, empty or invalid output,
+    API error, or any other exception)."""
+    try:
+        r = normalize(query, llm=llm)
+    except Exception as e:                       # e.g. the client cannot be built: fall back, never block the turn
+        r = {"legal_query": None, "status": "error", "error": f"{type(e).__name__}: {str(e)[:300]}", "attempts": 0,
+             "tokens": {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0}, "raw": None}
+    ok = r["status"] == "ok" and bool((r["legal_query"] or "").strip())
+    rec = {"input_query": query, "legal_query": r["legal_query"], "status": r["status"], "error": r["error"],
+           "attempts": r["attempts"], "tokens": r["tokens"], "prompt_sha256": PROMPT_SHA256, "fell_back": not ok}
+    return (r["legal_query"] if ok else query), rec
