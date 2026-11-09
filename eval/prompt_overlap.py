@@ -99,7 +99,7 @@ def check_prompt(spec):
     """--prompt FILE.py:NAME: overlap of that prompt's examples with every corpus question. Writes nothing.
     -> (report lines, max Jaccard, number of pairs >= 0.4)."""
     import importlib.util
-    path, _, name = spec.partition(":")
+    path, _, name = spec.rpartition(":")          # rpartition: a Windows path has a drive colon
     path = (ROOT / path).resolve()
     sys.path.insert(0, str(path.parent))
     s = importlib.util.spec_from_file_location(path.stem, path)

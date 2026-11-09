@@ -1,0 +1,2755 @@
+{
+ "items": [
+  {
+   "id": "ac02",
+   "set": "S1",
+   "language": "ar",
+   "input_query": "Dans un arbitrage international, j’ai remarqué qu’une clause du compromis d’arbitrage n’a pas été respectée, mais j’ai poursuivi la procédure sans m’y opposer. Puis-je invoquer cette violation ultérieurement ?",
+   "legal_query": "possibilité de soulever ultérieurement la violation d’une clause du compromis d’arbitrage non contestée",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 518,
+    "output_tokens": 136,
+    "total_tokens": 654
+   },
+   "timestamp": "2026-11-09T00:00:24+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac06",
+   "set": "S1",
+   "language": "fr",
+   "input_query": "Le juge a confié un bien disputé à une tierce personne en attendant la fin du procès, et ce bien a été détruit dans un incendie. Dans quels cas ce gardien doit-il quand même en répondre ?",
+   "legal_query": "responsabilité du gardien d’un bien confié en instance de jugement en cas de destruction par incendie",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 515,
+    "output_tokens": 103,
+    "total_tokens": 618
+   },
+   "timestamp": "2026-11-09T00:00:30+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac10",
+   "set": "S1",
+   "language": "en",
+   "input_query": "J'ai apporté une machine à une société de personnes comme ma part, et il s'avère qu'elle présente un défaut caché. De quoi suis-je responsable envers mes associés ?",
+   "legal_query": "responsabilité du associé apporteur d’un bien présentant un vice caché envers les associés dans une société de personnes",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 506,
+    "output_tokens": 97,
+    "total_tokens": 603
+   },
+   "timestamp": "2026-11-09T00:00:36+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac11",
+   "set": "S1",
+   "language": "fr",
+   "input_query": "À la fin d'un bail de bétail, comment le propriétaire récupère-t-il son troupeau et que devient le surplus des animaux ?",
+   "legal_query": "modalités de restitution du troupeau et sort du surplus des animaux dans le cadre d'un bail de bétail",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 498,
+    "output_tokens": 108,
+    "total_tokens": 606
+   },
+   "timestamp": "2026-11-09T00:00:43+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac13",
+   "set": "S1",
+   "language": "fr",
+   "input_query": "Mon cocontractant s'était réservé le droit de mettre fin à notre contrat, mais il a perdu la raison. Qui va décider à sa place s'il faut maintenir ou rompre le contrat ?",
+   "legal_query": "compétence du juge pour trancher la validité de la clause résolutoire et décider du maintien ou de la résiliation du contrat",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 509,
+    "output_tokens": 113,
+    "total_tokens": 622
+   },
+   "timestamp": "2026-11-09T00:00:53+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac14",
+   "set": "S1",
+   "language": "fr",
+   "input_query": "J'ai demandé à ma banque de virer une somme à un fournisseur, et j'apprends qu'il vient d'être déclaré en faillite. Puis-je encore m'opposer à ce virement ?",
+   "legal_query": "opposition à un virement bancaire lorsqu le bénéficiaire est déclaré en faillite",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 509,
+    "output_tokens": 87,
+    "total_tokens": 596
+   },
+   "timestamp": "2026-11-09T00:01:07+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac15",
+   "set": "S1",
+   "language": "fr",
+   "input_query": "J'ai payé un effet de commerce à la place d'un des signataires pour lui rendre service. Quels recours ai-je ensuite, et puis-je le remettre en circulation en le transmettant à quelqu'un ?",
+   "legal_query": "effet de commerce payé par un tiers non signataire, recours du payeur contre le débiteur et possibilité de remise en circulation par endossement",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 510,
+    "output_tokens": 142,
+    "total_tokens": 652
+   },
+   "timestamp": "2026-11-09T00:01:17+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac17",
+   "set": "S1",
+   "language": "fr",
+   "input_query": "J'ai reçu une traite payable à vue. Dans quel délai dois-je la présenter pour être payé ?",
+   "legal_query": "délai de présentation d’une traite payable à vue pour obtenir le paiement",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 489,
+    "output_tokens": 63,
+    "total_tokens": 552
+   },
+   "timestamp": "2026-11-09T00:01:20+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac21",
+   "set": "S1",
+   "language": "ar",
+   "input_query": "Un jugement rendu dans un pays étranger porte préjudice à mes intérêts alors que je n’étais pas partie à l’affaire. Puis-je demander qu’il ne soit pas invoqué contre moi en Tunisie, et devant quel tribunal ?",
+   "legal_query": "opposition à l'exequatur d'un jugement étranger rendu contre une partie non impliquée et compétence du tribunal tunisien compétent pour demander la non-application",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 515,
+    "output_tokens": 96,
+    "total_tokens": 611
+   },
+   "timestamp": "2026-11-09T00:01:24+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac22",
+   "set": "S1",
+   "language": "fr",
+   "input_query": "J'ai eu un accident de voiture en Libye avec un autre automobiliste ; nous habitons tous les deux en Tunisie et nos véhicules y sont immatriculés. Quelle loi s'applique à l'indemnisation ?",
+   "legal_query": "règle de droit international privé tunisien déterminant la loi applicable à l'indemnisation d’un accident de la circulation survenu en Libye entre deux véhicules immatriculés en Tunisie",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 515,
+    "output_tokens": 154,
+    "total_tokens": 669
+   },
+   "timestamp": "2026-11-09T00:01:32+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac23",
+   "set": "S1",
+   "language": "en",
+   "input_query": "Mes frères et moi ne pouvons pas nous mettre d'accord sur qui doit garder les papiers et souvenirs familiaux de notre père décédé. Que peut décider le tribunal ?",
+   "legal_query": "régime de la garde et du partage des papiers et souvenirs familiaux du défunt entre les héritiers",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 503,
+    "output_tokens": 106,
+    "total_tokens": 609
+   },
+   "timestamp": "2026-11-09T00:01:41+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac24",
+   "set": "S1",
+   "language": "en",
+   "input_query": "Lorsque la propriété d'un débiteur est vendue et que l'argent n'est pas suffisant pour payer tout le monde, comment est‑il partagé entre les créanciers ?",
+   "legal_query": "ordre de préférence des créanciers lors du partage du produit de la vente des biens du débiteur en cas d'insuffisance d'actif",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 505,
+    "output_tokens": 123,
+    "total_tokens": 628
+   },
+   "timestamp": "2026-11-09T00:01:46+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac29",
+   "set": "S1",
+   "language": "fr",
+   "input_query": "Quelle peine encourt un parent qui prive régulièrement son enfant de nourriture et de soins ?",
+   "legal_query": "peine encourue pour privation de nourriture et de soins infligée par un parent à son enfant",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 486,
+    "output_tokens": 124,
+    "total_tokens": 610
+   },
+   "timestamp": "2026-11-09T00:01:54+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac33",
+   "set": "S1",
+   "language": "fr",
+   "input_query": "Dans un procès civil, l'autre partie conteste que je sois de nationalité tunisienne. Le parquet doit-il intervenir, et faut-il accomplir une formalité auprès du ministère avant que le tribunal ne statue ?",
+   "legal_query": "intervention du parquet et formalité de demande de certificat de nationalité auprès du ministère de l'Intérieur dans un procès civil contesté",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 512,
+    "output_tokens": 126,
+    "total_tokens": 638
+   },
+   "timestamp": "2026-11-09T00:02:00+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac35",
+   "set": "S1",
+   "language": "en",
+   "input_query": "Quel châtiment encourt une personne qui a détenu illégalement quelqu’un et le libère de son propre gré au troisième jour ?",
+   "legal_query": "peine pour détention illégale d’une personne et libération volontaire au troisième jour",
+   "status": "ok",
+   "error": null,
+   "attempts": 2,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 498,
+    "output_tokens": 84,
+    "total_tokens": 582
+   },
+   "timestamp": "2026-11-09T00:02:42+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac36",
+   "set": "S1",
+   "language": "fr",
+   "input_query": "Après une condamnation pour trafic de stupéfiants, la personne est-elle surveillée par l'administration une fois sa peine purgée, et pendant combien de temps ?",
+   "legal_query": "mesure de suivi administratif après condamnation pour trafic de stupéfiants et durée de la surveillance post‑peine",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 504,
+    "output_tokens": 108,
+    "total_tokens": 612
+   },
+   "timestamp": "2026-11-09T00:02:43+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac41",
+   "set": "S1",
+   "language": "fr",
+   "input_query": "Dans mon procès civil, le juge chargé de préparer le dossier nous a convoqués mais aucune des parties ne s'est présentée. L'affaire est-elle bloquée ?",
+   "legal_query": "effet de l'absence de toutes les parties à l'audience civile sur la continuation du procès",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 503,
+    "output_tokens": 88,
+    "total_tokens": 591
+   },
+   "timestamp": "2026-11-09T00:02:50+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac43",
+   "set": "S1",
+   "language": "en",
+   "input_query": "J'ai acheté un bien immobilier lors d'une vente aux enchères judiciaires. Combien de temps ai-je pour enregistrer la vente sur le titre foncier, et que fait le registre foncier si le prix n'a pas encore été payé ?",
+   "legal_query": "délai d'enregistrement de la vente aux enchères judiciaires sur le registre foncier et effet du non-paiement du prix sur l'inscription du titre foncier",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 519,
+    "output_tokens": 127,
+    "total_tokens": 646
+   },
+   "timestamp": "2026-11-09T00:03:00+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac44",
+   "set": "S1",
+   "language": "ar",
+   "input_query": "Après le prononcé du jugement de répartition du prix d’un bien immobilier vendu aux enchères entre les créanciers, que faut‑il présenter à l’administration de la propriété immobilière afin d’effacer les hypothèques inscrites ?",
+   "legal_query": "acte de mainlevée d’hypothèque à présenter à l’administration de la propriété immobilière après jugement de répartition du prix du bien vendu aux enchères",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 516,
+    "output_tokens": 120,
+    "total_tokens": 636
+   },
+   "timestamp": "2026-11-09T00:03:04+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac47",
+   "set": "S1",
+   "language": "en",
+   "input_query": "Combien de juges siègent à la Cour de cassation lorsqu'elle entend un appel pénal, et un juge qui a traité l'affaire auparavant peut-il y participer ?",
+   "legal_query": "nombre de magistrats siégeant à la Cour de cassation lors d’une audience d’appel pénal et interdiction de participation d’un juge ayant déjà traité l’affaire",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 505,
+    "output_tokens": 121,
+    "total_tokens": 626
+   },
+   "timestamp": "2026-11-09T00:03:23+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac49",
+   "set": "S1",
+   "language": "fr",
+   "input_query": "Dans quels cas la Tunisie refuse-t-elle de livrer à un autre pays une personne qu'il réclame pour la juger ?",
+   "legal_query": "conditions de refus d'extradition d’une personne demandée par un autre État selon le droit tunisien",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 496,
+    "output_tokens": 82,
+    "total_tokens": 578
+   },
+   "timestamp": "2026-11-09T00:03:24+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac51",
+   "set": "S1",
+   "language": "en",
+   "input_query": "Quelle amende une personne peut-elle encourir pour avoir délibérément assumé le rôle d'évaluation des contributions en nature à une entreprise alors que la loi lui interdit ce poste ?",
+   "legal_query": "sanction pénale pour exercice illégal de la fonction d'évaluateur des apports en nature dans une société",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 507,
+    "output_tokens": 108,
+    "total_tokens": 615
+   },
+   "timestamp": "2026-11-09T00:03:34+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac55",
+   "set": "S1",
+   "language": "fr",
+   "input_query": "Que doit obligatoirement contenir le compte rendu écrit d'une assemblée générale d'actionnaires ?",
+   "legal_query": "contenu obligatoire du compte rendu écrit d'une assemblée générale d'actionnaires selon le Code des sociétés commerciales",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 489,
+    "output_tokens": 58,
+    "total_tokens": 547
+   },
+   "timestamp": "2026-11-09T00:03:37+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac56",
+   "set": "S1",
+   "language": "fr",
+   "input_query": "Lors d'une augmentation de capital d'une société anonyme, que se passe-t-il si une partie des nouvelles actions ne trouve pas preneur ?",
+   "legal_query": "conséquences des actions non souscrites lors d’une augmentation de capital d’une société anonyme",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 499,
+    "output_tokens": 110,
+    "total_tokens": 609
+   },
+   "timestamp": "2026-11-09T00:03:49+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac59",
+   "set": "S1",
+   "language": "fr",
+   "input_query": "Mon père a prévu dans son testament de prêter une grosse somme d'argent à un ami. Cette clause doit-elle être exécutée en entier ?",
+   "legal_query": "exécution de la clause testamentaire prévoyant le prêt d'une somme d'argent à un tiers",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 498,
+    "output_tokens": 98,
+    "total_tokens": 596
+   },
+   "timestamp": "2026-11-09T00:03:53+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac62",
+   "set": "S1",
+   "language": "fr",
+   "input_query": "Que risque un salarié qui participe à une grève illégale ou qui occupe les locaux de l'entreprise pendant cette grève ?",
+   "legal_query": "sanctions du salarié participant à une grève illégale et occupant les locaux de l'entreprise pendant la grève",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 496,
+    "output_tokens": 109,
+    "total_tokens": 605
+   },
+   "timestamp": "2026-11-09T00:04:00+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac63",
+   "set": "S1",
+   "language": "ar",
+   "input_query": "L'employeur doit-il être capable de prouver qu'il a déclaré son établissement et les missions qu'il a effectuées, et devant qui ?",
+   "legal_query": "obligation de l'employeur de prouver la déclaration de l'établissement et des missions auprès de l'Inspection du travail",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 499,
+    "output_tokens": 132,
+    "total_tokens": 631
+   },
+   "timestamp": "2026-11-09T00:04:07+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac66",
+   "set": "S1",
+   "language": "ar",
+   "input_query": "Quelles sont les obligations du travailleur dans le domaine de la santé et de la sécurité au travail au sein de l'entreprise ?",
+   "legal_query": "obligations du salarié en matière de santé et de sécurité au travail au sein de l'entreprise",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 496,
+    "output_tokens": 78,
+    "total_tokens": 574
+   },
+   "timestamp": "2026-11-09T00:04:14+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac67",
+   "set": "S1",
+   "language": "fr",
+   "input_query": "Quel est le rôle du Président de la République à l'égard de la Constitution, des traités et de la sécurité du pays ?",
+   "legal_query": "attributions du Président de la République concernant la Constitution, les traités internationaux et la sécurité du pays",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 497,
+    "output_tokens": 83,
+    "total_tokens": 580
+   },
+   "timestamp": "2026-11-09T00:04:21+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac68",
+   "set": "S1",
+   "language": "ar",
+   "input_query": "Quelles sont les structures qui prennent en charge les intérêts locaux et régionaux en Tunisie ?",
+   "legal_query": "structures de la collectivité territoriale tunisienne chargées de la prise en charge des intérêts locaux et régionaux",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 488,
+    "output_tokens": 106,
+    "total_tokens": 594
+   },
+   "timestamp": "2026-11-09T00:04:28+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac01",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "J'ai signé avec une société étrangère un contrat qui prévoit un arbitrage international, mais elle m'a assigné devant un tribunal tunisien. Jusqu'à quand puis-je demander que l'affaire soit renvoyée aux arbitres ?",
+   "legal_query": "délai de demande de renvoi d'une affaire au tribunal tunisien vers l'arbitrage international prévu par le contrat",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 516,
+    "output_tokens": 96,
+    "total_tokens": 612
+   },
+   "timestamp": "2026-11-09T00:04:34+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac03",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "Une sentence arbitrale a été rendue en ma faveur à l'étranger. Puis-je la faire exécuter en Tunisie, devant quelle juridiction et avec quels documents ?",
+   "legal_query": "exécution d'une sentence arbitrale rendue à l'étranger en Tunisie, juridiction compétente et documents requis",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 505,
+    "output_tokens": 68,
+    "total_tokens": 573
+   },
+   "timestamp": "2026-11-09T00:04:41+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac04",
+   "set": "S2",
+   "language": "ar",
+   "input_query": "J'ai donné à une personne une somme d'argent pour qu'elle la commerce en convenant de partager le profit, et elle a effectué des opérations dépassant le montant que je lui ai remis. Qui supporte les conséquences de ces opérations excédentaires ?",
+   "legal_query": "responsabilité du mandataire pour dépassement du mandat de gestion d'argent confié et partage du profit",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 521,
+    "output_tokens": 112,
+    "total_tokens": 633
+   },
+   "timestamp": "2026-11-09T00:04:49+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac05",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "J'ai confié à un ami, sans rien signer, des bijoux qui valent environ 3 000 dinars. La loi exigeait-elle un écrit pour cette remise en garde, et y a-t-il des situations où l'on peut s'en passer ?",
+   "legal_query": "exigence d'un écrit pour le contrat de dépôt de bijoux d’une valeur d’environ 3000 dinars et exceptions à l’obligation d’écrit",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 521,
+    "output_tokens": 123,
+    "total_tokens": 644
+   },
+   "timestamp": "2026-11-09T00:04:56+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [
+     "3000"
+    ],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac07",
+   "set": "S2",
+   "language": "ar",
+   "input_query": "Ai-je droit à la totalité du salaire convenu si j'ai conclu un accord avec une personne pour garder mes biens pendant un an contre rémunération, mais que le contrat a pris fin après seulement quatre mois ?",
+   "legal_query": "rémunération due en cas de résiliation anticipée d’un contrat de garde de biens d’une durée d’un an, exécuté seulement quatre mois",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 511,
+    "output_tokens": 126,
+    "total_tokens": 637
+   },
+   "timestamp": "2026-11-09T00:05:03+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac08",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "J'ai chargé quelqu'un de régler une affaire en mon nom. Une fois sa mission terminée, qu'est-ce que je lui dois, même si l'affaire n'a pas abouti ?",
+   "legal_query": "rémunération du mandataire pour l'exécution d'un mandat même si l'affaire n'a pas abouti",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 508,
+    "output_tokens": 75,
+    "total_tokens": 583
+   },
+   "timestamp": "2026-11-09T00:05:09+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac09",
+   "set": "S2",
+   "language": "en",
+   "input_query": "Deux personnes détiennent chacune un acte écrit pour le même bien et aucune d’elles ne l’occupe. Laquelle des réclamations prévaut‑elle ?",
+   "legal_query": "principe de priorité entre deux titres de propriété sur le même bien non occupé, ordre des inscriptions au registre foncier",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 501,
+    "output_tokens": 88,
+    "total_tokens": 589
+   },
+   "timestamp": "2026-11-09T00:05:16+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac12",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "J'avais confié mon capital à un commerçant pour qu'il le fasse travailler contre une part des bénéfices. Combien de temps après la fin de cet accord puis-je encore agir en justice contre lui ?",
+   "legal_query": "prescription de l'action en responsabilité du commerçant pour mandat de gestion de capital, délai après la fin de l'accord",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 511,
+    "output_tokens": 122,
+    "total_tokens": 633
+   },
+   "timestamp": "2026-11-09T00:05:24+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac16",
+   "set": "S2",
+   "language": "ar",
+   "input_query": "Ouvrir la banque pour mon bénéfice en me basant sur un document non annulable. La banque peut-elle l'annuler ou modifier ses conditions sans mon accord ?",
+   "legal_query": "possibilité de modification unilatérale des conditions contractuelles bancaires et annulation d’un document considéré comme non annulable",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 504,
+    "output_tokens": 120,
+    "total_tokens": 624
+   },
+   "timestamp": "2026-11-09T00:05:31+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac18",
+   "set": "S2",
+   "language": "ar",
+   "input_query": "J'ai envoyé une marchandise avec une société de transport en stipulant que le destinataire paierait le frais de transport à la réception. Qui est réellement obligé de payer le frais de transport ?",
+   "legal_query": "obligation de paiement du frais de transport entre l'expéditeur et le destinataire selon le contrat de transport",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 510,
+    "output_tokens": 108,
+    "total_tokens": 618
+   },
+   "timestamp": "2026-11-09T00:05:38+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac19",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "Après la faillite d'un commerçant, un paiement qu'il avait fait par chèque juste avant est annulé. Contre qui peut-on agir pour récupérer la somme ?",
+   "legal_query": "action en paiement contre le tiré du chèque après la faillite du commerçant pour récupérer la somme annulée",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 504,
+    "output_tokens": 119,
+    "total_tokens": 623
+   },
+   "timestamp": "2026-11-09T00:05:45+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac20",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "Un État étranger refuse de payer ce qu'il me doit malgré une décision de justice. Puis-je faire saisir des biens qu'il possède en Tunisie ?",
+   "legal_query": "exécution forcée d’un jugement étranger contre un État étranger et saisie des biens de cet État situés en Tunisie",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 501,
+    "output_tokens": 123,
+    "total_tokens": 624
+   },
+   "timestamp": "2026-11-09T00:05:52+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac25",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "J'ai un appartement dans un immeuble en copropriété et je voudrais le louer meublé à des touristes pour quelques jours à chaque fois. Ai-je besoin d'une autorisation ?",
+   "legal_query": "autorisation du syndicat de copropriété pour location meublée touristique de courte durée",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 506,
+    "output_tokens": 93,
+    "total_tokens": 599
+   },
+   "timestamp": "2026-11-09T00:05:59+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac26",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "J'ai acheté une terre agricole vendue par l'État et je l'ai louée à un voisin. Quelle amende est-ce que je risque ?",
+   "legal_query": "sanction de la location d'un terrain agricole d'État à un tiers non autorisé",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 499,
+    "output_tokens": 102,
+    "total_tokens": 601
+   },
+   "timestamp": "2026-11-09T00:06:06+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac27",
+   "set": "S2",
+   "language": "ar",
+   "input_query": "Peut-on faire appel par réexamen du jugement du tribunal immobilier qui autorise l'enregistrement d'un bien, et dans quels cas ?",
+   "legal_query": "appel en réexamen du jugement du tribunal immobilier autorisant l'enregistrement d'un bien, conditions d'application",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 498,
+    "output_tokens": 92,
+    "total_tokens": 590
+   },
+   "timestamp": "2026-11-09T00:06:12+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac28",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "Un journal a publié la photo et le nom d'un adolescent poursuivi devant le juge. Que risque l'auteur de la publication ?",
+   "legal_query": "responsabilité pénale pour atteinte à la vie privée et diffamation d’un mineur par publication de sa photo et de son nom lors d’une procédure judiciaire",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 495,
+    "output_tokens": 116,
+    "total_tokens": 611
+   },
+   "timestamp": "2026-11-09T00:06:20+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac30",
+   "set": "S2",
+   "language": "ar",
+   "input_query": "Si un enfant est arrêté en train de consommer de la drogue, le tribunal peut-il l’obliger à suivre un traitement ?",
+   "legal_query": "mesure d'assistance éducative et de soins ou suivi de traitement imposé à un mineur arrêté pour consommation de stupéfiants",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 498,
+    "output_tokens": 124,
+    "total_tokens": 622
+   },
+   "timestamp": "2026-11-09T00:06:27+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac31",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "Un site internet diffuse des photos et des informations sur un enfant mêlé à une affaire judiciaire. Que peut faire le tribunal pour faire cesser cela et, en cas d'extrême urgence, qui peut saisir le juge des référés ?",
+   "legal_query": "saisie du juge des référés par le ministère public ou le représentant légal pour ordonner la cessation de diffusion d'images et d'informations concernant un mineur impliqué dans une affaire judiciaire",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 517,
+    "output_tokens": 161,
+    "total_tokens": 678
+   },
+   "timestamp": "2026-11-09T00:06:34+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac32",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "J'ai déposé une demande de naturalisation tunisienne. Comment est-elle examinée, et que se passe-t-il si je ne remplis pas les conditions ?",
+   "legal_query": "examen de la demande de naturalisation tunisienne et conséquences du non‑respect des conditions de naturalisation",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 502,
+    "output_tokens": 80,
+    "total_tokens": 582
+   },
+   "timestamp": "2026-11-09T00:06:41+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac34",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "Un mariage célébré à l'étranger compte-t-il pour la nationalité tunisienne, quelle que soit la façon dont il a été célébré ?",
+   "legal_query": "effet du mariage célébré à l'étranger sur l'acquisition de la nationalité tunisienne, quelle que soit la forme de célébration",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 499,
+    "output_tokens": 110,
+    "total_tokens": 609
+   },
+   "timestamp": "2026-11-09T00:06:48+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac37",
+   "set": "S2",
+   "language": "ar",
+   "input_query": "Quelle est la peine de celui qui brûle ou détruit des registres ou des documents originaux émis par l'autorité publique ?",
+   "legal_query": "peine prévue pour la destruction ou l'incendie de registres ou documents originaux émis par l'autorité publique",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 497,
+    "output_tokens": 114,
+    "total_tokens": 611
+   },
+   "timestamp": "2026-11-09T00:06:55+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac38",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "Quelqu'un emmène, sans violence ni ruse, un enfant de 12 ans loin de la famille à qui il était confié. Quelle peine risque-t-il ?",
+   "legal_query": "peine d'enlèvement d'enfant sans violence ni ruse",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 504,
+    "output_tokens": 84,
+    "total_tokens": 588
+   },
+   "timestamp": "2026-11-09T00:07:02+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac39",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "Que risque une personne qui s'évade de prison, selon qu'elle attend encore son jugement ou qu'elle purge déjà sa peine ?",
+   "legal_query": "sanction de l'évasion de prison selon que la personne attend son jugement ou purge déjà sa peine",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 495,
+    "output_tokens": 94,
+    "total_tokens": 589
+   },
+   "timestamp": "2026-11-09T00:07:09+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac40",
+   "set": "S2",
+   "language": "en",
+   "input_query": "Plusieurs créanciers ont inscrit des ordonnances de saisie contre le titre de ma terre. La saisie peut-elle être retirée du titre si un seul d'entre eux accepte ?",
+   "legal_query": "levée de l'inscription d'ordonnances de saisie immobilière sur le titre foncier lorsqu’un créancier renonce",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 507,
+    "output_tokens": 112,
+    "total_tokens": 619
+   },
+   "timestamp": "2026-11-09T00:07:16+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac42",
+   "set": "S2",
+   "language": "ar",
+   "input_query": "Je veux déposer une demande de pension alimentaire contre mon ex-mari qui vit dans un autre État. Puis-je la déposer devant le tribunal du lieu où je réside ?",
+   "legal_query": "compétence du tribunal du lieu de résidence du demandeur pour une demande de pension alimentaire contre l'ex‑mari domicilié dans un autre État",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 504,
+    "output_tokens": 107,
+    "total_tokens": 611
+   },
+   "timestamp": "2026-11-09T00:07:23+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac45",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "Un créancier a fait inscrire une opposition sur mon terrain. Puis-je encore le vendre ou l'hypothéquer et faire enregistrer l'opération ?",
+   "legal_query": "effet de l'inscription d'une opposition d'un créancier sur la vente ou l'hypothèque d'un terrain et possibilité d'enregistrement de l'opération",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 500,
+    "output_tokens": 135,
+    "total_tokens": 635
+   },
+   "timestamp": "2026-11-09T00:07:30+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac46",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "J'ai demandé la révision de ma condamnation pénale. Comment la juridiction va-t-elle examiner ma demande ?",
+   "legal_query": "procédure de révision de condamnation pénale et examen de la demande par la juridiction compétente",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 493,
+    "output_tokens": 78,
+    "total_tokens": 571
+   },
+   "timestamp": "2026-11-09T00:07:37+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac48",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "Un juge étranger veut faire accomplir un acte d'enquête en Tunisie dans une affaire pénale. Par quelle voie sa demande doit-elle passer ?",
+   "legal_query": "voie de transmission de la demande d'entraide judiciaire pénale d'un juge étranger pour accomplir un acte d'enquête en Tunisie",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 500,
+    "output_tokens": 160,
+    "total_tokens": 660
+   },
+   "timestamp": "2026-11-09T00:07:44+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac50",
+   "set": "S2",
+   "language": "en",
+   "input_query": "Un prisonnier détenu en Tunisie peut-il être envoyé à l'étranger pour être confronté à quelqu'un dans une affaire étrangère, et comment cela est-il demandé ?",
+   "legal_query": "remise d'un détenu tunisien à l'étranger pour être entendu dans une affaire étrangère et procédure de demande de remise",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 505,
+    "output_tokens": 160,
+    "total_tokens": 665
+   },
+   "timestamp": "2026-11-09T00:07:51+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac52",
+   "set": "S2",
+   "language": "en",
+   "input_query": "Dans une société à responsabilité limitée, qui convoque l'assemblée générale des associés et quel délai de convocation doit être respecté ? Les associés minoritaires peuvent-ils obliger le gérant à en convoquer une ?",
+   "legal_query": "convocation de l'assemblée générale des associés dans une SARL, rôle du gérant, délai de convocation, droit des associés minoritaires d'exiger la convocation",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 514,
+    "output_tokens": 141,
+    "total_tokens": 655
+   },
+   "timestamp": "2026-11-09T00:07:58+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac53",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "Je possède des actions privilégiées qui ne me donnent pas le droit de voter. Si l'assemblée décide de dissoudre la société avant son terme, puis-je m'y opposer ?",
+   "legal_query": "opposition d'un actionnaire détenteur d'actions privilégiées sans droit de vote à la dissolution anticipée de la société",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 507,
+    "output_tokens": 91,
+    "total_tokens": 598
+   },
+   "timestamp": "2026-11-09T00:08:05+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac54",
+   "set": "S2",
+   "language": "en",
+   "input_query": "Les membres du conseil de surveillance d'une entreprise peuvent-ils être tenus responsables des décisions prises par le conseil de direction ?",
+   "legal_query": "responsabilité des membres du conseil de surveillance pour les décisions du conseil de direction",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 493,
+    "output_tokens": 90,
+    "total_tokens": 583
+   },
+   "timestamp": "2026-11-09T00:08:11+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac57",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "Une femme est décédée en laissant son mari, sa mère, son grand-père paternel, un frère germain et deux frères utérins. Comment sa succession est-elle partagée ?",
+   "legal_query": "partage de la succession entre le conjoint survivant, la mère, le grand‑père paternel, le frère germain et les deux frères utérins selon le Code civil tunisien",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 509,
+    "output_tokens": 160,
+    "total_tokens": 669
+   },
+   "timestamp": "2026-11-09T00:08:19+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac58",
+   "set": "S2",
+   "language": "ar",
+   "input_query": "Quand l'enfant placé sous tutelle devient-il majeur et capable de gérer toutes ses affaires civiles lui-même ?",
+   "legal_query": "âge de la majorité et capacité juridique de l'enfant placé sous tutelle pour gérer ses affaires civiles",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 490,
+    "output_tokens": 70,
+    "total_tokens": 560
+   },
+   "timestamp": "2026-11-09T00:08:25+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac60",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "Dans quels cas un legs prévu dans un testament devient-il sans effet ?",
+   "legal_query": "causes d'inefficacité du legs prévu dans un testament",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 483,
+    "output_tokens": 43,
+    "total_tokens": 526
+   },
+   "timestamp": "2026-11-09T00:08:33+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac61",
+   "set": "S2",
+   "language": "en",
+   "input_query": "Si une jeune personne suit des cours de formation professionnelle sans signer de contrat d'apprentissage, les règles de l'apprentissage s'appliquent‑elles toujours à elle ?",
+   "legal_query": "application des règles de l'apprentissage en l'absence de contrat d'apprentissage pour un jeune en formation professionnelle",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 503,
+    "output_tokens": 91,
+    "total_tokens": 594
+   },
+   "timestamp": "2026-11-09T00:08:40+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac64",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "Je suis représentant de commerce : qui me délivre ma carte professionnelle et dois-je la faire renouveler ?",
+   "legal_query": "délivrance et renouvellement de la carte professionnelle du représentant de commerce",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 490,
+    "output_tokens": 48,
+    "total_tokens": 538
+   },
+   "timestamp": "2026-11-09T00:08:46+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac65",
+   "set": "S2",
+   "language": "fr",
+   "input_query": "Mon entreprise veut, à titre exceptionnel, prolonger la durée du travail de ses salariés comme le permet l'arrêté de sa profession. Quelles démarches doit-elle accomplir auprès de l'inspection du travail ?",
+   "legal_query": "demande d'autorisation de prolongation de la durée du travail prévue par l'arrêté de la profession et procédure de dépôt auprès de l'inspection du travail",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 511,
+    "output_tokens": 156,
+    "total_tokens": 667
+   },
+   "timestamp": "2026-11-09T00:08:54+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "ac69",
+   "set": "S2",
+   "language": "en",
+   "input_query": "À quoi ressemble le drapeau tunisien ?",
+   "legal_query": null,
+   "status": "invalid",
+   "error": "empty legal_query",
+   "attempts": 2,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 958,
+    "output_tokens": 110,
+    "total_tokens": 1068
+   },
+   "timestamp": "2026-11-09T00:09:01+00:00",
+   "raw": "{\"legal_query\": \"\"}",
+   "flags": {
+    "failure": true
+   }
+  },
+  {
+   "id": "ac70",
+   "set": "S2",
+   "language": "en",
+   "input_query": "Quand le parlement de la Tunisie tient-il sa session annuelle régulière, et qui peut le rappeler pendant la pause ?",
+   "legal_query": "convocation de la session ordinaire annuelle du Parlement tunisien et pouvoir de rappel de la session pendant la suspension par le président de la République",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 493,
+    "output_tokens": 104,
+    "total_tokens": 597
+   },
+   "timestamp": "2026-11-09T00:09:07+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac01",
+   "set": "N",
+   "language": "fr",
+   "input_query": "jai signe avec une societe etrangere un contrat qui prevoit un arbitrage internationnal mais elle ma assigné devant un tribunal tunisien jusqua quand je peux demander que laffaire soit renvoyee aux arbitres",
+   "legal_query": "demande de renvoi de l'affaire au tribunal tunisien vers l'arbitrage prévu par la clause compromissoire du contrat international",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 515,
+    "output_tokens": 112,
+    "total_tokens": 627
+   },
+   "timestamp": "2026-11-09T00:09:15+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac03",
+   "set": "N",
+   "language": "fr",
+   "input_query": "J'ai obtenu à l'étranger un jugement d'arbitrage en ma faveur. Est-ce que je peux le faire appliquer en Tunisie, auprès de quel tribunal et avec quels papiers ?",
+   "legal_query": "procédure de reconnaissance et d'exécution en Tunisie d'un jugement d'arbitrage étranger, tribunal compétent et pièces à fournir",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 508,
+    "output_tokens": 73,
+    "total_tokens": 581
+   },
+   "timestamp": "2026-11-09T00:09:21+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac04",
+   "set": "N",
+   "language": "ar",
+   "input_query": "J'ai donné de l'argent à mon ami pour qu'il l'utilise dans le commerce et nous partageons les bénéfices, mais il a conclu des transactions plus importantes que la somme que je lui ai remise. Dois-je supporter les conséquences de ces transactions ou lui ?",
+   "legal_query": "responsabilité du prêteur et du mandataire dans un mandat commercial concernant les dettes contractées au-delà du capital remis",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 523,
+    "output_tokens": 107,
+    "total_tokens": 630
+   },
+   "timestamp": "2026-11-09T00:09:28+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac05",
+   "set": "N",
+   "language": "fr",
+   "input_query": "g filé mes bijoux à un pote pr qu'il me les garde, genre 3000 dinars, on a rien signé... fallait un papier écrit ou pas ? et y a des cas où c pas obligé ?",
+   "legal_query": "prêt de biens meubles (bijoux) sans écrit et dépôt gratuit : exigences de forme et cas où l’écrit n’est pas obligatoire",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 513,
+    "output_tokens": 124,
+    "total_tokens": 637
+   },
+   "timestamp": "2026-11-09T00:09:36+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac07",
+   "set": "N",
+   "language": "ar",
+   "input_query": "J'ai convenu avec une personne de garder mon bien pendant un an contre rémunération, mais le contrat a pris fin après seulement quatre mois. La personne a-t-elle droit à la rémunération convenue en totalité ?",
+   "legal_query": "rémunération due dans le contrat de dépôt rémunéré interrompu avant l'échéance de quatre mois",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 513,
+    "output_tokens": 111,
+    "total_tokens": 624
+   },
+   "timestamp": "2026-11-09T00:09:42+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac08",
+   "set": "N",
+   "language": "fr",
+   "input_query": "J'ai pris un intermédiaire pour régler une affaire à ma place. Une fois son travail fini, qu'est-ce que je lui dois, même si l'affaire n'a pas réussi ?",
+   "legal_query": "rémunération du mandataire ou intermédiaire pour la réalisation d'une affaire, même en cas d'échec de l'objet du mandat",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 507,
+    "output_tokens": 82,
+    "total_tokens": 589
+   },
+   "timestamp": "2026-11-09T00:09:49+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac09",
+   "set": "N",
+   "language": "en",
+   "input_query": "Deux personnes ont chacune un papier signé disant que la même maison est à elles, et personne n’y vit. Qui des deux gagne ?",
+   "legal_query": "conflit de titres de propriété sur le même bien immobilier, absence de possession, action en revendication de propriété",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 497,
+    "output_tokens": 104,
+    "total_tokens": 601
+   },
+   "timestamp": "2026-11-09T00:09:57+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac12",
+   "set": "N",
+   "language": "fr",
+   "input_query": "j'avais filé mon argent à un commerçant pour qu'il le fasse tourner et on partageait les bénefs. c fini maintenant, j'ai combien de temps pour le trainer au tribunal ?",
+   "legal_query": "délai de prescription de l'action en recouvrement de créance contre le commerçant pour non‑paiement des bénéfices partagés",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 509,
+    "output_tokens": 102,
+    "total_tokens": 611
+   },
+   "timestamp": "2026-11-09T00:10:03+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac16",
+   "set": "N",
+   "language": "ar",
+   "input_query": "Ouvrir la banque pour mon bénéfice en se basant sur un document non annulable, la banque peut-elle l'annuler ou modifier ses conditions sans mon accord ?",
+   "legal_query": "possibilité pour la banque d'annuler ou de modifier un compte bancaire ouvert sur la base d'un document non annulable sans l'accord du client",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 504,
+    "output_tokens": 150,
+    "total_tokens": 654
+   },
+   "timestamp": "2026-11-09T00:10:11+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac18",
+   "set": "N",
+   "language": "ar",
+   "input_query": "J’ai envoyé une marchandise avec une société de transport et nous avons convenu que le client paierait le prix de la livraison à la réception. Qui est réellement le demandeur du paiement du prix de la livraison ?",
+   "legal_query": "demandeur du paiement du prix de la livraison dans le contrat de transport, identification du créancier du transporteur vis-à-vis du client",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 514,
+    "output_tokens": 138,
+    "total_tokens": 652
+   },
+   "timestamp": "2026-11-09T00:10:18+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac19",
+   "set": "N",
+   "language": "fr",
+   "input_query": "Un commerçant a coulé son affaire et ne peut plus payer personne ; juste avant, il avait réglé quelqu'un avec un papier de paiement tiré sur sa banque, et ce paiement a été remis en cause. Qui peut-on poursuivre pour récupérer l'argent ?",
+   "legal_query": "recours contre le tiré d'un papier de paiement tiré sur la banque du commerçant pour le recouvrement du montant impayé",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 522,
+    "output_tokens": 96,
+    "total_tokens": 618
+   },
+   "timestamp": "2026-11-09T00:10:25+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac20",
+   "set": "N",
+   "language": "fr",
+   "input_query": "un pays étranger me doit de l'argent, g gagné au tribunal mais il veut tjs pas payer... je peux faire saisir ses trucs qu'il a en tunisie ou pas ?",
+   "legal_query": "exécution forcée et saisie des biens situés en Tunisie d'un débiteur étranger suite à un jugement",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 506,
+    "output_tokens": 85,
+    "total_tokens": 591
+   },
+   "timestamp": "2026-11-09T00:10:32+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac25",
+   "set": "N",
+   "language": "fr",
+   "input_query": "jai un apartement dans un imeuble en copropriete et je voudrai le louer meuble a des touristes pour quelques jours a chaque fois est ce que jai besoin dune autorisation",
+   "legal_query": "autorisation de location meublée de courte durée d'un lot en copropriété",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 505,
+    "output_tokens": 86,
+    "total_tokens": 591
+   },
+   "timestamp": "2026-11-09T00:10:38+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac26",
+   "set": "N",
+   "language": "fr",
+   "input_query": "J'ai acheté à l'état un champ domanial et je l'ai donné en fermage à un voisin. Quelle pénalité financière je risque ?",
+   "legal_query": "sanction financière pour la cession ou le bail d’un bien du domaine public de l’État à un tiers",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 499,
+    "output_tokens": 89,
+    "total_tokens": 588
+   },
+   "timestamp": "2026-11-09T00:10:45+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac27",
+   "set": "N",
+   "language": "ar",
+   "input_query": "Le tribunal qui examine les affaires foncières a rendu un jugement autorisant l'inscription d'un terrain au nom d'une personne au registre. Peut-on contester ce jugement devant la plus haute cour du pays, et dans quels cas ?",
+   "legal_query": "recours en cassation contre jugement du tribunal des affaires foncières autorisant l'inscription d'un terrain au registre, conditions d'admission devant la Cour de cassation",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 516,
+    "output_tokens": 121,
+    "total_tokens": 637
+   },
+   "timestamp": "2026-11-09T00:10:53+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac28",
+   "set": "N",
+   "language": "fr",
+   "input_query": "un journal a mis la photo et le nom d'un ado qui passe devant le juge, celui qui a publié ça il risque koi ?",
+   "legal_query": "responsabilité pénale pour atteinte à la vie privée et diffamation liée à la diffusion de la photo et du nom d'un mineur devant le juge",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 496,
+    "output_tokens": 89,
+    "total_tokens": 585
+   },
+   "timestamp": "2026-11-09T00:11:00+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac30",
+   "set": "N",
+   "language": "ar",
+   "input_query": "Si un enfant est appréhendé en train de consommer de la drogue, la cour peut-elle l’obliger à suivre un traitement ?",
+   "legal_query": "mesure d'assistance ou d'orientation vers un traitement pour mineur appréhendé en consommation de stupéfiants",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 501,
+    "output_tokens": 126,
+    "total_tokens": 627
+   },
+   "timestamp": "2026-11-09T00:11:07+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac31",
+   "set": "N",
+   "language": "fr",
+   "input_query": "Un site internet balance des photos et des infos sur un enfant impliqué dans un procès. Que peut faire la justice pour arrêter ça et, si c'est très urgent, qui peut porter plainte devant le juge de permanence ?",
+   "legal_query": "violation du droit à l'image et de la vie privée d’un mineur par diffusion de photos et d’informations sur internet, mesures d’urgence et possibilité de dépôt de plainte par le représentant légal du mineur devant le juge de permanence",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 513,
+    "output_tokens": 263,
+    "total_tokens": 776
+   },
+   "timestamp": "2026-11-09T00:11:14+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac32",
+   "set": "N",
+   "language": "fr",
+   "input_query": "Je suis étranger et j'ai fait une demande pour devenir tunisien. Comment cette demande est-elle étudiée, et que se passe-t-il si je n'ai pas ce qu'il faut pour l'obtenir ?",
+   "legal_query": "procédure de naturalisation tunisienne, étude de la demande et conséquences du non-respect des conditions requises",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 511,
+    "output_tokens": 61,
+    "total_tokens": 572
+   },
+   "timestamp": "2026-11-09T00:11:21+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac34",
+   "set": "N",
+   "language": "fr",
+   "input_query": "un mariage celebre a letranger compte t il pour la nationalite tunisienne quelle que soit la facon dont il a ete celebre",
+   "legal_query": "effet du mariage célébré à l'étranger sur l'acquisition de la nationalité tunisienne",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 497,
+    "output_tokens": 74,
+    "total_tokens": 571
+   },
+   "timestamp": "2026-11-09T00:11:27+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac37",
+   "set": "N",
+   "language": "ar",
+   "input_query": "Quelle est la peine de celui qui brûle ou détruit des registres ou des documents originaux émis par l'autorité publique ?",
+   "legal_query": "peine prévue pour la destruction ou l'incendie de registres ou documents originaux émis par l'autorité publique",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 497,
+    "output_tokens": 114,
+    "total_tokens": 611
+   },
+   "timestamp": "2026-11-09T00:11:35+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac38",
+   "set": "N",
+   "language": "fr",
+   "input_query": "Quelqu'un part en fugue avec un enfant de 12 ans, sans le forcer ni le tromper, loin de la famille à qui l'enfant était confié. Quelle sanction risque-t-il ?",
+   "legal_query": "sanction de l'enlèvement d'enfant mineur de 12 ans sans contrainte ni tromperie",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 511,
+    "output_tokens": 95,
+    "total_tokens": 606
+   },
+   "timestamp": "2026-11-09T00:11:42+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac39",
+   "set": "N",
+   "language": "fr",
+   "input_query": "Que risque quelqu'un qui s'enfuit de l'endroit où il est enfermé, selon qu'on ne l'a pas encore jugé ou qu'il est déjà en train de faire ses années derrière les barreaux ?",
+   "legal_query": "fuite d'un prévenu avant jugement et évasion d'un détenu déjà incarcéré",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 514,
+    "output_tokens": 101,
+    "total_tokens": 615
+   },
+   "timestamp": "2026-11-09T00:11:49+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac40",
+   "set": "N",
+   "language": "en",
+   "input_query": "Un groupe de personnes à qui je dois de l'argent a mis des saisies sur les titres de propriété de mon terrain... si l'une d'entre elles dit d'accord, cela peut-il être retiré ?",
+   "legal_query": "levée d'une saisie immobilière sur le titre de propriété du terrain à la suite d'un accord d'un créancier",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 511,
+    "output_tokens": 80,
+    "total_tokens": 591
+   },
+   "timestamp": "2026-11-09T00:11:56+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac42",
+   "set": "N",
+   "language": "ar",
+   "input_query": "Mon ex-conjoint vit dans un autre État et je veux intenter une action en pension alimentaire... Puis-je la déposer devant le tribunal du lieu où j'habite ?",
+   "legal_query": "compétence du tribunal du domicile du demandeur pour l'action en pension alimentaire contre ex-conjoint résidant dans un autre État",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 504,
+    "output_tokens": 87,
+    "total_tokens": 591
+   },
+   "timestamp": "2026-11-09T00:12:03+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac45",
+   "set": "N",
+   "language": "fr",
+   "input_query": "Quelqu'un à qui je dois de l'argent a mis un blocage sur mon terrain. Est-ce que je peux encore le vendre ou le mettre en gage et faire passer ça au cadastre ?",
+   "legal_query": "effet de la saisie immobilière sur la vente ou le gage du terrain et possibilité d’inscription au cadastre",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 510,
+    "output_tokens": 119,
+    "total_tokens": 629
+   },
+   "timestamp": "2026-11-09T00:12:12+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac46",
+   "set": "N",
+   "language": "fr",
+   "input_query": "J'ai été déclaré coupable au pénal et, après coup, j'ai demandé qu'on rouvre mon affaire déjà jugée définitivement. Comment les juges vont-ils traiter ma demande ?",
+   "legal_query": "demande de réouverture d'une affaire pénale définitivement jugée (recours en révision)",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 507,
+    "output_tokens": 83,
+    "total_tokens": 590
+   },
+   "timestamp": "2026-11-09T00:12:16+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac48",
+   "set": "N",
+   "language": "fr",
+   "input_query": "un juge d'un autre pays veut faire une enquête ici en tunisie pour une affaire pénale, sa demande elle doit passer par où ?",
+   "legal_query": "procédure de demande d'entraide judiciaire internationale d'un juge étranger pour enquête pénale en Tunisie",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 497,
+    "output_tokens": 85,
+    "total_tokens": 582
+   },
+   "timestamp": "2026-11-09T00:12:23+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac50",
+   "set": "N",
+   "language": "en",
+   "input_query": "Un prisonnier détenu en Tunisie peut-il être envoyé à l'étranger pour être confronté à quelqu'un dans une affaire étrangère et comment cela est-il demandé ?",
+   "legal_query": "transfert d'un détenu tunisien vers l'étranger dans le cadre d'une procédure d'entraide judiciaire internationale et modalités de demande",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 504,
+    "output_tokens": 131,
+    "total_tokens": 635
+   },
+   "timestamp": "2026-11-09T00:12:32+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac52",
+   "set": "N",
+   "language": "en",
+   "input_query": "Dans une SARL, qui convoque l'assemblée des actionnaires et quel délai de préavis doit être donné ? Les actionnaires minoritaires peuvent-ils obliger le directeur à en convoquer une ?",
+   "legal_query": "convocation de l'assemblée des associés dans une SARL, délai de préavis, droit des associés minoritaires d'exiger la convocation par le gérant",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 511,
+    "output_tokens": 137,
+    "total_tokens": 648
+   },
+   "timestamp": "2026-11-09T00:13:02+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac53",
+   "set": "N",
+   "language": "fr",
+   "input_query": "J'ai des parts dans une entreprise qui me donnent un avantage sur les bénéfices mais pas le droit de voter. Si les autres décident de fermer définitivement l'entreprise plus tôt que prévu, est-ce que je peux les en empêcher ?",
+   "legal_query": "action d'opposition d'un associé sans droit de vote à la décision de dissolution anticipée de la société",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 516,
+    "output_tokens": 150,
+    "total_tokens": 666
+   },
+   "timestamp": "2026-11-09T00:13:06+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac54",
+   "set": "N",
+   "language": "en",
+   "input_query": "Les membres du conseil de surveillance d'une entreprise peuvent-ils être poursuivis pour des décisions prises par le conseil de direction ?",
+   "legal_query": "responsabilité des membres du conseil de surveillance pour les décisions prises par le conseil de direction d’une entreprise",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 494,
+    "output_tokens": 96,
+    "total_tokens": 590
+   },
+   "timestamp": "2026-11-09T00:13:09+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac57",
+   "set": "N",
+   "language": "fr",
+   "input_query": "une femme est decedee en laissant son mari sa mere son grand pere paternel un frere germain et deux freres uterins comment sa sucession est elle partagee",
+   "legal_query": "règles de partage de la succession d’une défunte entre le conjoint survivant, la mère, le grand‑père paternel, le frère germain et les frères utérins",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 505,
+    "output_tokens": 151,
+    "total_tokens": 656
+   },
+   "timestamp": "2026-11-09T00:13:21+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac58",
+   "set": "N",
+   "language": "ar",
+   "input_query": "Quand l'enfant sous tutelle devient-il majeur et peut-il gérer toutes ses affaires lui-même ?",
+   "legal_query": "âge de la majorité et capacité juridique de l'enfant sous tutelle pour la gestion de ses affaires",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 488,
+    "output_tokens": 69,
+    "total_tokens": 557
+   },
+   "timestamp": "2026-11-09T00:13:24+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac60",
+   "set": "N",
+   "language": "fr",
+   "input_query": "Quelqu'un a mis par écrit qu'à sa mort un de ses biens irait à une certaine personne. Dans quels cas cette promesse tombe à l'eau ?",
+   "legal_query": "nullité ou inopposabilité d'une disposition testamentaire (legs ou donation mortis causa) en cas de non‑respect des conditions légales (incapacité, forme, révocation, cause illicite)",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 502,
+    "output_tokens": 136,
+    "total_tokens": 638
+   },
+   "timestamp": "2026-11-09T00:13:40+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac61",
+   "set": "N",
+   "language": "en",
+   "input_query": "Mon enfant suit des cours de formation professionnelle mais n'a jamais signé de contrat d'apprentissage, les règles d'apprentissage s'appliquent-elles toujours à lui ou nah?",
+   "legal_query": "application des dispositions du Code du travail relatives à l'apprentissage en l'absence de contrat d'apprentissage",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 504,
+    "output_tokens": 90,
+    "total_tokens": 594
+   },
+   "timestamp": "2026-11-09T00:13:41+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac64",
+   "set": "N",
+   "language": "fr",
+   "input_query": "je suis representant de comerce qui me delivre ma carte profesionnelle et est ce que je dois la faire renouveller",
+   "legal_query": "renouvellement de la carte professionnelle du représentant de commerce",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 495,
+    "output_tokens": 42,
+    "total_tokens": 537
+   },
+   "timestamp": "2026-11-09T00:13:48+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac65",
+   "set": "N",
+   "language": "fr",
+   "input_query": "Mon entreprise veut exceptionnellement allonger les horaires de ses employés comme le permet le règlement de son secteur. Quelles formalités doit-elle faire auprès du bureau du travail ?",
+   "legal_query": "formalités de demande d'autorisation de prolongation de la durée du travail auprès du bureau du travail selon le règlement sectoriel",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 503,
+    "output_tokens": 108,
+    "total_tokens": 611
+   },
+   "timestamp": "2026-11-09T00:13:55+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac69",
+   "set": "N",
+   "language": "en",
+   "input_query": "Quel design figure sur la bannière en tissu officielle qui représente la Tunisie en tant qu'État ?",
+   "legal_query": "description du design du drapeau officiel de la Tunisie",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 489,
+    "output_tokens": 78,
+    "total_tokens": 567
+   },
+   "timestamp": "2026-11-09T00:14:02+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  },
+  {
+   "id": "n_ac70",
+   "set": "N",
+   "language": "en",
+   "input_query": "Quand les députés tunisiens s'asseyent-ils réellement chaque année, et si ils sont en vacances qui peut les faire revenir ?",
+   "legal_query": "convocation et tenue des séances annuelles de l'Assemblée des représentants du peuple ainsi que pouvoir de rappel des députés pendant les périodes de vacances",
+   "status": "ok",
+   "error": null,
+   "attempts": 1,
+   "prompt_sha256": "1c27f89224093fc0578e2f3dae7d0465fe3bd91bdb000e7d3b23f0d8068e866c",
+   "model": "openai/gpt-oss-120b",
+   "temperature": 0.0,
+   "reasoning_effort": "low",
+   "tokens": {
+    "input_tokens": 498,
+    "output_tokens": 119,
+    "total_tokens": 617
+   },
+   "timestamp": "2026-11-09T00:14:09+00:00",
+   "flags": {
+    "failure": false,
+    "new_numbers": [],
+    "over_40_words": false
+   }
+  }
+ ]
+}

@@ -46,6 +46,11 @@ All v2.1 switches are in config.py; INDEX_V12 = False and the other switches Fal
 | `token_estimate.py`, `token_estimate.json`, `TOKEN_ESTIMATE.md` | ESTIMATE of the extra v2 input tokens of the header and capped expansion (evidence blocks rebuilt with the agent's formatting functions, rate fitted on saved v2 rows). |
 | `dev_items.json` | The 110 development items (`eval/retrieval_only.py --export-dev`). |
 | `retrieval_only_dev.json`, `RETRIEVAL_ONLY_DEV.md` | `eval/retrieval_only.py` on them: db_v1_1 baseline vs db_v1_2 v1.2, paired. |
+| `WAVE2_PREREG.md` | Wave 2 pre-registration (committed before any normalization call): prompt, hash, overlap check, variants V0-V3, decision rule, scope. |
+| `wave2_core.py` | Pure helpers of wave 2: RRF of two pools, fallback of a failed normalization, the decision rule. |
+| `normalize_queries.py` | One `agent/normalize.py` call per development item (Groq, resumable, exit 75 on a daily quota); `--check` reruns the no-LLM checks. |
+| `normalized_queries.json` | Its output: id, input query, legal_query, status, prompt hash, tokens, timestamp, flags. |
+| `wave2_variants.json`, `WAVE2_VARIANTS.md` | `eval/retrieval_only.py --variants V0 V1 V2 V3` on db_v1_2 (development data, not evidence of generalisation). |
 
 ## Commands (Windows cmd, from the repository root)
 
@@ -70,6 +75,11 @@ python diagnostics\token_estimate.py --v11 %TEMP%\db_v1_1_copy --v12 %TEMP%\db_v
 python eval\test_retrieval_only.py
 python eval\retrieval_only.py --export-dev diagnostics\dev_items.json
 python eval\retrieval_only.py --items diagnostics\dev_items.json --index-a db_v1_1 --config-a baseline --index-b db_v1_2 --config-b v1.2 --out diagnostics\retrieval_only_dev.json --md diagnostics\RETRIEVAL_ONLY_DEV.md
+rem wave 2
+python eval\prompt_overlap.py --prompt agent/normalize.py:NORMALIZE_PROMPT
+python diagnostics\normalize_queries.py
+python eval\test_wave2.py
+python eval\retrieval_only.py --items diagnostics\dev_items.json --index-a db_v1_2 --config-a v1.2 --variants V0 V1 V2 V3 --normalized diagnostics\normalized_queries.json --out diagnostics\wave2_variants.json --md diagnostics\WAVE2_VARIANTS.md
 ```
 
 ## Notes on the run

@@ -5,6 +5,9 @@ comparison of two (index, configuration) pairs. No LLM call, ever.
         --index-a db_v1_1 --config-a baseline [--index-b db_v1_2 --config-b v1.2] [--set-b KEY=VALUE ...] \
         [--out OUT.json] [--md OUT.md]
     python eval/retrieval_only.py --export-dev diagnostics/dev_items.json     # the 110 development items
+    python eval/retrieval_only.py --items diagnostics/dev_items.json --index-a db_v1_2 --config-a v1.2 \
+        --variants V0 V1 V2 V3 --normalized diagnostics/normalized_queries.json [--out OUT.json] [--md OUT.md]
+        # wave 2 query normalization variants (diagnostics/WAVE2_PREREG.md); still no LLM call (cached outputs)
 
 ITEMS.json: a list (or {"items": [...]}) of {"id", "language", "question", "gold", optional "noise_type", "set"};
 "gold" as in the exam files ([{"source": "PenalFr.pdf", "article": "94", ...}]) or chunk ids ["PenalFr/s02/94"].
@@ -32,7 +35,7 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path[:0] = [str(ROOT), str(ROOT / "eval")]
+sys.path[:0] = [str(ROOT), str(ROOT / "eval"), str(ROOT / "diagnostics")]
 
 SEED = 20261022
 N_BOOT = 5000
@@ -125,30 +128,72 @@ def apply_config(preset: str, overrides: dict) -> dict:
     return cfg
 
 
+def retrieval_docs(vs, q, fq, other) -> dict:
+    """The documents of one retrieval of the French query fq (question q decides the article numbers and, for an
+    Arabic/English question, the original-language dense list), with the real code and config."""
+    import config as C
+    from pipeline import step_retrieve, _ARTICLE_RE
+    from retriever import _semantic_search, _bm25_search, _get_bm25, _fuse, _deduplicate, _direct_lookup, article_numbers
+    bm25 = _get_bm25(vs)
+    dense = _semantic_search(vs, fq, None, k=C.MMR_K)
+    bm = _bm25_search(bm25, fq, None, k=C.BM25_K) if bm25 else []
+    orig = _semantic_search(vs, q, None, k=10) if other else []
+    fused = _deduplicate(_fuse([dense, bm] + ([orig] if other else [])))
+    nums = article_numbers(q) if C.DIRECT_LOOKUP_STRICT else ([m.group(0)] if (m := _ARTICLE_RE.search(q)) else [])
+    if nums and not C.DIRECT_LOOKUP_UNION:
+        path = "direct" if _direct_lookup(vs, nums[0], None, C.MMR_K) else "hybrid"
+    else:
+        path = "direct+hybrid" if nums else "hybrid"
+    pool = step_retrieve(vs, q, fq, [], None)
+    return {"dense": dense, "bm25": bm, "orig": orig, "fused": fused, "pool": pool, "path": path}
+
+
+def _finish(vs, D, rerank_query) -> dict:
+    from pipeline import evidence_docs
+    from reranker import rerank
+    reranked = rerank(rerank_query, D["pool"], top_k=len(D["pool"]))
+    ev = evidence_docs(reranked[:6], vs)
+    ids = lambda ds: [d.metadata["chunk_id"] for d in ds]
+    return {**{n: ids(D[n]) for n in ("dense", "bm25", "orig", "fused", "pool")},
+            "reranked": ids(reranked), "evidence": ids(ev), "path": D["path"]}
+
+
 def real_backend(vs):
     """(question, French query, other language?) -> the lists of one retrieval, with the real code and config."""
-    import config as C
-    from pipeline import step_retrieve, evidence_docs, _ARTICLE_RE
-    from retriever import _semantic_search, _bm25_search, _get_bm25, _fuse, _deduplicate, _direct_lookup, article_numbers
-    from reranker import rerank
-
     def run(q, fq, other):
-        bm25 = _get_bm25(vs)
-        dense = _semantic_search(vs, fq, None, k=C.MMR_K)
-        bm = _bm25_search(bm25, fq, None, k=C.BM25_K) if bm25 else []
-        orig = _semantic_search(vs, q, None, k=10) if other else []
-        fused = _deduplicate(_fuse([dense, bm] + ([orig] if other else [])))
-        nums = article_numbers(q) if C.DIRECT_LOOKUP_STRICT else ([m.group(0)] if (m := _ARTICLE_RE.search(q)) else [])
-        if nums and not C.DIRECT_LOOKUP_UNION:
-            path = "direct" if _direct_lookup(vs, nums[0], None, C.MMR_K) else "hybrid"
+        return _finish(vs, retrieval_docs(vs, q, fq, other), fq)
+    return run
+
+
+# ---------------------------------------------------------------- wave 2: query normalization variants
+
+def load_normalized(path) -> dict:
+    """diagnostics/normalized_queries.json -> id -> entry."""
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    return {e["id"]: e for e in (data["items"] if isinstance(data, dict) else data)}
+
+
+def variant_backend(vs, variant, normalized, docs=retrieval_docs, finish=_finish):
+    """V0 = the current retrieval of fq; V1 = of the normalized query nq; V2 / V3 = RRF of the two pools
+    (diagnostics/wave2_core.fused_pool), reranked on fq / nq (diagnostics/WAVE2_PREREG.md). A failed normalization
+    falls back to fq (wave2_core.query_for). Called with the item: run(q, fq, other, item)."""
+    import wave2_core as W
+    if variant not in W.VARIANTS:
+        raise ValueError(f"unknown variant {variant}")
+    cid = lambda d: d.metadata["chunk_id"]
+
+    def run(q, fq, other, item):
+        nq, fell_back = W.query_for(normalized.get(item["id"]), fq)
+        if variant == "V0":
+            L = finish(vs, docs(vs, q, fq, other), fq)
+        elif variant == "V1":
+            L = finish(vs, docs(vs, q, nq, other), nq)
         else:
-            path = "direct+hybrid" if nums else "hybrid"
-        pool = step_retrieve(vs, q, fq, [], None)
-        reranked = rerank(fq, pool, top_k=len(pool))
-        ev = evidence_docs(reranked[:6], vs)
-        ids = lambda ds: [d.metadata["chunk_id"] for d in ds]
-        return {"dense": ids(dense), "bm25": ids(bm), "orig": ids(orig), "fused": ids(fused), "pool": ids(pool),
-                "reranked": ids(reranked), "evidence": ids(ev), "path": path}
+            Do, Dn = docs(vs, q, fq, other), docs(vs, q, nq, other)
+            D = {**Do, "fused": W.rrf_merge([Do["fused"], Dn["fused"]], cid), "pool": W.fused_pool(Do["pool"], Dn["pool"], cid)}
+            L = finish(vs, D, fq if variant == "V2" else nq)
+        return {**L, "normalized_fallback": fell_back}
+    run.wants_item = True
     return run
 
 
@@ -177,7 +222,9 @@ def evaluate(items, translations, backend) -> tuple:
         if not gold:
             skipped.append(base | {"reason": "no gold article"})
             continue
-        L = backend(it["question"], fq, other)
+        L = backend(it["question"], fq, other, it) if getattr(backend, "wants_item", False) else backend(it["question"], fq, other)
+        if "normalized_fallback" in L:
+            base = base | {"normalized_fallback": L["normalized_fallback"]}
         r = base | {"query": "translation" if other else "as written", "path": L["path"],
                     **{f"rank_{n}": rank_of(L[n], gold) for n in ("dense", "bm25", "orig", "fused", "pool", "reranked")},
                     "pool_size": len(L["pool"]), "gold_in_evidence": rank_of(L["evidence"], gold) is not None,
@@ -281,6 +328,93 @@ def markdown(runs: dict, comparison: dict | None) -> str:
     return "\n".join(L)
 
 
+def sample_rows(entries, n=12, seed=SEED) -> list:
+    """n entries drawn with random.Random(seed).sample, in item order."""
+    entries = list(entries)
+    idx = sorted(random.Random(seed).sample(range(len(entries)), min(n, len(entries))))
+    return [entries[i] for i in idx]
+
+
+def _cell(t) -> str:
+    return (t or "-").replace("|", "\\|").replace("\n", " ")
+
+
+def variants_markdown(runs: dict, comps: dict, decision: dict, entries: list) -> str:
+    """Tables of the wave 2 variant run (development data, not evidence of generalisation)."""
+    names = list(runs)
+    L = ["# Wave 2: query normalization variants (retrieval only)", "",
+         "Development data (110 items), not evidence of generalisation. Pre-registration: diagnostics/WAVE2_PREREG.md.", ""]
+    es = list(entries)
+    tok = {k: sum(e["tokens"][k] for e in es) for k in ("input_tokens", "output_tokens", "total_tokens")}
+    fails = [e for e in es if e["status"] != "ok"]
+    flagged = [e for e in es if e["flags"].get("new_numbers") or e["flags"].get("over_40_words")]
+    L += ["### Normalization calls", "| Items | ok | failures (fallback to the input query) | 2 attempts | input tokens | output tokens | total tokens | mean total / item | prompt sha256 |",
+          "|---|---|---|---|---|---|---|---|---|",
+          f"| {len(es)} | {len(es) - len(fails)} | {len(fails)} | {sum(e['attempts'] > 1 for e in es)} | {tok['input_tokens']} | "
+          f"{tok['output_tokens']} | {tok['total_tokens']} | {tok['total_tokens'] / max(1, len(es)):.0f} | "
+          f"{', '.join(sorted({e['prompt_sha256'][:12] for e in es}))} |", ""]
+    L += ["### Failed normalizations", "| Id | Status | Error |", "|---|---|---|"]
+    L += [f"| {e['id']} | {e['status']} | {_cell(e['error'])} |" for e in fails] or ["| - | - | - |"]
+    L += ["", "### Flagged outputs (numbers not in the input query; more than 40 words)", "| Id | New numbers | Words | Input query | legal_query |", "|---|---|---|---|---|"]
+    L += [f"| {e['id']} | {', '.join(e['flags'].get('new_numbers') or []) or '-'} | {len(e['legal_query'].split())} | "
+          f"{_cell(e['input_query'])} | {_cell(e['legal_query'])} |" for e in flagged] or ["| - | - | - | - | - |"]
+    L += ["", f"### 12 random rows (random.Random({SEED}).sample)", "| Id | Set | Language | Input query | legal_query | Flags |", "|---|---|---|---|---|---|"]
+    for e in sample_rows(es):
+        fl = [k for k in ("new_numbers", "over_40_words") if e["flags"].get(k)] + (["failure"] if e["status"] != "ok" else [])
+        L.append(f"| {e['id']} | {e['set']} | {e['language']} | {_cell(e['input_query'])} | {_cell(e['legal_query'])} | {', '.join(fl) or '-'} |")
+    groups = list(runs[names[0]]["summary"])
+    for k in KS:
+        L += ["", f"### Hit@{k} per group, 95% bootstrap CI ({N_BOOT} resamples, seed {SEED})",
+              "| Group | n | " + " | ".join(names) + " |", "|---|---|" + "---|" * len(names)]
+        for g in groups:
+            L.append(f"| {g} | {runs[names[0]]['summary'][g]['n']} | " + " | ".join(
+                fmt_rate(runs[v]["summary"][g]["hit"][k]) if g in runs[v]["summary"] else "-" for v in names) + " |")
+    L += ["", "### Funnel classes (all items)", "| Variant | n | " + " | ".join(CLASSES) + " | gold in evidence | pool size mean |",
+          "|---|---|" + "---|" * (len(CLASSES) + 2)]
+    for v in names:
+        s, recs = runs[v]["summary"]["all"], runs[v]["records"]
+        L.append(f"| {v} | {s['n']} | " + " | ".join(str(s["classes"][c]) for c in CLASSES) +
+                 f" | {s['gold_in_evidence']} | {sum(r['pool_size'] for r in recs) / max(1, len(recs)):.1f} |")
+    for v in names:
+        L += ["", f"### {v}: funnel classes per group", "| Group | n | " + " | ".join(CLASSES) + " |", "|---|---|" + "---|" * len(CLASSES)]
+        L += [f"| {g} | {s['n']} | " + " | ".join(str(s["classes"][c]) for c in CLASSES) + " |" for g, s in runs[v]["summary"].items()]
+    L += ["", "### Paired differences versus V0 (95% bootstrap CI of the mean difference; exact two-sided sign test)",
+          "| Variant | k | V0 hits | variant hits | difference | 95% CI | gained | lost | sign test p |", "|---|---|---|---|---|---|---|---|---|"]
+    for v, c in comps.items():
+        for k in KS:
+            lo, hi = c[k]["ci"]
+            L.append(f"| {v} | Hit@{k} | {c[k]['a']} | {c[k]['b']} | {100 * c[k]['diff']:+.1f} pp | [{100 * lo:+.1f}, {100 * hi:+.1f}] | "
+                     f"{len(c[k]['gained'])} | {len(c[k]['lost'])} | {c[k]['sign_p']:.3f} |")
+    L += ["", "### Gained and lost items versus V0 (Hit@6)", "| Variant | gained | lost |", "|---|---|---|"]
+    L += [f"| {v} | {', '.join(c[6]['gained']) or '-'} | {', '.join(c[6]['lost']) or '-'} |" for v, c in comps.items()]
+    L += ["", "### Decision rule (pre-registered)", "| Variant | total Hit@6 (V0) | extra tokens | (i) noisy net vs V0 >= +3 | (ii) lost S1+S2 <= 1 | "
+          "(iii) lost per language <= 1 | passes |", "|---|---|---|---|---|---|---|"]
+    for v, c in decision["conditions"].items():
+        ll = ", ".join(f"{l}: {len(x)}" + (f" ({', '.join(x)})" if x else "") for l, x in c["lost_by_language"].items())
+        L.append(f"| {v} | {c['total_hit6']} ({c['v0_total_hit6']}) | {c['extra_tokens']} | {c['noisy_net']:+d} "
+                 f"({'yes' if c['i_noisy_gain_ge_3'] else 'no'}) | {len(c['lost_stage1_2'])}"
+                 f"{' (' + ', '.join(c['lost_stage1_2']) + ')' if c['lost_stage1_2'] else ''} ({'yes' if c['ii_lost_stages_le_1'] else 'no'}) | "
+                 f"{ll} ({'yes' if c['iii_lost_each_language_le_1'] else 'no'}) | {'yes' if c['passes'] else 'no'} |")
+    L += ["", "| Candidate (highest total Hit@6) | Selected |", "|---|---|", f"| {decision['candidate']} | {decision['selected']} |", ""]
+    return "\n".join(L)
+
+
+def run_variants(items, tr, vs, normalized, variants, preset, overrides) -> tuple:
+    """-> (runs, comparisons versus V0, decision)."""
+    import wave2_core as W
+    cfg = apply_config(preset, overrides)
+    runs = {}
+    for v in variants:
+        recs, skipped = evaluate(items, tr, variant_backend(vs, v, normalized))
+        runs[v] = {"config": cfg, "records": recs, "skipped": skipped, "summary": summarize(recs)}
+        print(f"{v}: {len(recs)} items, {len(skipped)} skipped; Hit@6/8/10 = "
+              + " / ".join(str(runs[v]["summary"]["all"]["hit"][k]["n"]) if recs else "-" for k in KS), flush=True)
+    comps = {v: paired(runs["V0"]["records"], runs[v]["records"]) for v in variants if v != "V0" and "V0" in runs}
+    total = sum(e["tokens"]["total_tokens"] for e in normalized.values())
+    decision = W.decide({v: r["records"] for v, r in runs.items()}, {v: (0 if v == "V0" else total) for v in runs})
+    return runs, comps, decision
+
+
 def open_copy(path, opener=None) -> tuple:
     """Open a temporary byte copy of the index at path. -> (vectorstore, temporary folder)."""
     tmp = Path(tempfile.mkdtemp(prefix="retrieval_only_"))
@@ -316,6 +450,8 @@ def main(argv=None) -> int:
     ap.add_argument("--out")
     ap.add_argument("--md")
     ap.add_argument("--export-dev")
+    ap.add_argument("--variants", nargs="+", help="wave 2: V0 V1 V2 V3 on --index-a / --config-a (needs --normalized)")
+    ap.add_argument("--normalized", default=str(ROOT / "diagnostics" / "normalized_queries.json"))
     a = ap.parse_args(argv)
     if a.export_dev:
         export_dev(a.export_dev)
@@ -323,6 +459,25 @@ def main(argv=None) -> int:
     if not (a.items and a.index_a):
         ap.error("--items and --index-a are required")
     items, tr = load_items(a.items), load_translations(a.translations)
+    if a.variants:
+        normalized = load_normalized(a.normalized)
+        vs, tmp = open_copy(a.index_a)
+        runs, comps, decision = run_variants(items, tr, vs, normalized, a.variants, a.config_a, parse_sets(a.set_a))
+        del vs
+        if a.out:
+            Path(a.out).write_text(json.dumps({"index": str(a.index_a), "preset": a.config_a, "runs": runs, "comparisons": comps,
+                                               "decision": decision}, ensure_ascii=False, indent=1, default=str), encoding="utf-8")
+        md = variants_markdown(runs, comps, decision, normalized.values())
+        if a.md:
+            Path(a.md).write_text(md + "\n", encoding="utf-8")
+        else:
+            print(md)
+        print(f"decision: candidate {decision['candidate']}, selected {decision['selected']}")
+        gc.collect()
+        shutil.rmtree(tmp, ignore_errors=True)
+        if tmp.exists():
+            print(f"temporary index copy left (files still open): {tmp}", file=sys.stderr)
+        return 0
     runs, temps = {}, []
     specs = [("A", a.index_a, a.config_a, a.set_a)] + ([("B", a.index_b, a.config_b, a.set_b)] if a.index_b else [])
     for tag, idx, preset, sets in specs:
