@@ -24,6 +24,19 @@ Wave 1 plus the "Contexte :" header mode (config.EVIDENCE_CONTEXT_HEADER = "deep
 
     v2.1-dev wave 1b: cea3ca90b893f58e4b1c575ed6aab87085846145310caf0c7c9f2f3540bbbd0d   (index db_v1_2, 6112 entries / 6031 articles)
 
+## v2.1-dev wave 2 integrated (V3 off)
+
+Wave 1b plus the wave 2 query normalization V3 in the agent behind `config.NORMALIZE_QUERY` (default `"off"`;
+`"v3"` normalizes the initial query of a turn in agent/retrieve_g.py, RRF of the two pools, reranked on the
+normalized query; the reformulate step's queries are never normalized). With the switch off the agent's states are
+identical to commit cc46906 (agent/test_normalize_switch.py); db_v1_2 unchanged:
+
+    v2.1-dev wave 2 integrated (V3 off): 54b31ddd94262bbd4aa65a3b5a95e3fe47f9176ce9434f7dbc66bc1ca09b362d   (index db_v1_2, 6112 entries / 6031 articles)
+
+Fresh-question protocol: `fresh/` (questions_template.json, LABELLING_GUIDE.md, validate_fresh.py,
+near_dup_calibration.json, FRESH_PREREG_DRAFT.md, power_estimate.py) and `eval/retrieval_only.py --abc`
+(configs A / B / C, LLM calls only with --allow-llm, caches in fresh/cache/).
+
 All v2.1 switches are in config.py; INDEX_V12 = False and the other switches False give the v2 retrieval on db_v1_1.
 
 ## Files
