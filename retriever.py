@@ -423,7 +423,7 @@ def _fuse(ranked_lists: list[list[Document]]) -> list[Document]:
 def fuse_pools(pool_a: list[Document], pool_b: list[Document], k: int = RRF_K) -> list[Document]:
     """Wave 2 V3 (config.NORMALIZE_QUERY = "v3"): reciprocal rank fusion of two candidate pools, score = sum of
     1 / (k + rank), ties in order of first appearance (pool_a first), cut to the larger pool size (the reranker
-    scores no more candidates than for one query). Same as diagnostics/wave2_core.fused_pool (tested)."""
+    scores no more candidates than for one query)."""
     scores: dict = {}
     first: dict = {}
     order: list = []

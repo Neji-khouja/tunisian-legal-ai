@@ -938,7 +938,7 @@ def main(argv=None):
         print(f"exam fingerprint ({Path(args.hashes_file).name}): {'matches' if not diffs else 'DIFFERS'}")
         if diffs and not args.allow_changed_exam:
             sys.exit("REFUSED: the exam changed since the fingerprint:\n  " + "\n  ".join(diffs) +
-                     "\nResults on a changed exam are not comparable. Re-run eval/build_exam.py and eval/make_stages.py "
+                     "\nResults on a changed exam are not comparable. Re-run eval/make_stages.py "
                      "if the change is intended (and commit), or pass --allow-changed-exam.")
     else:                                          # not the exam (e.g. eval/plumbing_set.json): no fingerprint required
         cur_hashes = {set_path.name: hc.sha256(set_path)}

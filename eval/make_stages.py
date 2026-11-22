@@ -4,6 +4,7 @@
 """
 import json
 import random
+import hashlib
 from pathlib import Path
 from collections import Counter
 
@@ -78,8 +79,11 @@ def main():
             row = [sum(e.get("type", e["expected"]) == t and e["language"] == l for e in es) for l in ("fr", "en", "ar")]
             print(f"  {t:<12}" + "".join(f"{x:>5}" for x in row) + f"{sum(row):>7}")
         print("  answer by source:", dict(sorted(Counter(main_code(e) for e in es if e["expected"] == "answer").items())))
-    import build_exam                                       # refresh the fingerprint (exam + stages)
-    build_exam.write_hashes()
+    sha = lambda f: hashlib.sha256(f.read_bytes()).hexdigest() if f.exists() else "missing"
+    hashes = ROOT / "eval" / "exam_hashes.txt"
+    hashes.write_text("eval/answer_set.json " + sha(ROOT / "eval" / "answer_set.json") + "\n"
+                      "eval/stages.json " + sha(OUT) + "\n", encoding="utf-8")
+    print(f"wrote {hashes.relative_to(ROOT).as_posix()}")
 
 
 if __name__ == "__main__":

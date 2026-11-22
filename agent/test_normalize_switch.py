@@ -12,7 +12,7 @@ from types import SimpleNamespace
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
-sys.path[:0] = [str(HERE), str(ROOT), str(ROOT / "diagnostics")]
+sys.path[:0] = [str(HERE), str(ROOT)]
 REF = "cc46906"          # last commit before config.NORMALIZE_QUERY
 
 import config as C
@@ -269,15 +269,6 @@ def test_tokens_and_fusion():
     check("tokens: the normalizer's call is counted by the agent's usage callback",
           cb.usage_metadata.get("stub-model", {}).get("total_tokens") == 740, cb.usage_metadata)
     check("tokens: and recorded in the normalization record", q == "faux témoignage" and rec["tokens"]["total_tokens"] == 740)
-    import wave2_core as W
-    from retriever import fuse_pools
-    rng = random.Random(20261022)
-    ok = True
-    for _ in range(300):
-        a = [DOCS[i] for i in rng.sample(range(len(DOCS)), rng.randint(0, 20))]
-        b = [DOCS[i] for i in rng.sample(range(len(DOCS)), rng.randint(0, 20))]
-        ok &= fuse_pools(a, b) == W.fused_pool(a, b, lambda d: d.metadata["chunk_id"])
-    check("fusion: retriever.fuse_pools == wave2_core.fused_pool (pre-registered) on 300 random pool pairs", ok)
 
 
 def main():

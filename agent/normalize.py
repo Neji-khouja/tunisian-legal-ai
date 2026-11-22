@@ -1,4 +1,4 @@
-"""Query normalization (wave 2 experiment, diagnostics/WAVE2_PREREG.md). NOT wired into the agent graph."""
+"""Query normalization used by agent/retrieve_g.py (config.NORMALIZE_QUERY)."""
 import re
 import json
 import time

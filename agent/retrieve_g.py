@@ -31,7 +31,7 @@ def retrieve_g(question, target_codes, info=None):
 
 
 def _retrieve_v3(vs, question, french_q, subs, target_codes, info):
-    """Wave 2 V3 (diagnostics/WAVE2_PREREG.md): the French query is normalized once (agent/normalize.py); each
+    """V3: the French query is normalized once (agent/normalize.py); each
     baseline pool = RRF of the pool of the French query and the pool of the normalized query
     (retriever.fuse_pools), reranked on the normalized query. A failed, empty or invalid normalization, or any
     error, falls back to the French query alone: exactly the "off" retrieval. Only this initial query of the turn

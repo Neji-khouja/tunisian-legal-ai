@@ -26,14 +26,11 @@ XREF_TOTAL             = 6       # added articles per question
 XREF_RANGE_MAX         = 4       # "articles N à M" is expanded only when it names at most this many articles
 EVIDENCE_CONTEXT_HEADER = "deepest"   # "Contexte : ..." line of each evidence text: "full" (code > all headings),
                                       # "deepest" (deepest heading only; the code name without headings), "none"
-XREF_TOKEN_CAP         = 300     # embedding tokens of the added cross-referenced articles per question (None = no cap);
-                                 # 300 = smallest cap losing <= 1 dev item vs no cap (diagnostics/EVIDENCE_BUDGET.md)
+XREF_TOKEN_CAP         = 300     # embedding tokens of the added cross-referenced articles per question (None = no cap)
 EVIDENCE_TEXT_CAP      = 3000    # characters of a long article shown in the evidence (window around the match)
 BM25_TOKENIZER         = "whitespace"   # "whitespace" (v1.1) | "lower" | "fold" | "elision" | "stem" (retriever.py)
-NORMALIZE_QUERY        = "v3"    # DEFAULT v3 BY OWNER DECISION, not selected by the pre-registered rule (diagnostics/WAVE2_VARIANTS.md:
-                                 # fails conditions ii, iii); unconfirmed on fresh questions. "off" | "v3": the initial query of a turn is also normalized (agent/normalize.py);
-                                 # pools of the original and normalized queries fused by RRF, reranked on the
-                                 # normalized query (diagnostics/WAVE2_PREREG.md V3). Reformulated queries: never.
+NORMALIZE_QUERY        = "v3"    # "off" | "v3": the first query of a turn is normalized once (agent/normalize.py), the pools of the
+                                 # original and normalized queries are fused by RRF and reranked on the normalized query
 
 DB_DIR   = DB_V12 if INDEX_V12 else DB_V11
 

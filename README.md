@@ -90,8 +90,7 @@ reranker.py        Cross-encoder reranking (lazy-loaded, cached)
 pipeline.py        Modular pipeline: step_rewrite → step_subqueries → step_retrieve
                                    → step_rerank → step_generate
 app.py             Streamlit UI — chat, domain filter, source cards
-eval/              Answer-level harness (run_answer_eval.py), retrieval-only evaluation (retrieval_only.py), tests
-fresh/             Fresh-question protocol (template, labelling guide, validator, pre-registration draft)
+eval/              Answer-level harness (run_answer_eval.py), PDF ground truth, exam files, tests
 ```
 
 ---
@@ -192,13 +191,7 @@ The system prompt was hardened with explicit anti-hallucination rules:
 
 ## Evaluation
 
-Retrieval only, no LLM beyond cached translations/normalizations, Hit@6/8/10 with bootstrap CIs and paired comparisons:
-
-```bash
-python eval/retrieval_only.py --items diagnostics/dev_items.json --index-a db_v1_2 --config-a v1.2 --variants V0 V3 --normalized diagnostics/normalized_queries.json
-```
-
-Answer-level evaluation: `eval/run_answer_eval.py`. Unit tests: `python eval/test_wave2.py`, `python test_v21_retrieval.py`, `python agent/test_graph_logic.py`, `python ui/tests/test_ui.py`, and the other `test_*.py` files.
+Answer-level evaluation: `eval/run_answer_eval.py`. Unit tests: `python test_v21_retrieval.py`, `python agent/test_graph_logic.py`, `python ui/tests/test_ui.py`, and the other `test_*.py` files.
 
 | Language | Test Cases | Topics Covered |
 |----------|-----------|----------------|
@@ -281,8 +274,7 @@ Building and improving this system surfaced several non-obvious lessons about pr
 
 ## Chunk ids
 
-Every article has a stable `chunk_id` (also the Chroma id of the article's first entry; the gold fields of the exam and
-fresh questions use it):
+Every article has a stable `chunk_id` (also the Chroma id of the article's first entry; the gold fields of the exam use it):
 
     <pdf stem>/s<NN>/<article label>[~k]        e.g. PenalFr/s02/243, ProcedurepenaleFr/s01/13-bis, COC/s02/94
 
@@ -297,7 +289,7 @@ fresh questions use it):
 A chunk starts only at a real heading at the start of a line (`Article N`, `Art. N`, `Article premier`, with the
 suffix spelling variants); in-text references ("prévues à l'article 62") do not split. Metadata: `chunk_id`, `source`,
 `law_type`, `section`, `section_title`, `article`, `article_label` (db_v1_2 adds `hierarchy`, `context`, `parent_id`,
-`part`, `parts`, `article_text`). To find an id: `python fresh/validate_fresh.py --lookup PenalFr 243`.
+`part`, `parts`, `article_text`).
 
 ---
 
