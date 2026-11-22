@@ -78,8 +78,10 @@ Net loss of a language = (hits of the new config) - (hits of the old config) ove
    language has a net loss of 3 items or more (C versus B), **and** at most 2% of the normalizations fail or are
    empty (over the questions analysed in C).
 3. Otherwise v2.1 ships as B.
-4. `[TO DECIDE: what ships if B is not adopted (rule 1 fails): A (the v2 retrieval) is the natural reading; and
-   whether C can be adopted when B is not.]`
+4. If B fails rule 1, v2.1 ships as A (the current v2 retrieval, unchanged). C is considered only if B passes
+   rule 1. B's adoption rests on a design argument (mechanical fixes: stable headings, strict direct lookup,
+   cross-references, sub-chunks), not on a proven gain: under no real effect B passes rule 1 about 40-48% of the
+   time (section 6).
 
 `eval/retrieval_only.py --abc` computes every condition (table "Draft decision rules"); the final file states
 the decision in words.
@@ -116,7 +118,7 @@ At least 40 questions, drawn from the locked file before any run (stratified by 
 `random.Random(20261022)`; the ids listed in the final pre-registration), answered end to end by v2 (agent-v2,
 fingerprint dc8fd664…, db_v1_1) and by v2.1 as shipped by section 5. Reported per system: tokens (usage
 callback, normalization included), LLM calls, latency (wall seconds, retry waits apart), and a descriptive
-correctness check (`[TO DECIDE: judge model or manual review, and the criteria]`). Descriptive only: **no claim of
+correctness check by the same judge as before (gemini-3.1-flash-lite). Descriptive only: **no claim of
 an accuracy gain** is made from this subset, and no decision depends on it.
 
 ## 8. Not done
