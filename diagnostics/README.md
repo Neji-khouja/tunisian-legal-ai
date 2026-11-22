@@ -37,6 +37,16 @@ Fresh-question protocol: `fresh/` (questions_template.json, LABELLING_GUIDE.md, 
 near_dup_calibration.json, FRESH_PREREG_DRAFT.md, power_estimate.py) and `eval/retrieval_only.py --abc`
 (configs A / B / C, LLM calls only with --allow-llm, caches in fresh/cache/).
 
+## v2.1-dev V3 default on (owner decision)
+
+`config.NORMALIZE_QUERY` default changed to `"v3"` by the owner's decision. This is NOT a validated result: the
+pre-registered wave 2 rule selected none (V3 failed conditions ii and iii, diagnostics/WAVE2_VARIANTS.md), the
+dev gain (Hit@6 85 vs 75 on 110 items) is on the items V3 was chosen on, and the fresh-question test
+(fresh/FRESH_PREREG_DRAFT.md) has not been run. Each turn makes one extra Groq call (about 600 tokens).
+`NORMALIZE_QUERY = "off"` restores the previous behaviour.
+
+    v2.1-dev V3 default on: ab0fad94d66d0bc4eb03c9b6e87e368caa346dcc98befa80759c82a965746eb1   (index db_v1_2, 6112 entries / 6031 articles)
+
 All v2.1 switches are in config.py; INDEX_V12 = False and the other switches False give the v2 retrieval on db_v1_1.
 
 ## Files

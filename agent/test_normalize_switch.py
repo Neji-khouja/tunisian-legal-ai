@@ -159,7 +159,7 @@ def run(app, turns, tag):
 # ---------------------------------------------------------------- 1. OFF equivalence
 
 def test_off(old_g, old_rg):
-    check("default: config.NORMALIZE_QUERY == 'off'", C.NORMALIZE_QUERY == "off")
+    check("default: config.NORMALIZE_QUERY == 'v3' (owner decision)", C.NORMALIZE_QUERY == "v3")
     C.NORMALIZE_QUERY = "off"
     real = N.normalize
 

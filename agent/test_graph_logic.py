@@ -223,7 +223,7 @@ real = {k: getattr(g, k) for k in ("analyze", "retrieve_g", "grade", "make_answe
 intents = iter(["clear", "clear", "clear", "ambiguous", "clear"])
 g.analyze = lambda q, hint=None: (seen.append(("analyze", q)), SimpleNamespace(
     language="fr", intent=next(intents), target_codes=["penal"], clarification_question="Quel code ?"))[1]
-g.retrieve_g = lambda q, codes: [Document(page_content="...", metadata={"chunk_id": "PenalFr/s02/264",
+g.retrieve_g = lambda q, codes, info=None: [Document(page_content="...", metadata={"chunk_id": "PenalFr/s02/264",
                                  "source": "PenalFr.pdf", "article": "264", "law_type": "penal"})]
 g.grade = lambda q, ev: SimpleNamespace(enough=True, missing="")
 g.make_answer = lambda q, lang, ev, feedback="": g.Answer(claims=[g.Claim(text="x", cited_ids=["PenalFr/s02/264"])], caveat="")

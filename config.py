@@ -30,7 +30,8 @@ XREF_TOKEN_CAP         = 300     # embedding tokens of the added cross-reference
                                  # 300 = smallest cap losing <= 1 dev item vs no cap (diagnostics/EVIDENCE_BUDGET.md)
 EVIDENCE_TEXT_CAP      = 3000    # characters of a long article shown in the evidence (window around the match)
 BM25_TOKENIZER         = "whitespace"   # "whitespace" (v1.1) | "lower" | "fold" | "elision" | "stem" (retriever.py)
-NORMALIZE_QUERY        = "off"   # "off" | "v3": the initial query of a turn is also normalized (agent/normalize.py);
+NORMALIZE_QUERY        = "v3"    # DEFAULT v3 BY OWNER DECISION, not selected by the pre-registered rule (diagnostics/WAVE2_VARIANTS.md:
+                                 # fails conditions ii, iii); unconfirmed on fresh questions. "off" | "v3": the initial query of a turn is also normalized (agent/normalize.py);
                                  # pools of the original and normalized queries fused by RRF, reranked on the
                                  # normalized query (diagnostics/WAVE2_PREREG.md V3). Reformulated queries: never.
 
