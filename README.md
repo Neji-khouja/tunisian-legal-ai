@@ -90,7 +90,8 @@ reranker.py        Cross-encoder reranking (lazy-loaded, cached)
 pipeline.py        Modular pipeline: step_rewrite → step_subqueries → step_retrieve
                                    → step_rerank → step_generate
 app.py             Streamlit UI — chat, domain filter, source cards
-evaluate.py        End-to-end retrieval benchmark (eval/questions.json, FR + AR + EN, dev/test split)
+eval/              Answer-level harness (run_answer_eval.py), retrieval-only evaluation (retrieval_only.py), tests
+fresh/             Fresh-question protocol (template, labelling guide, validator, pre-registration draft)
 ```
 
 ---
@@ -187,22 +188,17 @@ The system prompt was hardened with explicit anti-hallucination rules:
 - Say explicitly if context is insufficient — do NOT guess
 - Respond in the user's original language
 
-#### 8. End-to-End Evaluation (`evaluate.py`)
-The evaluation benchmark was updated to test the full pipeline including reranking, rather than just raw retrieval. A question now passes only if the expected article survives both retrieval AND reranking into the final top-6. This gives a true accuracy signal.
-
-On failures, the evaluator now prints the rewritten query and sub-queries, making it easy to diagnose exactly where the pipeline is going wrong.
-
 ---
 
 ## Evaluation
 
-Run the end-to-end retrieval benchmark (87 questions across French, Arabic, and English; gold labels are `(source, article)` pairs; `--split dev` by default, see `eval/`):
+Retrieval only, no LLM beyond cached translations/normalizations, Hit@6/8/10 with bootstrap CIs and paired comparisons:
 
 ```bash
-python evaluate.py
+python eval/retrieval_only.py --items diagnostics/dev_items.json --index-a db_v1_2 --config-a v1.2 --variants V0 V3 --normalized diagnostics/normalized_queries.json
 ```
 
-The benchmark tests whether the expected article numbers appear in the final top-6 results after reranking. Each test case covers a different legal domain and question type.
+Answer-level evaluation: `eval/run_answer_eval.py`. Unit tests: `python eval/test_wave2.py`, `python test_v21_retrieval.py`, `python agent/test_graph_logic.py`, `python ui/tests/test_ui.py`, and the other `test_*.py` files.
 
 | Language | Test Cases | Topics Covered |
 |----------|-----------|----------------|
@@ -244,7 +240,7 @@ streamlit run app.py
 
 ```bash
 streamlit run app.py       # start the UI
-python evaluate.py         # run the retrieval benchmark
+python test_v21_retrieval.py  # retrieval unit tests
 ```
 
 > **Important:** If you update `loaders.py` or `splitter.py`, always rebuild the vectorstore to pick up the changes.

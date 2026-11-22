@@ -47,6 +47,13 @@ dev gain (Hit@6 85 vs 75 on 110 items) is on the items V3 was chosen on, and the
 
     v2.1-dev V3 default on: ab0fad94d66d0bc4eb03c9b6e87e368caa346dcc98befa80759c82a965746eb1   (index db_v1_2, 6112 entries / 6031 articles)
 
+## v2.1-dev after cleanup (V3 default on)
+
+Same behaviour as the previous entry; only the file set of the fingerprint changed (23 -> 18 files: dev-phase scripts
+removed from agent/: eval_loop, eval_oracle, eval_plan_vs_raw, code_accuracy, loop_core):
+
+    v2.1-dev after cleanup: 3053e132c20710a6bb265ef520061ecacd6997c35b0b1703cbee1405a0e17e87   (index db_v1_2, 6112 entries / 6031 articles)
+
 All v2.1 switches are in config.py; INDEX_V12 = False and the other switches False give the v2 retrieval on db_v1_1.
 
 ## Files
