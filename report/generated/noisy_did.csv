@@ -1,9 +1,0 @@
-a,b,role,metric,label,n,mean,lo,hi
-v2,v1.1,primary,Hit@6 (gold in evidence),Hit@6,40,0.15,0.0,0.325
-v2,v1.1,primary,correct,Correct,39,0.0,-0.1282051282051282,0.15384615384615385
-v2,v1.1,primary,incorrect,Incorrect,39,-0.1282051282051282,-0.28205128205128205,0.02564102564102564
-v2,v1.1,primary,hallucination (answer),Hallucination (réponse),39,-0.10256410256410256,-0.3333333333333333,0.1282051282051282
-v2,v1,secondary,Hit@6 (gold in evidence),Hit@6,40,-0.025,-0.225,0.175
-v2,v1,secondary,correct,Correct,39,-0.1282051282051282,-0.3333333333333333,0.07692307692307693
-v2,v1,secondary,incorrect,Incorrect,39,0.10256410256410256,-0.10256410256410256,0.3076923076923077
-v2,v1,secondary,hallucination (answer),Hallucination (réponse),39,0.02564102564102564,-0.23076923076923078,0.28205128205128205
