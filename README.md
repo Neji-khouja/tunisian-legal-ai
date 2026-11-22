@@ -283,6 +283,28 @@ Building and improving this system surfaced several non-obvious lessons about pr
 
 ---
 
+## Chunk ids
+
+Every article has a stable `chunk_id` (also the Chroma id of the article's first entry; the gold fields of the exam and
+fresh questions use it):
+
+    <pdf stem>/s<NN>/<article label>[~k]        e.g. PenalFr/s02/243, ProcedurepenaleFr/s01/13-bis, COC/s02/94
+
+- `pdf stem`: the PDF name without `.pdf` (`PenalFr`, `Statutpersonnel`, ...).
+- `s<NN>`: the text inside the PDF, numbered from `s00` in reading order. Several PDFs bundle a code with decrees,
+  conventions or amending laws; a new section starts when the article numbering restarts. `s00` is normally the
+  promulgation text before the code.
+- article label: the number, plus `-<sub>` for numbered sub-articles and `-<suffix>` for bis / ter / quater...
+  (`13`, `13-bis`, `226-ter`, `6-2`). `~k` is added only if a label occurs twice in one section (never so far).
+- Sub-chunks of a long article (index db_v1_2) are `<chunk_id>#k` and keep the article's id as `parent_id`.
+
+A chunk starts only at a real heading at the start of a line (`Article N`, `Art. N`, `Article premier`, with the
+suffix spelling variants); in-text references ("prévues à l'article 62") do not split. Metadata: `chunk_id`, `source`,
+`law_type`, `section`, `section_title`, `article`, `article_label` (db_v1_2 adds `hierarchy`, `context`, `parent_id`,
+`part`, `parts`, `article_text`). To find an id: `python fresh/validate_fresh.py --lookup PenalFr 243`.
+
+---
+
 ## License
 
 MIT
