@@ -1,6 +1,0 @@
-- ambiguity recall >= 7/10 (flagged "ambiguous")
-- at most 1 of the 6 clear questions flagged "ambiguous"
-- all 4 out_of_scope questions refused
-- language detected correctly on all 20
-If the rule is not met, analyze.py is NOT edited by Claude Code: the user decides
-on a prompt revision, which would need a new hash, a dev-loop rerun and a new tag.
