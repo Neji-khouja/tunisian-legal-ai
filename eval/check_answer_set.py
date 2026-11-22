@@ -4,15 +4,6 @@ directly from the Chroma SQLite metadata of the index. Gold articles are also ch
 
     python eval/check_answer_set.py
     python eval/check_answer_set.py --show a001        # PDF text of the gold articles of one question
-
-Entry format:
-    {"id": "...", "question": "...", "language": "ar|fr|en", "expected": "answer|clarify|refuse",
-     "gold": [{"source": "PenalFr.pdf", "article": "218"}, ...],   # non-empty for answer, empty otherwise
-     "reference_points": ["...", ...],                                # answer only, non-empty
-     "reason": "..."}                                                 # clarify / refuse only, non-empty
-A clarify entry may add a scripted reply that picks one reading (clarify-then-answer):
-     "reply": "...",                                                  # non-empty, clarify only
-     "gold": [...] and/or "candidate_gold": ["COC/s02/1160", ...]     # gold as above; candidate_gold = chunk ids
 """
 import sys
 import json

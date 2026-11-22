@@ -2,14 +2,6 @@
 
     python eval/audit_agreement.py [--sheet results/audit_sheet.csv] [--key results/audit_key.csv]
     python eval/audit_agreement.py --rater ai --sheet results/audit_claude.csv     # an AI second rater: ai_* columns
-
---rater ai reads ai_correct, ai_hallucination and ai_cannot_verify and says it is not a human audit: the pre-registered
-threshold is not assessed. Rows with human_cannot_verify = 1 are left out of everything; a row with an empty human column is left out of that
-measure. Human values: 1/0, yes/no, true/false, oui/non. Excel may save the sheet with ";" between columns: both are read.
-For each measure: n, raw agreement, 95% bootstrap CI over rows (5000 resamples, seed 20261022), Cohen's kappa, the
-confusion counts, and the pre-registered threshold (agreement >= 80%, on the point estimate). "correct" uses the judge's
-verdict; "hallucination (answer)" the metric of --summarize (the judge field or an automatic check); "hallucination
-(LLM judge only)" the judge's own field. The automatic checks are reported separately, against the human label.
 """
 import sys
 import csv

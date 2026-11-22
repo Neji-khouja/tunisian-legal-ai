@@ -1,16 +1,6 @@
 """Retrieval funnel of v1.1, cross-references and chunk structure. Local compute only: no LLM call, the index is read.
 
     python diagnostics/retrieval_diagnostic.py [--db COPY_OF_DB_V1_1]
-        -> diagnostics/retrieval_funnel.json, diagnostics/RETRIEVAL_DIAGNOSTIC.md
-
-v1.1 path reproduced with the existing functions (pipeline.py, retriever.py, reranker.py; imported, not modified), as
-pipeline.ask_question runs it with law_type None: French query = the question (raw-first); Arabic and English items use
-the French query stored in diagnostics/translations.json (translate_skipped.py; items without one are skipped and
-counted) plus the original-language dense list (k=10) of retriever.hybrid_retrieve; if pipeline._ARTICLE_RE finds a number in the
-question, retriever._direct_lookup and, when it returns documents, these are the pool ("direct" path); else
-_semantic_search (k=MMR_K) + _bm25_search (k=BM25_K) -> _fuse -> _deduplicate -> first RERANK_POOL ("hybrid" path).
-The pool is then ordered by reranker.rerank with top_k = pool size (the system keeps the first RERANK_TOP_K = 6).
-Gold matching: run_answer_eval.key / gold_set (source stem + article label), as the harness's Hit@6.
 """
 import re
 import sys
@@ -344,7 +334,6 @@ def main():
     items = items_by_set()
     rows11 = {s: saved_rows(s, "v1.1") for s in SETS}
     rows2 = {s: saved_rows(s, "v2") for s in SETS}
-    # --db COPY: open a byte copy of the index instead of config.DB_DIR (a Chroma open writes a row in acquire_write)
     opened = Path(sys.argv[sys.argv.index("--db") + 1]) if "--db" in sys.argv else Path(DB_DIR)
     vs = open_index(opened)
     records, skipped = funnel(vs, items, rows11, rows2)

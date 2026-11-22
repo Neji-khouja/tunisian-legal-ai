@@ -1,12 +1,6 @@
 """Offline tests of eval/noisy_vs_clean.py with stub rows (temp folders; no model, no network).
 
     python eval/test_noisy_vs_clean.py
-
-Five items o1..o5. v1.1 and v1: every row valid. v2: o2 has no noisy row (missing twin), o3's noisy row is an error,
-o4's clean row is degraded, o5's noisy file holds an older "correct" row superseded by a later "incorrect" one.
-Hand-computed difference in differences, v2 minus v1.1, on the valid items o1 and o5:
-  correct: o1 v2 (0 - 1) - v1.1 (1 - 0) = -2; o5 v2 (0 - 1) - v1.1 (1 - 1) = -1; mean -1.5 (with the old o5 row: -1.0)
-  Hit@6:   o1 v2 (0 - 1) - v1.1 (1 - 1) = -1; o5 v2 (1 - 1) - v1.1 (1 - 1) = 0;  mean -0.5
 """
 import io
 import sys

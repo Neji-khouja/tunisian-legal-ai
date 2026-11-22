@@ -1,10 +1,5 @@
 """Run mechanics for eval/run_answer_eval.py: quota errors, resumable result files, run state, provenance, exam hashes.
 Standard library only at import time (eval/v1_runner.py loads this file by path inside the v1 worktree).
-
-Error classes:
-- a per-minute 429 (Groq RPM/TPM) keeps the existing retries (groq client, agent/llm_retry.py);
-- a 429 whose message names a per-day limit (tokens/requests per day, TPD/RPD, Gemini "...PerDay...") is QuotaExhausted:
-  never retried; the (item, system) in progress is discarded and the run stops with exit code 75.
 """
 import os
 import re
@@ -21,7 +16,7 @@ from datetime import datetime, timedelta
 
 EXIT_QUOTA = 75
 DAILY = re.compile(r"per[ _-]?day|\bTPD\b|\bRPD\b", re.I)
-QUOTA_SEEN = {"msg": None}          # set by the Groq patches when a daily-quota 429 comes back (even if a node swallows it)
+QUOTA_SEEN = {"msg": None}
 
 
 class QuotaExhausted(Exception):

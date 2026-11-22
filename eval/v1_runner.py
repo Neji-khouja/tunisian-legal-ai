@@ -2,11 +2,6 @@
 eval/run_answer_eval.py --system v1; reads {"id", "question"} JSON lines on stdin, writes one JSON line per item.
 
     python eval/v1_runner.py <worktree>      (cwd = <worktree>, which must contain the old index in db/)
-
-Only the worktree's modules are imported (its config, pipeline, retriever, ...), never the current ones; the one
-exception is eval/harness_core.py (standard library only), loaded by file path: a daily-quota 429 is not retried
-and is returned as "quota". Token usage (LangChain usage metadata) is returned as "usage". Warnings of a step that fell
-back (harness_core.capture_fallbacks: query rewrite, sub-queries, translation) are returned as "fallbacks".
 """
 import os
 import sys

@@ -2,15 +2,6 @@
 no LLM call, no embedding (index read from a byte copy, tokenizer of the embedding model).
 
     python diagnostics/evidence_budget.py --v12 COPY_OF_DB_V1_2   -> diagnostics/evidence_budget.json, EVIDENCE_BUDGET.md
-
-1. "Contexte :" header (config.EVIDENCE_CONTEXT_HEADER): tokens per question for full / deepest / none, over the
-   top-6 articles and over the top 6 + added cross-referenced articles (no token cap).
-2. Expansion token cap (config.XREF_TOKEN_CAP, pipeline.cap_added) 300 / 600 / unlimited, header "deepest": added
-   tokens per question, items with the gold in the evidence (top 6 + added), share of top-6 articles with a referenced
-   article missing from the evidence.
-   DECISION RULE (fixed before the run): the smallest cap that loses at most 1 item versus unlimited, an item being
-   lost when the gold is in the evidence with no cap and not with the cap. Unlimited (None) if neither cap qualifies.
-Tokens: embedding-model tokenizer (Solon / XLM-R), special tokens included, as in COMPARISON_V12.md.
 """
 import sys
 import json

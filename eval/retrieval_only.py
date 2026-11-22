@@ -7,25 +7,7 @@ comparison of two (index, configuration) pairs. No LLM call, ever.
     python eval/retrieval_only.py --export-dev diagnostics/dev_items.json     # the 110 development items
     python eval/retrieval_only.py --items diagnostics/dev_items.json --index-a db_v1_2 --config-a v1.2 \
         --variants V0 V1 V2 V3 --normalized diagnostics/normalized_queries.json [--out OUT.json] [--md OUT.md]
-        # wave 2 query normalization variants (diagnostics/WAVE2_PREREG.md); still no LLM call (cached outputs)
     python eval/retrieval_only.py --abc --items fresh/questions.json [--allow-llm] [--cache-dir fresh/cache]         [--configs A B C] [--out OUT.json] [--md OUT.md]
-        # fresh questions: A = db_v1_1 / baseline, B = db_v1_2 / v1.2, C = B + NORMALIZE_QUERY=v3; paired B-A, C-B, C-A.
-        # Translations and normalizations come from --cache-dir; only --allow-llm makes the missing ones (Groq).
-
-ITEMS.json: a list (or {"items": [...]}) of {"id", "language", "question", "gold", optional "noise_type", "set"};
-"gold" as in the exam files ([{"source": "PenalFr.pdf", "article": "94", ...}]) or chunk ids ["PenalFr/s02/94"].
-Gold matching: source stem + article label (run_answer_eval.key / gold_set).
-Translations: Arabic/English questions (retriever.detect_arabic / detect_english) need a cached French query
-(diagnostics/translations.json format, or {"<id>": "<French query>"}); a missing one, or one cached for another
-question text, is reported and the item skipped.
-Configurations: presets "baseline" (every v2.1 switch off = the v2 retrieval core) and "v1.2" (switches on), each
-switch can be overridden with --set-a / --set-b KEY=VALUE (config.py names; VALUE is read as JSON, else a string).
-Per item, with the real code: pool = pipeline.step_retrieve, reranker.rerank of the whole pool; dense, BM25 (and the
-original-language dense list) give the funnel classes; evidence = first 6 + pipeline.evidence_docs.
-Indexes are always opened from a temporary byte copy (a Chroma open writes a row in the sqlite file), so db_v1_1 and
-db_v1_2 are never written. Summary: Hit@k with 95% bootstrap CIs (5000 resamples, seed 20261022, percentile, as
-run_answer_eval.boot_ci) per set, language and noise_type; paired: B - A per item, bootstrap CI of the mean
-difference, gained / lost items, exact two-sided sign test on the discordant items.
 """
 import gc
 import sys

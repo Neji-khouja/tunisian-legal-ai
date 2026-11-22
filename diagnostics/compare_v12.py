@@ -3,12 +3,6 @@ against db_v1_2 with the switches on; BM25 tokenizer experiment; evidence window
 English items use the French queries of diagnostics/translations.json.
 
     python diagnostics/compare_v12.py --v11 COPY_OF_DB_V1_1
-        -> diagnostics/compare_v12.json, diagnostics/COMPARISON_V12.md
-
-Per item, with the real code: pool = pipeline.step_retrieve (direct-lookup rule and union per the switches),
-reranker.rerank of the whole pool, evidence = first 6 + pipeline.evidence_docs (cross-reference expansion when on).
-Dense / BM25 / fused lists (retriever._semantic_search, _bm25_search, _fuse, _deduplicate) give the funnel classes.
-Gold matching: run_answer_eval.key / gold_set (source stem + article label).
 """
 import re
 import sys

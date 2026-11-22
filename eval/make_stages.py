@@ -1,13 +1,6 @@
 """Split the exam (eval/answer_set.json) into two stages -> eval/stages.json, then refresh eval/exam_hashes.txt.
 
     python eval/make_stages.py
-
-Stage 1 = 30 answer + 10 clarify + 10 refuse (scaled to about half if the exam size differs), stage 2 = the rest;
-3 of the 5 clarify items with a scripted reply go to stage 1, 2 to stage 2.
-Method (seed 20261022): for each group (answer; clarify; refuse) a seeded random search over 20000 candidate stage-1
-draws of the required size keeps the draw whose counts are closest to proportional (sum of |stage-1 count - k/n *
-group count|) over the strata: answer = source code of the first main gold, type, language; clarify = language;
-refuse = language. Ties: the first draw found.
 """
 import json
 import random

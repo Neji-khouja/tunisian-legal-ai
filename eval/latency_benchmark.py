@@ -2,29 +2,6 @@
 scoring: answer text is never printed or saved.
 
     python eval/latency_benchmark.py --system v1|v1.1|v2 [--v1-worktree ../RAG_PDF_v1] [--dry-run]
-
-Questions: the answerable items of Stage 2, 10 drawn with random.Random(20261022), stratified by language (proportional,
-at least 2 of each language when available), in a fixed shuffled order, plus 1 separate warm-up item. Same for every system.
---dry-run prints the ids and stops (no key, no model, no call).
-
-One process per system: the harness's runners (run_answer_eval.run_v2, run_v11, V1Process.run) on the harness's system
-fingerprint, which must equal the pre-registration addendum's. Models load in the warm-up, which is not counted and runs
-again in every process that has questions left. Then the questions, one at a time, each preceded by a fixed 5 s pause.
-
-Per question: wall_seconds (around the runner call only), llm_calls, tokens_total, n_429, retry_wait_seconds, status,
-started_at. retry_wait_seconds = groq_client_wait_seconds (waits the Groq client announced) + llm_retry_wait_seconds
-(agent/llm_retry.py's own sleeps, which the client does not announce). wall_excluding_retry_waits = wall_seconds -
-retry_wait_seconds. v1 runs in its own process: eval/latency_v1_child.py reports its 429s and waits through a side file.
-
-Status: the system's own status (done, no_docs, clarify, refuse), or "degraded" (a node or step fell back, as in the
-harness), or "error" (an exception; its type only is kept, because a provider error can quote model output). Finished =
-neither degraded nor error. The summary uses finished questions only; the same command runs degraded and error questions
-again and keeps the old row under "superseded".
-
-results/latency_benchmark.json is rewritten atomically after each question; the same command resumes. A Groq daily-quota
-error discards the question in progress and exits 75. Exit 1: a question ended in error, or a refusal (changed exam, other
-fingerprint, other selection). Only GROQ_API_KEY is used: this script has no key rotation, run_batch.py (which once had one) is never imported,
-and any GROQ_API_KEY_<n> is removed from the environment of this process and of the v1 process.
 """
 import os
 import re

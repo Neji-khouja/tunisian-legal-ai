@@ -54,6 +54,13 @@ removed from agent/: eval_loop, eval_oracle, eval_plan_vs_raw, code_accuracy, lo
 
     v2.1-dev after cleanup: 3053e132c20710a6bb265ef520061ecacd6997c35b0b1703cbee1405a0e17e87   (index db_v1_2, 6112 entries / 6031 articles)
 
+## v2.1-dev after comment trim
+
+Comments and module docstrings shortened in 54 files (no code change: identical syntax trees; prompt hashes
+unchanged). The fingerprint hashes file bytes, so it changed:
+
+    v2.1-dev after comment trim: 12c8095daec4b660e7777f295c47869a8e1278f88a8954785d8de83ffd83c88b   (index db_v1_2, 6112 entries / 6031 articles)
+
 All v2.1 switches are in config.py; INDEX_V12 = False and the other switches False give the v2 retrieval on db_v1_1.
 
 ## Files

@@ -1,9 +1,6 @@
 """Build the v2.1 index db_v1_2 (pipeline.build_index_v12) and record the build facts. Local only (no LLM call).
 
     python diagnostics/build_v12.py    -> db_v1_2/, diagnostics/index_v12_build.json
-
-Resumable: entries already stored are skipped; the facts of every run are appended (the first run carries the full
-embedding time). db_v1_1 is never opened for writing (pipeline._refuse_frozen).
 """
 import sys
 import json

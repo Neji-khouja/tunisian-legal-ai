@@ -40,7 +40,7 @@ except ImportError:
         "Run: pip install rank_bm25"
     )
 
-_bm25_instance = None   # built once per process from the Chroma corpus (v1.1 cache, BM25_TOKENIZER "whitespace")
+_bm25_instance = None
 _bm25_cache: dict = {}  # (id(vectorstore), tokenizer) -> BM25Retriever
 _corpus_cache: dict = {}
 

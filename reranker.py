@@ -31,7 +31,6 @@ def rerank(query: str, docs: list[Document], top_k: int = RERANK_TOP_K) -> list[
     if not docs:
         return docs
     import config as C
-    # v1.2 sub-chunked article (config.SUBCHUNK_LONG): scored on the sub-chunk that matched, the article is returned
     text = (lambda d: d.metadata.get("match_text") or d.page_content) if C.SUBCHUNK_LONG else (lambda d: d.page_content)
     scores = get_reranker().predict(
         [(query, text(doc)) for doc in docs], batch_size=RERANK_BATCH, show_progress_bar=False

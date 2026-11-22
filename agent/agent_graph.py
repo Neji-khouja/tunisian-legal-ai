@@ -62,10 +62,10 @@ class AgentState(TypedDict):
     draft_claims: list[dict]
     draft_text: str
     first_verdicts: list[dict]
-    history: list[dict]          # last 2 answered turns {"q": standalone question, "a": answer text[:600]}
+    history: list[dict]
     condensed_from: str          # the raw message when condense rewrote it, else ""
     is_followup: bool
-    normalize: dict              # config.NORMALIZE_QUERY == "v3" only: the normalization record of the turn
+    normalize: dict
 
 def remember(state, text) -> list[dict]:
     return (state.get("history", []) + [{"q": state["full_question"], "a": text[:600]}])[-2:]
@@ -260,9 +260,6 @@ def route_after_answer(state):
 
 def route_after_verify(state):
     return "repair" if state["bad"] and state["repairs"] == 0 else "finalize"
-
-
-
 
 
 builder = StateGraph(AgentState)

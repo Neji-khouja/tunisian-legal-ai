@@ -1,11 +1,6 @@
 """Offline tests of eval/latency_benchmark.py with a fake runner (temp folders; no model, no network).
 
     python eval/test_latency_benchmark.py
-
-selection (same draw, strata, warm-up apart); pause and warm-up not counted; resume; a question left degraded or in error
-is run again; atomic save; exit 75 on quota (raised, swallowed by a node, on the warm-up, through main); the arithmetic of
-the summary; 429s and waits (in process, agent/llm_retry.py, the v1 side file through a real child process); no answer
-or question text saved or printed; backup keys off.
 """
 import io
 import os

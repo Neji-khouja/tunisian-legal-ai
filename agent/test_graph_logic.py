@@ -1,8 +1,6 @@
 """Offline checks of the verify loop in agent_graph (no Groq, no models).
 
     python agent/test_graph_logic.py
-
-Importing agent_graph builds the graph but loads no model and calls no network (models load lazily).
 """
 import sys
 from pathlib import Path

@@ -1,13 +1,6 @@
 """config.NORMALIZE_QUERY (wave 2 V3 in the agent): stub tests, no Groq, no model, no index.
 
     python agent/test_normalize_switch.py
-
-1. OFF equivalence: the graph and retrieve_g of commit REF (before the switch existed) and the current ones run
-   side by side on the same stubs (every LLM node and every retrieval step stubbed); the final states of every
-   conversation must be identical, and the normalizer must never be called.
-2. V3 on: one normalization per turn (reformulated queries are not normalized), RRF pool reranked on the
-   normalized query, every kind of failure falls back to exactly the OFF retrieval (never raises), the record is
-   in the state and reset at the next turn, the normalizer's tokens reach the usage callback.
 """
 import sys
 import random

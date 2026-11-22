@@ -4,17 +4,6 @@ not hold the v1 process and the v1.1/v2 models in one process.
     python eval/run_batch.py --stage 1 --judge-provider gemini --judge-model <id> --v1-worktree ../RAG_PDF_v1 --dry-run
     python eval/run_batch.py --stage 1 [--questions-per-run 10] --judge-provider gemini --judge-model <id> \
            --v1-worktree ../RAG_PDF_v1 [--min-gap 3] [--daily-budget-tokens N] [other run_answer_eval.py flags]
-
-Picks the next K question ids of the stage (exam order, question-major) that lack a finished row in at least one system,
-then runs eval/run_answer_eval.py --stage S --system X --only-ids <the K ids> for X = v1, v1.1, v2, one after another
-(a system whose rows for these ids are all finished is skipped). Exit code 75 (daily quota or token budget) is
-forwarded at once and the batch stops; any other failure is reported and the next system runs (exit code 1 at the
-end). Flags not listed here are passed to every run. Prints done/remaining per system and the token projection.
---loop: batch after batch, one progress line each, until exit 75 (stop, exit 75), nothing left (exit 0), or two
-consecutive failed batches (exit 1). A batch fails when a system exits with a code other than 0 and 75, or when it
-finishes no row at all (e.g. the same items degraded again), so a loop cannot spin. --dry-run shows one batch only.
-Every run inherits the environment unchanged: one Groq key (GROQ_API_KEY), no key rotation.
-Another set (e.g. the noisy-wording set): --stage all --set eval/noisy_set.json --results-dir results/noisy.
 """
 import sys
 import json

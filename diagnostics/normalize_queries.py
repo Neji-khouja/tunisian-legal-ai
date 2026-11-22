@@ -2,13 +2,6 @@
 
     python diagnostics/normalize_queries.py            -> diagnostics/normalized_queries.json
     python diagnostics/normalize_queries.py --check    # the no-LLM checks on the saved file only
-
-Input query = the French query of eval/retrieval_only.py (the question for French items, the saved translation of
-diagnostics/translations.json for Arabic/English items). Single key GROQ_API_KEY (config.py), temperature 0, at most
-2 attempts per call, no client retries. Resume-safe: an item already saved (whatever its status) is not called
-again. A daily-quota 429 (eval/harness_core.py rules) saves and stops with exit code 75. Checks (no LLM): a number
-in legal_query that is not in the input query is flagged; an empty or invalid output (status != ok) is a failure:
-the item falls back to the input query (diagnostics/wave2_core.query_for).
 """
 import sys
 import json

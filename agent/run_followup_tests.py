@@ -1,11 +1,6 @@
 """Manual check of follow-up handling (calls Groq and loads the models). Run it yourself:
 
     python agent/run_followup_tests.py [--min-gap 3] [--only fr-drill,en-switch]
-
-6 scripted dialogues (2 fr, 2 en, 2 ar), each = a first question, then a follow-up on the SAME thread_id.
-Prints per dialogue: the follow-up, the standalone rewrite, is_followup, the cited article ids and the final text.
-No scoring: read the output. Saves results/followup_tests.json after every dialogue; an error stops the run
-(completed dialogues are kept in the file).
 """
 import sys
 import json

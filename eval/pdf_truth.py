@@ -1,16 +1,6 @@
 """PDF ground truth, independent of the indexing path.
 
-The index is built with PyMuPDF (loaders.py) + preprocessing.clean_text + splitter.py. Here the text is
-extracted with pypdf (a different extractor) and split with a simple regex of our own, so the PDFs can be
-compared with our chunks instead of trusting them.
-
     python eval/pdf_truth.py            # (re)build eval/pdf_articles.json and print the quality report
-
-Cache: eval/pdf_articles.json (derived, not committed)
-    {source_stem: {"status": "verified"|"unverified", "reasons": [...], "quality": {...},
-                   "articles": {label: [[section, text], ...]}}}
-A label can occur several times in a PDF that bundles several texts (numbering restarts at 1); `section`
-counts those restarts (0 = before the first restart), like the s<NN> part of a chunk id.
 """
 import re
 import sys
@@ -22,7 +12,6 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
 CACHE = ROOT / "eval" / "pdf_articles.json"
 
-# the corpus also spells some suffixes "quarter", "quinter", "sexties", "sexis", "septiès"; two can follow ("ter bis")
 SUFFIXES = r"bis|ter|quater|quarter|quinquies|quinquiès|quinter|sexies|sexties|sexis|septies|septiès|octies|nonies|decies"
 # "Art" may have no dot or a spaced one ("Art 192", "Art .135", "Art . 27"); a dash may precede the suffix
 # ("Article 376 - ter", "Article 385 – bis")

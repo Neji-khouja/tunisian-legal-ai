@@ -1,12 +1,6 @@
 """Live check of the verify loop in the agent graph (calls Groq and loads the models). Run it yourself:
 
     python agent/run_verify_graph_tests.py
-
-A hit_fr, B leave_fr: normal runs. C: the leave question answered from A's evidence (answer, verify, finalize
-called directly). D: claim 1 forced "unsupported" on the first verify call (expect one repair). E: forced on the
-first two calls (expect one repair and a dropped claim).
-Transient errors (connection, timeout, 429) are retried with 10/30/60 s waits, also inside analyze and verify,
-whose nodes would otherwise swallow them as "degraded".
 """
 import sys
 import time

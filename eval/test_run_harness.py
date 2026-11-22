@@ -1,39 +1,6 @@
 """Offline tests of the run mechanics of eval/run_answer_eval.py (stub systems, stub judge, temp folders; no network).
 
     python eval/test_run_harness.py
-
-(a) a stub raising QuotaExhausted on its Nth call: exit 75, the pair in progress not saved, run_state.json + run_log.jsonl;
-    a daily-quota error swallowed by a node (degraded + QUOTA_SEEN) is discarded too, not saved as degraded
-(b) re-running continues from the next pair; earlier lines byte-identical; no duplicates
-(c) a per-minute 429 is retried (agent/llm_retry.py) and does not stop the run; a daily one is not retried
-(d) a result file of another system fingerprint is refused (unless --allow-mixed); another commit alone is not
-(e) a changed exam file is refused (unless --allow-changed-exam)
-(f) --judge-only judges what has no judgement and skips already judged rows
-(g) --wait-on-quota: sleeps, probes, then continues    (h) --daily-budget-tokens stops before the pair, exit 75
-(i) error classes: daily vs per-minute messages (Groq, Gemini), retry-after parsing
-(j) token usage: the LangChain usage callback sees a chat model called inside a LangGraph node
-(k) another --set (plumbing): no fingerprint, own --results-dir; never in the folder of the stage results (and back);
-    a set with <stem>_hashes.txt is locked (changed: refused unless --allow-changed-exam)
-(l) a failing judge check stops before any agent call; a judge error mid-run keeps the answers as judge_pending
-(m) eval/judge_check.py with a stub judge: verdicts, successes, the selection rule; the Gemini thinking argument
-(n) the clarify/refuse judge (GATE_PROMPT) runs on every clarify/refuse row of every system; --summarize metrics
-(o) the 5 exam clarify items with a scripted reply have gold: "Hit@6 after the reply" is computed on them (n = 5)
-(p) eval/run_batch.py with a stub runner: next K ids, one process per system, exit 75 forwarded, other failures go on;
-    --stage all on another set
-(q) crash isolation: a parse error once (recovers in the same run), on both tries (error row, the run goes on), in 3
-    runs (failed: final, "system failure" in --summarize); a quota error still exits 75
-(s) clarify behaviour metrics on the clarify items without a scripted reply; "clarify then answer" on the reply items
-(t) judge thinking auto (minimal -> low on a 400, kept), retry on json_validate_failed / parser errors, judge_check
-    --candidates order, stop at the first passing, log, --min-gap, error texts
-(u) run_batch --loop: until nothing left (0), exit 75 at once, two consecutive failed batches (1), a batch that
-    finishes no row counts as failed; JUDGE_PROVIDER / JUDGE_MODEL env defaults, the flags win
-(w) fallbacks: a logged "Query rewrite failed ... using original" (in process) or the v1 process' "fallbacks" makes the
-    row degraded with the list in "fallbacks", re-run on resume; other warnings are not captured; --rerun-ids re-runs
-    finished pairs (old row kept, the new one marked rerun/supersedes, the same command resumes); --exclude-ids drops
-    items from --summarize
-(v) run_batch has no Groq key rotation: an agent daily quota stop exits 75 at once, every run inherits the environment
-(r) system fingerprint: a harness (eval/) or agent test file change keeps it, an agent file or index change does not;
-    --judge-only ignores provenance
 """
 import io
 import sys
@@ -920,7 +887,6 @@ def test_fallbacks_rerun_exclude():
               and "items excluded for every system: a1, c1" in excl, excl[:300])
         code, out = main_out("--exclude-ids", "a1")
         check("(w) --exclude-ids without --summarize: refused", code and "--summarize only" in str(code))
-
 
 
 def test_no_key_rotation():

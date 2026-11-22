@@ -1,9 +1,4 @@
-"""Query normalization (wave 2 experiment, diagnostics/WAVE2_PREREG.md). NOT wired into the agent graph.
-
-A French question (possibly misspelled, informal, or describing a situation) -> one precise French search query in
-the vocabulary of the Tunisian legal codes, as a JSON object {"legal_query": "..."}. One prompt version only; its
-sha256 (PROMPT_SHA256) is recorded in the pre-registration and in every saved output.
-"""
+"""Query normalization (wave 2 experiment, diagnostics/WAVE2_PREREG.md). NOT wired into the agent graph."""
 import re
 import json
 import time

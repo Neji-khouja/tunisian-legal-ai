@@ -2,23 +2,6 @@
 
     python eval/audit_export.py [--force]            # then fill results/audit_sheet.csv
     python eval/audit_agreement.py                   # when the sheet is finished
-
-Sample: 30 (question, system) pairs from the Stage 1 answerable rows of v1, v1.1 and v2, 10 per system, drawn with
-random.Random(20261022) until the constraints hold, then shuffled: no pair repeated, a question at most twice (with
-different systems), at least 5 Arabic and 5 English items if available. The latest row per pair is the one used, as in
---summarize; a pair is left out if that row is degraded, error or failed, has no judge verdict, or is one of the known
-fallback pairs (FALLBACK_PAIRS).
-
-results/audit_sheet.csv (blank sheet): row_id r01..r30 in sheet order, language, question, answer, cited_articles (full
-text, under neutral labels: a v1 chunk id names the system), reference_points (those the judge gets) and the empty human
-columns. No judge field, system name or item id. A system whose answers cite every retrieved article can still show
-more articles per row than one that cites a few.
-results/audit_key.csv (git-ignored, not to be opened before the sheet is finished): row_id, item_id, system,
-judge_correct (verdict "correct"), judge_hallucination (the LLM judge's own field: unsupported statements),
-auto_numeric_ok and auto_cited_not_in_evidence (the automatic checks; empty = not applicable),
-hallucination_metric (the "hallucination (answer)" of --summarize: the judge field or an automatic check).
-An existing sheet is never overwritten without --force: it may hold human labels. A question or answer starting with
-= + - @ gets one leading space: Excel would read it as a formula and show an error instead of the text.
 """
 import sys
 import csv

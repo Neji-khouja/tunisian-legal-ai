@@ -1,12 +1,6 @@
 """ROUGH power estimate for fresh/FRESH_PREREG_DRAFT.md (simulation; no data, no model, no LLM).
 
     python fresh/power_estimate.py      -> fresh/power_estimate.json
-
-Paired Hit@6 per question: +1 (gained), -1 (lost) or 0. Development data (diagnostics/WAVE2_VARIANTS.md): V3 vs V0
-16 gained, 6 lost of 110 (discordance 22/110 = 0.20); v1.2 vs baseline (diagnostics/RETRIEVAL_ONLY_DEV.md) 12 gained,
-7 lost (19/110). Scenarios keep the discordance and vary the effect. Questions split evenly over fr / en / ar.
-C rule: lower bound of the 95% percentile bootstrap CI of the mean difference > 0 and no language net loss >= 3
-(the normalization-failure condition is not simulated). B rule: mean difference >= 0 and no language net loss >= 3.
 """
 import json
 from pathlib import Path
@@ -55,7 +49,7 @@ def main():
            "C_adopted_probability": {s: {n: simulate(n, *p, "C", rng) for n in NS} for s, p in scen_c.items()},
            "B_adopted_probability": {s: {n: simulate(n, *p, "B", rng) for n in NS} for s, p in scen_b.items()},
            "minimal_net_difference_80pct_normal_approx": {n: None for n in NS}}
-    for n in NS:     # smallest net d with power 0.8 for "CI lower bound > 0" (normal approximation, discordance 0.2)
+    for n in NS:
         d = 0.0
         while d < DISC_C and d - 1.96 * np.sqrt((DISC_C - d * d) / n) < 0.84 * np.sqrt((DISC_C - d * d) / n):
             d += 0.001

@@ -1,11 +1,6 @@
 """French queries for the answerable items the retrieval diagnostic skipped (Arabic, or detected as English).
 
     python diagnostics/translate_skipped.py    -> diagnostics/translations.json
-
-One call of the existing translate.translate_to_french (v1.1's step_query for these items) per item, single key
-GROQ_API_KEY (config.py). Resumable: items already in translations.json are not translated again. The function
-swallows its exceptions and returns the question unchanged; that case is detected (warning captured) and the item is
-not saved. A daily-quota 429 (eval/harness_core.py rules) stops the run with exit code 75.
 """
 import sys
 import json

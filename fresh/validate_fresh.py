@@ -4,13 +4,6 @@ sqlite in read-only immutable mode (never written, no Chroma open).
     python fresh/validate_fresh.py fresh/questions.json [--json REPORT.json] [--threshold 0.68]
     python fresh/validate_fresh.py --lookup PenalFr 243        # chunk ids and start of text of an article (labellers)
     python fresh/validate_fresh.py --calibrate                 # near-duplicate threshold calibration -> fresh/near_dup_calibration.json
-
-Checks: required fields and values; every gold id exists in db_v1_2 and in db_v1_1; duplicate ids and questions;
-near-duplicates (cosine similarity of the index's embedding model, config.EMBEDDING_MODEL) against every question
-of eval/*.json (exam, noisy set, gate, candidates, ...), the development items and their cached translations, the
-example questions of the agent prompts and of the normalization prompt, and within the file; counts per language
-and type; minimums (TARGET_TOTAL, MIN_PER_LANGUAGE). Entries with "example": true are reported and ignored.
-Exit code 1 when an error is found (near-duplicates and unmet minimums are warnings).
 """
 import re
 import sys
@@ -31,7 +24,7 @@ REQUIRED = ("id", "language", "type", "question", "gold_articles", "gold_notes",
 GOLD_ID_RE = re.compile(r"^[A-Za-z_]+/s\d{2}/[0-9A-Za-z-]+$")
 TARGET_TOTAL = 150
 MIN_PER_LANGUAGE = 30
-NEAR_DUP_THRESHOLD = 0.68       # cosine; near_dup_rule on fresh/near_dup_calibration.json: flags 36/40 noisy rewrites,
+NEAR_DUP_THRESHOLD = 0.68
                                 # 43/47 translations, 1/1825 distinct same-language exam pairs
 INDEXES = {"db_v1_2": ROOT / "db_v1_2", "db_v1_1": ROOT / "db_v1_1"}
 

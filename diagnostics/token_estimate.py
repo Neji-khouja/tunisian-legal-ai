@@ -3,21 +3,6 @@ expansion capped at 300 embedding tokens) would add to v2, on the 110 developmen
 sent, only their evidence blocks are rebuilt with the agent's own formatting functions.
 
     python diagnostics/token_estimate.py --v11 COPY_OF_DB_V1_1 --v12 COPY_OF_DB_V1_2
-        -> diagnostics/token_estimate.json, diagnostics/TOKEN_ESTIMATE.md
-
-Graph nodes that receive the evidence (agent/agent_graph.py): grade (grade.format_evidence, 500 characters per article),
-reformulate (format_evidence, on a retry), answer (answer._user_block, ANSWER_CHARS 3000 per article), verify
-(verify._claims_block, only the cited articles, VERIFY_CHARS 3000), repair (make_answer again: _user_block).
-condense and analyze do not receive it.
-1. Characters -> LLM tokens: least squares on the saved v2 rows with exactly 4 LLM calls (analyze, grade, answer,
-   verify) and measured usage: input tokens = a + b x (characters of the grade, answer and verify user blocks rebuilt
-   from the row's evidence ids on db_v1_1 and its claims).
-2. Extra characters per node call: v1.2 top 6 of each item (compare_v12.json) with the header and the capped expansion
-   minus the same top 6 without them. verify: the first k top-6 articles, k = number of ids the saved v2 row cited
-   (added articles assumed not cited).
-3. Calls per question from the saved v2 row (llm_calls; the rows do not say which nodes ran): base path grade + answer
-   + verify; extra calls either "retries first" (reformulate, grade, reformulate, then repair, verify) or "repair
-   first" (repair, verify, then reformulate, grade, reformulate). Rows that did not answer (no evidence): 0.
 """
 import sys
 import json

@@ -2,13 +2,6 @@
 
     python eval/build_exam.py            # build + checks + eval/exam_hashes.txt
     python eval/build_exam.py --check    # checks only (the exam is not rewritten)
-
-Rule: every candidate except REJECTED_IDS, status "final"; order answerable, clarify, refuse. The clarify items with a
-scripted reply in PROMOTE get their candidate_gold as gold ({source, article, chunk_ids, role "main"}, one entry per
-article), so "Hit@6 after the reply" is computed on them. Nothing else is decided here.
-Checks: eval/check_answer_set.py, every gold / candidate_gold chunk id in the index (chroma metadata of config.DB_DIR, the
-index the agent retrieves from) and in the PDF text (pdf_truth.from_chunk_id, as the harness reads it), duplicate
-questions, gold chunks shared by two items (reported), eval/prompt_overlap.py --extra (no pair >= 0.4).
 """
 import sys
 import json

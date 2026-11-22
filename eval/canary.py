@@ -13,7 +13,7 @@ from datetime import datetime
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "agent"))
 OUT = ROOT / "results" / "canary_log.json"
-QUESTIONS = [   # dev questions of eval/questions.json (concepts in the dev split of eval/split.json): 2 fr, 2 en, 1 ar
+QUESTIONS = [
     ("q010", "fr", "Comment est puni l'incendie volontaire ?"),
     ("q026", "fr", "Quelles sont les conditions du mariage ?"),
     ("q078", "en", "How long can police custody last?"),

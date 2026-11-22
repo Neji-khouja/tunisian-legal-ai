@@ -2,10 +2,6 @@
 process goes to a side file that eval/latency_benchmark.py reads (v1_runner.py itself reports neither).
 
     python eval/latency_v1_child.py <worktree> [<runner path>]      (env LATENCY_V1_EVENTS = the side file)
-
-Standard library only, like eval/v1_runner.py's own start: only the worktree's modules are imported by the runner. The
-handlers apply the same tests as run_answer_eval.py's _CountGroq and _GroqWaits. Side file: one line per event, "429" or
-"wait <seconds>".
 """
 import os
 import sys

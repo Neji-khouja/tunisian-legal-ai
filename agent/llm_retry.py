@@ -2,7 +2,7 @@ import re
 import time
 
 MAX_RETRIES = 3       # retries after the first attempt, on rate limits (429) only
-MAX_WAIT_S = 120      # a longer wait (e.g. the daily token limit) fails at once instead of blocking
+MAX_WAIT_S = 120
 
 
 class LLMRateLimitError(RuntimeError):

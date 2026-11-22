@@ -1,9 +1,4 @@
-"""Answer node: write a short cited answer from the retrieved articles ONLY.
-
-make_answer  -> LLM writes claims, each citing chunk ids from the evidence
-check_answer -> plain Python: do the cited ids exist, is anything empty
-render       -> turns the Answer into readable text with [Source art. N] citations
-"""
+"""Answer node: write a short cited answer from the retrieved articles ONLY."""
 import sys
 from pathlib import Path
 

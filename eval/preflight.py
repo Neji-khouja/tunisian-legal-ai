@@ -1,14 +1,6 @@
 """Read-only checks before the final answer-level evaluation. No Groq call, no tag, no worktree is created.
 
     python eval/preflight.py [--v1-worktree ../RAG_PDF_v1] [--judge-provider groq|gemini] [--judge-model ID]
-
-Checks: no uncommitted agent/*.py or eval/*.py; frozen prompt hashes; judge provider and model (--judge-provider,
-default env JUDGE_PROVIDER, else groq; --judge-model, default env JUDGE_MODEL; the flags win; set, and not the agent model; only "set"/"unset" is printed for keys); for gemini, langchain-google-genai importable; GOOGLE_API_KEY
-(INFO, set/unset only); eval/answer_set.json valid and non-empty (eval/check_answer_set.py); eval/exam_hashes.txt
-matches eval/answer_set.json and eval/stages.json; stages disjoint and covering every exam item; v1 worktree present
-(the test eval/run_answer_eval.py applies: pipeline.py and db/ inside it). INFO: the system fingerprint the harness
-stores in every row (eval/harness_core.system_fingerprint), the judge provider, model and thinking setting. Prints the
-commands for the user to run next (not run). Exit code 1 if any check fails.
 """
 import os
 import sys
@@ -51,8 +43,6 @@ def main():
     ap.add_argument("--judge-model", default=os.environ.get("JUDGE_MODEL"))
     args = ap.parse_args()
 
-    # 1. judge, read like run_answer_eval.py: --judge-model, else JUDGE_MODEL from the process environment (before any
-    # module loads .env)
     jm = args.judge_model
     record("judge model", bool(jm), ("set" if jm else "unset") + " (--judge-model or JUDGE_MODEL in the process "
                                     "environment, as run_answer_eval.py reads it)")

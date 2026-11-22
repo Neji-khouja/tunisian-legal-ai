@@ -2,15 +2,6 @@
 the PDF text of at least one article it cites.
 
     python eval/pdf_factcheck.py results/noise_check.json
-
-Numbers are compared as integers: digits ("1000d", "1.200", "20%") and number words ("quinze", "dix-huit",
-"deux mille"; English words too, since answers can be in English). "un"/"une"/"one"/"a" are not counted: in a
-sentence they are mostly articles. Unavailable PDF text (unverified source, ambiguous label) -> None = unverifiable.
-
-Implicit references: a number N that the claim writes as "article N" and that is missing from the cited text is
-accepted, and reported apart as "implicit reference ok", when the cited article's PDF text says "article
-précédent(e)" / "ci-dessus" (N = the cited article's number - 1; for a suffixed label like 220-bis, N = 220) or
-"article suivant(e)" / "ci-après" (N = number + 1). Every other missing number still fails.
 """
 import re
 import sys
@@ -32,7 +23,7 @@ UNITS = {
     "ninety": 90,
 }
 SCALES = {"cent": 100, "cents": 100, "hundred": 100, "mille": 1000, "thousand": 1000}
-JOINERS = {"and"}           # not French "et": "deux et trois" are two numbers ("vingt et un" ends in "un", not counted)
+JOINERS = {"and"}
 ART_REF = re.compile(r"\b(?:articles?|art\.)\s+(\d+)\b", re.I)               # "article 260" in a claim
 IMPLICIT = re.compile(r"\barticles?\s+(?:(pr[ée]c[ée]dente?s?|ci-dessus)|(suivante?s?|ci-apr[èe]s))(?!\w)", re.I)
 WORD = "|".join(sorted(list(UNITS) + list(SCALES), key=len, reverse=True))

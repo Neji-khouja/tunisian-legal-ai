@@ -1,17 +1,4 @@
-"""Article-level chunking with stable chunk IDs.
-
-Rules (see docs/CHUNK_IDS.md):
-  * a chunk starts only at a real heading: "Article N", "Art. N", "Article premier",
-    with optional sub-number ("6- 2") and suffix ("bis", "ter", ...). Headings must be at
-    the start of a line (a few title-cased mid-line headings are accepted); in-text
-    references such as "...prévues à l'article 62 du présent code" never split;
-  * PDFs that bundle several texts (a code plus decrees, orders, conventions) are cut into
-    sections: a new section starts when the article numbering restarts at 1 or 2, and the
-    preamble of the next text ("Décret n° ... Décrète :") is removed from the previous article;
-  * chunk_id = "<pdf stem>/s<section>/<article label>", e.g. "PenalFr/s01/226-ter",
-    "travailFr/s00/6-2", "Statutpersonnel/s03/13". A "~k" suffix is added only if the same
-    label occurs twice in one section.
-"""
+"""Article-level chunking with stable chunk IDs."""
 import re
 import logging
 import unicodedata

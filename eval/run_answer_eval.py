@@ -2,65 +2,11 @@
 
     python eval/run_answer_eval.py --stage 1 --system all --v1-worktree ../RAG_PDF_v1 --dry-run   # plan, no call
     python eval/run_answer_eval.py --stage 1 --system all --v1-worktree ../RAG_PDF_v1 [--min-gap S] [--skip-judge]
-           [--daily-budget-tokens N] [--wait-on-quota [MINUTES]] [--max-wait-hours H] [--allow-mixed] [--allow-changed-exam]
     python eval/run_answer_eval.py --stage 1 --system all --judge-only --judge-provider gemini   # judge saved answers later
     python eval/run_answer_eval.py --summarize [results/answer_eval_answer_set_stage1_v2.jsonl ...]   # no path: all stage files
     python eval/run_answer_eval.py --stage 1 --summarize --exclude-ids ac02,ac29   # sensitivity: items left out everywhere
     python eval/run_answer_eval.py --stage 1 --system v1 --rerun-ids ac29 --v1-worktree ../RAG_PDF_v1   # run a pair again
     python eval/run_answer_eval.py --set eval/plumbing_set.json --system all --results-dir results/plumbing --dry-run
-
-Run mechanics (eval/harness_core.py): question-major order (for each question: v1, v1.1, v2); one result file per stage
-and system (results/answer_eval_answer_set_stage<k>_<system>.jsonl), rewritten atomically after each finished
-(item, system); the same command resumes (finished pairs skipped, degraded ones redone). A 429 naming a per-day limit
-(TPD/RPD) is QuotaExhausted: never retried, the pair in progress is discarded (not saved, not degraded), results/run_state.json
-and results/run_log.jsonl are written, exit code 75. Any other exception of one (item, system) is tried again once in
-the same run (v2: a new thread id on every call); a second failure saves a row with status "error" (exception type and
-short message, attempt k) and the run goes on; resumes run "error" rows again, and the 3rd failed attempt (run) saves
-status "failed": final, no answer, shown by --summarize as "system failure" and counted as incorrect in a
-sensitivity line. --daily-budget-tokens stops (exit 75) before a pair that would pass
-N agent-model tokens today (estimate: mean of the measured rows of that system, else DEFAULT_TOKENS). --wait-on-quota
-sleeps and probes instead of stopping, for at most --max-wait-hours. Every row records date, provenance (system
-fingerprint, git commit, tags, agent model, prompt hashes, exam hashes, judge) and tokens. The system fingerprint
-(harness_core.system_fingerprint) is a sha256 over agent/*.py (not test_*/run_*), config.py, splitter.py, retriever.py,
-reranker.py, pipeline.py and the index identity (path, chunk count): a file holding rows of another fingerprint is
-refused unless --allow-mixed (a commit that changes only eval/ is not a new system); --judge-only ignores provenance.
-A changed exam (vs eval/exam_hashes.txt) is refused unless --allow-changed-exam. A judge quota stop
-during a run leaves judge_pending rows for --judge-only.
-
-Items (eval/answer_set.json, see eval/check_answer_set.py): id, question, language, expected (answer|clarify|refuse),
-gold [{source, article}], reference_points [str], reason; a clarify item may add "reply" (a scripted user reply that
-picks one reading): v2 gets the question, then the reply, on the SAME thread_id (first-turn status in first_status,
-used for gate accuracy); v1.1 and v1 (single-turn) get one merged question "<question> (précision : <reply>)" in the
-item's language (field "asked"). Results go to the
-stage file above. Another --set (e.g. eval/plumbing_set.json, a 3-item pipe check): no exam fingerprint, --stage all
-only, <results-dir>/answer_eval_<setname>_<system>.jsonl in its own --results-dir (results/ itself, or a folder holding
-stage files, is refused; the exam is refused in a folder holding another set's files). A set with a
-<set stem>_hashes.txt next to it ("<set file name> <sha256>", e.g. eval/noisy_set_hashes.txt) is locked: a changed
-set is refused unless --allow-changed-exam.
-Timing per item: seconds (system only), elapsed_total (system + metrics + judge; the --min-gap sleep is outside),
-n_429 (rate-limited Groq responses the client retried) and waited_seconds (sum of the retry waits the Groq client
-announced); n_429 and waited_seconds are None for v1, whose LLM calls run in a subprocess.
-v2 rows also keep the verifier loop: verdicts (last pass), first_verdicts (first pass), repairs, dropped,
-draft_claims / draft_text (the first, unverified answer). A v2 item whose `degraded` list is not empty (a node fell back) is stored with status "degraded"
-(graph status in graph_status), gets no metrics and no judge, and is run again on resume.
-Fallbacks (every system): a logging handler (harness_core.capture_fallbacks; v1: inside its own process) keeps the
-warnings of a step that fell back ("Query translation failed", "Query rewrite failed", "Sub-query generation failed",
-"... using original", "... using primary query") in the row as "fallbacks"; a non-empty list makes the row "degraded"
-as above. --rerun-ids a,b,c (with --system) runs those pairs again even if finished: the new row is appended with
-rerun: true and supersedes {status, date} of the row it replaces; the old row stays in the file (the latest row wins).
-A pair whose latest row is a finished re-run is skipped, so the same command resumes after a quota stop.
---exclude-ids a,b,c (with --summarize) leaves those items out of every block and paired difference (sensitivity).
-
-Judge: a model different from the generator (env JUDGE_MODEL or --judge-model), --judge-provider (env JUDGE_PROVIDER,
-default groq; the flags win) groq (Groq model id) or gemini (langchain-google-genai, key from GOOGLE_API_KEY), temperature 0, own prompt (hash recorded), structured
-output. Never guessed: without a judge model the run stops unless --skip-judge. Clarify and refuse items (every system)
-get a second judge prompt (GATE_PROMPT, hash recorded): gives_substantive_answer and enumerates_alternatives, on the
-first-turn response; --summarize reports for refuse items "no substantive answer" (explicit refusal OR no substantive
-answer, the primary metric) and "explicit refusal status"; for the clarify items WITHOUT a scripted reply ("clarify
-w/o reply: ...") "asked for clarification (status)", "answered directly" and "enumerated alternatives"; for the clarify
-items WITH a scripted reply ("clarify then answer: ...") "correct after the reply" (answer judge verdict, when the row
-has one) and "Hit@6 after the reply"; and "gate accuracy (explicit status)" for all clarify and refuse items.
-v1 needs a git worktree of tag v1-baseline-runnable with the old index (the script prints the setup commands).
 """
 import os
 import re
@@ -93,9 +39,6 @@ SYSTEM_ORDER = ["v1", "v1.1", "v2"]            # question-major order: for each 
 TPD = 200_000                                  # Groq tokens per day on the agent model (projection only)
 DEFAULT_TOKENS = {"v2": 15_000, "v1.1": 4_000, "v1": 5_000}   # guess per question until measured rows exist
 EXAM_DIR = ROOT / "eval"
-# successful Groq requests (n), rate-limited responses (n429) seen by httpx in this process, and the retry waits
-# the Groq client announced ("Retrying request to ... in X seconds", logger groq._base_client; 429s and
-# connection errors alike). Only the Groq client in this process is seen: not the v1 subprocess.
 CALLS = {"n": 0, "n429": 0, "waited": 0.0}
 
 
@@ -213,7 +156,7 @@ def run_v2(item) -> dict:
            "first_verdicts": s.get("first_verdicts") or []}
     if s.get("status") == "clarify":
         rec["clarification_question"] = s.get("text")
-    if s.get("normalize"):                      # config.NORMALIZE_QUERY == "v3" only (its tokens are in the usage callback)
+    if s.get("normalize"):
         rec["normalize"] = s["normalize"]
     rec["_evidence_text"] = {cid: e["text"] for cid, e in ev.items()}
     return rec | (first or {})
@@ -341,8 +284,6 @@ Judge only from the response text."""
 GATE_PROMPT_SHA = hashlib.sha1(GATE_PROMPT.encode("utf-8")).hexdigest()[:12]
 
 
-# --judge-thinking (Gemini only): minimal | low | medium | high | default | auto. "auto" starts at minimal and, on a 400
-# saying the thinking level is not supported, moves to low for the rest of the run (call_judge).
 JUDGE_THINKING = {"level": "auto", "auto": "minimal"}
 UNSUPPORTED_LEVEL = re.compile(r"thinking.{0,80}(not supported|unsupported|not available|invalid)|"
                                r"(not supported|unsupported|invalid).{0,80}thinking", re.I | re.S)

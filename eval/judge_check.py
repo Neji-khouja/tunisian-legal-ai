@@ -5,16 +5,6 @@ eval/run_answer_eval.py, on 2 canned cases x 3 repeats.
     python eval/judge_check.py --judge-provider gemini --judge-model gemini-3.8-flash           # 6 judge calls
     python eval/judge_check.py --candidates "gemini:gemini-3.8-flash,gemini:gemini-3.7-flash,groq:openai/gpt-oss-20b"
     python eval/judge_check.py --judge-provider groq --judge-model JUDGE_MODEL_ID --dry-run       # no call
-
-Defaults as in the harness: --judge-provider from env JUDGE_PROVIDER (else groq), --judge-model from env JUDGE_MODEL, --judge-thinking auto (Gemini 3+:
-minimal, then low for the rest of the run if a 400 says minimal is not supported; groq: n/a).
-Canned cases: one question built from PenalFr art. 264 (verbatim PDF text, chunk PenalFr/s02/264; not in
-eval/answer_set.json), a correct answer (expected verdict "correct") and a clearly wrong one (expected "incorrect").
---min-gap seconds (default 4) between calls, so the check itself does not hit per-minute limits. After the results:
-the first full text of each distinct error type (429s: quota metric, limit, retry delay, per-minute or per-day when the
-text says). --candidates "provider:model,...": in this order, stop at the first that meets the rule. Every attempt
-(candidate, effective thinking, date/time, results, error texts) is appended to --log (results/judge_check_log.json).
---list prints model names only (Gemini: models supporting generateContent; Groq: the models list), never a key.
 """
 import os
 import re

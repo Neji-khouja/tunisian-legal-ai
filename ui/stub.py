@@ -1,9 +1,6 @@
 """Demo backend: canned results with the same shapes as the real ones, no model, no network. Every text is a fictitious
 example (labelled as such); the article texts are placeholders, not the law.
-
-The case is chosen from the question: an Arabic question -> Arabic answer; "contrat" -> clarification (the next message
-on the same conversation -> answer); "météo", "recette" or "football" -> refusal; "panne" -> answer whose verification
-failed (degraded); "quota" -> daily quota error; "erreur" -> unexpected error; anything else -> answer."""
+"""
 import os
 import time
 

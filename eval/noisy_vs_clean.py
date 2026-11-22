@@ -1,15 +1,6 @@
 """Noisy vs clean: paired analysis of the noisy-wording set against the same items in Stage 2. No LLM call, read-only.
 
     python eval/noisy_vs_clean.py [--clean-dir results] [--noisy-dir results/noisy] [--out results/noisy_vs_clean.txt]
-
-Clean: results/answer_eval_answer_set_stage2_<system>.jsonl, answerable items only. Noisy:
-results/noisy/answer_eval_noisy_set_<system>.jsonl; eval/noisy_set.json maps n_<id> to original_id, noise_type, language.
-Rows are read and scored with the harness's own functions (run_answer_eval.read_jsonl: the latest row per id wins, so a
-re-run supersedes the older row; metric_values: same definitions as --summarize; rows with a status in NO_ANSWER
-(degraded, error, failed) are left out). Same bootstrap as the harness: boot_ci, 5000 resamples over questions,
-seed 20261022, 95% percentile intervals.
-A. per system, noisy - clean per question. B. pre-registered: (noisy - clean) of v2 minus that of v1.1 (and v2 vs v1,
-secondary). C. exploratory: A per noise_type and per language. D. data audit.
 """
 import sys
 import json

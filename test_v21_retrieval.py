@@ -1,10 +1,6 @@
 """Unit tests of the v2.1 wave-1 retrieval changes, on stub data (no index, no model, no LLM).
 
     python test_v21_retrieval.py
-
-heading logic (splitter), direct-lookup rule (retriever.article_numbers), union of direct lookup and hybrid pool
-(pipeline.step_retrieve), cross-reference parser and expansion caps (retriever), sub-chunking (pipeline.index_entries,
-retriever._to_article, reranker), evidence assembly, BM25 tokenizers, flags off = v1.1 behaviour, frozen index.
 """
 import sys
 from pathlib import Path

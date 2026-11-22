@@ -1,19 +1,4 @@
-"""Groq API key per session, without editing agent/.
-
-agent/analyze.py builds one ChatGroq at import (the key is read from the environment then), and every node reuses it;
-pipeline.py and translate.py build ChatGroq clients from config.GROQ_API_KEY. All of them end in the groq SDK, which
-signs every request with the `auth_headers` property of its client. install() replaces that property, at class level,
-with one that returns the key of the current session when one is set (a ContextVar), else the client's own key (the
-owner's key from the environment). A ContextVar is per thread and per context: Streamlit runs each session's script in
-its own thread, and LangGraph runs its nodes with a copy of the caller's context, so a key set around a graph call
-reaches every LLM call of that call and no other session's (ui/tests/test_ui.py checks it with concurrent threads).
-This relies on groq SDK internals (`auth_headers`, groq 0.37.1); the test fails if they change.
-
-Owner key policy (environment variables, read at start):
-    UI_OWNER_KEY        on (default) | off: answer with the owner's GROQ_API_KEY when the user gives no key
-    UI_OWNER_DAILY_CAP  questions per day on the owner's key, all sessions together (0 = no cap; default 0)
-The counter lives in the process memory and restarts at midnight (local time) or when the app restarts.
-"""
+"""Groq API key per session, without editing agent/."""
 import os
 import datetime
 import threading

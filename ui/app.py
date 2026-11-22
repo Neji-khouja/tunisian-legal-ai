@@ -1,13 +1,4 @@
-"""Interface Streamlit (français) du chercheur juridique : modes Rapide (v1.1) et Vérifié (v2).
-
-    cd ui
-    streamlit run app.py                       (vrai système : index, modèles et clé Groq nécessaires)
-    set RAG_UI_DEMO=1 && streamlit run app.py  (démo : réponses fictives, aucun appel réseau)
-    streamlit run app.py -- --demo             (idem)
-
-Nothing is stored or logged: the conversation lives in st.session_state (and, for v2 follow-ups, in the agent's
-in-memory checkpointer, cleared by "Nouvelle conversation"); errors go to the console as types and code locations only.
-"""
+"""Interface Streamlit (français) du chercheur juridique : modes Rapide (v1.1) et Vérifié (v2)."""
 import os
 import sys
 import uuid
