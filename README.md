@@ -89,7 +89,8 @@ uvicorn api.api:app --port 8000    # HTTP API
 curl -X POST localhost:8000/ask -H "Content-Type: application/json" -d "{\"question\": \"Quelle est la peine pour le vol ?\"}"
 ```
 
-The API response has `answer` and `sources` (id, source, article). Set `HF_HUB_OFFLINE=1` once the models are cached.
+Set `API_KEY` to require an `X-API-Key` header on `/ask`; without it the endpoint is open, so don't expose it that way.
+Questions are limited to 1000 characters. The API response has `answer` and `sources` (id, source, article). Set `HF_HUB_OFFLINE=1` once the models are cached.
 
 Every question and answer the web interface handles is written to a SQLite file, `logs/interactions.db` (`RAG_LOG_DB`
 changes the path): time, session id, question, status, answer, claims, cited article ids, whether verification failed,
@@ -103,13 +104,24 @@ that questions are recorded.
    `git push space <branch>:main`). The index `db_v1_2/` is stored with git LFS (`.gitattributes`), which Spaces require
    for files over 10 MB: run `git lfs install` once.
 3. In the Space settings, add these secrets:
-   - `GROQ_API_KEY`: your key (shared by all visitors, so also set `UI_OWNER_DAILY_CAP`, for example `30`, the number of
-     questions per day on your key; visitors can paste their own key in the sidebar).
+   - `GROQ_API_KEY`: your key (shared by all visitors; `UI_OWNER_DAILY_CAP` limits the questions per day on your key, 30 by
+     default, `0` removes the limit; visitors can paste their own key in the sidebar).
    - `HF_LOG_REPO` and `HF_TOKEN`: optional, a private dataset repo (`user/rag-logs`) and a write token. Free Spaces lose
      their disk at each restart, so the log database is copied to that repo under a name unique to each start, at most
      every 5 minutes. `ui/store.py: load_all(folder)` merges the downloaded copies.
 4. The Space builds the image (about 15 minutes the first time: it downloads the two models) and then serves
    `https://<user>-<name>.hf.space`. A free Space sleeps after a couple of idle days and wakes on the next visit.
+
+## Security notes
+
+- Secrets live only in the `.env` file (git-ignored, excluded from the Docker image) or in the Space's secrets. A scan of
+  the working tree and all 163 commits found no API key or token.
+- The interface escapes all user and model text before showing it, caps questions at 1000 characters, and never stores
+  or logs an API key. The container runs as a non-root user.
+- The owner's Groq key is capped per day (`UI_OWNER_DAILY_CAP`), and visitors can use their own key instead.
+- The log database holds visitors' questions: keep the log dataset private, and don't enter personal data (the page says so).
+- Commits carry the author's email address, and `results/*run_log*` contain a local Windows path. Both become public if the
+  repository is public.
 
 ## Evaluation
 

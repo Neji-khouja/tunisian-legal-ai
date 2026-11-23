@@ -146,7 +146,7 @@ def main():
     for m in ss.messages:
         with st.chat_message(m["role"]):
             html(m["text"]) if m["role"] == "user" else show(m["view"])
-    question = st.chat_input(T.INPUT_PLACEHOLDER)
+    question = st.chat_input(T.INPUT_PLACEHOLDER, max_chars=1000)
     if question:
         ss.messages.append({"role": "user", "text": question})
         with st.chat_message("user"):

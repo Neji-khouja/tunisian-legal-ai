@@ -57,7 +57,7 @@ class KeyPolicy:
     @classmethod
     def from_env(cls, owner_present=owner_key_present):
         return cls(os.environ.get("UI_OWNER_KEY", "on").strip().lower() not in ("off", "0", "false", "no"),
-                   int(os.environ.get("UI_OWNER_DAILY_CAP", "0") or 0), owner_present)
+                   int(os.environ.get("UI_OWNER_DAILY_CAP", "30") or 0), owner_present)
 
     def owner_usable(self) -> bool:
         return self.owner_enabled and self._owner_present()
