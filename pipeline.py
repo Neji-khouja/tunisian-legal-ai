@@ -39,7 +39,8 @@ def get_embeddings() -> HuggingFaceEmbeddings:
     if _embeddings is None:
         logger.info("Loading embedding model: %s", EMBEDDING_MODEL)
         _embeddings = _PrefixedEmbeddings(
-            model_name=EMBEDDING_MODEL, doc_prefix=EMBED_DOC_PREFIX, query_prefix=EMBED_QUERY_PREFIX
+            model_name=EMBEDDING_MODEL, doc_prefix=EMBED_DOC_PREFIX, query_prefix=EMBED_QUERY_PREFIX,
+            model_kwargs={"device": "cpu"},
         )
         if EMBED_MAX_SEQ_LENGTH:
             client = getattr(_embeddings, "_client", None) or getattr(_embeddings, "client")

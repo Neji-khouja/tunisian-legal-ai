@@ -1,6 +1,5 @@
-# Runtime dependencies (Python 3.11). requirements.lock.txt is the full conda lock of the development machine.
---extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.1.2
+# Runtime dependencies (Python 3.10+). torch is NOT listed: Hugging Face Gradio Spaces preinstall it (ZeroGPU accepts only
+# its supported versions); the Dockerfile installs the CPU build. requirements.lock.txt is the lock of the dev machine.
 numpy==1.26.4
 transformers==4.41.2
 sentence-transformers==5.4.1
@@ -17,6 +16,3 @@ langgraph==1.1.8
 groq==0.37.1
 pydantic==2.13.2
 python-dotenv==1.2.2
-streamlit==1.56.0
-fastapi
-uvicorn==0.44.0

@@ -1,13 +1,14 @@
+# Self-hosting image (VM, Cloud Run, Oracle free tier...). The Hugging Face Gradio Space does not use it.
 FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED=1 PYTHONIOENCODING=utf-8 PIP_NO_CACHE_DIR=1 HF_HOME=/home/user/.cache/huggingface
 
-# Hugging Face Spaces runs the container as user 1000
 RUN useradd -m -u 1000 user
 WORKDIR /app
 
+RUN pip install torch==2.1.2 --extra-index-url https://download.pytorch.org/whl/cpu
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt streamlit==1.56.0
 
 # models downloaded at build time (names must match config.py EMBEDDING_MODEL and RERANKER_MODEL)
 USER user

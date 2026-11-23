@@ -246,6 +246,53 @@ def test_store():
     check("load_all with two files", sorted(r["question"] for r in store.load_all(tmp)) == ["autre", "encore"])
 
 
+def test_chat():
+    import tempfile
+    import chat
+    import store
+    import stub
+    tmp = Path(tempfile.mkdtemp())
+    st = store.Store(tmp / "c.db", upload=False)
+    be = stub.DemoBackend(0)
+    pol = keys.KeyPolicy(True, 0, lambda: True)
+
+    def run(q, thread="t1", turn=1, key=""):
+        ev = list(chat.ask(q, thread, turn, key, be, pol, st))
+        return [e for e in ev if e[0] == "step"], ev[-1][1]
+    steps, md = run("Que risque-t-on en cas de vol simple ?")
+    check("answer: steps streamed in French, then one Markdown answer with numbered claims and details per citation",
+          [x[1] for x in steps][:2] == [T.NODE_LABELS["condense"], T.NODE_LABELS["analyze"]] and "<bdi>1.</bdi>" in md
+          and "<details><summary>Code pénal, art. 264</summary>" in md and "<script" not in md)
+    steps, md = run("Puis-je rompre mon contrat ?", "t2")
+    check("clarify: question back plus the hint", "S&#x27;agit-il" in md and T.CLARIFY_HINT in md)
+    _, md = run("Quelle sera la météo demain ?", "t3")
+    check("refuse: refusal text", "sort du cadre" in md)
+    _, md = run("ما هي عقوبة السرقة؟", "t4")
+    check("Arabic claim is right to left", 'dir="rtl"' in md)
+    _, md = run("Exemple de panne", "t5")
+    check("failed verification: warning shown", "⚠️" in md and T.UNVERIFIED_BANNER.strip("*")[:20] in md)
+    _, md = run("Exemple de quota", "t6")
+    check("quota error: friendly message, nothing raised", T.ERRORS["quota_daily"] in md)
+    _, md = run("Exemple d'erreur", "t7")
+    check("unexpected error: generic message, no traceback", T.ERRORS["other"] in md and "Traceback" not in md and "demo failure" not in md)
+    capped = keys.KeyPolicy(True, 1, lambda: True)
+    list(chat.ask("vol", "c1", 1, "", be, capped, st))
+    out = list(chat.ask("vol", "c1", 2, "", be, capped, st))
+    check("owner cap reached: friendly message", T.ERRORS["owner_cap"] in out[-1][1])
+    out = list(chat.ask("vol", "c1", 3, "gsk_personal", be, capped, st))
+    check("a personal key passes the cap", T.ERRORS["owner_cap"] not in out[-1][1])
+    rows = st.rows()
+    check("every question logged with its turn, status and key source",
+          [r["question"] for r in rows][:2] == ["Que risque-t-on en cas de vol simple ?", "Puis-je rompre mon contrat ?"]
+          and rows[1]["status"] == "clarify" and rows[5]["error"] == "quota_daily" and rows[-1]["key_source"] == "personal"
+          and rows[-2]["error"] == "owner_cap", [(r["status"], r["error"], r["key_source"]) for r in rows])
+    class Broken:
+        def log(self, *a, **k):
+            raise RuntimeError("disk full")
+    out = list(chat.ask("vol", "c9", 1, "", be, pol, Broken()))
+    check("a failing log never hides the answer", out[-1][0] == "done" and "<bdi>1.</bdi>" in out[-1][1])
+
+
 def test_policy_in_app():
     from streamlit.testing.v1 import AppTest
     import streamlit as st
@@ -267,7 +314,7 @@ def test_policy_in_app():
 
 
 if __name__ == "__main__":
-    for t in (test_views, test_errors, test_policy, test_session_key, test_store, test_app_demo, test_policy_in_app):
+    for t in (test_views, test_errors, test_policy, test_session_key, test_store, test_chat, test_app_demo, test_policy_in_app):
         t()
     print(f"\n{sum(RESULTS)}/{len(RESULTS)} checks passed")
     sys.exit(0 if all(RESULTS) else 1)

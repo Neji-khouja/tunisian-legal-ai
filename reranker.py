@@ -14,7 +14,7 @@ def get_reranker() -> CrossEncoder:
     if _reranker is None:
         logger.info("Loading cross-encoder: %s (max_length=%d, int8=%s)",
                     RERANKER_MODEL, RERANK_MAX_LENGTH, RERANK_QUANTIZE)
-        model = CrossEncoder(RERANKER_MODEL, max_length=RERANK_MAX_LENGTH)
+        model = CrossEncoder(RERANKER_MODEL, max_length=RERANK_MAX_LENGTH, device="cpu")
         if RERANK_QUANTIZE:
             import torch
             torch.quantization.quantize_dynamic(model.model, {torch.nn.Linear}, dtype=torch.qint8, inplace=True)

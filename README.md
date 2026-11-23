@@ -3,8 +3,10 @@ title: Tunisian Legal RAG
 emoji: ⚖️
 colorFrom: blue
 colorTo: gray
-sdk: docker
-app_port: 7860
+sdk: gradio
+sdk_version: 5.23.1
+app_file: app.py
+pinned: false
 ---
 
 # Tunisian Legal RAG
@@ -55,14 +57,14 @@ baseline in evaluation.
 | Vector store | ChromaDB (local files) + BM25 |
 | LLM | `openai/gpt-oss-120b` through Groq (`LLM_MODEL` in `config.py`) |
 | PDF parsing | PyMuPDF |
-| Interfaces | Streamlit (`ui/`), FastAPI (`api/`) |
+| Interfaces | Gradio (`app.py`), Streamlit (`ui/app.py`), FastAPI (`api/`) |
 
 ## Setup
 
 ```bash
 conda create -n rag-app python=3.11
 conda activate rag-app
-pip install -r requirements.txt        # requirements.lock.txt is the full lock of the dev machine
+pip install -r requirements.txt gradio==5.23.1 torch   # requirements.lock.txt is the full lock of the dev machine
 ```
 
 Put your Groq key in a `.env` file at the root (never commit it):
@@ -80,8 +82,8 @@ python -c "import pipeline; pipeline.build_vectorstore()"
 ## Run
 
 ```bash
-ui
-un.cmd                         # Streamlit chat (Windows); RAG_UI_DEMO=1 for canned answers without models
+python app.py                      # Gradio web chat on http://127.0.0.1:7860 (RAG_UI_DEMO=1: canned answers, no models)
+uiun.cmd                         # the older Streamlit chat (Windows)
 uvicorn api.api:app --port 8000    # HTTP API
 ```
 
@@ -90,27 +92,35 @@ curl -X POST localhost:8000/ask -H "Content-Type: application/json" -d "{\"quest
 ```
 
 Set `API_KEY` to require an `X-API-Key` header on `/ask`; without it the endpoint is open, so don't expose it that way.
-Questions are limited to 1000 characters. The API response has `answer` and `sources` (id, source, article). Set `HF_HUB_OFFLINE=1` once the models are cached.
+Questions are limited to 1000 characters. The API response has `answer` and `sources` (id, source, article). Set
+`HF_HUB_OFFLINE=1` once the models are cached.
 
 Every question and answer the web interface handles is written to a SQLite file, `logs/interactions.db` (`RAG_LOG_DB`
 changes the path): time, session id, question, status, answer, claims, cited article ids, whether verification failed,
 seconds, and whether the owner's or the visitor's key was used. API keys are never stored. The interface tells visitors
 that questions are recorded.
 
-## Deploy on Hugging Face Spaces (free)
+## Deploy on a Hugging Face Space (Gradio)
 
-1. Create a Space with SDK **Docker** (CPU basic). The YAML block at the top of this file is its configuration.
-2. Push this repository to the Space (`git remote add space https://huggingface.co/spaces/<user>/<name>`,
-   `git push space <branch>:main`). The index `db_v1_2/` is stored with git LFS (`.gitattributes`), which Spaces require
-   for files over 10 MB: run `git lfs install` once.
+The YAML block at the top of this file configures the Space (`sdk: gradio`, entry point `app.py`).
+
+1. Create a Space with SDK **Gradio** (blank template). Free accounts may be limited to ZeroGPU hardware; the app runs on CPU
+   and only defines one unused `@spaces.GPU` function, because ZeroGPU Spaces refuse to start without one.
+2. Add your SSH public key at https://huggingface.co/settings/keys, then push this repository (the index `db_v1_2/` is in
+   git LFS, which Spaces require for files over 10 MB: run `git lfs install` once):
+
+       git remote add space git@hf.co:spaces/<user>/<name>
+       git push space <branch>:main
+
 3. In the Space settings, add these secrets:
-   - `GROQ_API_KEY`: your key (shared by all visitors; `UI_OWNER_DAILY_CAP` limits the questions per day on your key, 30 by
-     default, `0` removes the limit; visitors can paste their own key in the sidebar).
-   - `HF_LOG_REPO` and `HF_TOKEN`: optional, a private dataset repo (`user/rag-logs`) and a write token. Free Spaces lose
-     their disk at each restart, so the log database is copied to that repo under a name unique to each start, at most
-     every 5 minutes. `ui/store.py: load_all(folder)` merges the downloaded copies.
-4. The Space builds the image (about 15 minutes the first time: it downloads the two models) and then serves
-   `https://<user>-<name>.hf.space`. A free Space sleeps after a couple of idle days and wakes on the next visit.
+   - `GROQ_API_KEY`: your key (shared by all visitors; `UI_OWNER_DAILY_CAP` limits the questions per day on it, 30 by
+     default, `0` removes the limit; visitors can paste their own key in the page).
+   - `HF_LOG_REPO` and `HF_TOKEN`: optional, a private dataset repo (`user/rag-logs`) and a write token. A Space loses its
+     disk at each restart, so the log database is copied to that repo under a name unique to each start, at most every
+     5 minutes. `ui/store.py: load_all(folder)` merges the downloaded copies.
+4. The Space installs `requirements.txt` and starts; the first question waits for the models to load (a minute or two).
+
+The `Dockerfile` (Streamlit interface) is for self-hosting on a VM or a container service.
 
 ## Security notes
 
@@ -177,12 +187,13 @@ reranker.py       cross-encoder
 pipeline.py       index build and the one-pass pipeline
 agent/            the LangGraph agent (nodes, prompts, tests)
 api/              FastAPI service
-ui/               Streamlit interface and the SQLite log
+app.py            Gradio web interface (Space entry point)
+ui/               shared chat logic, Streamlit interface, SQLite log
 eval/             exam, harness, PDF ground truth, tests
 results/          saved runs
 data/             legal PDFs
 db_v1_2/          current index (db_v1_1/ is the previous one)
-Dockerfile        image for Hugging Face Spaces
+Dockerfile        image for self-hosting (Streamlit)
 ```
 
 ## Chunk ids
