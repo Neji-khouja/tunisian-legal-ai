@@ -221,6 +221,25 @@ def agreement():
               and "cited article not in the evidence: 1 of 8 rows where the check applies; of those 1, the human marked hallucination on 1" in text, text)
         lo, hi = rae.boot_ci([1] * 8 + [0] * 2, random.Random(rae.SEED))
         check("the CI is the harness bootstrap on the row agreements (seed 20261022)", f"95% CI [{lo:.1%}, {hi:.1%}]" in text, text)
+        ai = ["row_id", "question", "answer", "ai_correct", "ai_hallucination", "ai_cannot_verify"]
+        write(tmp / "ai.csv", ai, sheet_rows)
+        ai_text = "\n".join(ag.report(tmp / "ai.csv", tmp / "key.csv", "ai"))
+        check("--rater ai: same arithmetic on the ai_* columns, labelled as not human, threshold not assessed",
+              ai_text.startswith("RATER: AI, NOT A HUMAN AUDIT") and "correct: n=10  agreement 80.0%" in ai_text
+              and "judge 1 / ai 1: 5" in ai_text and "left out as ai_cannot_verify: 1" in ai_text
+              and "threshold: not assessed" in ai_text and "MET" not in ai_text
+              and "the ai rater marked" in ai_text, ai_text)
+        (tmp / "extra.csv").write_text(",".join(f"Column{k}" for k in range(1, 7)) + "\n" + (tmp / "sheet.csv").read_text(
+            encoding="utf-8-sig"), encoding="utf-8-sig")
+        check("a sheet with Excel's extra Column1, Column2, ... row above the header gives the same report",
+              ag.report(tmp / "extra.csv", tmp / "key.csv") == lines)
+        (tmp / "nohead.csv").write_text("a,b\n1,2\n", encoding="utf-8")
+        code = None
+        try:
+            ag.report(tmp / "nohead.csv", tmp / "key.csv")
+        except SystemExit as e:
+            code = e.code
+        check("a file without a row_id column stops with a message", isinstance(code, str) and "row_id" in code, str(code))
         write(tmp / "semi.csv", sc, sheet_rows, delimiter=";")
         check("a sheet saved by Excel with ';' gives the same report", ag.report(tmp / "semi.csv", tmp / "key.csv") == lines)
         (tmp / "ansi.csv").write_bytes(";".join(sc).encode() + b"\r\n" + b"\r\n".join(
