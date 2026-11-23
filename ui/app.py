@@ -127,7 +127,7 @@ def answer(question: str, policy) -> dict:
 
 
 def main():
-    st.set_page_config(page_title=T.TITLE, page_icon="⚖️", initial_sidebar_state="collapsed")
+    st.set_page_config(page_title=T.TITLE, initial_sidebar_state="collapsed")
     ss = st.session_state
     ss.setdefault("messages", [])
     ss.setdefault("thread_id", str(uuid.uuid4()))

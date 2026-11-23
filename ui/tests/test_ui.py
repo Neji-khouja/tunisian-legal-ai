@@ -5,6 +5,7 @@ and the app run end to end in demo mode (streamlit.testing). No network, no Groq
 """
 import io
 import os
+import re
 import sys
 import logging
 import threading
@@ -19,6 +20,18 @@ import keys
 import stub
 
 RESULTS = []
+EMOJI = re.compile("[" + "".join(f"{chr(a)}-{chr(b)}" for a, b in ((0x1F000, 0x1FAFF), (0x2600, 0x27BF), (0xFE0F, 0xFE0F), (0xFF0B, 0xFF0B))) + "]")
+FAST_ANSWER = """**Réponse directe :**
+La peine pour le vol simple est de cinq ans d’emprisonnement et de cent vingt dinars d’amende.
+
+**Articles applicables :**
+- **Article 264**, Code pénal : « La peine est de cinq ans <b>x</b> »
+
+**Source(s) :**
+- *PenalFr.pdf* (Code pénal tunisien)
+
+**Explication :**
+L’article 264 prévoit la sanction des vols autres que ceux des articles 260 à 263."""
 
 
 def check(name, cond, detail=""):
@@ -244,6 +257,15 @@ def test_store():
     bad.log("s", 1, "q", state, None, 0.1, "owner")
     bad.sync()
     check("a failing upload never raises", len(bad.rows()) == 1)
+    os.environ["RAG_LOG_BACKUP_DIR"] = str(tmp / "bucket" / "logs")
+    st4 = store.Store(tmp / "c.db")
+    del os.environ["RAG_LOG_BACKUP_DIR"]
+    for i in (1, 2):
+        st4.log("b", i, f"q{i}", state, None, 0.1, "owner")
+        st4.sync()
+    files = list((tmp / "bucket" / "logs").glob("interactions-*.db"))
+    check("bucket folder: one readable copy per start, refreshed at every question, read back by load_all",
+          len(files) == 1 and st4.every == 0 and [r["question"] for r in store.load_all(tmp / "bucket" / "logs")] == ["q1", "q2"], files)
     st2 = store.Store(tmp / "interactions-x.db", upload=False)
     st2.log("s9", 1, "autre", state, None, 0.1, "owner")
     merged = store.load_all(tmp)
@@ -251,6 +273,36 @@ def test_store():
     st3 = store.Store(tmp / "interactions-y.db", upload=False)
     st3.log("s10", 1, "encore", state, None, 0.1, "owner")
     check("load_all with two files", sorted(r["question"] for r in store.load_all(tmp)) == ["autre", "encore"])
+
+
+def test_fast_layout():
+    import chat
+    src = [{"id": f"PenalFr/s02/{a}", "source": "PenalFr.pdf", "article": a, "text": f"texte {a}"}
+           for a in ("274", "263", "262", "260", "261", "264")]
+    v = R.view_fast({"text": FAST_ANSWER, "sources": src})
+    check("fast answer cut at its section labels", set(v["sections"]) == {"direct", "articles", "sources", "explanation"}
+          and v["sections"]["direct"].startswith("La peine pour le vol simple"), v["sections"])
+    md = chat.view_markdown(v)
+    check("fast answer: the answer, its explanation, the articles, then the sources; no 'Réponse directe', no file name",
+          md.index("cinq ans d’emprisonnement et") < md.index("L’article 264 prévoit") < md.index("**Articles applicables**") < md.index("src-title")
+          and "Réponse directe" not in md and "PenalFr.pdf" not in md)
+    check("fast answer: Markdown kept, HTML escaped", "**Article 264**" in md and "&lt;b&gt;" in md and "<b>x" not in md)
+    check("fast sources: the articles the answer names; the others in one closed block",
+          [x["id"].split("/")[-1] for x in v["sources"]] == ["263", "260", "264"] and [x["id"].split("/")[-1] for x in v["others"]] == ["274", "262", "261"]
+          and T.OTHER_SOURCES.format(n=3) in md, [x["id"].split("/")[-1] for x in v["sources"]])
+    v = R.view_fast({"text": "Texte libre, sans rubrique.", "sources": src[:2]})
+    check("fast answer without labels: shown whole, every article listed",
+          "Texte libre" in chat.view_markdown(v) and len(v["sources"]) == 2 and not v["others"])
+    v = R.view_fast({"text": "**الإجابة المباشرة:** العقوبة خمس سنوات حسب الفصل 264.", "sources": src})
+    md = chat.view_markdown(v)
+    check("fast answer in Arabic: right to left, Arabic word for the sources, cited article found",
+          'dir="rtl"' in md and T.WORDS["ar"]["sources"] in md and [x["id"].split("/")[-1] for x in v["sources"]] == ["264"])
+    st = {"status": "done", "question": "Quelle peine ?", "claims": [{"text": "c <i>", "cited_ids": ["A/s1/1"]}], "evidence": {}}
+    v = R.view_v2(st | {"condensed_from": "Quelle peine ? "})
+    check("'Question comprise comme' is hidden when the question was not rewritten", v["rewritten"] is None)
+    md = chat.view_markdown(R.view_v2(st | {"condensed_from": "et ça ?", "question": "Q <script>", "caveat": "x <script>", "language": "ar"}))
+    check("rewritten question, claim and remark escaped; the remark's word follows the answer's language",
+          "<script>" not in md and "<i>" not in md and T.WORDS["ar"]["note"] in md)
 
 
 def test_chat():
@@ -268,8 +320,11 @@ def test_chat():
         return [e for e in ev if e[0] == "step"], ev[-1][1]["markdown"]
     steps, md = run("Que risque-t-on en cas de vol simple ?")
     check("answer: steps streamed in French, then one Markdown answer with numbered claims and details per citation",
-          [x[1] for x in steps][:2] == [T.NODE_LABELS["condense"], T.NODE_LABELS["analyze"]] and "<bdi>1.</bdi>" in md
-          and "<details><summary>Code pénal, art. 264</summary>" in md and "<script" not in md)
+          [x[1] for x in steps][:2] == [T.NODE_LABELS["condense"], T.NODE_LABELS["analyze"]] and "Première affirmation, citée par un article. <sup>[1]</sup>" in md
+          and "<sup>[1]</sup><sup>[2]</sup>" in md and "<summary>[1] Code pénal, art. 264</summary>" in md and "<script" not in md)
+    check("answer first, then the remark, then the sources (each article once)",
+          md.index("Seconde affirmation") < md.index("Remarque") < md.index("src-title") < md.index("<summary>[1]")
+          and md.count("<summary>") == 2)
     steps, md = run("Puis-je rompre mon contrat ?", "t2")
     check("clarify: question back plus the hint", "S&#x27;agit-il" in md and T.CLARIFY_HINT in md)
     _, md = run("Quelle sera la météo demain ?", "t3")
@@ -277,7 +332,7 @@ def test_chat():
     _, md = run("ما هي عقوبة السرقة؟", "t4")
     check("Arabic claim is right to left", 'dir="rtl"' in md)
     _, md = run("Exemple de panne", "t5")
-    check("failed verification: warning shown", "⚠️" in md and T.UNVERIFIED_BANNER.strip("*")[:20] in md)
+    check("failed verification: warning shown", "Réponse non vérifiée" in md and 'class="warn"' in md)
     _, md = run("Exemple de quota", "t6")
     check("quota error: friendly message, nothing raised", T.ERRORS["quota_daily"] in md)
     _, md = run("Exemple d'erreur", "t7")
@@ -285,6 +340,8 @@ def test_chat():
     capped = keys.KeyPolicy(True, 1, lambda: True)
     list(chat.ask("vol", "c1", 1, "", be, capped, st))
     out = list(chat.ask("vol", "c1", 2, "", be, capped, st))
+    check("no emoji in the interface texts, the styles or the code of the page", not EMOJI.search("".join(
+        (UI / f).read_text(encoding="utf-8") for f in ("texts.py", "chat.py", "render.py", "style.css", "app.py", "../app.py"))))
     check("owner cap reached: friendly message", T.ERRORS["owner_cap"] in out[-1][1]["markdown"])
     out = list(chat.ask("vol", "c1", 3, "gsk_personal", be, capped, st))
     check("a personal key passes the cap", T.ERRORS["owner_cap"] not in out[-1][1]["markdown"])
@@ -295,13 +352,13 @@ def test_chat():
           and rows[-2]["error"] == "owner_cap", [(r["status"], r["error"], r["key_source"]) for r in rows])
     out = list(chat.ask("vol", "t10", 1, "", be, pol, st))[-1][1]
     check("token meter: usage line with the total, input and output tokens", out["tokens_in"] == 4200 and out["tokens_out"] == 650
-          and "4 850 tokens (entrée 4200, sortie 650)" in out["markdown"] and "mode agent" in out["markdown"], out["markdown"][-120:])
+          and "4 850 tokens (entrée 4 200, sortie 650)" in out["markdown"] and "mode agent" in out["markdown"], out["markdown"][-120:])
     out = list(chat.ask("Quelle est la peine du vol ?", "t11", 1, "", be, pol, st, "fast"))
     fast = out[-1][1]
     check("fast mode: two steps, one answer, the articles given to the model, 1080 tokens",
           [e[1] for e in out if e[0] == "step"] == [T.NODE_LABELS["retrieve"], T.NODE_LABELS["answer"]]
-          and "Réponse rapide" in fast["markdown"] and T.SOURCES_TITLE in fast["markdown"]
-          and "<details><summary>Code pénal, art. 264</summary>" in fast["markdown"] and "1 080 tokens" in fast["markdown"]
+          and "Réponse rapide" in fast["markdown"] and "Sources" in fast["markdown"]
+          and "<summary>Code pénal, art. 264</summary>" in fast["markdown"] and "1 080 tokens" in fast["markdown"]
           and "mode rapide" in fast["markdown"])
     r = st.rows()[-1]
     check("log keeps the mode, the tokens and the articles of a fast answer",
@@ -312,7 +369,7 @@ def test_chat():
         def log(self, *a, **k):
             raise RuntimeError("disk full")
     out = list(chat.ask("vol", "c9", 1, "", be, pol, Broken()))
-    check("a failing log never hides the answer", out[-1][0] == "done" and "<bdi>1.</bdi>" in out[-1][1]["markdown"])
+    check("a failing log never hides the answer", out[-1][0] == "done" and "Première affirmation" in out[-1][1]["markdown"])
 
 
 def test_policy_in_app():
@@ -336,7 +393,7 @@ def test_policy_in_app():
 
 
 if __name__ == "__main__":
-    for t in (test_views, test_errors, test_policy, test_session_key, test_store, test_chat, test_app_demo, test_policy_in_app):
+    for t in (test_views, test_errors, test_policy, test_session_key, test_store, test_fast_layout, test_chat, test_app_demo, test_policy_in_app):
         t()
     print(f"\n{sum(RESULTS)}/{len(RESULTS)} checks passed")
     sys.exit(0 if all(RESULTS) else 1)

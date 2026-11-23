@@ -1,7 +1,7 @@
 """French interface texts (and the disclaimer in Arabic and English). No logic here."""
 
 TITLE = "Codes tunisiens"
-SUBTITLE = "Posez une question de droit en français, arabe ou anglais. Chaque affirmation cite l'article dont elle vient."
+SUBTITLE = "Posez une question de droit en français, arabe ou anglais. Les articles utilisés sont affichés sous la réponse."
 
 DISCLAIMER_FR = ("**Information juridique, pas un conseil juridique.** Les réponses proviennent des textes codifiés indexés et "
                  "peuvent être incomplètes ou erronées. Vérifiez toujours l'article cité, et consultez un professionnel du "
@@ -89,59 +89,63 @@ KEY_PERSONAL_ACTIVE = "Votre clé est utilisée."
 KEY_OWNER_REMAINING = "Questions restantes aujourd'hui : {n}."
 KEY_NONE = "Aucune clé disponible : indiquez votre clé Groq pour poser une question."
 
-NODE_LABELS["retrieve"] = "Recherche des articles"
-MODE_CHOICES = [("Agent (vérifie chaque affirmation)", "agent"), ("Rapide (une seule passe)", "fast")]
+MODE_CHOICES = [("Agent", "agent"), ("Rapide", "fast")]
 MODE_NAMES = {"agent": "agent", "fast": "rapide"}
 MODE_HELP = {
-    "agent": ("**Agent** : comprend la conversation, demande une précision si la question est vague, refuse ce qui sort des "
-              "codes, cherche, juge les articles trouvés, rédige puis **vérifie chaque affirmation** contre l'article cité. "
-              "Plus lent et plus de tokens."),
-    "fast": ("**Rapide** : reformule la question, cherche et classe les articles, puis le modèle répond **une seule fois**. "
-             "Peu de tokens, mais sans mémoire de la conversation et sans vérification : lisez bien les articles cités."),
+    "agent": ("Plusieurs étapes : comprend la conversation, demande une précision si besoin, refuse ce qui sort des codes "
+              "et vérifie chaque affirmation contre son article. Plus lent."),
+    "fast": ("Une seule recherche et une seule réponse. Rapide et économe, mais sans mémoire de la conversation et sans "
+             "vérification."),
 }
-SOURCES_TITLE = "Articles fournis au modèle"
+WORDS = {"fr": {"sources": "Sources", "note": "Remarque", "articles": "Articles applicables"},
+         "en": {"sources": "Sources", "note": "Note", "articles": "Applicable articles"},
+         "ar": {"sources": "المصادر", "note": "ملاحظة", "articles": "الفصول المنطبقة"}}
+OTHER_SOURCES = "Autres articles consultés ({n})"
+BRAND_SUB = "Assistant juridique"
+MODE_LABEL = "Mode"
 HISTORY_LABEL = "Conversations"
-NEW_CHAT = "＋ Nouvelle conversation"
-DELETE_CHAT = "Supprimer cette conversation"
+HISTORY_EMPTY = "Aucune conversation pour l'instant."
+NEW_CHAT = "Nouvelle conversation"
+DELETE_CHAT = "Supprimer la conversation"
+SEND = "Envoyer"
 TOKENS_LINE = "{total} tokens (entrée {tin}, sortie {tout}) · {sec} s · mode {mode}"
-TOKENS_METER = "**Tokens** · cette conversation : {conv} · cet appareil : {device}"
+TOKENS_TITLE = "Tokens utilisés"
+TOKENS_CONV = "Cette conversation"
+TOKENS_DEVICE = "Toutes les conversations"
 TAB_CHAT = "Discussion"
 TAB_HOW = "Comment ça marche"
-ABOUT_INTRO = (
-    "## Comment ça marche\n\n"
-    "Cet assistant répond à des questions sur 14 textes juridiques tunisiens (code pénal, code du travail, code des "
-    "obligations et des contrats, statut personnel, commerce, sociétés, procédure civile et pénale, etc.). Il ne répond "
-    "qu'à partir de ces textes : chaque affirmation cite l'article dont elle vient, et vous pouvez lire cet article en "
-    "dépliant la citation.")
+ABOUT_INTRO = """## Comment ça marche
+
+Cet assistant répond à des questions sur 14 textes juridiques tunisiens : Constitution, code pénal, code du travail, code des obligations et des contrats, statut personnel, commerce, sociétés, procédure civile et pénale, etc. Il répond à partir de ces textes et affiche sous chaque réponse les articles utilisés ; dépliez un article pour lire son texte.
+
+Aucun des deux modes n'est infaillible : l'article qui répond à la question peut ne pas être trouvé. Lisez toujours l'article cité."""
 ABOUT_MODES = """### Les deux modes
 
 | | **Agent** | **Rapide** |
 |---|---|---|
-| Principe | plusieurs étapes enchaînées, chacune pouvant corriger la précédente | une seule passe : chercher puis répondre |
+| Principe | plusieurs étapes enchaînées | une recherche, puis une réponse |
+| Recherche | question reformulée en vocabulaire juridique, priorité au code concerné, articles liés ajoutés, nouvelles recherches si besoin | question telle quelle (traduite depuis l'arabe ou l'anglais) |
 | Question vague | demande une précision | répond quand même |
-| Hors des codes | refuse poliment | essaie de répondre |
-| Conversation | se souvient des messages précédents | chaque question est seule |
-| Vérification | chaque affirmation est contrôlée contre son article ; ce qui n'est pas confirmé est retiré | aucune |
-| Coût | plusieurs appels au modèle : plus de tokens, plus lent | un ou deux appels : peu de tokens |
-
-Les deux modes utilisent la **même recherche** (ci-dessous) ; seule la suite change."""
+| Hors des codes | refuse | essaie de répondre |
+| Mémoire | tient compte des messages précédents | chaque question est traitée seule |
+| Vérification | chaque affirmation est contrôlée contre son article | aucune |
+| Coût | plusieurs appels au modèle | un ou deux appels |"""
 ABOUT_RETRIEVAL = """### La recherche d'articles
 
-1. La question est réécrite en français juridique, pour retrouver le texte même si vous écrivez en arabe, en anglais ou avec des fautes.
-2. Deux recherches en parallèle : par le sens (sémantique) et par mots-clés (BM25). Si vous citez « article 243 », cet article est lu directement.
-3. Les résultats sont fusionnés puis classés par un second modèle ; les 6 meilleurs articles sont gardés.
-4. Les articles auxquels ils renvoient sont ajoutés."""
+1. Deux recherches en parallèle : par le sens (vecteurs) et par mots-clés (BM25). Si vous citez « article 243 », cet article est ajouté directement.
+2. Les résultats sont fusionnés, puis un second modèle les classe ; les 6 premiers articles sont gardés.
+3. En mode Agent seulement : la question est d'abord reformulée en vocabulaire juridique, le code concerné est privilégié, et les articles auxquels les résultats renvoient sont ajoutés."""
 ABOUT_AGENT = """### Le parcours de l'agent
 
 - **condense** : réécrit une question de suivi pour qu'elle se comprenne seule.
 - **analyze** : détecte la langue, l'intention (répondre, préciser, refuser) et les codes concernés.
 - **retrieve** : la recherche ci-dessus.
-- **grade / reformulate** : vérifie que les articles suffisent, sinon reformule la recherche (deux fois au plus).
+- **grade / reformulate** : juge si les articles suffisent, sinon reformule la recherche (deux fois au plus).
 - **answer** : écrit des affirmations courtes, chacune avec les articles qui la fondent.
 - **verify / repair** : contrôle chaque affirmation contre son article ; corrige ou retire ce qui n'est pas confirmé."""
 ABOUT_TOKENS = """### Tokens
 
-Un token est un morceau de mot que le modèle lit ou écrit. Le compteur additionne tous les appels au modèle faits pour une question : l'entrée est ce que le modèle lit (la question et les articles), la sortie ce qu'il écrit. Le fournisseur impose une limite quotidienne ; le mode Rapide en consomme beaucoup moins."""
+Un token est un morceau de mot que le modèle lit ou écrit. Le compteur additionne tous les appels au modèle faits pour une question : l'entrée est ce que le modèle lit (la question et les articles), la sortie ce qu'il écrit."""
 ABOUT_DATA = """### Vos données
 
-Les questions et les réponses sont enregistrées pour évaluer le système. Les conversations affichées à gauche ne sont gardées que dans votre navigateur."""
+Les questions et les réponses sont enregistrées sur le serveur pour évaluer le système. La liste des conversations, elle, est gardée dans votre navigateur ; la supprimer n'efface pas cet enregistrement."""

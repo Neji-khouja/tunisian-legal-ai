@@ -1,12 +1,18 @@
 """SQLite log of every question and answer, for later evaluation. Never stores an API key.
 
 Local file: logs/interactions.db (RAG_LOG_DB overrides). On a host with a disk that is wiped at restart (Hugging Face
-free Spaces), set HF_LOG_REPO (a private dataset repo, "user/name") and HF_TOKEN: a copy of the database is uploaded
-under a name unique to this start, at most every few minutes, so a restart never overwrites older logs.
+free Spaces), set one of:
+- RAG_LOG_BACKUP_DIR: a mounted persistent folder (a Storage Bucket, e.g. /data/logs). After every question the whole
+  database is copied there as one file. The live database stays on the local disk: the bucket mount only takes whole
+  sequential writes, which SQLite's in-place writes are not.
+- HF_LOG_REPO (a private dataset repo, "user/name") and HF_TOKEN: the copy is uploaded, at most every few minutes.
+The copy's name is unique to this start, so a restart never overwrites older logs.
 """
 import os
 import json
 import uuid
+import shutil
+import logging
 import sqlite3
 import tempfile
 import threading
@@ -16,6 +22,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 BOOT = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S") + "-" + uuid.uuid4().hex[:6]
+LOG = logging.getLogger("rag_ui")
 SYNC_EVERY = 300          # seconds between uploads
 
 SCHEMA = """CREATE TABLE IF NOT EXISTS interactions (
@@ -32,7 +39,10 @@ class Store:
         self.path = Path(path or os.environ.get("RAG_LOG_DB") or ROOT / "logs" / "interactions.db")
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self._lock, self._clock, self._last_sync = threading.Lock(), clock, 0.0
-        self.upload = upload if upload is not None else hf_uploader()
+        self._sync_lock = threading.Lock()
+        folder = os.environ.get("RAG_LOG_BACKUP_DIR") if upload is None else None
+        self.every = 0 if folder else SYNC_EVERY
+        self.upload = upload if upload is not None else (folder_copier(folder) if folder else hf_uploader())
         with self._connect() as con:
             con.execute(SCHEMA)
             have = {r[1] for r in con.execute("PRAGMA table_info(interactions)")}
@@ -65,7 +75,7 @@ class Store:
             return [dict(r) for r in con.execute("SELECT * FROM interactions ORDER BY id")]
 
     def _maybe_sync(self):
-        if not self.upload or self._clock() - self._last_sync < SYNC_EVERY:
+        if not self.upload or self._clock() - self._last_sync < self.every:
             return
         self._last_sync = self._clock()
         threading.Thread(target=self.sync, daemon=True).start()
@@ -73,15 +83,23 @@ class Store:
     def sync(self):
         """Upload a consistent copy of the database. Never raises: a failed backup must not break a question."""
         try:
-            with tempfile.TemporaryDirectory() as tmp:
+            with self._sync_lock, tempfile.TemporaryDirectory() as tmp:
                 copy = Path(tmp) / f"interactions-{BOOT}.db"
                 src, dst = self._connect(), sqlite3.connect(copy)
                 src.backup(dst)
                 src.close()
                 dst.close()
                 self.upload(copy)
-        except Exception:
-            pass
+        except Exception as e:
+            LOG.error("log backup failed: %s", type(e).__name__)
+
+
+def folder_copier(folder):
+    """A function that copies one file into a mounted folder (created if needed)."""
+    def copy(path: Path):
+        Path(folder).mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(path, Path(folder) / path.name)
+    return copy
 
 
 def hf_uploader():

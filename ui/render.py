@@ -31,6 +31,41 @@ def to_html(text: str, number: int | None = None) -> str:
     return f'<div dir="{"rtl" if rtl else "ltr"}" style="text-align:{"right" if rtl else "left"}">{body}</div>'
 
 
+def md_block(text: str) -> str:
+    """Model text that is Markdown (the fast mode): HTML escaped, Markdown kept, right direction."""
+    rtl = is_rtl(text)
+    body = html.escape(text or "", quote=False)
+    return f'<div dir="{"rtl" if rtl else "ltr"}" style="text-align:{"right" if rtl else "left"}">\n\n{body}\n\n</div>'
+
+
+# section labels required by pipeline._SYSTEM_PROMPT, in the three languages (the model may keep one or all of them)
+SECTIONS = {"direct": r"direct answer|réponse directe|الإجابة المباشرة", "articles": r"applicable articles|articles applicables|الفصول المنطبقة",
+            "sources": r"sources?\s*\(s\)|sources?|المصادر|المصدر", "explanation": r"explanation|explication|شرح|الشرح"}
+_HEAD = re.compile(r"^\s*(?:#+\s*)?\**\s*((?:%s)(?:\s*/\s*(?:%s))*)\s*:?\s*\**\s*:?\s*(.*)$"
+                   % (("|".join(SECTIONS.values()),) * 2), re.I)
+
+
+def split_sections(text: str) -> dict:
+    """The fast mode's text cut at its section labels: {"direct", "articles", "sources", "explanation", "intro"}."""
+    out, current = {"intro": []}, "intro"
+    for line in (text or "").splitlines():
+        m = _HEAD.match(line)
+        if m and (":" in line or line.strip().startswith(("*", "#"))):
+            current = next(k for k, pat in SECTIONS.items() if re.match(rf"(?:{pat})", m.group(1), re.I))
+            out.setdefault(current, [])
+            line = m.group(2)
+        out[current].append(line)
+    return {k: "\n".join(v).strip() for k, v in out.items() if "\n".join(v).strip()}
+
+
+_MENTION = re.compile(r"(?:\barticles?|\bart\.?|الفصول|الفصل|المواد|المادة)[\s*]*((?:\d+(?:-\w+)?[\s*]*(?:,|;|et|à|and|to|و|إلى)?[\s*]*)+)", re.I)
+
+
+def mentioned(text: str) -> set:
+    """Article labels written after an article marker in a text ("articles 260, 261 et 264" -> 260, 261, 264)."""
+    return {n for m in _MENTION.finditer(text or "") for n in re.findall(r"\d+(?:-\w+)?", m.group(1))}
+
+
 def code_name(source) -> str:
     stem = Path(str(source or "")).stem
     return T.CODE_NAMES.get(stem, stem or "?")
@@ -66,10 +101,11 @@ def view_v2(state: dict) -> dict:
     degraded = list(state.get("degraded") or [])
     claims = state.get("claims") or []
     view = {"mode": "v2", "unverified": any(str(d).startswith("verify_failed") for d in degraded),
-            "notes": _degraded_notes(degraded), "rewritten": None, "dropped": 0, "caveat": None, "claims": [],
+            "notes": _degraded_notes(degraded), "language": state.get("language") or "fr", "rewritten": None, "dropped": 0, "caveat": None, "claims": [],
             "text": state.get("text") or ""}
-    if state.get("condensed_from") and state.get("question"):
-        view["rewritten"] = state["question"]
+    raw, asked = (state.get("condensed_from") or "").strip(), (state.get("question") or "").strip()
+    if raw and asked and raw != asked:               # the agent sets condensed_from on every later turn
+        view["rewritten"] = asked
     if status == "clarify":
         return view | {"kind": "clarify", "unverified": False}
     if status == "refuse":
@@ -90,8 +126,12 @@ def view_fast(state: dict) -> dict:
         text = src.get("text") or ""
         sources.append({"id": src["id"], "label": citation_label(src["id"], {src["id"]: src}),
                         "text": text or T.CITATION_UNAVAILABLE, "available": bool(text), "rtl": is_rtl(text)})
-    return {"mode": "fast", "kind": "fast", "text": state.get("text") or "", "sources": sources, "unverified": False,
-            "notes": [], "rewritten": None, "dropped": 0, "caveat": None, "claims": []}
+    text = state.get("text") or ""
+    named = mentioned(text)
+    used = [x for x in sources if x["id"].split("/")[-1] in named] or sources      # names none: show all
+    return {"mode": "fast", "kind": "fast", "text": text, "sections": split_sections(text), "sources": used,
+            "others": [x for x in sources if x not in used], "unverified": False,
+            "language": "ar" if is_rtl(text) else "fr", "notes": [], "rewritten": None, "dropped": 0, "caveat": None, "claims": []}
 
 
 def view_error(kind: str) -> dict:

@@ -12,41 +12,69 @@ import render as R
 LOG = logging.getLogger("rag_ui")
 
 
+def _esc(text: str) -> str:
+    return html.escape(text or "", quote=False)
+
+
+def _source(label: str, text: str) -> str:
+    return f'<details class="src"><summary>{html.escape(label)}</summary>\n\n{R.to_html(text)}\n\n</details>'
+
+
 def view_markdown(view: dict) -> str:
-    """A view (render.view_v2 / view_error) as Markdown with a little HTML (details for the cited articles)."""
+    """A view (render.view_v2 / view_fast / view_error) as Markdown with a little HTML: notices, the answer, then its
+    sources. Everything written by the user or the model is escaped."""
     if view["kind"] == "error":
         return f"**{view['text']}**"
+    word = T.WORDS.get(view.get("language"), T.WORDS["fr"])
     out = []
     if view.get("rewritten"):
-        out.append(f"*{T.REWRITTEN.format(text=view['rewritten'])}*")
+        out.append(f'<div class="note">{_esc(T.REWRITTEN.format(text=view["rewritten"]))}</div>')
     if view.get("unverified"):
-        out.append(f"⚠️ **{T.UNVERIFIED_BANNER.strip('*')}**")
-    out += [f"*{n}*" for n in view.get("notes") or []]
+        out.append(f'<div class="warn">{_esc(T.UNVERIFIED_BANNER.replace("*", ""))}</div>')
+    out += [f'<div class="note">{_esc(n)}</div>' for n in view.get("notes") or []]
+    sources = []
     if view["kind"] == "fast":
-        out.append(R.to_html(view["text"]))
-        if view["sources"]:
-            out.append(f"**{T.SOURCES_TITLE}**")
-            out += [f"<details><summary>{html.escape(c['label'])}</summary>\n\n{R.to_html(c['text'])}\n\n</details>"
-                    for c in view["sources"]]
+        sec = view["sections"]
+        parts = [sec.get("intro"), sec.get("direct"), sec.get("explanation")]
+        if sec.get("articles"):
+            parts.append(f"**{word['articles']}**\n\n{sec['articles']}")
+        body = "\n\n".join(p for p in parts if p)
+        out.append(R.md_block(body or view["text"]))
+        sources = [_source(c["label"], c["text"]) for c in view["sources"]]
+        if view["others"]:
+            rest = "\n".join(_source(c["label"], c["text"]) for c in view["others"])
+            sources.append(f'<details class="src"><summary>{_esc(T.OTHER_SOURCES.format(n=len(view["others"])))}</summary>\n\n{rest}\n\n</details>')
     elif view["kind"] == "answer":
-        for i, claim in enumerate(view["claims"], 1):
-            block = [R.to_html(claim["text"], number=i)]
+        order = {}                                   # citation id -> number, in order of first use
+        for claim in view["claims"]:
             for c in claim["citations"]:
-                block.append(f"<details><summary>{html.escape(c['label'])}</summary>\n\n{R.to_html(c['text'])}\n\n</details>")
-            out.append("\n".join(block))
+                order.setdefault(c["id"], (len(order) + 1, c))
+        for claim in view["claims"]:
+            refs = "".join(f"<sup>[{order[c['id']][0]}]</sup>" for c in claim["citations"])
+            rtl = R.is_rtl(claim["text"])
+            out.append(f'<div class="claim" dir="{"rtl" if rtl else "ltr"}" style="text-align:{"right" if rtl else "left"}">'
+                       f'{_esc(claim["text"])} {refs}</div>')
+        sources = [_source(f"[{n}] {c['label']}", c["text"]) for n, c in order.values()]
     else:
         out.append(R.to_html(view["text"]))
         if view["kind"] == "clarify":
-            out.append(f"*{T.CLARIFY_HINT}*")
-    if view.get("dropped"):
-        out.append(f"*{T.DROPPED.format(n=view['dropped'])}*")
+            out.append(f'<div class="note">{_esc(T.CLARIFY_HINT)}</div>')
     if view.get("caveat"):
-        out.append(f"> {T.CAVEAT.format(text=view['caveat'])}")
+        rtl = R.is_rtl(view["caveat"])
+        out.append(f'<div class="note" dir="{"rtl" if rtl else "ltr"}">{word["note"]} : {_esc(view["caveat"])}</div>')
+    if view.get("dropped"):
+        out.append(f'<div class="note">{_esc(T.DROPPED.format(n=view["dropped"]))}</div>')
+    if sources:
+        out.append(f'<div class="src-title">{word["sources"]}</div>')
+        out += sources
     return "\n\n".join(out)
 
 
 def usage_line(tokens_in: int, tokens_out: int, seconds: float, mode: str) -> str:
-    return f"<sub>{T.TOKENS_LINE.format(total=f'{tokens_in + tokens_out:,}'.replace(',', ' '), tin=tokens_in, tout=tokens_out, sec=round(seconds), mode=T.MODE_NAMES.get(mode, mode))}</sub>"
+    f = lambda n: f"{n:,}".replace(",", " ")
+    text = T.TOKENS_LINE.format(total=f(tokens_in + tokens_out), tin=f(tokens_in), tout=f(tokens_out), sec=round(seconds),
+                                mode=T.MODE_NAMES.get(mode, mode))
+    return f'<div class="usage">{text}</div>'
 
 
 def ask(question: str, thread_id: str, turn: int, personal_key: str, backend, policy, store, mode: str = "agent"):
@@ -66,11 +94,13 @@ def ask(question: str, thread_id: str, turn: int, personal_key: str, backend, po
         def work():
             try:
                 with keys.session_key(key), get_usage_metadata_callback() as cb:
-                    run = backend.stream_fast if mode == "fast" else backend.stream_v2
-                    for kind, value in run(question, thread_id):
-                        events.put((kind, value))
-                    for u in cb.usage_metadata.values():
-                        events.put(("usage", (u.get("input_tokens", 0), u.get("output_tokens", 0))))
+                    try:
+                        run = backend.stream_fast if mode == "fast" else backend.stream_v2
+                        for kind, value in run(question, thread_id):
+                            events.put((kind, value))
+                    finally:                        # calls made before a failure were paid for too
+                        for u in cb.usage_metadata.values():
+                            events.put(("usage", (u.get("input_tokens", 0), u.get("output_tokens", 0))))
             except Exception as e:                  # technical detail to the console only
                 LOG.error("question failed: %s", R.technical_detail(e))
                 events.put(("error", R.classify_error(e)))

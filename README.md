@@ -1,6 +1,5 @@
 ---
 title: Tunisian Legal RAG
-emoji: ⚖️
 colorFrom: blue
 colorTo: gray
 sdk: gradio
@@ -83,7 +82,8 @@ python -c "import pipeline; pipeline.build_vectorstore()"
 
 ```bash
 python app.py                      # Gradio web chat on http://127.0.0.1:7860 (RAG_UI_DEMO=1: canned answers, no models)
-uiun.cmd                         # the older Streamlit chat (Windows)
+ui
+un.cmd                         # the older Streamlit chat (Windows)
 uvicorn api.api:app --port 8000    # HTTP API
 ```
 
@@ -96,14 +96,14 @@ Questions are limited to 1000 characters. The API response has `answer` and `sou
 `HF_HUB_OFFLINE=1` once the models are cached.
 
 The Gradio page has a sidebar with the visitor's past conversations (kept in their browser), a choice between two modes
-(**Agent**: the full graph above, with verification; **Rapide**: the one-pass pipeline, no memory and no verification, far
-fewer tokens), a token meter (input and output tokens of every question, summed over all model calls), and a "Comment ça
+(**Agent**: the full graph above, with verification; **Rapide**: the one-pass pipeline on the question as written, no memory
+and no verification, far fewer tokens), a token meter (input and output tokens of every question, summed over all model calls), and a "Comment ça
 marche" tab with the agent diagram.
 
 Every question and answer the web interface handles is written to a SQLite file, `logs/interactions.db` (`RAG_LOG_DB`
 changes the path): time, session id, question, status, answer, claims, cited article ids, whether verification failed,
-mode, input and output tokens, seconds, and whether the owner's or the visitor's key was used. API keys are never stored. The interface tells visitors
-that questions are recorded.
+mode, input and output tokens, seconds, and whether the owner's or the visitor's key was used. API keys are never stored.
+The interface tells visitors that questions are recorded.
 
 ## Deploy on a Hugging Face Space (Gradio)
 
@@ -120,9 +120,14 @@ The YAML block at the top of this file configures the Space (`sdk: gradio`, entr
 3. In the Space settings, add these secrets:
    - `GROQ_API_KEY`: your key (shared by all visitors; `UI_OWNER_DAILY_CAP` limits the questions per day on it, 30 by
      default, `0` removes the limit; visitors can paste their own key in the page).
-   - `HF_LOG_REPO` and `HF_TOKEN`: optional, a private dataset repo (`user/rag-logs`) and a write token. A Space loses its
-     disk at each restart, so the log database is copied to that repo under a name unique to each start, at most every
-     5 minutes. `ui/store.py: load_all(folder)` merges the downloaded copies.
+   - Keeping the log (a Space loses its disk at each restart), one of:
+     - `RAG_LOG_BACKUP_DIR`: a folder of a private Storage Bucket mounted read-write in the Space, for example
+       `/data/logs` (no token needed). The database is copied there after every question, as one file per start. Do not
+       point `RAG_LOG_DB` at the bucket: the mount takes whole-file writes, not SQLite's in-place ones.
+     - `HF_LOG_REPO` and `HF_TOKEN`: a private dataset repo (`user/rag-logs`) and a write token; copied at most every
+       5 minutes.
+
+     `ui/store.py: load_all(folder)` merges the downloaded copies.
 4. The Space installs `requirements.txt` and starts; the first question waits for the models to load (a minute or two).
 
 The `Dockerfile` (Streamlit interface) is for self-hosting on a VM or a container service.
@@ -131,7 +136,7 @@ The `Dockerfile` (Streamlit interface) is for self-hosting on a VM or a containe
 
 - Secrets live only in the `.env` file (git-ignored, excluded from the Docker image) or in the Space's secrets. A scan of
   the working tree and all 163 commits found no API key or token.
-- The interface escapes all user and model text before showing it, caps questions at 1000 characters, and never stores
+- The interface escapes the HTML in user and model text before showing it, caps questions at 1000 characters, and never stores
   or logs an API key. The container runs as a non-root user.
 - The owner's Groq key is capped per day (`UI_OWNER_DAILY_CAP`), and visitors can use their own key instead.
 - The log database holds visitors' questions: keep the log dataset private, and don't enter personal data (the page says so).
@@ -193,7 +198,7 @@ pipeline.py       index build and the one-pass pipeline
 agent/            the LangGraph agent (nodes, prompts, tests)
 api/              FastAPI service
 app.py            Gradio web interface (Space entry point)
-ui/               shared chat logic, Streamlit interface, SQLite log
+ui/               shared chat logic, page style, Streamlit interface, SQLite log
 eval/             exam, harness, PDF ground truth, tests
 results/          saved runs
 data/             legal PDFs

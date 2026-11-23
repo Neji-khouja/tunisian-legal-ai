@@ -10,6 +10,18 @@ EVIDENCE = {"PenalFr/s02/264": {"source": "PenalFr.pdf", "article": "264", "law_
             "PenalFr/s02/264-bis": {"source": "PenalFr.pdf", "article": "264", "law_type": "penal", "text": PLACEHOLDER_ARTICLE_2},
             "travailFr/s01/14": {"source": "travailFr.pdf", "article": "14", "law_type": "travail", "text": PLACEHOLDER_ARTICLE}}
 
+FAST_TEXT = """**Réponse directe :**
+[Exemple] Réponse rapide en un seul passage, sans vérification.
+
+**Articles applicables :**
+- **Article 264**, Code pénal : texte fictif.
+
+**Source(s) :**
+- *PenalFr.pdf*
+
+**Explication :**
+[Exemple] L'article 264 est cité ici pour montrer la mise en page."""
+
 ANSWER_STEPS = ["condense", "analyze", "retrieve", "grade", "answer", "verify", "repair", "verify", "finalize"]
 
 
@@ -87,7 +99,7 @@ class DemoBackend:
         yield "step", "answer"
         yield "usage", (900, 180)
         yield "final", {"status": "done", "mode": "fast", "degraded": [],
-                        "text": "[Exemple] Réponse rapide en un seul passage, sans vérification.",
+                        "text": FAST_TEXT,
                         "sources": [{"id": i, "source": e["source"], "article": e["article"], "text": e["text"]}
                                     for i, e in list(EVIDENCE.items())[:2]]}
 
