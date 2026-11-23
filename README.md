@@ -1,3 +1,12 @@
+---
+title: Tunisian Legal RAG
+emoji: ⚖️
+colorFrom: blue
+colorTo: gray
+sdk: docker
+app_port: 7860
+---
+
 # Tunisian Legal RAG
 
 Question answering over Tunisian legal codes (penal, civil procedure, labour, obligations and contracts, personal status,
@@ -37,7 +46,7 @@ and very long articles are split into sub-chunks. The index is `db_v1_2/`. `conf
 `INDEX_V12 = False` goes back to `db_v1_1/`.
 
 There is also a simpler one-pass pipeline (`pipeline.ask_question`: rewrite, retrieve, rerank, answer) used as the
-"fast" mode in the UI and as the baseline in evaluation.
+baseline in evaluation.
 
 | Part | Choice |
 |---|---|
@@ -46,14 +55,14 @@ There is also a simpler one-pass pipeline (`pipeline.ask_question`: rewrite, ret
 | Vector store | ChromaDB (local files) + BM25 |
 | LLM | `openai/gpt-oss-120b` through Groq (`LLM_MODEL` in `config.py`) |
 | PDF parsing | PyMuPDF |
-| Interfaces | Streamlit (`ui/`, `app.py`), FastAPI (`api/`) |
+| Interfaces | Streamlit (`ui/`), FastAPI (`api/`) |
 
 ## Setup
 
 ```bash
 conda create -n rag-app python=3.11
 conda activate rag-app
-pip install -r requirements.lock.txt
+pip install -r requirements.txt        # requirements.lock.txt is the full lock of the dev machine
 ```
 
 Put your Groq key in a `.env` file at the root (never commit it):
@@ -71,7 +80,8 @@ python -c "import pipeline; pipeline.build_vectorstore()"
 ## Run
 
 ```bash
-ui\run.cmd                         # Streamlit chat (Windows), verified agent or fast mode
+ui
+un.cmd                         # Streamlit chat (Windows); RAG_UI_DEMO=1 for canned answers without models
 uvicorn api.api:app --port 8000    # HTTP API
 ```
 
@@ -79,7 +89,27 @@ uvicorn api.api:app --port 8000    # HTTP API
 curl -X POST localhost:8000/ask -H "Content-Type: application/json" -d "{\"question\": \"Quelle est la peine pour le vol ?\"}"
 ```
 
-The response has `answer` and `sources` (id, source, article). Set `HF_HUB_OFFLINE=1` once the models are cached.
+The API response has `answer` and `sources` (id, source, article). Set `HF_HUB_OFFLINE=1` once the models are cached.
+
+Every question and answer the web interface handles is written to a SQLite file, `logs/interactions.db` (`RAG_LOG_DB`
+changes the path): time, session id, question, status, answer, claims, cited article ids, whether verification failed,
+seconds, and whether the owner's or the visitor's key was used. API keys are never stored. The interface tells visitors
+that questions are recorded.
+
+## Deploy on Hugging Face Spaces (free)
+
+1. Create a Space with SDK **Docker** (CPU basic). The YAML block at the top of this file is its configuration.
+2. Push this repository to the Space (`git remote add space https://huggingface.co/spaces/<user>/<name>`,
+   `git push space <branch>:main`). The index `db_v1_2/` is stored with git LFS (`.gitattributes`), which Spaces require
+   for files over 10 MB: run `git lfs install` once.
+3. In the Space settings, add these secrets:
+   - `GROQ_API_KEY`: your key (shared by all visitors, so also set `UI_OWNER_DAILY_CAP`, for example `30`, the number of
+     questions per day on your key; visitors can paste their own key in the sidebar).
+   - `HF_LOG_REPO` and `HF_TOKEN`: optional, a private dataset repo (`user/rag-logs`) and a write token. Free Spaces lose
+     their disk at each restart, so the log database is copied to that repo under a name unique to each start, at most
+     every 5 minutes. `ui/store.py: load_all(folder)` merges the downloaded copies.
+4. The Space builds the image (about 15 minutes the first time: it downloads the two models) and then serves
+   `https://<user>-<name>.hf.space`. A free Space sleeps after a couple of idle days and wakes on the next visit.
 
 ## Evaluation
 
@@ -135,11 +165,12 @@ reranker.py       cross-encoder
 pipeline.py       index build and the one-pass pipeline
 agent/            the LangGraph agent (nodes, prompts, tests)
 api/              FastAPI service
-ui/, app.py       Streamlit interfaces
+ui/               Streamlit interface and the SQLite log
 eval/             exam, harness, PDF ground truth, tests
 results/          saved runs
 data/             legal PDFs
 db_v1_2/          current index (db_v1_1/ is the previous one)
+Dockerfile        image for Hugging Face Spaces
 ```
 
 ## Chunk ids

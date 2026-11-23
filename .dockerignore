@@ -1,0 +1,13 @@
+.git
+.claude
+.vscode
+.env
+__pycache__
+*.pyc
+db
+db_v1_1
+results
+logs
+eval/cache
+eval/pdf_articles.json
+*.drawio

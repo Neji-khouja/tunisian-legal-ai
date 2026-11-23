@@ -4,15 +4,6 @@ example (labelled as such); the article texts are placeholders, not the law.
 import os
 import time
 
-DEMO_EXAMPLES = {
-    "Réponse vérifiée": "Que risque-t-on en cas de vol simple ?",
-    "Clarification": "Puis-je rompre mon contrat ?",
-    "Hors champ": "Quelle sera la météo demain ?",
-    "Vérification échouée": "Exemple de panne de vérification",
-    "Arabe": "ما هي عقوبة السرقة؟",
-    "Limite de quota": "Exemple de quota atteint",
-}
-
 PLACEHOLDER_ARTICLE = "[Exemple de démonstration] Texte fictif d'article : il remplace le texte réel du code dans ce mode."
 PLACEHOLDER_ARTICLE_2 = "[Exemple de démonstration] Second texte fictif, pour montrer plusieurs citations."
 EVIDENCE = {"PenalFr/s02/264": {"source": "PenalFr.pdf", "article": "264", "law_type": "penal", "text": PLACEHOLDER_ARTICLE},
@@ -87,16 +78,6 @@ class DemoBackend:
             yield "step", node
         (self.pending.add if case == "clarify" else self.pending.discard)(thread_id)
         yield "final", final_state(case, question)
-
-    def run_v11(self, question: str):
-        time.sleep(self.delay)
-        case = case_for(question, False)
-        if case == "quota":
-            raise DemoRateLimit("Error code: 429 - tokens per day (TPD) limit reached. Please try again in 1h2m.")
-        docs = [{"id": cid, **e} for cid, e in list(EVIDENCE.items())[:2]]
-        if case == "arabic":
-            return "[مثال] إجابة تجريبية في الوضع السريع، للعرض فقط.", docs
-        return ("[Exemple] Réponse de démonstration du mode rapide, en un paragraphe, qui cite **PenalFr art. 264**.", docs)
 
     def forget(self, thread_id: str):
         self.pending.discard(thread_id)

@@ -83,13 +83,6 @@ def view_v2(state: dict) -> dict:
     return view | {"kind": "answer"}
 
 
-def view_v11(answer: str, docs: list[dict]) -> dict:
-    """Pipeline result (answer text, retrieved docs as dicts: id, source, text) -> view, without verification fields."""
-    evidence = {d["id"]: d for d in docs if d.get("id")}
-    return {"mode": "v1.1", "kind": "fast", "text": answer or "", "rtl": is_rtl(answer or ""),
-            "sources": [citation(d["id"], evidence) for d in docs if d.get("id")], "note": T.FAST_NOTE}
-
-
 def view_error(kind: str) -> dict:
     return {"mode": None, "kind": "error", "error": kind, "text": T.ERRORS.get(kind, T.ERRORS["other"])}
 

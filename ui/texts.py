@@ -1,16 +1,7 @@
 """French interface texts (and the disclaimer in Arabic and English). No logic here."""
 
-TITLE = "Recherche juridique dans les codes tunisiens"
-
-MODE_VERIFIED = "Vérifié"
-MODE_FAST = "Rapide"
-MODE_HELP = {
-    MODE_VERIFIED: ("**Vérifié (v2)** : l'agent analyse la question, peut demander une précision ou refuser une question hors "
-                    "champ, cherche les articles, rédige une réponse en affirmations citées, puis vérifie chaque affirmation "
-                    "contre l'article cité et retire celles qui ne sont pas confirmées. Plus lent."),
-    MODE_FAST: ("**Rapide (v1.1)** : recherche des articles puis réponse en une étape. Plus rapide, mais la réponse n'est "
-                "pas vérifiée affirmation par affirmation, et ce mode ne garde pas le fil de la conversation."),
-}
+TITLE = "Codes tunisiens"
+SUBTITLE = "Posez une question de droit en français, arabe ou anglais. Chaque affirmation cite l'article dont elle vient."
 
 DISCLAIMER_FR = ("**Information juridique, pas un conseil juridique.** Les réponses proviennent des textes codifiés indexés et "
                  "peuvent être incomplètes ou erronées. Vérifiez toujours l'article cité, et consultez un professionnel du "
@@ -21,15 +12,16 @@ DISCLAIMER_AR = ("معلومات قانونية وليست استشارة قان
 DISCLAIMER_EN = ("Legal information, not legal advice. Answers come from the indexed codified texts and may be incomplete or "
                  "wrong. Always check the cited article, and consult a legal professional about your situation.")
 
-DEMO_BANNER = ("**Mode démo** : aucune requête n'est envoyée au modèle ; les réponses et les textes d'articles sont des "
-               "exemples fictifs, sans valeur juridique.")
+DEMO_BANNER = "Mode démo : réponses fictives, aucun modèle appelé."
+
+LOG_NOTICE = ("Les questions et les réponses sont enregistrées pour évaluer le système. N'indiquez pas de données "
+              "personnelles. Votre clé API n'est jamais enregistrée.")
 
 NEW_CONVERSATION = "Nouvelle conversation"
 INPUT_PLACEHOLDER = "Posez votre question (français, arabe ou anglais)…"
 STEPS_TITLE = "Étapes de l'agent"
 STEPS_DONE = "Étapes terminées"
 STEPS_STOPPED = "Étapes interrompues"
-FAST_SPINNER = "Recherche et rédaction en cours…"
 
 NODE_LABELS = {
     "condense": "Prise en compte de la conversation",
@@ -65,10 +57,8 @@ CODE_NAMES = {
 
 ARTICLE = "art."
 CITATION_UNAVAILABLE = "Texte de l'article indisponible."
-SOURCES_TITLE = "Articles retrouvés"
 UNVERIFIED_BANNER = ("**Réponse non vérifiée** : la vérification affirmation par affirmation a échoué pour cette réponse. "
                      "Lisez les articles cités avant de vous y fier.")
-FAST_NOTE = "Mode rapide : cette réponse n'est pas vérifiée affirmation par affirmation."
 DROPPED = "{n} affirmation(s) retirée(s), car les articles cités ne les confirment pas."
 CAVEAT = "Remarque : {text}"
 REWRITTEN = "Question comprise comme : {text}"
@@ -92,13 +82,9 @@ ERRORS = {
     "other": "Une erreur est survenue. Réessayez ; si elle se répète, signalez-la au propriétaire de l'application.",
 }
 
-KEY_TITLE = "Clé API"
 KEY_LABEL = "Votre clé Groq (facultatif)"
-KEY_HELP = ("Utilisée seulement pour vos questions, gardée en mémoire le temps de la session, jamais enregistrée ni "
-            "journalisée. Sans clé personnelle, la clé du propriétaire est utilisée si elle est disponible.")
+KEY_HELP = "Gardée en mémoire le temps de la session, jamais enregistrée."
 KEY_FORGET = "Oublier ma clé"
-KEY_PERSONAL_ACTIVE = "Votre clé personnelle est utilisée."
-KEY_OWNER_ACTIVE = "La clé du propriétaire est utilisée."
-KEY_OWNER_REMAINING = "Questions restantes aujourd'hui avec la clé du propriétaire : {n}."
+KEY_PERSONAL_ACTIVE = "Votre clé est utilisée."
+KEY_OWNER_REMAINING = "Questions restantes aujourd'hui : {n}."
 KEY_NONE = "Aucune clé disponible : indiquez votre clé Groq pour poser une question."
-DEMO_EXAMPLES_TITLE = "Exemples (mode démo)"

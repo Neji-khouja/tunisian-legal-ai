@@ -1,5 +1,5 @@
-"""Offline tests of the UI: rendering helpers on stub outputs, error messages, key policy, per-session key, and the app
-run end to end in demo mode (streamlit.testing). No network, no Groq: the key test answers through an httpx mock.
+"""Offline tests of the UI: rendering helpers on stub outputs, error messages, key policy, per-session key, the SQLite log,
+and the app run end to end in demo mode (streamlit.testing). No network, no Groq: the key test answers through an httpx mock.
 
     python ui/tests/test_ui.py
 """
@@ -50,11 +50,6 @@ def test_views():
     check("follow-up: rewritten question shown; a citation missing from the evidence is labelled, text unavailable",
           v["rewritten"] == "Quelle peine pour le vol ?" and v["claims"][0]["citations"][0]["label"] == "Missing, art. 9"
           and not v["claims"][0]["citations"][0]["available"])
-    v = R.view_v11(*stub.DemoBackend(0).run_v11("vol"))
-    check("v1.1: same layout without verification fields, with the 'not verified' note",
-          v["kind"] == "fast" and v["note"] == T.FAST_NOTE and len(v["sources"]) == 2 and "claims" not in v and "unverified" not in v)
-    v = R.view_v11(*stub.DemoBackend(0).run_v11("ما هي عقوبة السرقة؟"))
-    check("v1.1 Arabic: right to left", v["rtl"])
     check("RTL detection", R.is_rtl("ما هي عقوبة السرقة؟") and not R.is_rtl("Code pénal, art. 264") and not R.is_rtl(""))
     check("claim number isolated, so it stays at the start of an Arabic line",
           R.to_html("هذه إجابة", number=1).startswith('<div dir="rtl"') and "<bdi>1.</bdi>" in R.to_html("هذه إجابة", number=1))
@@ -157,6 +152,9 @@ def test_session_key():
 
 def test_app_demo():
     from streamlit.testing.v1 import AppTest
+    import tempfile
+    logdb = Path(tempfile.mkdtemp()) / "log.db"
+    os.environ["RAG_LOG_DB"] = str(logdb)
     os.environ["RAG_UI_DEMO"], os.environ["RAG_UI_DEMO_DELAY"] = "1", "0"
     secret = "Puis-je rompre mon contrat SECRET-QUESTION ?"
     log_buf = io.StringIO()
@@ -181,9 +179,6 @@ def test_app_demo():
             at.chat_input[0].set_value(question).run()
             check(f"case {expect[:24]!r}", not at.exception and expect in texts(), texts()[-300:])
         check("no traceback or raw JSON shown", "Traceback" not in texts() and "cited_ids" not in texts() and "{'" not in texts())
-        at.sidebar.radio[0].set_value(T.MODE_FAST).run()
-        at.chat_input[0].set_value("vol").run()
-        check("mode Rapide: answer with the 'not verified' note and sources", not at.exception and T.FAST_NOTE in texts())
         n = len(at.session_state["messages"])
         thread = at.session_state["thread_id"]
         next(b for b in at.sidebar.button if b.label == T.NEW_CONVERSATION).click().run()
@@ -193,13 +188,70 @@ def test_app_demo():
     check("privacy: the question appears in no log or console output", "SECRET-QUESTION" not in log_buf.getvalue() + out.getvalue())
     check("console gets the technical detail of the unexpected error, as a type and a location",
           "RuntimeError at" in log_buf.getvalue() and "demo failure" not in log_buf.getvalue(), log_buf.getvalue()[-300:])
-    del os.environ["RAG_UI_DEMO"], os.environ["RAG_UI_DEMO_DELAY"]
+    import store
+    rows = store.Store(logdb, upload=False).rows()
+    by_q = {r["question"]: r for r in rows}
+    check("every question of the session is in the SQLite log, in order, with its session id",
+          len(rows) == 7 and rows[0]["question"] == secret and len({r["session"] for r in rows}) == 1, [r["question"] for r in rows])
+    check("log: statuses clarify / done / refuse / error and the cited articles",
+          by_q[secret]["status"] == "clarify" and by_q["Un contrat de travail"]["status"] == "done"
+          and "PenalFr/s02/264" in by_q["Un contrat de travail"]["cited"] and by_q["Quelle sera la météo demain ?"]["status"] == "refuse"
+          and by_q["Exemple de quota"]["error"] == "quota_daily", {k: (r["status"], r["error"]) for k, r in by_q.items()})
+    check("log: a verification failure is flagged and the turn counter follows the session",
+          by_q["Exemple de panne"]["unverified"] == 1 and [r["turn"] for r in rows[:3]] == [1, 2, 3])
+    for k in ("RAG_UI_DEMO", "RAG_UI_DEMO_DELAY", "RAG_LOG_DB"):
+        del os.environ[k]
+
+
+def test_store():
+    import tempfile
+    import sqlite3
+    import store
+    tmp = Path(tempfile.mkdtemp())
+    sent = []
+    t = [0.0]
+    st1 = store.Store(tmp / "a.db", upload=lambda p: sent.append((p.name, sqlite3.connect(p).execute("select count(*) from interactions").fetchone()[0])),
+                      clock=lambda: t[0])
+    state = {"status": "done", "language": "fr", "text": "t", "claims": [{"text": "c", "cited_ids": ["A/s1/1", "B/s1/2", "A/s1/1"]}],
+             "dropped": 2, "degraded": ["verify_failed: X", "analyze_failed: Y"]}
+    t[0] = 1000.0
+    st1.log("s1", 1, "question un", state, None, 1.234, "owner")
+    import time
+    for _ in range(50):
+        if sent:
+            break
+        time.sleep(0.05)
+    r = st1.rows()[0]
+    check("log row: question, answer text, claims JSON, cited ids deduplicated, dropped, unverified, seconds, key source",
+          r["question"] == "question un" and r["answer"] == "t" and r["cited"] == '["A/s1/1", "B/s1/2"]' and r["dropped"] == 2
+          and r["unverified"] == 1 and r["seconds"] == 1.23 and r["key_source"] == "owner" and '"cited_ids"' in r["claims"])
+    check("sync: a consistent copy named with this start's id is uploaded once", len(sent) == 1 and sent[0][0].startswith("interactions-") and sent[0][1] == 1, sent)
+    t[0] = 1100.0
+    st1.log("s1", 2, "question deux", None, "quota_daily", 0.5, "personal")
+    time.sleep(0.2)
+    check("sync is throttled (not again within 5 minutes)", len(sent) == 1)
+    check("an error row has status error and no answer", st1.rows()[1]["status"] == "error" and st1.rows()[1]["error"] == "quota_daily"
+          and st1.rows()[1]["answer"] == "")
+    check("no API key column or value anywhere in the schema", "key" not in " ".join(store.COLUMNS).replace("key_source", ""))
+    bad = store.Store(tmp / "b.db", upload=lambda p: 1 / 0)
+    bad.log("s", 1, "q", state, None, 0.1, "owner")
+    bad.sync()
+    check("a failing upload never raises", len(bad.rows()) == 1)
+    st2 = store.Store(tmp / "interactions-x.db", upload=False)
+    st2.log("s9", 1, "autre", state, None, 0.1, "owner")
+    merged = store.load_all(tmp)
+    check("load_all merges the backups of several starts, oldest first", len(merged) == 1 and merged[0]["question"] == "autre")
+    st3 = store.Store(tmp / "interactions-y.db", upload=False)
+    st3.log("s10", 1, "encore", state, None, 0.1, "owner")
+    check("load_all with two files", sorted(r["question"] for r in store.load_all(tmp)) == ["autre", "encore"])
 
 
 def test_policy_in_app():
     from streamlit.testing.v1 import AppTest
     import streamlit as st
     st.cache_resource.clear()                       # the policy is cached per process, as in the app
+    import tempfile
+    os.environ["RAG_LOG_DB"] = str(Path(tempfile.mkdtemp()) / "log.db")
     os.environ["RAG_UI_DEMO"], os.environ["RAG_UI_DEMO_DELAY"], os.environ["UI_OWNER_DAILY_CAP"] = "1", "0", "1"
     with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
         at = AppTest.from_file(str(UI / "app.py"), default_timeout=60).run()
@@ -210,12 +262,12 @@ def test_policy_in_app():
         at.chat_input[0].set_value("vol").run()
         errors_after = sum(T.ERRORS["owner_cap"] in e.value for e in at.error)
     check("owner cap reached in the app: friendly message; a personal key then answers", capped and errors_after == 1)
-    for k in ("RAG_UI_DEMO", "RAG_UI_DEMO_DELAY", "UI_OWNER_DAILY_CAP"):
+    for k in ("RAG_UI_DEMO", "RAG_UI_DEMO_DELAY", "UI_OWNER_DAILY_CAP", "RAG_LOG_DB"):
         del os.environ[k]
 
 
 if __name__ == "__main__":
-    for t in (test_views, test_errors, test_policy, test_session_key, test_app_demo, test_policy_in_app):
+    for t in (test_views, test_errors, test_policy, test_session_key, test_store, test_app_demo, test_policy_in_app):
         t()
     print(f"\n{sum(RESULTS)}/{len(RESULTS)} checks passed")
     sys.exit(0 if all(RESULTS) else 1)
