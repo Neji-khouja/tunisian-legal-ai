@@ -93,11 +93,24 @@ python eval/run_answer_eval.py --stage 1 --system v2                  # run + ju
 python eval/run_answer_eval.py --summarize                            # tables from saved runs
 ```
 
-- Systems: `v2` (agent), `v1.1` (baseline pipeline), `v1` (original, needs its own worktree).
-- Answers are judged by a different model than the generator (`--judge-model` or `JUDGE_MODEL`), against the text of the
-  cited article taken straight from the PDF (`eval/pdf_truth.py`), not from the index.
+- Systems: `v2` (agent), `v1.1` (baseline pipeline), `v1` (original, run from its own git worktree at the
+  `v1-baseline-runnable` tag).
+- **Judge**: a second model grades each answer against reference points written by a lawyer and against the text of the
+  cited articles. It reports whether the points are covered, whether the answer contradicts them, and which statements
+  the cited articles do not support. It must differ from the generator: set `--judge-provider` (groq or gemini) and
+  `--judge-model`, or `JUDGE_MODEL`. `eval/judge_check.py` tests a judge on canned cases before an exam run, and answers
+  can be saved first and judged later with `--judge-only`.
+- Article text for the judge comes straight from the PDF (`eval/pdf_truth.py`), not from the index. The same text is
+  used to check that every number in an answer appears in the cited article.
+- `eval/exam_hashes.txt` (and `noisy_set_hashes.txt`) store the SHA-256 of the exam files. A run is refused if the exam
+  changed, so all results come from the same questions. After editing the exam, rerun `eval/make_stages.py`.
 - `eval/noisy_set.json` holds the same questions with typos and informal wording (`eval/noisy_vs_clean.py` compares).
-- Results are in `results/`; each file records the model, reranker and temperature used.
+- Results are in `results/`; each file records the model, reranker, temperature and git commit/tags of the run.
+
+Git tags mark the frozen states used as references: `v1-baseline` and `v1-baseline-runnable` (original pipeline, the
+second with two config id fixes so it runs; the official v1 numbers), `v1.1-baseline` (retrieval fixes),
+`agent-prompts-frozen` and `agent-retrieval-frozen` (agent prompts and retrieval at the time of evaluation) and
+`v2-candidate`. Check out a tag in a separate worktree to reproduce it.
 
 Unit tests (no model, no network):
 
