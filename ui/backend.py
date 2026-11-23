@@ -1,4 +1,4 @@
-"""The agent (agent_graph.app) through app.stream, so the steps can be shown as they happen. Heavy imports happen on
+"""The agent (agent_graph.app) through app.stream, and the one-pass pipeline, so the steps can be shown as they happen. Heavy imports happen on
 first use. The app logs questions and answers through ui/store.py; nothing here does."""
 import sys
 import logging
@@ -30,6 +30,7 @@ class Backend:
         hc.install_groq_patches()        # a daily-quota 429 is not retried (the harness's rule)
         import agent_graph
         self.graph = agent_graph.app
+        self._vs = None
 
     def stream_v2(self, question: str, thread_id: str):
         cfg = {"configurable": {"thread_id": thread_id}}
@@ -37,6 +38,21 @@ class Backend:
             for node in update:
                 yield "step", node
         yield "final", dict(self.graph.get_state(cfg).values)
+
+    def stream_fast(self, question: str, thread_id: str):
+        """The one-pass pipeline (pipeline.ask_question): rewrite, retrieve, rerank, one answer. No memory, no checks."""
+        import pipeline
+        yield "step", "retrieve"
+        if self._vs is None:
+            self._vs = pipeline.load_vectorstore()
+        yield "step", "answer"
+        text, docs = pipeline.ask_question(self._vs, question, None)
+        sources = []
+        for d in docs:
+            m = d.metadata
+            sources.append({"id": m.get("chunk_id") or f"{m.get('source')}/{m.get('article')}", "source": m.get("source"),
+                            "article": m.get("article"), "text": d.page_content})
+        yield "final", {"status": "done", "mode": "fast", "text": text, "sources": sources, "degraded": []}
 
     def forget(self, thread_id: str):
         try:

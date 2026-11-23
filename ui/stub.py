@@ -77,7 +77,19 @@ class DemoBackend:
             time.sleep(self.delay)
             yield "step", node
         (self.pending.add if case == "clarify" else self.pending.discard)(thread_id)
+        yield "usage", (4200, 650)
         yield "final", final_state(case, question)
+
+    def stream_fast(self, question: str, thread_id: str):
+        time.sleep(self.delay)
+        yield "step", "retrieve"
+        time.sleep(self.delay)
+        yield "step", "answer"
+        yield "usage", (900, 180)
+        yield "final", {"status": "done", "mode": "fast", "degraded": [],
+                        "text": "[Exemple] Réponse rapide en un seul passage, sans vérification.",
+                        "sources": [{"id": i, "source": e["source"], "article": e["article"], "text": e["text"]}
+                                    for i, e in list(EVIDENCE.items())[:2]]}
 
     def forget(self, thread_id: str):
         self.pending.discard(thread_id)

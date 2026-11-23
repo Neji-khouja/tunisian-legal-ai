@@ -88,3 +88,60 @@ KEY_FORGET = "Oublier ma clé"
 KEY_PERSONAL_ACTIVE = "Votre clé est utilisée."
 KEY_OWNER_REMAINING = "Questions restantes aujourd'hui : {n}."
 KEY_NONE = "Aucune clé disponible : indiquez votre clé Groq pour poser une question."
+
+NODE_LABELS["retrieve"] = "Recherche des articles"
+MODE_CHOICES = [("Agent (vérifie chaque affirmation)", "agent"), ("Rapide (une seule passe)", "fast")]
+MODE_NAMES = {"agent": "agent", "fast": "rapide"}
+MODE_HELP = {
+    "agent": ("**Agent** : comprend la conversation, demande une précision si la question est vague, refuse ce qui sort des "
+              "codes, cherche, juge les articles trouvés, rédige puis **vérifie chaque affirmation** contre l'article cité. "
+              "Plus lent et plus de tokens."),
+    "fast": ("**Rapide** : reformule la question, cherche et classe les articles, puis le modèle répond **une seule fois**. "
+             "Peu de tokens, mais sans mémoire de la conversation et sans vérification : lisez bien les articles cités."),
+}
+SOURCES_TITLE = "Articles fournis au modèle"
+HISTORY_LABEL = "Conversations"
+NEW_CHAT = "＋ Nouvelle conversation"
+DELETE_CHAT = "Supprimer cette conversation"
+TOKENS_LINE = "{total} tokens (entrée {tin}, sortie {tout}) · {sec} s · mode {mode}"
+TOKENS_METER = "**Tokens** · cette conversation : {conv} · cet appareil : {device}"
+TAB_CHAT = "Discussion"
+TAB_HOW = "Comment ça marche"
+ABOUT_INTRO = (
+    "## Comment ça marche\n\n"
+    "Cet assistant répond à des questions sur 14 textes juridiques tunisiens (code pénal, code du travail, code des "
+    "obligations et des contrats, statut personnel, commerce, sociétés, procédure civile et pénale, etc.). Il ne répond "
+    "qu'à partir de ces textes : chaque affirmation cite l'article dont elle vient, et vous pouvez lire cet article en "
+    "dépliant la citation.")
+ABOUT_MODES = """### Les deux modes
+
+| | **Agent** | **Rapide** |
+|---|---|---|
+| Principe | plusieurs étapes enchaînées, chacune pouvant corriger la précédente | une seule passe : chercher puis répondre |
+| Question vague | demande une précision | répond quand même |
+| Hors des codes | refuse poliment | essaie de répondre |
+| Conversation | se souvient des messages précédents | chaque question est seule |
+| Vérification | chaque affirmation est contrôlée contre son article ; ce qui n'est pas confirmé est retiré | aucune |
+| Coût | plusieurs appels au modèle : plus de tokens, plus lent | un ou deux appels : peu de tokens |
+
+Les deux modes utilisent la **même recherche** (ci-dessous) ; seule la suite change."""
+ABOUT_RETRIEVAL = """### La recherche d'articles
+
+1. La question est réécrite en français juridique, pour retrouver le texte même si vous écrivez en arabe, en anglais ou avec des fautes.
+2. Deux recherches en parallèle : par le sens (sémantique) et par mots-clés (BM25). Si vous citez « article 243 », cet article est lu directement.
+3. Les résultats sont fusionnés puis classés par un second modèle ; les 6 meilleurs articles sont gardés.
+4. Les articles auxquels ils renvoient sont ajoutés."""
+ABOUT_AGENT = """### Le parcours de l'agent
+
+- **condense** : réécrit une question de suivi pour qu'elle se comprenne seule.
+- **analyze** : détecte la langue, l'intention (répondre, préciser, refuser) et les codes concernés.
+- **retrieve** : la recherche ci-dessus.
+- **grade / reformulate** : vérifie que les articles suffisent, sinon reformule la recherche (deux fois au plus).
+- **answer** : écrit des affirmations courtes, chacune avec les articles qui la fondent.
+- **verify / repair** : contrôle chaque affirmation contre son article ; corrige ou retire ce qui n'est pas confirmé."""
+ABOUT_TOKENS = """### Tokens
+
+Un token est un morceau de mot que le modèle lit ou écrit. Le compteur additionne tous les appels au modèle faits pour une question : l'entrée est ce que le modèle lit (la question et les articles), la sortie ce qu'il écrit. Le fournisseur impose une limite quotidienne ; le mode Rapide en consomme beaucoup moins."""
+ABOUT_DATA = """### Vos données
+
+Les questions et les réponses sont enregistrées pour évaluer le système. Les conversations affichées à gauche ne sont gardées que dans votre navigateur."""

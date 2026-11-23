@@ -83,6 +83,17 @@ def view_v2(state: dict) -> dict:
     return view | {"kind": "answer"}
 
 
+def view_fast(state: dict) -> dict:
+    """Result of the one-pass pipeline -> view: the model's text and the articles it was given."""
+    sources = []
+    for src in state.get("sources") or []:
+        text = src.get("text") or ""
+        sources.append({"id": src["id"], "label": citation_label(src["id"], {src["id"]: src}),
+                        "text": text or T.CITATION_UNAVAILABLE, "available": bool(text), "rtl": is_rtl(text)})
+    return {"mode": "fast", "kind": "fast", "text": state.get("text") or "", "sources": sources, "unverified": False,
+            "notes": [], "rewritten": None, "dropped": 0, "caveat": None, "claims": []}
+
+
 def view_error(kind: str) -> dict:
     return {"mode": None, "kind": "error", "error": kind, "text": T.ERRORS.get(kind, T.ERRORS["other"])}
 

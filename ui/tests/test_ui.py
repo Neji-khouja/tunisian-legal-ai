@@ -232,6 +232,13 @@ def test_store():
     check("sync is throttled (not again within 5 minutes)", len(sent) == 1)
     check("an error row has status error and no answer", st1.rows()[1]["status"] == "error" and st1.rows()[1]["error"] == "quota_daily"
           and st1.rows()[1]["answer"] == "")
+    old = tmp / "old.db"
+    con = sqlite3.connect(old)
+    con.execute("CREATE TABLE interactions (id INTEGER PRIMARY KEY AUTOINCREMENT, ts TEXT, session TEXT, turn INTEGER, question TEXT, status TEXT, language TEXT, answer TEXT, claims TEXT, cited TEXT, dropped INTEGER, unverified INTEGER, degraded TEXT, error TEXT, seconds REAL, key_source TEXT)")
+    con.commit()
+    con.close()
+    check("a database from before the mode and token columns is upgraded in place",
+          {"mode", "tokens_in", "tokens_out"} <= set(store.Store(old, upload=False).log("s", 1, "q", state, None, 1, "owner", "fast", (3, 4)) or store.Store(old, upload=False).rows()[0]))
     check("no API key column or value anywhere in the schema", "key" not in " ".join(store.COLUMNS).replace("key_source", ""))
     bad = store.Store(tmp / "b.db", upload=lambda p: 1 / 0)
     bad.log("s", 1, "q", state, None, 0.1, "owner")
@@ -258,7 +265,7 @@ def test_chat():
 
     def run(q, thread="t1", turn=1, key=""):
         ev = list(chat.ask(q, thread, turn, key, be, pol, st))
-        return [e for e in ev if e[0] == "step"], ev[-1][1]
+        return [e for e in ev if e[0] == "step"], ev[-1][1]["markdown"]
     steps, md = run("Que risque-t-on en cas de vol simple ?")
     check("answer: steps streamed in French, then one Markdown answer with numbered claims and details per citation",
           [x[1] for x in steps][:2] == [T.NODE_LABELS["condense"], T.NODE_LABELS["analyze"]] and "<bdi>1.</bdi>" in md
@@ -278,19 +285,34 @@ def test_chat():
     capped = keys.KeyPolicy(True, 1, lambda: True)
     list(chat.ask("vol", "c1", 1, "", be, capped, st))
     out = list(chat.ask("vol", "c1", 2, "", be, capped, st))
-    check("owner cap reached: friendly message", T.ERRORS["owner_cap"] in out[-1][1])
+    check("owner cap reached: friendly message", T.ERRORS["owner_cap"] in out[-1][1]["markdown"])
     out = list(chat.ask("vol", "c1", 3, "gsk_personal", be, capped, st))
-    check("a personal key passes the cap", T.ERRORS["owner_cap"] not in out[-1][1])
+    check("a personal key passes the cap", T.ERRORS["owner_cap"] not in out[-1][1]["markdown"])
     rows = st.rows()
     check("every question logged with its turn, status and key source",
           [r["question"] for r in rows][:2] == ["Que risque-t-on en cas de vol simple ?", "Puis-je rompre mon contrat ?"]
           and rows[1]["status"] == "clarify" and rows[5]["error"] == "quota_daily" and rows[-1]["key_source"] == "personal"
           and rows[-2]["error"] == "owner_cap", [(r["status"], r["error"], r["key_source"]) for r in rows])
+    out = list(chat.ask("vol", "t10", 1, "", be, pol, st))[-1][1]
+    check("token meter: usage line with the total, input and output tokens", out["tokens_in"] == 4200 and out["tokens_out"] == 650
+          and "4 850 tokens (entrée 4200, sortie 650)" in out["markdown"] and "mode agent" in out["markdown"], out["markdown"][-120:])
+    out = list(chat.ask("Quelle est la peine du vol ?", "t11", 1, "", be, pol, st, "fast"))
+    fast = out[-1][1]
+    check("fast mode: two steps, one answer, the articles given to the model, 1080 tokens",
+          [e[1] for e in out if e[0] == "step"] == [T.NODE_LABELS["retrieve"], T.NODE_LABELS["answer"]]
+          and "Réponse rapide" in fast["markdown"] and T.SOURCES_TITLE in fast["markdown"]
+          and "<details><summary>Code pénal, art. 264</summary>" in fast["markdown"] and "1 080 tokens" in fast["markdown"]
+          and "mode rapide" in fast["markdown"])
+    r = st.rows()[-1]
+    check("log keeps the mode, the tokens and the articles of a fast answer",
+          r["mode"] == "fast" and r["tokens_in"] == 900 and r["tokens_out"] == 180 and "PenalFr/s02/264" in r["cited"], r)
+    out = list(chat.ask("erreur", "t12", 1, "", be, pol, st))[-1][1]["markdown"]
+    check("an error row has no usage line", "tokens" not in out)
     class Broken:
         def log(self, *a, **k):
             raise RuntimeError("disk full")
     out = list(chat.ask("vol", "c9", 1, "", be, pol, Broken()))
-    check("a failing log never hides the answer", out[-1][0] == "done" and "<bdi>1.</bdi>" in out[-1][1])
+    check("a failing log never hides the answer", out[-1][0] == "done" and "<bdi>1.</bdi>" in out[-1][1]["markdown"])
 
 
 def test_policy_in_app():

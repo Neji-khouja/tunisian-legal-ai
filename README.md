@@ -95,9 +95,14 @@ Set `API_KEY` to require an `X-API-Key` header on `/ask`; without it the endpoin
 Questions are limited to 1000 characters. The API response has `answer` and `sources` (id, source, article). Set
 `HF_HUB_OFFLINE=1` once the models are cached.
 
+The Gradio page has a sidebar with the visitor's past conversations (kept in their browser), a choice between two modes
+(**Agent**: the full graph above, with verification; **Rapide**: the one-pass pipeline, no memory and no verification, far
+fewer tokens), a token meter (input and output tokens of every question, summed over all model calls), and a "Comment ça
+marche" tab with the agent diagram.
+
 Every question and answer the web interface handles is written to a SQLite file, `logs/interactions.db` (`RAG_LOG_DB`
 changes the path): time, session id, question, status, answer, claims, cited article ids, whether verification failed,
-seconds, and whether the owner's or the visitor's key was used. API keys are never stored. The interface tells visitors
+mode, input and output tokens, seconds, and whether the owner's or the visitor's key was used. API keys are never stored. The interface tells visitors
 that questions are recorded.
 
 ## Deploy on a Hugging Face Space (Gradio)
