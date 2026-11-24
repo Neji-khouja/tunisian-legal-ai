@@ -252,4 +252,37 @@ line = next(l for l in (Path(__file__).resolve().parent.parent / "eval" / "run_a
             .read_text(encoding="utf-8").splitlines() if '"thread_id":' in l)
 print("eval/run_answer_eval.py:", line.strip())
 check("run_answer_eval: thread_id per item (id + time_ns)", "item['id']" in line and "time_ns()" in line)
+
+# answer style: the prompt sent follows config.ANSWER_STYLE, the evaluated prompts are unchanged
+import hashlib
+import config as C
+import answer as A
+import pipeline
+sent = []
+
+
+class FakeLLM:
+    def with_structured_output(self, *a, **k):
+        return self
+
+    def invoke(self, messages):
+        sent.append(messages)
+        return A.Answer(claims=[A.Claim(text="x", cited_ids=["[PenalFr/s02/218]"])])
+
+
+style, real_llm, A.llm = C.ANSWER_STYLE, A.llm, FakeLLM()
+try:
+    check("default answer style is natural", style == "natural")
+    for value, want in (("natural", A.NATURAL_PROMPT), ("v2", A.SYSTEM_PROMPT)):
+        C.ANSWER_STYLE = value
+        a = A.make_answer("Q", "fr", EVIDENCE)
+        check(f"ANSWER_STYLE {value}: its prompt is sent, ids cleaned", sent[-1][0][1] == want and a.claims[0].cited_ids == ["PenalFr/s02/218"])
+    for value, marker in (("natural", "HOW TO WRITE"), ("v2", "REQUIRED RESPONSE STRUCTURE")):
+        C.ANSWER_STYLE = value
+        p = pipeline._NATURAL_PROMPT if value == "natural" else pipeline._PROMPT
+        check(f"one-pass prompt {value}", marker in p.format(context="c", input="q"))
+finally:
+    C.ANSWER_STYLE, A.llm = style, real_llm
+check("evaluated answer prompt (v2) unchanged", hashlib.sha256(A.SYSTEM_PROMPT.encode("utf-8")).hexdigest().startswith("5dbea27a8fcdf8c6"))
+check("evaluated one-pass prompt (v1.1) unchanged", hashlib.sha256(pipeline._SYSTEM_PROMPT.encode("utf-8")).hexdigest().startswith("d2acda8ce54721ef"))
 print("all checks passed")

@@ -33,6 +33,8 @@ NORMALIZE_QUERY        = "v3"    # "off" | "v3": the first query of a turn is no
                                  # original and normalized queries are fused by RRF and reranked on the normalized query
 AGENT_TOP_K            = 8       # articles the agent keeps after a search and after each reformulation (6 = the v2.1 retrieval
                                  # before this switch; the one-pass pipeline keeps RERANK_TOP_K)
+ANSWER_STYLE           = "natural"   # "natural": short plain explanation (rule, main conditions), details only on request
+                                     # "v2": the answer prompts of the evaluated versions (agent v2, one-pass v1.1)
 
 DB_DIR   = DB_V12 if INDEX_V12 else DB_V11
 
