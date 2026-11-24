@@ -35,6 +35,8 @@ Return exactly one verdict per claim, using the claim number given. For partly a
 
 
 def _claims_block(answer: Answer, evidence: dict) -> str:
+    import config as C
+    once, shown = getattr(C, "VERIFY_TEXT_ONCE", False), {}
     parts = []
     for i, c in enumerate(answer.claims, 1):
         parts.append(f"Claim {i}: {c.text}")
@@ -42,7 +44,10 @@ def _claims_block(answer: Answer, evidence: dict) -> str:
             e = evidence.get(cid)
             if e is None:
                 parts.append(f"  Cited [{cid}]: (not in evidence)")
+            elif once and cid in shown:
+                parts.append(f"  Cited [{cid}] article {cid.split('/')[-1]}: (text given above, under claim {shown[cid]})")
             else:
+                shown[cid] = i
                 parts.append(f"  Cited [{cid}] article {cid.split('/')[-1]}: {str(e['text'])[:VERIFY_CHARS]}")
         parts.append("")
     return "\n".join(parts)

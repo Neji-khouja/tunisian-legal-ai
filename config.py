@@ -37,6 +37,7 @@ ANSWER_STYLE           = "natural"   # "natural": short plain explanation (rule,
                                      # "v2": the answer prompts of the evaluated versions (agent v2, one-pass v1.1)
 REPAIR_MODE            = "targeted"  # "targeted": only the claims the verifier rejected are rewritten and checked again
                                      # "full" (v2): one rejected claim rewrites and re-checks the whole answer
+VERIFY_TEXT_ONCE       = True    # the verifier gets an article's text once, then a reference to it (False = v2: repeated per claim)
 
 DB_DIR   = DB_V12 if INDEX_V12 else DB_V11
 

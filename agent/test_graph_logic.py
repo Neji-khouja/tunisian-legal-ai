@@ -332,6 +332,18 @@ finally:
 check("the repair call starts with exactly the first call's prompt (reusable by the prompt cache)",
       prompts[1][0] == prompts[0][0] and prompts[1][1][1].startswith(prompts[0][1][1]) and "Write ONLY their replacements" in prompts[1][1][1])
 
+# the verifier's articles (config.VERIFY_TEXT_ONCE)
+import verify as V
+ans = Answer(claims=[Claim(text="c1", cited_ids=["A/s1/1", "A/s1/2"]), Claim(text="c2", cited_ids=["A/s1/1", "Z/s1/9"])])
+ev = {"A/s1/1": {"text": "TEXTE UN"}, "A/s1/2": {"text": "TEXTE DEUX"}}
+once = V._claims_block(ans, ev)
+C.VERIFY_TEXT_ONCE = False
+twice = V._claims_block(ans, ev)
+C.VERIFY_TEXT_ONCE = True
+check("verify: an article's text is sent once and referred to afterwards; every citation still listed",
+      once.count("TEXTE UN") == 1 and "(text given above, under claim 1)" in once and once.count("Cited [") == 4 and "(not in evidence)" in once)
+check("verify: False gives the v2 block (text repeated under each claim)", twice.count("TEXTE UN") == 2 and "given above" not in twice)
+
 # answer style: the prompt sent follows config.ANSWER_STYLE, the evaluated prompts are unchanged
 import hashlib
 import config as C
