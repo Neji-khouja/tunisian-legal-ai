@@ -21,7 +21,8 @@ def fresh_state() -> dict:
 def _fresh() -> dict:
     """fresh_state, plus (config.NORMALIZE_QUERY == "v3" only) an empty normalization record for the new turn."""
     import config as C
-    return fresh_state() | ({"normalize": {}} if getattr(C, "NORMALIZE_QUERY", "off") == "v3" else {})
+    return (fresh_state() | ({"normalize": {}} if getattr(C, "NORMALIZE_QUERY", "off") == "v3" else {})
+            | ({"recheck": []} if getattr(C, "REPAIR_MODE", "full") == "targeted" else {}))
 
 REFUSE = {"fr": "Cette question sort du cadre des codes tunisiens que je couvre.",
           "en": "This is outside the Tunisian legal codes I cover.",
@@ -66,6 +67,7 @@ class AgentState(TypedDict):
     condensed_from: str          # the raw message when condense rewrote it, else ""
     is_followup: bool
     normalize: dict
+    recheck: list[int]           # targeted repair: 1-based indexes of the claims the second verify must check
 
 def remember(state, text) -> list[dict]:
     return (state.get("history", []) + [{"q": state["full_question"], "a": text[:600]}])[-2:]
@@ -213,13 +215,20 @@ DROPPED = {"fr": "{n} affirmation(s) retirée(s) car non confirmée(s) par les a
            "ar": "تم حذف {n} من الادعاءات لأن المواد المستشهد بها لا تؤكدها."}
 
 def verify_node(state):
-    ans = Answer(claims=[Claim(**c) for c in state["claims"]], caveat=state["caveat"])
+    recheck = (state.get("recheck") or []) if state.get("repairs") else []      # the other claims are already confirmed
+    claims = [Claim(**c) for i, c in enumerate(state["claims"], 1) if not recheck or i in recheck]
+    ans = Answer(claims=claims, caveat=state["caveat"])
     try:
         v = verify(ans, state["evidence"])
     except Exception as e:                       # visible fallback, never silent
         return {"verdicts": [], "bad": [],
                 "degraded": state["degraded"] + [f"verify_failed: {type(e).__name__}"]}
     out = {"verdicts": [x.model_dump() for x in v.verdicts], "bad": bad_claims(ans, v)}
+    if recheck:                                  # back to the numbering of the whole answer
+        checked = {recheck[x["claim_index"] - 1]: x for x in out["verdicts"] if 1 <= x["claim_index"] <= len(recheck)}
+        out = {"verdicts": [dict(checked.get(i, {"verdict": "supported" if i not in recheck else "unsupported", "problem": ""}), claim_index=i)
+                            for i in range(1, len(state["claims"]) + 1)],
+               "bad": [recheck[i - 1] for i in out["bad"]]}
     if state["repairs"] == 0:                    # first pass: kept, a repair's verify does not overwrite it
         out["first_verdicts"] = out["verdicts"]
     return out
@@ -232,7 +241,33 @@ def feedback_from(state):
             lines.append(f'- "{state["claims"][i-1]["text"]}" -> {v["verdict"]}: {v["problem"]}')
     return "\n".join(lines)
 
+def targeted(claims, bad, new):
+    """The draft's claims with the rejected ones (1-based indexes `bad`) replaced by the claims `new`, and the indexes of
+    the replacements. Confirmed claims keep their text and place; a replacement repeating one is left out."""
+    key = lambda c: " ".join(c["text"].lower().split())
+    kept = {key(c) for i, c in enumerate(claims, 1) if i not in bad}
+    new = [c for c in new if key(c) not in kept][:len(bad)]
+    out, recheck = [], []
+    for i, c in enumerate(claims, 1):
+        if i not in bad:
+            out.append(c)
+        elif new:
+            out.append(new.pop(0))
+            recheck.append(len(out))
+    return out, recheck
+
 def repair_node(state):
+    import config as C
+    keep = [c for i, c in enumerate(state["claims"], 1) if i not in state["bad"]]
+    if getattr(C, "REPAIR_MODE", "full") == "targeted" and keep:         # nothing confirmed: a whole new answer, below
+        ans = make_answer(state["full_question"], state["language"], state["evidence"],
+                          feedback=feedback_from(state), keep=[c["text"] for c in keep])
+        claims, recheck = targeted(state["claims"], set(state["bad"]), [c.model_dump() for c in ans.claims])
+        caveat = state["caveat"] or ans.caveat
+        return {"claims": claims, "caveat": caveat, "recheck": recheck, "repairs": state["repairs"] + 1,
+                "bad": state["bad"] if recheck else [],          # [] = nothing new to check (route_after_repair)
+                "dropped": len(state["claims"]) - len(claims),
+                "problems": check_answer(Answer(claims=[Claim(**c) for c in claims], caveat=caveat), state["evidence"])}
     ans = make_answer(state["full_question"], state["language"], state["evidence"],
                       feedback=feedback_from(state))
     return {"claims": [c.model_dump() for c in ans.claims], "caveat": ans.caveat,
@@ -240,6 +275,7 @@ def repair_node(state):
 
 def finalize_node(state):
     lang = state["language"]
+    gone = state.get("dropped") or 0             # rejected claims a targeted repair left out
     claims = [Claim(**c) for c in state["claims"]]
     bad = set(state["bad"])
     kept = [c for i, c in enumerate(claims, 1) if i not in bad]
@@ -247,17 +283,21 @@ def finalize_node(state):
         seen = ", ".join(cid.split("/")[0] + " art. " + cid.split("/")[-1]
                          for cid in list(state["evidence"])[:3])
         text = NO_SUPPORT.get(lang, NO_SUPPORT["fr"]) + f" [{seen}]"
-        return {"text": text, "claims": [], "caveat": "", "cited": [], "dropped": len(bad), "status": "done",
+        return {"text": text, "claims": [], "caveat": "", "cited": [], "dropped": len(bad) + gone, "status": "done",
                 "history": remember(state, text)}
     text = render(Answer(claims=kept, caveat=state["caveat"]), state["evidence"], lang)
-    if bad:
-        text += "\n\n" + DROPPED.get(lang, DROPPED["fr"]).format(n=len(bad))
+    if bad or gone:
+        text += "\n\n" + DROPPED.get(lang, DROPPED["fr"]).format(n=len(bad) + gone)
     return {"text": text, "claims": [c.model_dump() for c in kept],
             "cited": sorted({i for c in kept for i in c.cited_ids}),
-            "dropped": len(bad), "status": "done", "history": remember(state, text)}
+            "dropped": len(bad) + gone, "status": "done", "history": remember(state, text)}
 
 def route_after_answer(state):
     return "verify" if state["claims"] else "end"
+
+def route_after_repair(state):
+    """A targeted repair that left every rejected claim out has nothing new to check."""
+    return "verify" if state["bad"] else "finalize"
 
 def route_after_verify(state):
     return "repair" if state["bad"] and state["repairs"] == 0 else "finalize"
@@ -291,7 +331,7 @@ builder.add_edge("retrieve", "grade")
 builder.add_conditional_edges("grade", route_after_grade, {"answer": "answer", "reformulate": "reformulate"})
 builder.add_edge("reformulate", "retrieve_more")
 builder.add_conditional_edges("retrieve_more", route_after_more, {"answer": "answer", "grade": "grade"})
-builder.add_edge("repair", "verify")
+builder.add_conditional_edges("repair", route_after_repair, {"verify": "verify", "finalize": "finalize"})
 builder.add_edge("finalize", END)
 
 app = builder.compile(checkpointer=MemorySaver())

@@ -35,6 +35,8 @@ AGENT_TOP_K            = 8       # articles the agent keeps after a search and a
                                  # before this switch; the one-pass pipeline keeps RERANK_TOP_K)
 ANSWER_STYLE           = "natural"   # "natural": short plain explanation (rule, main conditions), details only on request
                                      # "v2": the answer prompts of the evaluated versions (agent v2, one-pass v1.1)
+REPAIR_MODE            = "targeted"  # "targeted": only the claims the verifier rejected are rewritten and checked again
+                                     # "full" (v2): one rejected claim rewrites and re-checks the whole answer
 
 DB_DIR   = DB_V12 if INDEX_V12 else DB_V11
 

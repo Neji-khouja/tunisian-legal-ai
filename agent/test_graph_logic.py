@@ -253,6 +253,85 @@ line = next(l for l in (Path(__file__).resolve().parent.parent / "eval" / "run_a
 print("eval/run_answer_eval.py:", line.strip())
 check("run_answer_eval: thread_id per item (id + time_ns)", "item['id']" in line and "time_ns()" in line)
 
+# targeted repair (config.REPAIR_MODE)
+import config as C
+from answer import Answer, Claim
+real_make = g.make_answer
+N = lambda text, cid="PenalFr/s02/221": {"text": text, "cited_ids": [cid]}
+m, rc = g.targeted(CLAIMS, {1, 3}, [N("new one"), N("new three"), N("too many")])
+check("targeted: replacements take the rejected places, in order, no more than rejected",
+      [c["text"] for c in m] == ["new one", "Claim two.", "new three"] and rc == [1, 3])
+m, rc = g.targeted(CLAIMS, {1, 3}, [N("claim  TWO."), N("new")])
+check("targeted: a replacement repeating a confirmed claim is left out", [c["text"] for c in m] == ["new", "Claim two."] and rc == [1])
+
+
+def repair_run(verdicts, replacements, repair_mode="targeted"):
+    """draft CLAIMS -> verify -> repair -> verify -> finalize with stubs. verdicts: one list per verify call."""
+    calls, checks = [], []
+
+    def make(q, lang, ev, feedback="", keep=()):
+        calls.append({"feedback": feedback, "keep": list(keep)})
+        return Answer(claims=[Claim(**c) for c in replacements], caveat="")
+
+    def ver(ans, ev):
+        checks.append([c.text for c in ans.claims])
+        vs = verdicts[len(checks) - 1]
+        return Verification(verdicts=[ClaimVerdict(claim_index=i, verdict=v, problem="" if v == "supported" else "p")
+                                      for i, v in enumerate(vs, 1)])
+    old_mode, C.REPAIR_MODE = C.REPAIR_MODE, repair_mode
+    g.make_answer, g.verify = make, ver
+    try:
+        st = g._fresh() | {"claims": CLAIMS, "draft_claims": CLAIMS, "caveat": "c0", "evidence": EVIDENCE, "degraded": [],
+                           "language": "fr", "full_question": "Q", "repairs": 0}
+        st |= g.verify_node(st)
+        if g.route_after_verify(st) == "repair":
+            st |= g.repair_node(st)
+            if g.route_after_repair(st) == "verify":
+                st |= g.verify_node(st)
+        st |= g.finalize_node(st)
+    finally:
+        C.REPAIR_MODE, g.make_answer, g.verify = old_mode, real_make, real_verify
+    return st, calls, checks
+
+
+S, U = "supported", "unsupported"
+check("default repair mode is targeted", C.REPAIR_MODE == "targeted")
+st, calls, checks = repair_run([[S, U, S], [S]], [N("Claim two, fixed.")])
+check("targeted: the model gets the rejected claim's problem and the confirmed claims",
+      "Claim two." in calls[0]["feedback"] and "Claim one." not in calls[0]["feedback"] and calls[0]["keep"] == ["Claim one.", "Claim three."])
+check("targeted: the second check sees only the replacement", checks == [["Claim one.", "Claim two.", "Claim three."], ["Claim two, fixed."]])
+check("targeted: order kept, confirmed sentences untouched, caveat kept, nothing dropped",
+      [c["text"] for c in st["claims"]] == ["Claim one.", "Claim two, fixed.", "Claim three."] and st["dropped"] == 0 and st["caveat"] == "c0")
+check("targeted: verdicts numbered over the whole answer, first verdicts kept",
+      [v["claim_index"] for v in st["verdicts"]] == [1, 2, 3] and [v["verdict"] for v in st["first_verdicts"]] == [S, U, S])
+st, calls, checks = repair_run([[S, U, S], [U]], [N("still wrong")])
+check("targeted: a replacement rejected again is dropped, the confirmed sentences stay",
+      [c["text"] for c in st["claims"]] == ["Claim one.", "Claim three."] and st["dropped"] == 1)
+st, calls, checks = repair_run([[U, S, U], [S, U]], [N("one, fixed"), N("three, wrong")])
+check("targeted: two rejected, one fixed and one dropped", [c["text"] for c in st["claims"]] == ["one, fixed", "Claim two."] and st["dropped"] == 1)
+st, calls, checks = repair_run([[S, U, S]], [N("Claim one.")])
+check("targeted: nothing usable from the repair: no second check, the rejected sentence is dropped and counted",
+      len(checks) == 1 and [c["text"] for c in st["claims"]] == ["Claim one.", "Claim three."] and st["dropped"] == 1
+      and st["text"].endswith(g.DROPPED["fr"].format(n=1)))
+st, calls, checks = repair_run([[U, U, U], [S]], [N("whole new answer")])
+check("every sentence rejected: a whole new answer, checked in full",
+      calls[0]["keep"] == [] and checks[1] == ["whole new answer"] and [c["text"] for c in st["claims"]] == ["whole new answer"] and st["dropped"] == 0)
+st, calls, checks = repair_run([[S, U, S], [S, S]], [N("a"), N("b")], "full")
+check("REPAIR_MODE full: the whole answer is rewritten and re-checked (v2)",
+      calls[0]["keep"] == [] and checks[1] == ["a", "b"] and [c["text"] for c in st["claims"]] == ["a", "b"] and "recheck" not in st)
+prompts = []
+sentinel = type("L", (), {"with_structured_output": lambda self, *a, **k: self,
+                          "invoke": lambda self, ms: (prompts.append(ms), Answer(claims=[Claim(text="x", cited_ids=[])]))[1]})()
+import answer as A
+keep_llm, A.llm = A.llm, sentinel
+try:
+    A.make_answer("Q", "fr", EVIDENCE)
+    A.make_answer("Q", "fr", EVIDENCE, feedback="f", keep=["k"])
+finally:
+    A.llm = keep_llm
+check("the repair call starts with exactly the first call's prompt (reusable by the prompt cache)",
+      prompts[1][0] == prompts[0][0] and prompts[1][1][1].startswith(prompts[0][1][1]) and "Write ONLY their replacements" in prompts[1][1][1])
+
 # answer style: the prompt sent follows config.ANSWER_STYLE, the evaluated prompts are unchanged
 import hashlib
 import config as C

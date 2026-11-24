@@ -72,10 +72,20 @@ def _user_block(question, language, evidence):
         parts.append("")
     return "\n".join(parts)
 
-def make_answer(question, language, evidence, feedback="") -> Answer:
+def make_answer(question, language, evidence, feedback="", keep=()) -> Answer:
+    """feedback: the verifier's problems on a draft. keep: texts of the draft's confirmed claims; with them only the
+    rejected claims are rewritten. The call starts with exactly the first call's prompt, which the provider can reuse
+    from its prompt cache."""
     structured = llm.with_structured_output(Answer, method="json_schema")
     block = _user_block(question, language, evidence)
-    if feedback:
+    if feedback and keep:
+        block += ("\n\nA previous draft of your answer was checked against the articles. These claims are confirmed and "
+                  "stay in the answer:\n" + "\n".join(f"- {t}" for t in keep) +
+                  "\n\nThese claims were rejected:\n" + feedback +
+                  "\nWrite ONLY their replacements, one claim per rejected claim, in the same order. Use only what the "
+                  "articles state. If the articles do not support a rejected claim at all, replace it with the closest "
+                  "statement they do support. Do not repeat a confirmed claim.")
+    elif feedback:
         block += ("\n\nA previous draft of your answer was checked against the articles and these "
                   "problems were found:\n" + feedback +
                   "\nWrite a new answer that fixes them. Use only what the articles state; "
