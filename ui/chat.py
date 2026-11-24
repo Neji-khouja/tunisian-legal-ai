@@ -32,18 +32,18 @@ def view_markdown(view: dict) -> str:
     if view.get("unverified"):
         out.append(f'<div class="warn">{_esc(T.UNVERIFIED_BANNER.replace("*", ""))}</div>')
     out += [f'<div class="note">{_esc(n)}</div>' for n in view.get("notes") or []]
-    sources = []
+    sources, others = [], None
     if view["kind"] == "fast":
         sec = view["sections"]
         parts = [sec.get("intro"), sec.get("direct"), sec.get("explanation")]
-        if sec.get("articles"):
+        if any(ch.isdigit() for ch in sec.get("articles", "")):         # not "None." / "Aucun."
             parts.append(f"**{word['articles']}**\n\n{sec['articles']}")
         body = "\n\n".join(p for p in parts if p)
         out.append(R.md_block(body or view["text"]))
         sources = [_source(c["label"], c["text"]) for c in view["sources"]]
         if view["others"]:
             rest = "\n".join(_source(c["label"], c["text"]) for c in view["others"])
-            sources.append(f'<details class="src"><summary>{_esc(T.OTHER_SOURCES.format(n=len(view["others"])))}</summary>\n\n{rest}\n\n</details>')
+            others = f'<details class="src"><summary>{_esc(word["others"].format(n=len(view["others"])))}</summary>\n\n{rest}\n\n</details>'
     elif view["kind"] == "answer":
         order = {}                                   # citation id -> number, in order of first use
         for claim in view["claims"]:
@@ -67,6 +67,8 @@ def view_markdown(view: dict) -> str:
     if sources:
         out.append(f'<div class="src-title">{word["sources"]}</div>')
         out += sources
+    if others:
+        out.append(others)
     return "\n\n".join(out)
 
 

@@ -52,7 +52,8 @@ class Backend:
             m = d.metadata
             sources.append({"id": m.get("chunk_id") or f"{m.get('source')}/{m.get('article')}", "source": m.get("source"),
                             "article": m.get("article"), "text": d.page_content})
-        yield "final", {"status": "done", "mode": "fast", "text": text, "sources": sources, "degraded": []}
+        lang = "ar" if pipeline.detect_arabic(question) else "en" if pipeline.detect_english(question) else "fr"
+        yield "final", {"status": "done", "mode": "fast", "language": lang, "text": text, "sources": sources, "degraded": []}
 
     def forget(self, thread_id: str):
         try:

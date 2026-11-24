@@ -196,10 +196,11 @@ with gr.Blocks(title=T.TITLE, theme=THEME, head=f"<style>{CSS}</style>") as demo
             with gr.Column(elem_id="about"):
                 gr.Markdown(T.ABOUT_INTRO)
                 gr.Markdown(T.ABOUT_MODES)
-                gr.Markdown(T.ABOUT_RETRIEVAL)
-                gr.Markdown(T.ABOUT_AGENT)
-                gr.Image(str(ROOT / "agent" / "agent_flow_v2.png"), show_label=False, interactive=False,
-                         show_download_button=False, show_fullscreen_button=True)
+                with gr.Tabs(elem_id="about-modes"):
+                    for tab, text, svg in ((T.TAB_AGENT, T.ABOUT_AGENT, "flow_agent.svg"), (T.TAB_FAST, T.ABOUT_FAST, "flow_rapide.svg")):
+                        with gr.Tab(tab):
+                            gr.Markdown(text)
+                            gr.HTML('<div class="flow-wrap">' + (ROOT / "ui" / svg).read_text(encoding="utf-8") + "</div>", padding=False)
                 gr.Markdown(T.ABOUT_TOKENS)
                 gr.Markdown(T.ABOUT_DATA)
 

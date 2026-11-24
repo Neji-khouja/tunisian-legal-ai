@@ -287,12 +287,22 @@ def test_fast_layout():
           md.index("cinq ans d’emprisonnement et") < md.index("L’article 264 prévoit") < md.index("**Articles applicables**") < md.index("src-title")
           and "Réponse directe" not in md and "PenalFr.pdf" not in md)
     check("fast answer: Markdown kept, HTML escaped", "**Article 264**" in md and "&lt;b&gt;" in md and "<b>x" not in md)
-    check("fast sources: the articles the answer names; the others in one closed block",
-          [x["id"].split("/")[-1] for x in v["sources"]] == ["263", "260", "264"] and [x["id"].split("/")[-1] for x in v["others"]] == ["274", "262", "261"]
-          and T.OTHER_SOURCES.format(n=3) in md, [x["id"].split("/")[-1] for x in v["sources"]])
+    check("fast sources: the article the answer rests on, not those it only refers to; the others in one closed block",
+          [x["id"].split("/")[-1] for x in v["sources"]] == ["264"] and len(v["others"]) == 5
+          and T.WORDS["fr"]["others"].format(n=5) in md, [x["id"].split("/")[-1] for x in v["sources"]])
     v = R.view_fast({"text": "Texte libre, sans rubrique.", "sources": src[:2]})
-    check("fast answer without labels: shown whole, every article listed",
-          "Texte libre" in chat.view_markdown(v) and len(v["sources"]) == 2 and not v["others"])
+    md = chat.view_markdown(v)
+    check("fast answer naming no article: shown whole, nothing presented as a source, the articles in the closed block",
+          "Texte libre" in md and not v["sources"] and len(v["others"]) == 2 and "src-title" not in md)
+    v = R.view_fast({"language": "en", "sources": src, "text": "**Direct Answer:** I don't have information about the weather.\n\n"
+                                                              "**Applicable Articles:** None.\n\n**Source(s):** None."})
+    md = chat.view_markdown(v)
+    check("fast non-answer in English: no source, no empty list of articles, English labels",
+          "weather" in md and "None" not in md and "src-title" not in md and T.WORDS["en"]["others"].format(n=6) in md, md[:200])
+    v = R.view_fast({"sources": src, "text": "**Réponse directe :** Dix ans (article 263).\n\n**Articles applicables :**\n"
+                                            "- **Article 263** – Code pénal : dix ans.\n- Art. 264 : cinq ans, hors les articles 260 à 262."})
+    check("fast sources: the direct answer's article and each listed article",
+          sorted(x["id"].split("/")[-1] for x in v["sources"]) == ["263", "264"])
     v = R.view_fast({"text": "**الإجابة المباشرة:** العقوبة خمس سنوات حسب الفصل 264.", "sources": src})
     md = chat.view_markdown(v)
     check("fast answer in Arabic: right to left, Arabic word for the sources, cited article found",

@@ -1,0 +1,53 @@
+<svg class="flow" viewBox="0 0 760 698" role="img" aria-label="Parcours du mode Rapide : langue, traduction si besoin, recherche par le sens, par mots-clés et par numéro, fusion, reranking, une réponse" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah2" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="m" d="M0 0 L8 4 L0 8 z"/></marker></defs>
+<rect class="end" x="300" y="10" width="160" height="38" rx="19.0"/>
+<text class="t" x="380.0" y="34.0">Question</text>
+<path class="a" d="M380 48 L380 74" marker-end="url(#ah2)"/>
+<rect class="code" x="250.0" y="76" width="260" height="54" rx="9"/>
+<text class="t" x="380.0" y="99.5">langue</text>
+<text class="s" x="380.0" y="116.5">français, arabe ou anglais ?</text>
+<path class="a" d="M510.0 103 L570 103" marker-end="url(#ah2)"/>
+<text class="l" x="541" y="68" text-anchor="middle">arabe, anglais</text>
+<rect class="llm" x="572" y="76" width="168" height="54" rx="9"/>
+<text class="t" x="656.0" y="99.5">traduction</text>
+<text class="s" x="656.0" y="116.5">vers le français</text>
+<path class="a" d="M380 130 L380 196" marker-end="url(#ah2)"/>
+<text class="l" x="370" y="155" text-anchor="end">français : question telle quelle</text>
+<path class="a" d="M656.0 130 L656.0 150 L382 150" marker-end="url(#ah2)"/>
+<path class="a" d="M380 172 L130 172 L130 196" marker-end="url(#ah2)"/>
+<path class="a" d="M380 172 L630 172 L630 196" marker-end="url(#ah2)"/>
+<rect class="code" x="20" y="198" width="220" height="72" rx="9"/>
+<text class="t" x="130.0" y="222.0">par le sens</text>
+<text class="s" x="130.0" y="239.0">vecteurs Solon,</text>
+<text class="s" x="130.0" y="256.0">20 articles</text>
+<rect class="code" x="270" y="198" width="220" height="72" rx="9"/>
+<text class="t" x="380.0" y="222.0">par mots-clés</text>
+<text class="s" x="380.0" y="239.0">BM25,</text>
+<text class="s" x="380.0" y="256.0">15 articles</text>
+<rect class="code" x="520" y="198" width="220" height="72" rx="9"/>
+<text class="t" x="630.0" y="222.0">par numéro</text>
+<text class="s" x="630.0" y="239.0">si vous citez « article 243 »,</text>
+<text class="s" x="630.0" y="256.0">lu directement</text>
+<path class="a" d="M130 270 L130 298 L320 298 L320 322" marker-end="url(#ah2)"/>
+<path class="a" d="M380 270 L380 322" marker-end="url(#ah2)"/>
+<path class="a" d="M630 270 L630 298 L440 298 L440 322" marker-end="url(#ah2)"/>
+<rect class="code" x="250.0" y="324" width="260" height="54" rx="9"/>
+<text class="t" x="380.0" y="347.5">fusion</text>
+<text class="s" x="380.0" y="364.5">un seul classement, sans doublon</text>
+<path class="a" d="M380 378 L380 404" marker-end="url(#ah2)"/>
+<rect class="code" x="250.0" y="406" width="260" height="72" rx="9"/>
+<text class="t" x="380.0" y="430.0">reranking</text>
+<text class="s" x="380.0" y="447.0">un second modèle relit les candidats,</text>
+<text class="s" x="380.0" y="464.0">les 6 meilleurs articles sont gardés</text>
+<path class="a" d="M380 478 L380 504" marker-end="url(#ah2)"/>
+<rect class="llm" x="250.0" y="506" width="260" height="72" rx="9"/>
+<text class="t" x="380.0" y="530.0">réponse</text>
+<text class="s" x="380.0" y="547.0">un seul appel au modèle,</text>
+<text class="s" x="380.0" y="564.0">à partir de ces 6 articles</text>
+<path class="a" d="M380 578 L380 604" marker-end="url(#ah2)"/>
+<rect class="end" x="280" y="606" width="200" height="38" rx="19.0"/>
+<text class="t" x="380.0" y="630.0">Réponse et articles</text>
+<rect class="llm" x="40" y="674" width="20" height="13" rx="3"/>
+<text class="l" x="68" y="685" text-anchor="start">appel au modèle</text>
+<rect class="code" x="230" y="674" width="20" height="13" rx="3"/>
+<text class="l" x="258" y="685" text-anchor="start">calcul local, sans token</text>
+</svg>

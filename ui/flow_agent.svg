@@ -1,0 +1,74 @@
+<svg class="flow" viewBox="0 0 760 892" role="img" aria-label="Parcours de l&#x27;agent : condense, analyze, puis refuse, clarify ou normalize, retrieve, grade, reformulate, answer, verify, repair, finalize" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah1" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="m" d="M0 0 L8 4 L0 8 z"/></marker></defs>
+<rect class="end" x="300" y="10" width="160" height="38" rx="19.0"/>
+<text class="t" x="380.0" y="34.0">Question</text>
+<path class="a" d="M380 48 L380 74" marker-end="url(#ah1)"/>
+<rect class="llm" x="250.0" y="76" width="260" height="54" rx="9"/>
+<text class="t" x="380.0" y="99.5">condense</text>
+<text class="s" x="380.0" y="116.5">réécrit une question de suivi</text>
+<path class="a" d="M380 130 L380 156" marker-end="url(#ah1)"/>
+<rect class="llm" x="250.0" y="158" width="260" height="54" rx="9"/>
+<text class="t" x="380.0" y="181.5">analyze</text>
+<text class="s" x="380.0" y="198.5">langue, intention, codes concernés</text>
+<path class="a" d="M250.0 185 L190 185" marker-end="url(#ah1)"/>
+<text class="l" x="219" y="152" text-anchor="middle">hors des codes</text>
+<rect class="code" x="20" y="158" width="168" height="54" rx="9"/>
+<text class="t" x="104.0" y="181.5">refuse</text>
+<text class="s" x="104.0" y="198.5">fin de la réponse</text>
+<path class="a" d="M510.0 185 L570 185" marker-end="url(#ah1)"/>
+<text class="l" x="541" y="152" text-anchor="middle">question vague</text>
+<rect class="code" x="572" y="158" width="168" height="54" rx="9"/>
+<text class="t" x="656.0" y="181.5">clarify</text>
+<text class="s" x="656.0" y="198.5">demande une précision</text>
+<path class="a" d="M380 212 L380 238" marker-end="url(#ah1)"/>
+<text class="l" x="390" y="229" text-anchor="start">claire</text>
+<rect class="llm" x="250.0" y="240" width="260" height="54" rx="9"/>
+<text class="t" x="380.0" y="263.5">normalize</text>
+<text class="s" x="380.0" y="280.5">traduit si besoin, vocabulaire juridique</text>
+<path class="a" d="M380 294 L380 320" marker-end="url(#ah1)"/>
+<rect class="code" x="250.0" y="322" width="260" height="72" rx="9"/>
+<text class="t" x="380.0" y="346.0">retrieve</text>
+<text class="s" x="380.0" y="363.0">recherche du mode Rapide, code favorisé,</text>
+<text class="s" x="380.0" y="380.0">8 articles + articles liés</text>
+<path class="a" d="M380 394 L380 428" marker-end="url(#ah1)"/>
+<rect class="llm" x="250.0" y="430" width="260" height="72" rx="9"/>
+<text class="t" x="380.0" y="462.5">grade</text>
+<text class="s" x="380.0" y="479.5">ces articles suffisent-ils ?</text>
+<rect class="code" x="572" y="394" width="168" height="54" rx="9"/>
+<text class="t" x="656.0" y="417.5">retrieve_more</text>
+<text class="s" x="656.0" y="434.5">fusionne, garde 8</text>
+<rect class="llm" x="572" y="486" width="168" height="54" rx="9"/>
+<text class="t" x="656.0" y="509.5">reformulate</text>
+<text class="s" x="656.0" y="526.5">nouvelles requêtes</text>
+<path class="a" d="M510.0 490 L541 490 L541 513 L570 513" marker-end="url(#ah1)"/>
+<text class="l" x="656.0" y="562" text-anchor="middle">non, 2 fois au plus</text>
+<path class="a" d="M656.0 486 L656.0 450" marker-end="url(#ah1)"/>
+<path class="a" d="M572 421 L541 421 L541 446 L512.0 446" marker-end="url(#ah1)"/>
+<path class="a" d="M380 502 L380 538" marker-end="url(#ah1)"/>
+<text class="l" x="390" y="524" text-anchor="start">oui</text>
+<rect class="llm" x="250.0" y="540" width="260" height="54" rx="9"/>
+<text class="t" x="380.0" y="563.5">answer</text>
+<text class="s" x="380.0" y="580.5">affirmations courtes, articles à l&#x27;appui</text>
+<path class="a" d="M380 594 L380 628" marker-end="url(#ah1)"/>
+<rect class="chk" x="250.0" y="630" width="260" height="60" rx="9"/>
+<text class="t" x="380.0" y="656.5">verify</text>
+<text class="s" x="380.0" y="673.5">chaque affirmation contre son article</text>
+<rect class="chk" x="572" y="633" width="168" height="54" rx="9"/>
+<text class="t" x="656.0" y="656.5">repair</text>
+<text class="s" x="656.0" y="673.5">corrige, une seule fois</text>
+<path class="a" d="M510.0 650 L570 650" marker-end="url(#ah1)"/>
+<text class="l" x="541" y="624" text-anchor="middle">non confirmé</text>
+<path class="a" d="M572 672 L512.0 672" marker-end="url(#ah1)"/>
+<path class="a" d="M380 690 L380 716" marker-end="url(#ah1)"/>
+<rect class="code" x="250.0" y="718" width="260" height="54" rx="9"/>
+<text class="t" x="380.0" y="741.5">finalize</text>
+<text class="s" x="380.0" y="758.5">retire ce qui n&#x27;est pas confirmé</text>
+<path class="a" d="M380 772 L380 798" marker-end="url(#ah1)"/>
+<rect class="end" x="280" y="800" width="200" height="38" rx="19.0"/>
+<text class="t" x="380.0" y="824.0">Réponse et sources</text>
+<rect class="llm" x="40" y="868" width="20" height="13" rx="3"/>
+<text class="l" x="68" y="879" text-anchor="start">appel au modèle</text>
+<rect class="chk" x="230" y="868" width="20" height="13" rx="3"/>
+<text class="l" x="258" y="879" text-anchor="start">vérification (appel au modèle)</text>
+<rect class="code" x="500" y="868" width="20" height="13" rx="3"/>
+<text class="l" x="528" y="879" text-anchor="start">calcul local, sans token</text>
+</svg>

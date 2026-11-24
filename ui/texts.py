@@ -97,10 +97,9 @@ MODE_HELP = {
     "fast": ("Une seule recherche et une seule réponse. Rapide et économe, mais sans mémoire de la conversation et sans "
              "vérification."),
 }
-WORDS = {"fr": {"sources": "Sources", "note": "Remarque", "articles": "Articles applicables"},
-         "en": {"sources": "Sources", "note": "Note", "articles": "Applicable articles"},
-         "ar": {"sources": "المصادر", "note": "ملاحظة", "articles": "الفصول المنطبقة"}}
-OTHER_SOURCES = "Autres articles consultés ({n})"
+WORDS = {"fr": {"sources": "Sources", "note": "Remarque", "articles": "Articles applicables", "others": "Autres articles consultés ({n})"},
+         "en": {"sources": "Sources", "note": "Note", "articles": "Applicable articles", "others": "Other articles consulted ({n})"},
+         "ar": {"sources": "المصادر", "note": "ملاحظة", "articles": "الفصول المنطبقة", "others": "فصول أخرى ({n})"}}
 BRAND_SUB = "Assistant juridique"
 MODE_LABEL = "Mode"
 HISTORY_LABEL = "Conversations"
@@ -129,20 +128,34 @@ ABOUT_MODES = """### Les deux modes
 | Hors des codes | refuse | essaie de répondre |
 | Mémoire | tient compte des messages précédents | chaque question est traitée seule |
 | Vérification | chaque affirmation est contrôlée contre son article | aucune |
-| Coût | plusieurs appels au modèle | un ou deux appels |"""
-ABOUT_RETRIEVAL = """### La recherche d'articles
+| Coût | plusieurs appels au modèle (souvent 5 ou plus), environ 10 000 tokens par question | 1 ou 2 appels, environ 2 000 tokens |
+| À choisir pour | une question de suivi, une question vague, une réponse dont chaque phrase est contrôlée | une question précise sur une règle ou un article |
 
-1. Deux recherches en parallèle : par le sens (vecteurs) et par mots-clés (BM25). Si vous citez « article 243 », cet article est ajouté directement.
-2. Les résultats sont fusionnés, puis un second modèle les classe ; les premiers articles sont gardés (8 pour l'Agent, 6 pour Rapide).
-3. En mode Agent seulement : la question est d'abord reformulée en vocabulaire juridique, le code concerné est privilégié, et les articles auxquels les résultats renvoient sont ajoutés."""
+L'Agent consomme plus parce qu'il fait plus de choses : chaque étape est un appel au modèle, et plusieurs relisent les articles. Les deux modes cherchent dans les mêmes textes avec le même moteur : si l'article n'est pas trouvé, aucun des deux ne peut répondre."""
+TAB_AGENT = "Mode Agent"
+TAB_FAST = "Mode Rapide"
 ABOUT_AGENT = """### Le parcours de l'agent
 
-- **condense** : réécrit une question de suivi pour qu'elle se comprenne seule.
+L'agent enchaîne des étapes et peut revenir en arrière. Chaque encadré bleu ou vert est un appel au modèle.
+
+- **condense** : réécrit une question de suivi pour qu'elle se comprenne seule (à partir du deuxième message).
 - **analyze** : détecte la langue, l'intention (répondre, préciser, refuser) et les codes concernés.
-- **retrieve** : la recherche ci-dessus.
-- **grade / reformulate** : juge si les articles suffisent, sinon reformule la recherche (deux fois au plus).
+- **normalize** : traduit la question en français si besoin, puis la reformule en vocabulaire juridique.
+- **retrieve** : lance la recherche du mode Rapide avec la question d'origine et la question reformulée, favorise le code concerné, garde 8 articles et ajoute ceux auxquels ils renvoient.
+- **grade / reformulate** : juge si les articles suffisent ; sinon, nouvelles requêtes (deux fois au plus).
 - **answer** : écrit des affirmations courtes, chacune avec les articles qui la fondent.
-- **verify / repair** : contrôle chaque affirmation contre son article ; corrige ou retire ce qui n'est pas confirmé."""
+- **verify / repair** : contrôle chaque affirmation contre son article, puis corrige ou retire ce qui n'est pas confirmé."""
+ABOUT_FAST = """### Le parcours du mode Rapide
+
+Une seule passe, sans retour en arrière : chercher, classer, répondre. La recherche se fait sur le serveur et ne consomme aucun token.
+
+1. **Langue** : une question en français est cherchée telle quelle. Une question en arabe ou en anglais est d'abord traduite (un appel au modèle), et cherchée aussi dans sa langue d'origine.
+2. **Trois recherches** : par le sens (chaque article est un vecteur ; on prend les 20 plus proches), par mots-clés (BM25, 15 articles) et par numéro d'article si vous en citez un.
+3. **Fusion** : les listes sont réunies ; un article bien classé dans plusieurs listes remonte.
+4. **Reranking** : un second modèle, plus précis mais plus lent, relit chaque candidat avec la question et garde les 6 meilleurs.
+5. **Réponse** : le modèle lit ces 6 articles et répond en un seul appel.
+
+Ce que ce mode ne fait pas : il ne se souvient pas de la conversation, ne demande pas de précision, ne relance pas la recherche et ne contrôle pas sa réponse."""
 ABOUT_TOKENS = """### Tokens
 
 Un token est un morceau de mot que le modèle lit ou écrit. Le compteur additionne tous les appels au modèle faits pour une question : l'entrée est ce que le modèle lit (la question et les articles), la sortie ce qu'il écrit."""

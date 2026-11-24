@@ -66,6 +66,15 @@ def mentioned(text: str) -> set:
     return {n for m in _MENTION.finditer(text or "") for n in re.findall(r"\d+(?:-\w+)?", m.group(1))}
 
 
+_LEAD = re.compile(r"^[\s*•-]*(?:articles?|art\.?|الفصل|المادة)[\s*]*(\d+(?:-\w+)?)", re.I | re.M)
+
+
+def relied_on(sections: dict, text: str) -> set:
+    """Article labels a fast answer rests on: named in the direct answer, or heading an item of its list of articles
+    (not the ones a quoted article merely refers to). Without any, every article the text names."""
+    return mentioned(sections.get("direct", "")) | set(_LEAD.findall(sections.get("articles", ""))) or mentioned(text)
+
+
 def code_name(source) -> str:
     stem = Path(str(source or "")).stem
     return T.CODE_NAMES.get(stem, stem or "?")
@@ -127,11 +136,12 @@ def view_fast(state: dict) -> dict:
         sources.append({"id": src["id"], "label": citation_label(src["id"], {src["id"]: src}),
                         "text": text or T.CITATION_UNAVAILABLE, "available": bool(text), "rtl": is_rtl(text)})
     text = state.get("text") or ""
-    named = mentioned(text)
-    used = [x for x in sources if x["id"].split("/")[-1] in named] or sources      # names none: show all
-    return {"mode": "fast", "kind": "fast", "text": text, "sections": split_sections(text), "sources": used,
+    sections = split_sections(text)
+    named = relied_on(sections, text)
+    used = [x for x in sources if x["id"].split("/")[-1] in named]        # none named (no answer found): no source
+    return {"mode": "fast", "kind": "fast", "text": text, "sections": sections, "sources": used,
             "others": [x for x in sources if x not in used], "unverified": False,
-            "language": "ar" if is_rtl(text) else "fr", "notes": [], "rewritten": None, "dropped": 0, "caveat": None, "claims": []}
+            "language": "ar" if is_rtl(text) else state.get("language") or "fr", "notes": [], "rewritten": None, "dropped": 0, "caveat": None, "claims": []}
 
 
 def view_error(kind: str) -> dict:

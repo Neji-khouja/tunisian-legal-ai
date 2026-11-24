@@ -97,3 +97,26 @@ details.src > summary { padding: 7px 11px; font-size: 13.5px; font-weight: 500; 
 details.src[open] > summary { border-bottom: 1px solid var(--border-color-primary); }
 details.src > *:not(summary) { margin: 8px 12px; font-size: 13.5px; line-height: 1.6; }
 #chat .usage { margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+/* ---------- diagrams (ui/flow_*.svg) */
+.flow-wrap { overflow-x: auto; margin: 10px 0 18px; padding: 18px 10px; border: 1px solid var(--border-color-primary); border-radius: 10px;
+             background: var(--background-fill-primary); }
+svg.flow { display: block; width: 100%; min-width: 600px; max-width: 760px; margin: 0 auto; font-family: inherit; }
+.flow rect { stroke-width: 1.3; fill: var(--background-fill-secondary); stroke: var(--border-color-accent, #94a3b8); }
+.flow rect.llm { fill: #e3ebf6; stroke: #3b6ea5; }
+.flow rect.chk { fill: #e2f2e8; stroke: #2f855a; }
+.flow rect.end { fill: var(--accent); stroke: var(--accent); }
+.dark .flow rect.llm { fill: #1d324b; stroke: #5b8fc7; }
+.dark .flow rect.chk { fill: #173526; stroke: #4fa77a; }
+.flow .t, .flow .s { text-anchor: middle; }
+.flow text { fill: var(--body-text-color); }
+.flow .t { font-size: 14px; font-weight: 600; }
+.flow .s { font-size: 12px; fill: var(--muted); }
+.flow .l { font-size: 12px; fill: var(--muted); }
+.flow .a { fill: none; stroke: var(--muted); stroke-width: 1.3; }
+.flow .m { fill: var(--muted); }
+.flow rect.end + text { fill: #fff; }
+#about table { width: 100%; font-size: 14px; border-collapse: collapse; }
+#about table th, #about table td { padding: 9px 12px; border: 1px solid var(--border-color-primary) !important; vertical-align: top; }
+#about table th { background: var(--background-fill-secondary); }
+#about table td:first-child { white-space: nowrap; font-weight: 550; }
