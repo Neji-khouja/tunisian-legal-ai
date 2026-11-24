@@ -441,3 +441,14 @@ Dev split, French questions with gold articles (17), first search, normalization
 with 8 (1 question better, 0 worse), evidence about 980 tokens and 1290. This is a small gain on few questions.
 Not measured: the final answers. The saved exam runs describe the agent with 6; by the pre-registration above, the new
 version is to be tested on Stage 2 only. `AGENT_TOP_K = 6` gives back exactly the old retrieval (agent/test_normalize_switch.py).
+
+## v2.1: answer style, targeted repair, articles sent once to the verifier (2026-11-24)
+Three switches in config.py, each with the old value given back exactly (tests compare with the old prompts and graph).
+`ANSWER_STYLE = "natural"`: a short plain explanation (the rule, then the main conditions), details only on request; used by
+the agent and by the one-pass pipeline. The law's date and the amendment or repeal of an article are not written by the
+model: ui/laws.py reads them from the PDFs and the article text.
+`REPAIR_MODE = "targeted"`: in the saved exam runs 22 of 24 repairs had at least one confirmed sentence, yet the repair
+rewrote everything (no final sentence was identical to a draft sentence, 67 draft sentences became 47). Now only the rejected
+sentences are rewritten and checked again; if all are rejected, the whole answer is rewritten as before.
+`VERIFY_TEXT_ONCE = True`: 674 -> 490 tokens of claims and articles per check on the saved drafts.
+Not measured: the effect on the answers (no model call was made). The saved exam runs describe the old behaviour.

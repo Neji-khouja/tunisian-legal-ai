@@ -28,10 +28,11 @@ SYNC_EVERY = 300          # seconds between uploads
 SCHEMA = """CREATE TABLE IF NOT EXISTS interactions (
     id INTEGER PRIMARY KEY AUTOINCREMENT, ts TEXT, session TEXT, turn INTEGER, question TEXT, status TEXT, language TEXT,
     answer TEXT, claims TEXT, cited TEXT, dropped INTEGER, unverified INTEGER, degraded TEXT, error TEXT, seconds REAL,
-    key_source TEXT, mode TEXT, tokens_in INTEGER, tokens_out INTEGER)"""
+    key_source TEXT, mode TEXT, tokens_in INTEGER, tokens_out INTEGER, tokens_cached INTEGER,
+    tokens_reasoning INTEGER)"""
 COLUMNS = ("ts", "session", "turn", "question", "status", "language", "answer", "claims", "cited", "dropped", "unverified",
            "degraded", "error", "seconds", "key_source", "mode",
-           "tokens_in", "tokens_out")
+           "tokens_in", "tokens_out", "tokens_cached", "tokens_reasoning")
 
 
 class Store:
@@ -46,7 +47,8 @@ class Store:
         with self._connect() as con:
             con.execute(SCHEMA)
             have = {r[1] for r in con.execute("PRAGMA table_info(interactions)")}
-            for col, kind in (("mode", "TEXT"), ("tokens_in", "INTEGER"), ("tokens_out", "INTEGER")):
+            for col, kind in (("mode", "TEXT"), ("tokens_in", "INTEGER"), ("tokens_out", "INTEGER"),
+                              ("tokens_cached", "INTEGER"), ("tokens_reasoning", "INTEGER")):
                 if col not in have:                      # database created before these columns existed
                     con.execute(f"ALTER TABLE interactions ADD COLUMN {col} {kind}")
 
@@ -54,9 +56,10 @@ class Store:
         return sqlite3.connect(self.path, timeout=10)
 
     def log(self, session: str, turn: int, question: str, state: dict | None, error: str | None, seconds: float,
-            key_source: str, mode: str = "agent", tokens: tuple = (0, 0)):
-        """One row per question. `state` is the agent's final state (None when the run failed with `error`)."""
-        state = state or {}
+            key_source: str, mode: str = "agent", tokens: dict | None = None):
+        """One row per question. tokens: {"in", "out", "cached", "reasoning"}. key_source: owner | personal | cache (an answer
+        reused from memory). `state` is the agent's final state (None when the run failed with `error`)."""
+        state, tokens = state or {}, tokens or {}
         claims = [{"text": c.get("text", ""), "cited_ids": c.get("cited_ids") or []} for c in state.get("claims") or []]
         cited = sorted({cid for c in claims for cid in c["cited_ids"]} | {x["id"] for x in state.get("sources") or []})
         row = (datetime.now(timezone.utc).isoformat(timespec="seconds"), session, turn, question,
@@ -64,7 +67,8 @@ class Store:
                json.dumps(claims, ensure_ascii=False), json.dumps(cited), int(state.get("dropped") or 0),
                int(any(str(d).startswith("verify_failed") for d in state.get("degraded") or [])),
                json.dumps([str(d) for d in state.get("degraded") or []], ensure_ascii=False), error,
-               round(seconds, 2), key_source, mode, int(tokens[0]), int(tokens[1]))
+               round(seconds, 2), key_source, mode,
+               *(int(tokens.get(k) or 0) for k in ("in", "out", "cached", "reasoning")))
         with self._lock, self._connect() as con:
             con.execute(f"INSERT INTO interactions ({','.join(COLUMNS)}) VALUES ({','.join('?' * len(COLUMNS))})", row)
         self._maybe_sync()

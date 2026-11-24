@@ -55,6 +55,16 @@ class Backend:
         lang = "ar" if pipeline.detect_arabic(question) else "en" if pipeline.detect_english(question) else "fr"
         yield "final", {"status": "done", "mode": "fast", "language": lang, "text": text, "sources": sources, "degraded": []}
 
+    def remember(self, thread_id: str, state: dict):
+        """Write a finished answer (chat.AnswerCache) into a conversation, as if the agent had just given it."""
+        if state.get("mode") == "fast":             # that mode has no memory
+            return
+        q = state.get("full_question") or state.get("question") or ""
+        self.graph.update_state({"configurable": {"thread_id": thread_id}},
+                                {"question": q, "full_question": q, "status": "done", "language": state.get("language"),
+                                 "history": [{"q": q, "a": (state.get("text") or "")[:600]}], "degraded": [],
+                                 "original_question": None, "clarify_count": 0}, as_node="finalize")
+
     def forget(self, thread_id: str):
         try:
             self.graph.checkpointer.delete_thread(thread_id)

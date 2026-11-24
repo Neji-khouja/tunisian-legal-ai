@@ -38,6 +38,7 @@ else:
     POLICY = keys.KeyPolicy.from_env()
 _BACKEND = {}
 _LOCK = threading.Lock()
+CACHE = None if os.environ.get("UI_ANSWER_CACHE", "on").strip().lower() in ("off", "0", "false", "no") else chat.AnswerCache()
 MAX_CONVERSATIONS = 40                              # kept in the browser, oldest dropped
 # Gradio encrypts browser storage with this. It only protects a visitor's own list on their own machine, and it must
 # stay the same: with the default (random at each start) every restart would erase everyone's conversations.
@@ -72,8 +73,11 @@ def find(convs, conv_id):
 
 def meter(convs, conv_id):
     f = lambda n: f"{n:,}".replace(",", " ")
-    rows = ((T.TOKENS_CONV, (find(convs, conv_id) or {}).get("tokens", 0)),
-            (T.TOKENS_DEVICE, sum(c.get("tokens", 0) for c in convs)))
+    rows = [(T.TOKENS_CONV, (find(convs, conv_id) or {}).get("tokens", 0)),
+            (T.TOKENS_DEVICE, sum(c.get("tokens", 0) for c in convs))]
+    cached = sum(c.get("cached", 0) for c in convs)
+    if cached:
+        rows.append((T.TOKENS_HIT, cached))
     return ('<div class="meter"><div class="meter-title">' + T.TOKENS_TITLE + "</div>"
             + "".join(f'<div class="meter-row"><span>{k}</span><b>{f(v)}</b></div>' for k, v in rows) + "</div>")
 
@@ -108,13 +112,14 @@ def respond(question, messages, conv_id, convs, mode, personal_key):
     conv.update(messages=messages, ts=time.time(), mode=mode)
     yield (*page(messages), "", conv_id, convs, *side(convs, conv_id))
     steps = []
-    for kind, value in chat.ask(question, conv_id, turn, personal_key or "", backend(), POLICY, STORE, mode):
+    for kind, value in chat.ask(question, conv_id, turn, personal_key or "", backend(), POLICY, STORE, mode, CACHE):
         if kind == "step":
             steps.append(value)
             messages[-1] = {"role": "assistant", "content": f'<div class="steps">{" → ".join(steps[-3:])}…</div>'}
         else:
             messages[-1] = {"role": "assistant", "content": value["markdown"]}
             conv["tokens"] += value["tokens_in"] + value["tokens_out"]
+            conv["cached"] = conv.get("cached", 0) + value["tokens_cached"]
             convs.sort(key=lambda c: -c["ts"])
             del convs[MAX_CONVERSATIONS:]
         yield (*page(messages), gr.skip(), conv_id, convs, *side(convs, conv_id))      # skip: keep what is being typed

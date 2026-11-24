@@ -10,17 +10,8 @@ EVIDENCE = {"PenalFr/s02/264": {"source": "PenalFr.pdf", "article": "264", "law_
             "PenalFr/s02/264-bis": {"source": "PenalFr.pdf", "article": "264", "law_type": "penal", "text": PLACEHOLDER_ARTICLE_2},
             "travailFr/s01/14": {"source": "travailFr.pdf", "article": "14", "law_type": "travail", "text": PLACEHOLDER_ARTICLE}}
 
-FAST_TEXT = """**Réponse directe :**
-[Exemple] Réponse rapide en un seul passage, sans vérification.
-
-**Articles applicables :**
-- **Article 264**, Code pénal : texte fictif.
-
-**Source(s) :**
-- *PenalFr.pdf*
-
-**Explication :**
-[Exemple] L'article 264 est cité ici pour montrer la mise en page."""
+FAST_TEXT = ("[Exemple] Réponse courte en un seul passage, sans vérification (article 264). "
+             "Elle vaut sauf dans les cas particuliers prévus par le texte.")
 
 ANSWER_STEPS = ["condense", "analyze", "retrieve", "grade", "answer", "verify", "repair", "verify", "finalize"]
 
@@ -89,7 +80,7 @@ class DemoBackend:
             time.sleep(self.delay)
             yield "step", node
         (self.pending.add if case == "clarify" else self.pending.discard)(thread_id)
-        yield "usage", (4200, 650)
+        yield "usage", {"in": 4200, "out": 650, "cached": 1500, "reasoning": 300}
         yield "final", final_state(case, question)
 
     def stream_fast(self, question: str, thread_id: str):
@@ -97,11 +88,14 @@ class DemoBackend:
         yield "step", "retrieve"
         time.sleep(self.delay)
         yield "step", "answer"
-        yield "usage", (900, 180)
+        yield "usage", {"in": 900, "out": 180, "cached": 0, "reasoning": 60}
         yield "final", {"status": "done", "mode": "fast", "degraded": [],
                         "text": FAST_TEXT,
                         "sources": [{"id": i, "source": e["source"], "article": e["article"], "text": e["text"]}
                                     for i, e in list(EVIDENCE.items())[:2]]}
+
+    def remember(self, thread_id: str, state: dict):
+        pass
 
     def forget(self, thread_id: str):
         self.pending.discard(thread_id)

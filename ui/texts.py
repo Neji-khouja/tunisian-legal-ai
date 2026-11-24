@@ -38,23 +38,6 @@ NODE_LABELS = {
     "finalize": "Finalisation",
 }
 
-CODE_NAMES = {
-    "ArbitrageFr": "Code de l'arbitrage",
-    "COC": "Code des obligations et des contrats",
-    "CommerceFr": "Code de commerce",
-    "DIPFR": "Code de droit international privé",
-    "EnfantFr": "Code de la protection de l'enfant",
-    "NationaliteFr": "Code de la nationalité",
-    "PenalFr": "Code pénal",
-    "Procedurecivilecom": "Code de procédure civile et commerciale",
-    "ProcedurepenaleFr": "Code de procédure pénale",
-    "Statutpersonnel": "Code du statut personnel",
-    "dtreelFr": "Code des droits réels",
-    "societeFr": "Code des sociétés commerciales",
-    "travailFr": "Code du travail",
-    "tun_RecAcFreeLi": "Constitution",
-}
-
 ARTICLE = "art."
 CITATION_UNAVAILABLE = "Texte de l'article indisponible."
 UNVERIFIED_BANNER = ("**Réponse non vérifiée** : la vérification affirmation par affirmation a échoué pour cette réponse. "
@@ -108,6 +91,11 @@ NEW_CHAT = "Nouvelle conversation"
 DELETE_CHAT = "Supprimer la conversation"
 SEND = "Envoyer"
 TOKENS_LINE = "{total} tokens (entrée {tin}, sortie {tout}) · {sec} s · mode {mode}"
+TOKENS_CACHED = ", dont {n} en cache"
+TOKENS_REASONING = ", dont {n} de réflexion"
+TOKENS_HIT = "En cache (hors limites)"
+FROM_CACHE = "Réponse déjà calculée pour cette question : 0 token"
+REPEALED = "Attention : {label} est indiqué comme {note}. Vérifiez le texte en vigueur."
 TOKENS_TITLE = "Tokens utilisés"
 TOKENS_CONV = "Cette conversation"
 TOKENS_DEVICE = "Toutes les conversations"
@@ -143,8 +131,10 @@ L'agent enchaîne des étapes et peut revenir en arrière. Chaque encadré bleu 
 - **normalize** : traduit la question en français si besoin, puis la reformule en vocabulaire juridique.
 - **retrieve** : lance la recherche du mode Rapide avec la question d'origine et la question reformulée, favorise le code concerné, garde 8 articles et ajoute ceux auxquels ils renvoient.
 - **grade / reformulate** : juge si les articles suffisent ; sinon, nouvelles requêtes (deux fois au plus).
-- **answer** : écrit des affirmations courtes, chacune avec les articles qui la fondent.
-- **verify / repair** : contrôle chaque affirmation contre son article, puis corrige ou retire ce qui n'est pas confirmé."""
+- **answer** : écrit une courte explication, chaque phrase avec les articles qui la fondent. Demandez « plus de détails » pour une réponse plus complète.
+- **verify / repair** : contrôle chaque phrase contre son article, puis corrige ou retire seulement celles qui ne sont pas confirmées.
+
+La date de la loi et les mentions « modifié » ou « abrogé » ne viennent pas du modèle : elles sont lues dans les textes."""
 ABOUT_FAST = """### Le parcours du mode Rapide
 
 Une seule passe, sans retour en arrière : chercher, classer, répondre. La recherche se fait sur le serveur et ne consomme aucun token.
@@ -158,7 +148,7 @@ Une seule passe, sans retour en arrière : chercher, classer, répondre. La rech
 Ce que ce mode ne fait pas : il ne se souvient pas de la conversation, ne demande pas de précision, ne relance pas la recherche et ne contrôle pas sa réponse."""
 ABOUT_TOKENS = """### Tokens
 
-Un token est un morceau de mot que le modèle lit ou écrit. Le compteur additionne tous les appels au modèle faits pour une question : l'entrée est ce que le modèle lit (la question et les articles), la sortie ce qu'il écrit."""
+Un token est un morceau de mot que le modèle lit ou écrit. Le compteur additionne tous les appels au modèle faits pour une question : l'entrée est ce que le modèle lit (la question et les articles), la sortie ce qu'il écrit, y compris sa réflexion, qui n'est pas affichée. Les tokens en cache sont des débuts de texte identiques d'un appel à l'autre : le fournisseur ne les compte pas dans ses limites. Une question déjà posée telle quelle par quelqu'un reçoit la réponse gardée en mémoire, sans nouveau token."""
 ABOUT_DATA = """### Vos données
 
 Les questions et les réponses sont enregistrées sur le serveur pour évaluer le système. La liste des conversations, elle, est gardée dans votre navigateur ; la supprimer n'efface pas cet enregistrement."""

@@ -103,7 +103,7 @@ marche" tab with the agent diagram.
 
 Every question and answer the web interface handles is written to a SQLite file, `logs/interactions.db` (`RAG_LOG_DB`
 changes the path): time, session id, question, status, answer, claims, cited article ids, whether verification failed,
-mode, input and output tokens, seconds, and whether the owner's or the visitor's key was used. API keys are never stored.
+mode, input and output tokens (and how many were cached or reasoning), seconds, and whether the owner's or the visitor's key was used. API keys are never stored.
 The interface tells visitors that questions are recorded.
 
 ## Deploy on a Hugging Face Space (Gradio)
@@ -121,6 +121,8 @@ The YAML block at the top of this file configures the Space (`sdk: gradio`, entr
 3. In the Space settings, add these secrets:
    - `GROQ_API_KEY`: your key (shared by all visitors; `UI_OWNER_DAILY_CAP` limits the questions per day on it, 30 by
      default, `0` removes the limit; visitors can paste their own key in the page).
+   - `UI_ANSWER_CACHE=off`: optional, recomputes every answer. By default the first question of a conversation reuses the
+     answer already given to the same question (kept in memory until the next restart).
    - Keeping the log (a Space loses its disk at each restart), one of:
      - `RAG_LOG_BACKUP_DIR`: a folder of a private Storage Bucket mounted read-write in the Space, for example
        `/data/logs` (no token needed). The database is copied there after every question, as one file per start. Do not

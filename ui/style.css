@@ -85,6 +85,9 @@ footer { display: none !important; }
 #chat .bot.message { background: transparent !important; padding-left: 0 !important; }
 #chat .user.message { background: var(--accent-soft) !important; border-radius: 14px !important; color: var(--body-text-color) !important; }
 .claim { margin: 0 0 8px; }
+#chat .claim { line-height: 1.7; }
+#chat ul.claim { padding-inline-start: 20px; }
+#chat .law { margin: 8px 0 4px; font-size: 14px; color: var(--muted); }
 #chat .claim sup { font-size: 11px; font-weight: 600; color: var(--accent-text); }
 #chat .note { margin: 6px 0; font-size: 13.5px; color: var(--muted); }
 .warn { margin: 6px 0; padding: 9px 12px; font-size: 13.5px; border-radius: 8px; border: 1px solid #e5c07b; background: #fdf6e3; color: #6b4e00; }

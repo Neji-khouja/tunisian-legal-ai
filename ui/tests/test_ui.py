@@ -251,7 +251,7 @@ def test_store():
     con.commit()
     con.close()
     check("a database from before the mode and token columns is upgraded in place",
-          {"mode", "tokens_in", "tokens_out"} <= set(store.Store(old, upload=False).log("s", 1, "q", state, None, 1, "owner", "fast", (3, 4)) or store.Store(old, upload=False).rows()[0]))
+          {"mode", "tokens_in", "tokens_out", "tokens_cached", "tokens_reasoning"} <= set(store.Store(old, upload=False).log("s", 1, "q", state, None, 1, "owner", "fast", {"in": 3, "out": 4}) or store.Store(old, upload=False).rows()[0]))
     check("no API key column or value anywhere in the schema", "key" not in " ".join(store.COLUMNS).replace("key_source", ""))
     bad = store.Store(tmp / "b.db", upload=lambda p: 1 / 0)
     bad.log("s", 1, "q", state, None, 0.1, "owner")
@@ -273,6 +273,91 @@ def test_store():
     st3 = store.Store(tmp / "interactions-y.db", upload=False)
     st3.log("s10", 1, "encore", state, None, 0.1, "owner")
     check("load_all with two files", sorted(r["question"] for r in store.load_all(tmp)) == ["autre", "encore"])
+
+
+def test_laws():
+    import laws as L
+    import chat
+    try:
+        import fitz
+        import functools
+        norm = lambda x: re.sub(r"\s*-\s*", "-", re.sub(r"n°\s*", "n° ", re.sub(r"\s+", " ", x))).replace("’", "'").lower()
+        pdf = functools.lru_cache(None)(lambda stem: norm("".join(x.get_text() for x in fitz.open(UI.parent / "data" / f"{stem}.pdf"))))
+        miss = [stem for stem, a in L.ACTS.items() if norm(L.act(*a)) not in pdf(stem)]
+        check("every code's act, with its date, is written in its PDF", not miss, miss)
+        miss = [k for k, v in L.SECTIONS.items() if norm(v) not in pdf(k.split("/")[0])]
+        check("every annexed act named is written in its PDF", not miss, miss)
+        check("the act promulgates or recasts the code (the words are next to it in the PDF)", not [
+            stem for stem, a in L.ACTS.items() if stem not in ("PenalFr", "tun_RecAcFreeLi")
+            and not re.search(re.escape(norm(L.act(*a))) + r".{0,60}(promulgation|publication|refonte)", pdf(stem))])
+    except ImportError:
+        print("skip PDF checks (PyMuPDF missing)")
+    check("the 14 codes have a name in the three languages", all(set(L.NAMES[x]) == set(L.ACTS) for x in L.NAMES) and len(L.ACTS) == 14)
+    check("a code's article, an annexed law's, the promulgating act's, an unidentified annex's",
+          [R.citation_label(x) for x in ("PenalFr/s02/264", "Statutpersonnel/s07/3", "PenalFr/s00/1", "EnfantFr/s04/224")]
+          == ["Code pénal, art. 264", "Loi n° 98-94 du 9 novembre 1998, art. 3", "Décret du 9 juillet 1913, art. 1",
+              "Texte annexé au Code de la protection de l'enfant, art. 224"])
+    T1 = "Contexte : Section II\nArticle 260 (Modifié par la loi n° 89-23 du \n27 février 1989).- Est puni"
+    T2 = "Article 6 (Abrogé par l’article 7 de la loi n°2010-39 du 26 juillet 2010, portant unification de l’âge).-"
+    T3 = "Art. 232 (Abrogée par le décret du 26 mai 1949 et ajouté par la loi n° 64-34 du 2 juillet 1964).- Sera"
+    T4 = "Article 264.- La peine est de cinq ans (article 5) hors les cas prévus"
+    check("amendment read from the article, not from its body", [L.note(x) for x in (T1, T4)] == ["modifié par la loi n° 89-23 du 27 février 1989", ""])
+    check("repealed, and repealed then replaced", [L.repealed(x) for x in (T1, T2, T3, T4)] == [False, True, False, False]
+          and L.note(T2) == "abrogé par l'article 7 de la loi n° 2010-39 du 26 juillet 2010")
+    one_fr = L.sentence(["PenalFr/s02/260"], {"PenalFr/s02/260": T1})
+    check("one article: law, date and amendment", one_fr == "Cette règle figure à l'article 260 du Code pénal (décret du 9 juillet 1913). "
+          "Cet article a été modifié par la loi n° 89-23 du 27 février 1989.", one_fr)
+    check("several articles and laws, grouped; no amendment list",
+          L.sentence(["PenalFr/s02/260", "travailFr/s01/14", "PenalFr/s02/264"], {"PenalFr/s02/260": T1})
+          == "Ces règles figurent aux articles 260 et 264 du Code pénal (décret du 9 juillet 1913) et à l'article 14 du Code du travail (loi n° 66-27 du 30 avril 1966).")
+    check("the same sentence in English and Arabic, amendment included",
+          L.sentence(["PenalFr/s02/260"], {"PenalFr/s02/260": T1}, "en") == "This rule is in article 260 of the Penal Code (Decree of 9 July 1913). "
+          "This article was amended by Law No. 89-23 of 27 February 1989."
+          and "المجلة الجزائية" in L.sentence(["PenalFr/s02/260"], {}, "ar"))
+    check("an annexed law named in the answer's language", "article 3 of Law No. 98-94 of 9 November 1998" in L.sentence(["Statutpersonnel/s07/3"], {}, "en")
+          and "de la loi n° 98-94 du 9 novembre 1998" in L.sentence(["Statutpersonnel/s07/3"], {}))
+    st = {"status": "done", "language": "fr", "claims": [{"text": "Règle.", "cited_ids": ["CommerceFr/s01/6"]}],
+          "evidence": {"CommerceFr/s01/6": {"source": "CommerceFr.pdf", "article": "6", "text": T2}}}
+    md = chat.view_markdown(R.view_v2(st))
+    check("a repealed article is flagged above the sources and in its label",
+          md.index("Attention : Code de commerce, art. 6") < md.index("src-title") and "(abrogé par l" in md and "a été abrogé" not in md)
+    many = chat.view_markdown(R.view_v2(st | {"claims": [{"text": f"Phrase {i}.", "cited_ids": ["CommerceFr/s01/6"]} for i in range(5)]}))
+    check("up to 4 sentences: a paragraph; more: a list", "<ul" not in md and many.count("<li>") == 5)
+
+
+def test_cache():
+    import chat
+    import store
+    import tempfile
+    st = store.Store(Path(tempfile.mkdtemp()) / "k.db", upload=False)
+    be, pol, cache = stub.DemoBackend(0), keys.KeyPolicy(True, 2, lambda: True), chat.AnswerCache(size=2)
+    seen = []
+    be.remember = lambda t, s: seen.append((t, s["claims"][0]["text"]))
+    run = lambda q, t, turn=1, mode="agent": list(chat.ask(q, t, turn, "", be, pol, st, mode, cache))
+    ok_state = stub.final_state("answer", "x") | {"dropped": 0}
+    be.stream_v2 = lambda q, t: iter([("usage", {"in": 10, "out": 5}), ("final", dict(ok_state, question=q, full_question=q))])
+    first = run("Quelle peine pour le vol ?", "a")
+    again = run("  quelle peine pour le VOL", "b")
+    check("same first question (case, spaces, final punctuation ignored): same answer, 0 token, no step",
+          again[-1][1]["tokens_in"] == 0 and T.FROM_CACHE in again[-1][1]["markdown"] and len(again) == 1
+          and again[-1][1]["markdown"].split("<div class=\"usage\">")[0] == first[-1][1]["markdown"].split("<div class=\"usage\">")[0])
+    check("the conversation is told the answer, for follow-up questions", [x[0] for x in seen] == ["b"])
+    check("a reused answer does not use the owner's daily cap, and is logged as 'cache' with 0 token",
+          pol.remaining() == 1 and st.rows()[-1]["key_source"] == "cache" and st.rows()[-1]["tokens_in"] == 0 and st.rows()[-1]["answer"] == st.rows()[0]["answer"])
+    check("the other mode and later turns are computed", T.FROM_CACHE not in run("Quelle peine pour le vol ?", "c", mode="fast")[-1][1]["markdown"]
+          and cache.get("Quelle peine pour le vol ?", "agent") is not None)
+    pol2 = keys.KeyPolicy(True, 0, lambda: True)
+    later = list(chat.ask("Quelle peine pour le vol ?", "a", 2, "", be, pol2, st, "agent", cache))
+    check("a question repeated inside its conversation is answered again", T.FROM_CACHE not in later[-1][1]["markdown"])
+    c = chat.AnswerCache()
+    bad = [ok_state | {"dropped": 1}, ok_state | {"degraded": ["verify_failed: X"]}, stub.final_state("clarify", "q"), stub.final_state("refuse", "q"),
+           ok_state | {"claims": []}, ok_state | {"is_followup": True}]
+    check("not kept: dropped sentences, a failed step, a clarification, a refusal, no answer, a follow-up", not any(c.put(f"q{i}", "agent", b) for i, b in enumerate(bad)))
+    check("not kept: a fast answer that rests on no article", not c.put("q", "fast", {"status": "done", "mode": "fast", "text": "Je ne sais pas.", "sources": []}))
+    for i in range(4):
+        cache.put(f"question {i}", "agent", ok_state)
+    check("the oldest answers leave when it is full", cache.get("question 0", "agent") is None and cache.get("question 3", "agent") is not None)
+    check("only the cited articles are kept", set(cache.get("question 3", "agent")["evidence"]) == {"PenalFr/s02/264", "PenalFr/s02/264-bis"})
 
 
 def test_fast_layout():
@@ -330,10 +415,10 @@ def test_chat():
         return [e for e in ev if e[0] == "step"], ev[-1][1]["markdown"]
     steps, md = run("Que risque-t-on en cas de vol simple ?")
     check("answer: steps streamed in French, then one Markdown answer with numbered claims and details per citation",
-          [x[1] for x in steps][:2] == [T.NODE_LABELS["condense"], T.NODE_LABELS["analyze"]] and "Première affirmation, citée par un article. <sup>[1]</sup>" in md
+          [x[1] for x in steps][:2] == [T.NODE_LABELS["condense"], T.NODE_LABELS["analyze"]] and "Première affirmation, citée par un article.<sup>[1]</sup> [Exemple] Seconde affirmation" in md
           and "<sup>[1]</sup><sup>[2]</sup>" in md and "<summary>[1] Code pénal, art. 264</summary>" in md and "<script" not in md)
     check("answer first, then the remark, then the sources (each article once)",
-          md.index("Seconde affirmation") < md.index("Remarque") < md.index("src-title") < md.index("<summary>[1]")
+          md.index("Seconde affirmation") < md.index("Ces règles figurent") < md.index("Remarque") < md.index("src-title") < md.index("<summary>[1]")
           and md.count("<summary>") == 2)
     steps, md = run("Puis-je rompre mon contrat ?", "t2")
     check("clarify: question back plus the hint", "S&#x27;agit-il" in md and T.CLARIFY_HINT in md)
@@ -362,17 +447,17 @@ def test_chat():
           and rows[-2]["error"] == "owner_cap", [(r["status"], r["error"], r["key_source"]) for r in rows])
     out = list(chat.ask("vol", "t10", 1, "", be, pol, st))[-1][1]
     check("token meter: usage line with the total, input and output tokens", out["tokens_in"] == 4200 and out["tokens_out"] == 650
-          and "4 850 tokens (entrée 4 200, sortie 650)" in out["markdown"] and "mode agent" in out["markdown"], out["markdown"][-120:])
+          and "4 850 tokens (entrée 4 200, dont 1 500 en cache, sortie 650, dont 300 de réflexion)" in out["markdown"] and out["tokens_cached"] == 1500 and "mode agent" in out["markdown"], out["markdown"][-120:])
     out = list(chat.ask("Quelle est la peine du vol ?", "t11", 1, "", be, pol, st, "fast"))
     fast = out[-1][1]
     check("fast mode: two steps, one answer, the articles given to the model, 1080 tokens",
           [e[1] for e in out if e[0] == "step"] == [T.NODE_LABELS["retrieve"], T.NODE_LABELS["answer"]]
-          and "Réponse rapide" in fast["markdown"] and "Sources" in fast["markdown"]
+          and "Réponse courte" in fast["markdown"] and "Sources" in fast["markdown"]
           and "<summary>Code pénal, art. 264</summary>" in fast["markdown"] and "1 080 tokens" in fast["markdown"]
           and "mode rapide" in fast["markdown"])
     r = st.rows()[-1]
     check("log keeps the mode, the tokens and the articles of a fast answer",
-          r["mode"] == "fast" and r["tokens_in"] == 900 and r["tokens_out"] == 180 and "PenalFr/s02/264" in r["cited"], r)
+          r["tokens_reasoning"] == 60 and r["tokens_cached"] == 0 and r["mode"] == "fast" and r["tokens_in"] == 900 and r["tokens_out"] == 180 and "PenalFr/s02/264" in r["cited"], r)
     out = list(chat.ask("erreur", "t12", 1, "", be, pol, st))[-1][1]["markdown"]
     check("an error row has no usage line", "tokens" not in out)
     class Broken:
@@ -403,7 +488,7 @@ def test_policy_in_app():
 
 
 if __name__ == "__main__":
-    for t in (test_views, test_errors, test_policy, test_session_key, test_store, test_fast_layout, test_chat, test_app_demo, test_policy_in_app):
+    for t in (test_views, test_errors, test_policy, test_session_key, test_store, test_laws, test_cache, test_fast_layout, test_chat, test_app_demo, test_policy_in_app):
         t()
     print(f"\n{sum(RESULTS)}/{len(RESULTS)} checks passed")
     sys.exit(0 if all(RESULTS) else 1)

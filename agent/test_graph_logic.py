@@ -344,6 +344,24 @@ check("verify: an article's text is sent once and referred to afterwards; every 
       once.count("TEXTE UN") == 1 and "(text given above, under claim 1)" in once and once.count("Cited [") == 4 and "(not in evidence)" in once)
 check("verify: False gives the v2 block (text repeated under each claim)", twice.count("TEXTE UN") == 2 and "given above" not in twice)
 
+# an answer taken from the interface's memory (ui/backend.py remember): the next question sees it
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "ui"))
+from backend import Backend
+cfg = {"configurable": {"thread_id": "remember-test"}}
+Backend.remember(SimpleNamespace(graph=g.app), "remember-test", {"full_question": "Quelle peine pour le vol ?", "text": "Cinq ans.", "language": "fr"})
+vals = g.app.get_state(cfg).values
+check("remember: the answer is in the conversation's history and nothing is pending",
+      vals["history"] == [{"q": "Quelle peine pour le vol ?", "a": "Cinq ans."}] and g.app.get_state(cfg).next == () and vals["status"] == "done")
+asked = []
+real_condense, g.condense = g.condense, lambda history, q: (asked.append(history), SimpleNamespace(question=q + " (vol)", is_followup=True))[1]
+real_an, g.analyze = g.analyze, lambda q, hint=None: SimpleNamespace(language="fr", intent="out_of_scope", target_codes=[], clarification_question=None)
+try:
+    out = g.app.invoke({"question": "et la tentative ?"}, cfg)
+finally:
+    g.condense, g.analyze = real_condense, real_an
+check("remember: a follow-up is condensed with that answer", asked and asked[0][0]["a"] == "Cinq ans." and out["question"] == "et la tentative ? (vol)")
+Backend.remember(SimpleNamespace(graph=None), "x", {"mode": "fast"})
+
 # answer style: the prompt sent follows config.ANSWER_STYLE, the evaluated prompts are unchanged
 import hashlib
 import config as C

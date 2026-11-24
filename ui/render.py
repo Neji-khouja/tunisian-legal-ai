@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "eval"))
 import harness_core as hc
+import laws
 import texts as T
 
 ARABIC = re.compile(r"[؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]")
@@ -75,21 +76,17 @@ def relied_on(sections: dict, text: str) -> set:
     return mentioned(sections.get("direct", "")) | set(_LEAD.findall(sections.get("articles", ""))) or mentioned(text)
 
 
-def code_name(source) -> str:
-    stem = Path(str(source or "")).stem
-    return T.CODE_NAMES.get(stem, stem or "?")
-
-
-def citation_label(cid: str, evidence: dict) -> str:
-    """'Code pénal, art. 220-bis': the article label comes from the chunk id, as in agent/answer.py."""
-    source = (evidence.get(cid) or {}).get("source") or cid.split("/")[0]
-    return f"{code_name(source)}, {T.ARTICLE} {cid.split('/')[-1]}"
+def citation_label(cid: str) -> str:
+    """'Code pénal, art. 220-bis': the law from the id's section (an annexed law is not the code), the article label from
+    the id, as in agent/answer.py."""
+    return f"{laws.law(cid)[0]}, {T.ARTICLE} {cid.split('/')[-1]}"
 
 
 def citation(cid: str, evidence: dict) -> dict:
+    """note: what the article says of its own amendment; repealed: it says it is repealed."""
     text = (evidence.get(cid) or {}).get("text")
-    return {"id": cid, "label": citation_label(cid, evidence), "text": text or T.CITATION_UNAVAILABLE,
-            "available": bool(text), "rtl": is_rtl(text or "")}
+    return {"id": cid, "label": citation_label(cid), "text": text or T.CITATION_UNAVAILABLE, "available": bool(text),
+            "rtl": is_rtl(text or ""), "note": laws.note(text or ""), "repealed": laws.repealed(text or "")}
 
 
 def _degraded_notes(degraded: list) -> list[str]:
@@ -132,9 +129,7 @@ def view_fast(state: dict) -> dict:
     """Result of the one-pass pipeline -> view: the model's text and the articles it was given."""
     sources = []
     for src in state.get("sources") or []:
-        text = src.get("text") or ""
-        sources.append({"id": src["id"], "label": citation_label(src["id"], {src["id"]: src}),
-                        "text": text or T.CITATION_UNAVAILABLE, "available": bool(text), "rtl": is_rtl(text)})
+        sources.append(citation(src["id"], {src["id"]: src}))
     text = state.get("text") or ""
     sections = split_sections(text)
     named = relied_on(sections, text)
