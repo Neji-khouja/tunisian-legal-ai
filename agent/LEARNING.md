@@ -429,3 +429,15 @@ zero is reported as "no detectable difference". Known weaknesses are reported, n
 support is not applicability (recel, periode d'essai art. 370), a date read as an article
 number, ambiguity gate recall 8/10, verifier calibrated only on blatant French mutations,
 few Arabic items in Stage 1.
+
+## v2.1: the agent keeps 8 articles instead of 6 (2026-11-24, config.AGENT_TOP_K)
+On the deployed app the agent answered "Quelle est la peine pour le vol simple ?" without article 264, the article that
+gives the penalty. Article 264 says "tous autres vols", never "vol simple", so the reranker places it low and a limit of 6
+can cut it, at the first search or when a reformulation's results are merged in.
+Measured on the real retrieval functions with Groq disabled, normalized queries and reformulations written by hand:
+article 264 is in the evidence after the first search in 8/10 cases with 6 and 9/10 with 8, after one reformulation in
+16/20 and 18/20, after two in 18/20 and 20/20.
+Dev split, French questions with gold articles (17), first search, normalization off: gold recall 0.739 with 6 and 0.759
+with 8 (1 question better, 0 worse), evidence about 980 tokens and 1290. This is a small gain on few questions.
+Not measured: the final answers. The saved exam runs describe the agent with 6; by the pre-registration above, the new
+version is to be tested on Stage 2 only. `AGENT_TOP_K = 6` gives back exactly the old retrieval (agent/test_normalize_switch.py).

@@ -31,6 +31,8 @@ EVIDENCE_TEXT_CAP      = 3000    # characters of a long article shown in the evi
 BM25_TOKENIZER         = "whitespace"   # "whitespace" (v1.1) | "lower" | "fold" | "elision" | "stem" (retriever.py)
 NORMALIZE_QUERY        = "v3"    # "off" | "v3": the first query of a turn is normalized once (agent/normalize.py), the pools of the
                                  # original and normalized queries are fused by RRF and reranked on the normalized query
+AGENT_TOP_K            = 8       # articles the agent keeps after a search and after each reformulation (6 = the v2.1 retrieval
+                                 # before this switch; the one-pass pipeline keeps RERANK_TOP_K)
 
 DB_DIR   = DB_V12 if INDEX_V12 else DB_V11
 

@@ -133,7 +133,7 @@ ABOUT_MODES = """### Les deux modes
 ABOUT_RETRIEVAL = """### La recherche d'articles
 
 1. Deux recherches en parallèle : par le sens (vecteurs) et par mots-clés (BM25). Si vous citez « article 243 », cet article est ajouté directement.
-2. Les résultats sont fusionnés, puis un second modèle les classe ; les 6 premiers articles sont gardés.
+2. Les résultats sont fusionnés, puis un second modèle les classe ; les premiers articles sont gardés (8 pour l'Agent, 6 pour Rapide).
 3. En mode Agent seulement : la question est d'abord reformulée en vocabulaire juridique, le code concerné est privilégié, et les articles auxquels les résultats renvoient sont ajoutés."""
 ABOUT_AGENT = """### Le parcours de l'agent
 

@@ -39,7 +39,8 @@ Retrieval (`retriever.py`, `reranker.py`):
 
 1. Semantic search (Solon embeddings in ChromaDB) and BM25, per query and per detected code.
 2. Direct lookup when the question names an article ("article 243").
-3. Pools merged, then reranked with a multilingual cross-encoder; the top 6 articles go to the model.
+3. Pools merged, then reranked with a multilingual cross-encoder; the best articles go to the model: 8 in
+   the agent (`AGENT_TOP_K`), 6 in the one-pass pipeline (`RERANK_TOP_K`).
 4. Articles cross-referenced by the evidence are added.
 
 Indexing: each PDF is cut into one chunk per article (`splitter.py`). The chunk text starts with the code and heading path,

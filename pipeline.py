@@ -402,10 +402,10 @@ def evidence_text(doc: Document) -> str:
     return "\n".join(lines + [text])
 
 
-def step_rerank(french_query: str, candidates: list[Document]) -> list[Document]:
+def step_rerank(french_query: str, candidates: list[Document], top_k: int = RERANK_TOP_K) -> list[Document]:
     if not RERANK_ENABLED:
-        return candidates[:RERANK_TOP_K]
-    return rerank(french_query, candidates)
+        return candidates[:top_k]
+    return rerank(french_query, candidates, top_k)
 
 
 def step_generate(question: str, docs: list[Document]) -> str:

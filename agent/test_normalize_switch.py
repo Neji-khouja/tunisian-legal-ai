@@ -25,6 +25,7 @@ from verify import Verification, ClaimVerdict
 from langchain_core.documents import Document
 
 FAILS, CNT = [], {"n": 0}
+AGENT_TOP_K, C.AGENT_TOP_K = C.AGENT_TOP_K, 6      # the comparisons with REF use the limit REF had (6); test_top_k uses the default
 
 
 def check(name, ok, detail=""):
@@ -68,9 +69,9 @@ def stub_retrieve(vs, question, fq, subs, law_type):
     return sorted(ds, key=lambda d: -len(q & words(d.page_content)))[:20]
 
 
-def stub_rerank(q, cands):
+def stub_rerank(q, cands, top_k=6):
     w = words(q)
-    return sorted(cands, key=lambda d: -len(w & words(d.page_content)))[:6]
+    return sorted(cands, key=lambda d: -len(w & words(d.page_content)))[:top_k]
 
 
 def stub_query(q):
@@ -153,6 +154,7 @@ def run(app, turns, tag):
 
 def test_off(old_g, old_rg):
     check("default: config.NORMALIZE_QUERY == 'v3' (owner decision)", C.NORMALIZE_QUERY == "v3")
+    check("default: config.AGENT_TOP_K == 8 (owner decision)", AGENT_TOP_K == 8)
     C.NORMALIZE_QUERY = "off"
     real = N.normalize
 
@@ -178,6 +180,32 @@ def test_off(old_g, old_rg):
                   new_rg.retrieve_g("vol simple peine", codes) == old_rg.retrieve_g("vol simple peine", codes))
     finally:
         N.normalize = real
+
+
+# ---------------------------------------------------------------- 1b. AGENT_TOP_K
+
+def test_top_k():
+    ids = lambda ds: [d.metadata["chunk_id"] for d in ds]
+    C.NORMALIZE_QUERY, C.AGENT_TOP_K = "off", AGENT_TOP_K
+    try:
+        for codes in ([], ["penal"]):
+            docs = new_rg.retrieve_g("vol simple peine", codes)
+            check(f"retrieve_g keeps AGENT_TOP_K distinct articles (codes {codes})", len(docs) == len(set(ids(docs))) == AGENT_TOP_K, ids(docs))
+        first = new_rg.retrieve_g("vol simple peine", [])
+        extra = stub_retrieve_for_plan([("divorce garde", None)])
+        out = new_g.retrieve_more_node({"docs": first, "sub_queries": [("divorce garde", None)], "retries": 0})
+        check("retrieve_more keeps AGENT_TOP_K articles, from both searches", len(out["docs"]) == AGENT_TOP_K
+              and set(ids(out["docs"])) & set(ids(first)) and set(ids(out["docs"])) & set(ids(extra)), ids(out["docs"]))
+        check("evidence follows the documents kept", set(out["evidence"]) == set(ids(out["docs"])))
+        C.NORMALIZE_QUERY = "v3"
+        real, N.normalize = N.normalize, norm_stub({"legal_query": "divorce garde enfant", "status": "ok", "error": None})
+        check("the same limit with V3", len(new_rg.retrieve_g("vol simple peine", ["penal"])) == AGENT_TOP_K)
+        N.normalize = real
+        import inspect
+        check("the one-pass pipeline still keeps RERANK_TOP_K (6)",
+              inspect.signature(pipeline.step_rerank).parameters["top_k"].default == C.RERANK_TOP_K == 6)
+    finally:
+        C.NORMALIZE_QUERY, C.AGENT_TOP_K = "off", 6
 
 
 # ---------------------------------------------------------------- 2. V3 on
@@ -276,6 +304,7 @@ def main():
     for g, rg in ((old_g, old_rg), (new_g, new_rg)):
         install(g, rg)
     test_off(old_g, old_rg)
+    test_top_k()
     test_v3()
     test_tokens_and_fusion()
     print(f"\n{CNT['n'] - len(FAILS)}/{CNT['n']} checks passed")

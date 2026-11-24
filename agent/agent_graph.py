@@ -165,8 +165,9 @@ def reformulate_node(state: AgentState) -> dict:
             "tried": state["tried"] + [s.text for s in r.sub_queries]}
 
 def retrieve_more_node(state: AgentState) -> dict:
+    import config as C
     extra = retrieve_for_plan(state["sub_queries"], 6, True, soft=True)
-    docs = _fuse([state["docs"], extra])[:6]
+    docs = _fuse([state["docs"], extra])[:C.AGENT_TOP_K]
     return {"docs": docs, "evidence": to_evidence(docs), "retries": state["retries"] + 1}
 
 def answer_node(state: AgentState) -> dict:
