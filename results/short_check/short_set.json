@@ -1,0 +1,67 @@
+[
+ {
+  "id": "user1",
+  "language": "fr",
+  "concept_id": "penal_theft",
+  "question": "Quelle est la peine pour le vol simple ?",
+  "gold": [
+   "PenalFr/s02/264"
+  ]
+ },
+ {
+  "id": "q012",
+  "language": "fr",
+  "concept_id": "penal_assault",
+  "question": "Quelle est la peine pour les coups et blessures volontaires ?",
+  "gold": [
+   "PenalFr/s02/208",
+   "PenalFr/s02/218",
+   "PenalFr/s02/219"
+  ]
+ },
+ {
+  "id": "q031",
+  "language": "fr",
+  "concept_id": "coc_contract_validity",
+  "question": "Quelles sont les conditions de validité d'un contrat ?",
+  "gold": [
+   "COC/s02/2",
+   "COC/s02/3"
+  ]
+ },
+ {
+  "id": "q039",
+  "language": "fr",
+  "concept_id": "arb_agreement",
+  "question": "Qu'est-ce qu'une convention d'arbitrage ?",
+  "gold": [
+   "ArbitrageFr/s01/2",
+   "ArbitrageFr/s01/3",
+   "ArbitrageFr/s01/6"
+  ]
+ },
+ {
+  "id": "q062",
+  "language": "ar",
+  "concept_id": "csp_child_custody",
+  "question": "من يحق له حضانة الأطفال؟",
+  "gold": [
+   "Statutpersonnel/s01/54",
+   "Statutpersonnel/s01/55",
+   "Statutpersonnel/s01/56",
+   "Statutpersonnel/s01/57",
+   "Statutpersonnel/s01/58",
+   "Statutpersonnel/s01/67"
+  ]
+ },
+ {
+  "id": "q078",
+  "language": "en",
+  "concept_id": "cpp_custody_duration",
+  "question": "How long can police custody last?",
+  "gold": [
+   "ProcedurepenaleFr/s01/13",
+   "ProcedurepenaleFr/s01/13-bis"
+  ]
+ }
+]

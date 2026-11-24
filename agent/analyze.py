@@ -24,6 +24,15 @@ class Analysis(BaseModel):
 
 llm = ChatGroq(model="openai/gpt-oss-120b", temperature=0)
 structured_llm = llm.with_structured_output(Analysis, method="json_schema")
+llm_low = ChatGroq(model="openai/gpt-oss-120b", temperature=0, reasoning_effort="low")
+
+
+def for_step(step: str, default, schema):
+    """The structured model of a step: `default`, or the same with less reasoning (config.LOW_EFFORT_STEPS)."""
+    import config as C
+    return llm_low.with_structured_output(schema, method="json_schema") if step in getattr(C, "LOW_EFFORT_STEPS", ()) else default
+
+
 SYSTEM_PROMPT = """
 You analyze questions for a legal assistant that covers TUNISIAN law only.
 All questions concern Tunisia, so never ask which country or jurisdiction.

@@ -218,8 +218,10 @@ def verify_node(state):
     recheck = (state.get("recheck") or []) if state.get("repairs") else []      # the other claims are already confirmed
     claims = [Claim(**c) for i, c in enumerate(state["claims"], 1) if not recheck or i in recheck]
     ans = Answer(claims=claims, caveat=state["caveat"])
+    import config as C
+    question = [state.get("full_question") or ""] if getattr(C, "VERIFY_QUESTION", False) else []
     try:
-        v = verify(ans, state["evidence"])
+        v = verify(ans, state["evidence"], *question)
     except Exception as e:                       # visible fallback, never silent
         return {"verdicts": [], "bad": [],
                 "degraded": state["degraded"] + [f"verify_failed: {type(e).__name__}"]}

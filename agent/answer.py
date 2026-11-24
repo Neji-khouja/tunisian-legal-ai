@@ -1,4 +1,5 @@
 """Answer node: write a short cited answer from the retrieved articles ONLY."""
+import re
 import sys
 from pathlib import Path
 
@@ -41,9 +42,13 @@ Each article starts with its id in square brackets, for example [PenalFr/s02/220
 
 How to write:
 - Write the way a knowledgeable person would explain it aloud: plain, natural sentences that follow on from each other, so that the claims read one after the other form a short paragraph. Keep the legal terms that matter.
-- The first claim answers the question directly.
-- Then give only what someone needs to apply the rule, when the articles state it: the main condition, who or what it covers, and the main exception or the more serious case.
-- Write 2 to 4 claims, or 1 if the articles say nothing more on the question. Go up to 6 only when the user asks for details, a full list or an explanation, or when the answer really differs from one case to another.
+- The first claim answers the question directly, in the question's own words.
+- Then give what changes that answer, when the articles state it: the main condition, who it covers, the exceptions, and EVERY more serious or different case of the same question with its own consequence (penalty, duration, amount). Being short must never hide a case that changes the result. Cases of one article may share a sentence when each keeps its own value, for example "X is punished by A, by B if ..., and by C if ...".
+- Leave out what the question does not ask: articles on another subject or on a special situation the question does not mention, and side rules (procedure, formalities, secondary penalties).
+- Usually 2 to 4 claims, never more than 6. One is enough if the articles say nothing more on the question.
+- An article that only applies when another country or a foreign national is involved is off topic, unless the question mentions one.
+- "[…]" marks a text that was cut: do not state a rule whose condition or value is in the missing part.
+- Use the exact persons and things of the articles, also when you translate: never replace one by a narrower or broader word.
 - Do not write article numbers, code names or ids in a sentence, unless the rule itself refers to another article: the reader sees the source next to each sentence.
 
 Rules:
@@ -56,6 +61,11 @@ Rules:
 7. Write the claims and the caveat in the answer language given in the request."""
 
 
+DETAILS = re.compile(r"d[ée]tail|expliqu|en profondeur|approfondi|liste compl[èe]te|\bexplain|\bin depth\b|\bfull list\b|تفاصيل|تفصيل|بالتفصيل|اشرح|شرح", re.I)
+DETAILS_REQUEST = ("The user asks for a detailed answer: write 4 to 6 claims, as far as the articles allow, covering the definition, the "
+                   "conditions, every case with its own consequence, the exceptions, and the side rules (attempt, secondary penalties, procedure).")
+
+
 def system_prompt() -> str:
     import config as C
     return NATURAL_PROMPT if getattr(C, "ANSWER_STYLE", "v2") == "natural" else SYSTEM_PROMPT
@@ -63,9 +73,10 @@ def system_prompt() -> str:
 
 def _user_block(question, language, evidence):
     parts = [f"Question: {question}",
-             f"Answer language: {LANG_NAMES.get(language, 'French')}",
-             "",
-             "Articles:"]
+             f"Answer language: {LANG_NAMES.get(language, 'French')}"]
+    if system_prompt() is NATURAL_PROMPT and DETAILS.search(question):
+        parts.append(DETAILS_REQUEST)
+    parts += ["", "Articles:"]
     for cid, e in evidence.items():
         parts.append(f"[{cid}] {Path(str(e['source'])).stem}, article {cid.split('/')[-1]}")
         parts.append(str(e["text"])[:ANSWER_CHARS])

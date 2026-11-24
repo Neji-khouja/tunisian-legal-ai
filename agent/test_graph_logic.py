@@ -2,11 +2,15 @@
 
     python agent/test_graph_logic.py
 """
+import os
 import sys
 from pathlib import Path
 from types import SimpleNamespace
+os.environ["GROQ_API_KEY"] = "offline-test"          # set before config's load_dotenv: no test can reach the provider
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import agent_graph as g
+import config
+LOW_EFFORT_STEPS, config.LOW_EFFORT_STEPS = config.LOW_EFFORT_STEPS, ()     # the fakes below replace the steps' default models
 
 EVIDENCE = {cid: {"source": "PenalFr.pdf", "article": cid.split("/")[-1], "law_type": "penal", "text": "..."}
             for cid in ["PenalFr/s02/218", "PenalFr/s02/219", "PenalFr/s02/220", "PenalFr/s02/221"]}
@@ -86,7 +90,7 @@ check("verify_node failure: degraded has verify_failed: RuntimeError", "verify_f
 from verify import Verification, ClaimVerdict
 passes = iter([[("supported", ""), ("unsupported", "x"), ("supported", "")],
                [("supported", ""), ("supported", ""), ("supported", "")]])
-g.verify = lambda ans, ev: Verification(verdicts=[ClaimVerdict(claim_index=i, verdict=v, problem=p)
+g.verify = lambda ans, ev, *q: Verification(verdicts=[ClaimVerdict(claim_index=i, verdict=v, problem=p)
                                                   for i, (v, p) in enumerate(next(passes), 1)])
 try:
     s = {"claims": CLAIMS, "caveat": "", "evidence": EVIDENCE, "degraded": [], "repairs": 0}
@@ -273,7 +277,7 @@ def repair_run(verdicts, replacements, repair_mode="targeted"):
         calls.append({"feedback": feedback, "keep": list(keep)})
         return Answer(claims=[Claim(**c) for c in replacements], caveat="")
 
-    def ver(ans, ev):
+    def ver(ans, ev, *q):
         checks.append([c.text for c in ans.claims])
         vs = verdicts[len(checks) - 1]
         return Verification(verdicts=[ClaimVerdict(claim_index=i, verdict=v, problem="" if v == "supported" else "p")
@@ -336,10 +340,11 @@ check("the repair call starts with exactly the first call's prompt (reusable by 
 import verify as V
 ans = Answer(claims=[Claim(text="c1", cited_ids=["A/s1/1", "A/s1/2"]), Claim(text="c2", cited_ids=["A/s1/1", "Z/s1/9"])])
 ev = {"A/s1/1": {"text": "TEXTE UN"}, "A/s1/2": {"text": "TEXTE DEUX"}}
-once = V._claims_block(ans, ev)
-C.VERIFY_TEXT_ONCE = False
+check("default: the text is repeated under each claim", C.VERIFY_TEXT_ONCE is False)
 twice = V._claims_block(ans, ev)
 C.VERIFY_TEXT_ONCE = True
+once = V._claims_block(ans, ev)
+C.VERIFY_TEXT_ONCE = False
 check("verify: an article's text is sent once and referred to afterwards; every citation still listed",
       once.count("TEXTE UN") == 1 and "(text given above, under claim 1)" in once and once.count("Cited [") == 4 and "(not in evidence)" in once)
 check("verify: False gives the v2 block (text repeated under each claim)", twice.count("TEXTE UN") == 2 and "given above" not in twice)
@@ -361,6 +366,41 @@ finally:
     g.condense, g.analyze = real_condense, real_an
 check("remember: a follow-up is condensed with that answer", asked and asked[0][0]["a"] == "Cinq ans." and out["question"] == "et la tentative ? (vol)")
 Backend.remember(SimpleNamespace(graph=None), "x", {"mode": "fast"})
+
+# the verifier's question (config.VERIFY_QUESTION)
+got = []
+vllm, V.llm = V.llm, type("L", (), {"with_structured_output": lambda self, *a, **k: self,
+                                    "invoke": lambda self, ms: (got.append(ms), Verification(verdicts=[]))[1]})()
+try:
+    V.verify(ans, ev)
+    V.verify(ans, ev, "Quelle peine ?")
+finally:
+    V.llm = vllm
+check("verify without a question: the evaluated prompt and block", got[0][0][1] == V.SYSTEM_PROMPT and got[0][1][1] == V._claims_block(ans, ev))
+check("verify with the question: it is shown, with its own prompt",
+      got[1][0][1] == V.QUESTION_PROMPT and got[1][1][1].startswith("Question: Quelle peine ?") and C.VERIFY_QUESTION)
+seen_q = []
+g.verify = lambda a_, e_, *q: (seen_q.append(q), Verification(verdicts=[]))[1]
+try:
+    base = {"claims": CLAIMS, "caveat": "", "evidence": EVIDENCE, "degraded": [], "repairs": 0, "full_question": "Q ?"}
+    g.verify_node(base)
+    C.VERIFY_QUESTION = False
+    g.verify_node(base)
+finally:
+    g.verify, C.VERIFY_QUESTION = real_verify, True
+check("verify_node passes the question only when the switch is on", seen_q == [("Q ?",), ()])
+
+# less reasoning in some steps (config.LOW_EFFORT_STEPS)
+import analyze as AN
+import grade as GR
+check("low effort: condense and reformulate by default; the deciding steps keep the model's default",
+      set(LOW_EFFORT_STEPS) == {"condense", "reformulate"} and AN.llm_low.reasoning_effort == "low"
+      and AN.llm_low.model_name == AN.llm.model_name and AN.llm_low.temperature == AN.llm.temperature)
+check("LOW_EFFORT_STEPS () gives the v2 models", AN.for_step("grade", GR.structured_llm, GR.Grade) is GR.structured_llm)
+C.LOW_EFFORT_STEPS = ("grade",)
+check("a listed step gets its own model, another does not",
+      AN.for_step("grade", GR.structured_llm, GR.Grade) is not GR.structured_llm and AN.for_step("analyze", AN.structured_llm, AN.Analysis) is AN.structured_llm)
+C.LOW_EFFORT_STEPS = ()
 
 # answer style: the prompt sent follows config.ANSWER_STYLE, the evaluated prompts are unchanged
 import hashlib
@@ -392,6 +432,13 @@ try:
         check(f"one-pass prompt {value}", marker in p.format(context="c", input="q"))
 finally:
     C.ANSWER_STYLE, A.llm = style, real_llm
+blk = lambda q: A._user_block(q, "fr", EVIDENCE)
+check("details asked (fr, en, ar): the request is added; otherwise the block is the v2 one",
+      all(A.DETAILS_REQUEST in blk(q) for q in ("Donnez plus de détails sur le vol", "Can you explain the penalty?", "أريد تفاصيل أكثر"))
+      and A.DETAILS_REQUEST not in blk("Quelle est la peine pour le vol ?"))
+C.ANSWER_STYLE = "v2"
+check("v2 style: no details request", A.DETAILS_REQUEST not in blk("plus de détails"))
+C.ANSWER_STYLE = style
 check("evaluated answer prompt (v2) unchanged", hashlib.sha256(A.SYSTEM_PROMPT.encode("utf-8")).hexdigest().startswith("5dbea27a8fcdf8c6"))
 check("evaluated one-pass prompt (v1.1) unchanged", hashlib.sha256(pipeline._SYSTEM_PROMPT.encode("utf-8")).hexdigest().startswith("d2acda8ce54721ef"))
 print("all checks passed")

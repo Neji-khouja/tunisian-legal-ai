@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from analyze import llm
+from analyze import llm, for_step
 from llm_retry import invoke_with_retry
 
 GRADE_CHARS = 500     # characters of each article shown to the model
@@ -57,6 +57,6 @@ def format_evidence(evidence: dict, chars: int = GRADE_CHARS) -> str:
 
 def grade(question: str, evidence: dict) -> Grade:
     user_msg = f"Question: {question}\n\nArticles:\n{format_evidence(evidence)}"
-    g = invoke_with_retry(structured_llm, [("system", GRADE_PROMPT), ("human", user_msg)], "Grade")
+    g = invoke_with_retry(for_step("grade", structured_llm, Grade), [("system", GRADE_PROMPT), ("human", user_msg)], "Grade")
     g.relevant_ids = [i for i in g.relevant_ids if i in evidence]      # keep only ids that were shown
     return g

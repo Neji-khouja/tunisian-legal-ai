@@ -452,3 +452,18 @@ rewrote everything (no final sentence was identical to a draft sentence, 67 draf
 sentences are rewritten and checked again; if all are rejected, the whole answer is rewritten as before.
 `VERIFY_TEXT_ONCE = True`: 674 -> 490 tokens of claims and articles per check on the saved drafts.
 Not measured: the effect on the answers (no model call was made). The saved exam runs describe the old behaviour.
+
+## v2.1: short check on the real model and the fixes it led to (2026-11-24/25, results/short_check)
+10 dev questions (6 used for the fixes, 4 fresh), answers read by hand against the articles: an indication, not an exam.
+Final agent 8 right and 2 partly right, old agent (all switches back) 8 and 2, one-pass natural prompt 5 right, 4 partly, 1 wrong.
+Tokens per question (cached tokens of analyze not counted twice): 11,840, 11,572 and 1,824. Gold articles in evidence: 19/30,
+19/30, 15/30. Results vary between runs: the same 6 questions cost 8,668, 10,792 and 12,937 in three runs of the new agent.
+- The verifier rejected "vol simple" because article 264 does not use these words: 6 times of 6 with the v2 prompt, 0 of 6 with
+  the new one (VERIFY_QUESTION). Corrupted claims still flagged: 72/72 with a first version of the prompt, 30/30 with the final one.
+- Less reasoning in grade was tried and removed: it called good evidence insufficient (one question 8,420 -> 20,461 tokens).
+- Sending each article once to the verifier was tried and switched off: fewer correct claims accepted in a small test (5/8, 6/8).
+- A linked article cut by XREF_TOKEN_CAP = 300 lost the condition of its penalty and produced a false rule; the cap is now 600.
+- Known weaknesses left: in Arabic the model writes "wife" for "femme" and no verifier version sees it (2 of 3 accepted); rules
+  of private international law still appear in answers about ordinary cases; grade costs 18% of the tokens and its extra
+  searches helped in 1 of the 6 runs that had them.
+

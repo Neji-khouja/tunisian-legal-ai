@@ -26,7 +26,7 @@ XREF_TOTAL             = 6       # added articles per question
 XREF_RANGE_MAX         = 4       # "articles N à M" is expanded only when it names at most this many articles
 EVIDENCE_CONTEXT_HEADER = "deepest"   # "Contexte : ..." line of each evidence text: "full" (code > all headings),
                                       # "deepest" (deepest heading only; the code name without headings), "none"
-XREF_TOKEN_CAP         = 300     # embedding tokens of the added cross-referenced articles per question (None = no cap)
+XREF_TOKEN_CAP         = 600     # (300 before: a cut article lost the condition of its penalty) embedding tokens of the added cross-referenced articles per question (None = no cap)
 EVIDENCE_TEXT_CAP      = 3000    # characters of a long article shown in the evidence (window around the match)
 BM25_TOKENIZER         = "whitespace"   # "whitespace" (v1.1) | "lower" | "fold" | "elision" | "stem" (retriever.py)
 NORMALIZE_QUERY        = "v3"    # "off" | "v3": the first query of a turn is normalized once (agent/normalize.py), the pools of the
@@ -37,7 +37,11 @@ ANSWER_STYLE           = "natural"   # "natural": short plain explanation (rule,
                                      # "v2": the answer prompts of the evaluated versions (agent v2, one-pass v1.1)
 REPAIR_MODE            = "targeted"  # "targeted": only the claims the verifier rejected are rewritten and checked again
                                      # "full" (v2): one rejected claim rewrites and re-checks the whole answer
-VERIFY_TEXT_ONCE       = True    # the verifier gets an article's text once, then a reference to it (False = v2: repeated per claim)
+VERIFY_TEXT_ONCE       = False   # True: the verifier gets an article's text once, then a reference to it (saves about 180 tokens;
+                                 # off: it accepted fewer correct claims in a small test). False = v2
+VERIFY_QUESTION        = True    # the verifier also gets the question, so a claim may use the user's own words (False = v2)
+LOW_EFFORT_STEPS       = ("condense", "reformulate")   # these steps reason less (reasoning_effort "low"); () = v2. Not "grade":
+                                 # tried, it called good evidence insufficient and the extra searches cost far more
 
 DB_DIR   = DB_V12 if INDEX_V12 else DB_V11
 

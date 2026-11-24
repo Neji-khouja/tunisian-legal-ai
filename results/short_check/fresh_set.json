@@ -1,0 +1,47 @@
+[
+ {
+  "id": "q067",
+  "language": "ar",
+  "concept_id": "csp_marriage_conditions",
+  "question": "ما هي شروط الزواج؟",
+  "gold": [
+   "Statutpersonnel/s01/14",
+   "Statutpersonnel/s01/3",
+   "Statutpersonnel/s01/5",
+   "Statutpersonnel/s01/6",
+   "Statutpersonnel/s01/8"
+  ]
+ },
+ {
+  "id": "q080",
+  "language": "en",
+  "concept_id": "travail_paid_leave",
+  "question": "How many days of paid annual leave is a worker entitled to?",
+  "gold": [
+   "travailFr/s01/112",
+   "travailFr/s01/113",
+   "travailFr/s01/115"
+  ]
+ },
+ {
+  "id": "q010",
+  "language": "fr",
+  "concept_id": "penal_arson",
+  "question": "Comment est puni l'incendie volontaire ?",
+  "gold": [
+   "PenalFr/s02/307",
+   "PenalFr/s02/308"
+  ]
+ },
+ {
+  "id": "q006",
+  "language": "fr",
+  "concept_id": "penal_defamation",
+  "question": "Que dit la loi sur la diffamation ?",
+  "gold": [
+   "PenalFr/s02/245",
+   "PenalFr/s02/246",
+   "PenalFr/s02/247"
+  ]
+ }
+]

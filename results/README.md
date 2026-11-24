@@ -6,3 +6,6 @@
 | `historical_out_json_preaudit.json` | The `out.json` from before the audit (Hit@6 48.3%, number-only matching, no run metadata, produced with `openai/gpt-oss-120b` + the `v2` reranker plus uncommitted edits; the config in the `v1-baseline` tag could not have produced it). Kept for reference only. |
 
 The v1 temperature-0.3 spread runs are not here yet: the Groq daily token limit (200k tokens/day for `openai/gpt-oss-120b`) was exhausted. See the Phase 2 report.
+
+`short_check/`: 10 dev questions on the real model (2026-11-24/25), new agent, old agent and one-pass mode; run3_final.jsonl is the
+current code. Read with the notes in `agent/LEARNING.md`. Not the exam.

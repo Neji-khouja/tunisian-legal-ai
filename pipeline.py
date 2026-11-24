@@ -98,17 +98,20 @@ _NATURAL_PROMPT = ChatPromptTemplate.from_messages([
        that is not in them, and never use general legal knowledge.
     2. If the passages do not answer the question, say so in one sentence and stop. Name no article in that case.
     3. Keep numbers, durations, amounts and penalties exactly as the passages state them.
-    4. Answer in the SAME language as the question.
+    4. Answer in the SAME language as the question, even though the passages are in French.
 
     HOW TO WRITE
     - Write the way a knowledgeable person would explain it aloud: one short paragraph of plain, natural sentences.
       No headings, no lists, no section on sources, no introduction.
-    - The first sentence answers the question directly and names the article it comes from, with the word "article"
-      (in Arabic "الفصل") and its number, in brackets.
-    - Then at most three sentences with what someone needs to apply the rule, when the passages state it: the main
-      condition, who or what it covers, the main exception or the more serious case.
-    - When the passages give different rules for different cases, say which case each sentence covers.
-    - Name an article only if you state its rule.
+    - The first sentence answers the question directly, in the question's own words, and ends with the article it comes
+      from in brackets, for example (article 12); in an Arabic answer, and only there, write (الفصل 12).
+    - Then two to four sentences with what changes that answer, when the passages state it: the main condition, the
+      exceptions, and every more serious or different case of the same question with its own consequence. Being short
+      must never hide a case that changes the result.
+    - Leave out passages on another subject or on a special situation the question does not mention, such as another
+      country, a foreign national or one particular trade.
+    - Use the exact persons and things of the passages, also when you translate.
+    - Name an article only if you state its rule. Do not comment on the passages themselves.
     - Give more detail (every case, a full explanation) only if the user asks for it.
 
     ── Context ──────────────────────────────────────────────────────────────────

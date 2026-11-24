@@ -34,6 +34,25 @@ Numbers, durations, amounts and penalties must match exactly. A claim is not sup
 Return exactly one verdict per claim, using the claim number given. For partly and unsupported, write in `problem` one short sentence in English naming the detail that is not supported. For supported, leave `problem` empty."""
 
 
+# config.VERIFY_QUESTION: the claims may use the question's own words for the situation the article covers
+QUESTION_PROMPT = """You check claims against the legal articles they cite.
+You receive the user's question, then for each numbered claim the claim and the text of the article(s) it cites.
+Judge ONLY whether the cited text states what the claim says. Do not use outside knowledge and do not judge whether the law is good or complete.
+
+How to read a claim:
+1. The name of the situation. The claims answer the question, so they call the situation and the people in it by the question's words or by ordinary words, in the language of the question; the articles use legal words. Decide whether the article covers that situation, also when it covers it by exclusion ("all other cases", "outside the cases of articles ..."). If it does, the name is NOT a difference and must not be reported. Example: question about "a parking ticket", article on "contravention de stationnement": same situation.
+2. What the claim says about that situation: the rule, the numbers, durations, amounts and penalties, the conditions, the cases, the exceptions, the order of events, and the persons or things these depend on. Each of them must be in the cited text with the same meaning, also in translation: not added, not changed, not replaced by a narrower or broader one.
+3. What the claim leaves out. A claim is one sentence of an answer: leaving out another case, an exception, a formality or who applies the rule is NOT a problem, unless the claim denies it (for example with "only" or "always").
+
+Verdicts:
+- supported: the article covers the situation and states everything of point 2.
+- partly: the main rule is in the cited text, but the claim adds or changes a detail of point 2.
+- unsupported: the cited text does not say this, says something different, or is about another situation.
+
+Numbers, durations, amounts and penalties must match exactly. A claim is not supported just because it sounds plausible or the article is on the same topic.
+Return exactly one verdict per claim, using the claim number given. For partly and unsupported, write in `problem` one short sentence in English naming the detail of point 2 that is not supported. For supported, leave `problem` empty."""
+
+
 def _claims_block(answer: Answer, evidence: dict) -> str:
     import config as C
     once, shown = getattr(C, "VERIFY_TEXT_ONCE", False), {}
@@ -53,8 +72,11 @@ def _claims_block(answer: Answer, evidence: dict) -> str:
     return "\n".join(parts)
 
 
-def verify(answer: Answer, evidence: dict) -> Verification:
+def verify(answer: Answer, evidence: dict, question: str = "") -> Verification:
     structured = llm.with_structured_output(Verification, method="json_schema")
+    if question:
+        return structured.invoke([("system", QUESTION_PROMPT),
+                                  ("human", f"Question: {question}\n\n{_claims_block(answer, evidence)}")])
     return structured.invoke([("system", SYSTEM_PROMPT),
                               ("human", _claims_block(answer, evidence))])
 

@@ -1,7 +1,7 @@
 """Follow-up handling: rewrite a message that depends on earlier turns as one standalone question (one LLM call)."""
 import hashlib
 from pydantic import BaseModel
-from analyze import llm
+from analyze import llm, for_step
 from llm_retry import invoke_with_retry
 
 
@@ -52,4 +52,4 @@ def condense(history: list[dict], message: str) -> Standalone:
     """history: [{"q": standalone question, "a": answer text}, ...], oldest first (the caller keeps the last 2)."""
     turns = "\n\n".join(f"User: {t['q']}\nAssistant: {t['a']}" for t in history)
     human = f"Previous turns:\n{turns}\n\nNew message: {message}"
-    return invoke_with_retry(structured_llm, [("system", CONDENSE_PROMPT), ("human", human)], "Condense")
+    return invoke_with_retry(for_step("condense", structured_llm, Standalone), [("system", CONDENSE_PROMPT), ("human", human)], "Condense")

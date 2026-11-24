@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from analyze import llm
+from analyze import llm, for_step
 from plan import SubQuery
 from codes import codes_block
 from grade import format_evidence
@@ -60,4 +60,4 @@ def reformulate(question: str, language: str, tried_queries: list, evidence: dic
         f"missing: {missing}\n\n"
         f"Retrieved articles:\n{format_evidence(evidence)}"
     )
-    return invoke_with_retry(structured_llm, [("system", REFORMULATE_PROMPT), ("human", user_msg)], "Reformulate")
+    return invoke_with_retry(for_step("reformulate", structured_llm, Reformulation), [("system", REFORMULATE_PROMPT), ("human", user_msg)], "Reformulate")
