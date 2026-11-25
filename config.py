@@ -46,6 +46,10 @@ ANSWER_FIRST           = True    # the answer step judges the articles itself: t
                                  # answer again; the question is unclear -> ask the user; still nothing -> say so
                                  # False (v2): a separate grade step decides before the answer, two extra searches at most
 MAX_EXTRA_SEARCHES     = 1       # ANSWER_FIRST only
+# Off until they pass a test on questions they were not written for (so far: a stabbing and a theft question).
+LIST_CASES             = False   # the answer step lists the cases of the question before writing, up to 8 sentences instead of 6
+FAST_JUDGED            = False   # the interface's Rapide mode uses the agent's search and judging step (no check, about 5,000 tokens
+                                 # instead of 1,700). pipeline.ask_question, the evaluated baseline, is never changed by it
 
 DB_DIR   = DB_V12 if INDEX_V12 else DB_V11
 

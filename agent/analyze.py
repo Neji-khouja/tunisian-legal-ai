@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from codes import codes_block
+from llm_retry import invoke_with_retry
 
 load_dotenv()
 
@@ -73,4 +74,4 @@ def analyze(question: str, language_hint: str | None = None) -> Analysis:
     system = SYSTEM_PROMPT
     if language_hint:
         system += f"\nThe conversation language is '{language_hint}'. Write clarification_question in that language."
-    return structured_llm.invoke([("system", system), ("human", question)])
+    return invoke_with_retry(structured_llm, [("system", system), ("human", question)], "Analyze")

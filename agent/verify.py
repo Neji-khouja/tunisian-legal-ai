@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from analyze import llm
+from llm_retry import invoke_with_retry
 from answer import Answer
 
 VERIFY_CHARS = 3000
@@ -75,10 +76,10 @@ def _claims_block(answer: Answer, evidence: dict) -> str:
 def verify(answer: Answer, evidence: dict, question: str = "") -> Verification:
     structured = llm.with_structured_output(Verification, method="json_schema")
     if question:
-        return structured.invoke([("system", QUESTION_PROMPT),
-                                  ("human", f"Question: {question}\n\n{_claims_block(answer, evidence)}")])
-    return structured.invoke([("system", SYSTEM_PROMPT),
-                              ("human", _claims_block(answer, evidence))])
+        return invoke_with_retry(structured, [("system", QUESTION_PROMPT),
+                                  ("human", f"Question: {question}\n\n{_claims_block(answer, evidence)}")], "Verify")
+    return invoke_with_retry(structured, [("system", SYSTEM_PROMPT),
+                              ("human", _claims_block(answer, evidence))], "Verify")
 
 
 def bad_claims(answer: Answer, verification: Verification) -> list[int]:

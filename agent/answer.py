@@ -9,6 +9,7 @@ from pydantic import BaseModel,Field
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))   # agent/, for analyze
 from analyze import llm # same shared Groq model object as plan.py
+from llm_retry import invoke_with_retry
 
 ANSWER_CHARS = 3000                          # max characters of each article shown to the model
 LANG_NAMES = {"fr": "French", "en": "English", "ar": "Arabic"}
@@ -24,11 +25,23 @@ class Answer(BaseModel):
     caveat: str=""# filled when the evidence only partly answers
 
 
+MAX_CLAIMS = 8                                  # Answer allows 6 (the evaluated schema); 6 sentences left the gravest cases out
+
+
 class Judged(BaseModel):                       # config.ANSWER_FIRST: the judgement comes before the claims
     fit: Literal["answers", "partly", "not_found", "unclear"]
     missing: str = ""                          # not_found: the rule to look for
     clarification_question: str = ""           # unclear
     claims: list[Claim] = Field(default_factory=list, max_length=6)
+    caveat: str = ""
+
+
+class JudgedCases(BaseModel):                  # config.LIST_CASES: the cases of the question, listed before the claims
+    fit: Literal["answers", "partly", "not_found", "unclear"]
+    missing: str = ""
+    clarification_question: str = ""
+    cases: list[str] = Field(default_factory=list, max_length=12)
+    claims: list[Claim] = Field(default_factory=list, max_length=MAX_CLAIMS)
     caveat: str = ""
 
 
@@ -83,10 +96,28 @@ Before writing, judge the articles and set `fit`:
 Decide from what the articles actually say; do not lean towards any value."""
 
 
+CASES_PROMPT = """
+
+When `fit` is answers or partly, go through the articles one by one and list in `cases`, in a few words each with its article id, EVERY case of the question that they regulate with its own consequence: each result, intention, circumstance or person that changes the penalty, duration, amount or right. When the question describes an act or a situation in general, that includes its graver results and variants, even if the question does not name them. When the question names one precise case, list that case only. Then write the claims: the ordinary case first, then the graver ones, until every listed case is covered, the gravest included. Cases of the same article may share a sentence."""
+
+
+def list_cases() -> bool:
+    import config as C
+    return bool(getattr(C, "LIST_CASES", False))
+
+
 def judged_prompt() -> str:
     base = system_prompt()
     rule6 = next(line for line in base.splitlines() if line.startswith("6. "))
-    return base.replace(rule6, NOT_FOUND_RULE) + JUDGE_PROMPT
+    out = base.replace(rule6, NOT_FOUND_RULE)
+    if list_cases():
+        return out.replace("never more than 6", f"up to {MAX_CLAIMS} when the cases listed below require it") + JUDGE_PROMPT + CASES_PROMPT
+    return out + JUDGE_PROMPT
+
+
+def as_answer(claims, caveat="") -> Answer:
+    """An Answer with up to MAX_CLAIMS claims (Answer itself stops at 6)."""
+    return Answer.model_construct(claims=[c if isinstance(c, Claim) else Claim(**c) for c in claims], caveat=caveat)
 
 
 DETAILS = re.compile(r"d[ée]tail|expliqu|en profondeur|approfondi|liste compl[èe]te|\bexplain|\bin depth\b|\bfull list\b|تفاصيل|تفصيل|بالتفصيل|اشرح|شرح", re.I)
@@ -129,7 +160,7 @@ def make_answer(question, language, evidence, feedback="", keep=()) -> Answer:
                   "problems were found:\n" + feedback +
                   "\nWrite a new answer that fixes them. Use only what the articles state; "
                   "remove or correct any claim they do not support.")
-    ans = structured.invoke([("system", system_prompt()), ("human", block)])
+    ans = invoke_with_retry(structured, [("system", system_prompt()), ("human", block)], "Answer")
     for c in ans.claims:
         c.cited_ids = [i.strip().strip("[]").strip() for i in c.cited_ids]
     return ans
@@ -137,8 +168,8 @@ def make_answer(question, language, evidence, feedback="", keep=()) -> Answer:
 
 def judge_answer(question, language, evidence) -> Judged:
     """config.ANSWER_FIRST: one call that judges the articles and, when they answer, writes the answer."""
-    structured = llm.with_structured_output(Judged, method="json_schema")
-    out = structured.invoke([("system", judged_prompt()), ("human", _user_block(question, language, evidence))])
+    structured = llm.with_structured_output(JudgedCases if list_cases() else Judged, method="json_schema")
+    out = invoke_with_retry(structured, [("system", judged_prompt()), ("human", _user_block(question, language, evidence))], "Answer")
     for c in out.claims:
         c.cited_ids = [i.strip().strip("[]").strip() for i in c.cited_ids]
     return out

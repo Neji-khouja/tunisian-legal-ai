@@ -124,7 +124,7 @@ class AnswerCache:
     def put(self, question: str, mode: str, state: dict) -> bool:
         complete = (state.get("status") == "done" and not state.get("degraded") and not state.get("dropped")
                     and not state.get("is_followup") and not state.get("original_question"))
-        if mode == "fast":
+        if "sources" in state:                      # the free text of the fast mode
             view = R.view_fast(state)
             complete = complete and bool(view["sources"])
         else:
@@ -200,12 +200,14 @@ def ask(question: str, thread_id: str, turn: int, personal_key: str, backend, po
     seconds = time.time() - started
     if budget and not known:
         budget.add(key, quota.counted(used["in"], used["out"], used["cached"]))
-    view = R.view_error(error) if error else (R.view_fast(final or {}) if mode == "fast" else R.view_v2(final or {}))
+    view = R.view_error(error) if error else (R.view_fast(final or {}) if "sources" in (final or {}) else R.view_v2(final or {}))
     try:
         store.log(thread_id, turn, question, final, error, seconds, key_source, mode, used)
     except Exception as e:                          # a logging problem must never hide the answer
         LOG.error("logging failed: %s", type(e).__name__)
     md = view_markdown(view)
+    if mode == "fast" and not error and (view.get("sources") or view.get("claims")):
+        md = f'<div class="note">{_esc(T.FAST_NOTE)}</div>\n\n' + md
     if known:                                       # said first, so that nobody takes it for a new model call
         md = f'<div class="memo">{T.FROM_CACHE}</div>\n\n' + md
     elif not error and (used["in"] or used["out"]):

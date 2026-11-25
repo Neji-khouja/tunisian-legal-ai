@@ -485,6 +485,91 @@ check("ANSWER_FIRST off: the grade step is back", g.route_after_retrieve({}) == 
       and g.route_after_answer({"claims": CLAIMS[:1], "fit": "not_found"}) == "verify" and "fit" not in g._fresh())
 C.ANSWER_FIRST = True
 
+# the steps wait for the provider's per-minute limit instead of failing
+import analyze as AN2
+class Busy:
+    """Refuses `n` times with a per-minute 429, then answers."""
+    def __init__(self, n, result, msg="429 Rate limit reached on tokens per minute (TPM). Please try again in 10ms."):
+        self.n, self.result, self.msg, self.calls = n, result, msg, 0
+    def with_structured_output(self, *a, **k):
+        return self
+    def invoke(self, messages):
+        self.calls += 1
+        if self.calls <= self.n:
+            raise RuntimeError(self.msg)
+        return self.result
+for name, mod, attr, call, result in (
+        ("verify", V, "llm", lambda: V.verify(ans, ev, "Q ?"), Verification(verdicts=[])),
+        ("answer", ANS, "llm", lambda: ANS.make_answer("Q", "fr", EVIDENCE), Answer(claims=CL)),
+        ("answer (judging)", ANS, "llm", lambda: ANS.judge_answer("Q", "fr", EVIDENCE), OK_J),
+        ("analyze", AN2, "structured_llm", lambda: AN2.analyze("Q"), "analysis")):
+    busy = Busy(1, result)
+    keep, _ = getattr(mod, attr), setattr(mod, attr, busy)
+    try:
+        got_it = call()
+    finally:
+        setattr(mod, attr, keep)
+    check(f"{name}: waits after a per-minute refusal and tries again", got_it is result and busy.calls == 2)
+busy = Busy(99, None, "401 invalid api key")
+keep, V.llm = V.llm, busy
+try:
+    V.verify(ans, ev, "Q ?")
+    failed = False
+except RuntimeError:
+    failed = True
+finally:
+    V.llm = keep
+check("another error is not retried", failed and busy.calls == 1)
+eight = [Claim(text=f"Cas {i}.", cited_ids=["PenalFr/s02/218"]) for i in range(8)]
+check("unproven switches are off by default", C.LIST_CASES is False and C.FAST_JUDGED is False)
+check("cases not listed: 6 sentences, no cases field, no cases prompt", "cases" not in J.model_fields and "list in `cases`" not in ANS.judged_prompt()
+      and "never more than 6" in ANS.judged_prompt())
+C.LIST_CASES = True
+o8, _ = run_first([ANS.JudgedCases(fit="answers", cases=["a"], claims=eight)])
+check("up to 8 sentences go through the whole graph (answer, check, finalize)", len(o8[0]["claims"]) == 8 and o8[0]["status"] == "done")
+check("the judged prompt allows 8, the evaluated schema still 6", "up to 8" in ANS.judged_prompt() and "never more than 6" not in ANS.judged_prompt()
+      and ANS.Answer.model_fields["claims"].metadata[-1].max_length == 6)
+check("the cases are listed before the claims", list(ANS.JudgedCases.model_fields).index("cases") < list(ANS.JudgedCases.model_fields).index("claims")
+      and "list in `cases`" in ANS.judged_prompt())
+C.LIST_CASES = False
+
+# Rapide with the judging step (ui/backend.py, config.FAST_JUDGED)
+import pipeline as PL
+DOC = Document(page_content="Article 264.- La peine", metadata={"chunk_id": "PenalFr/s02/264", "source": "PenalFr.pdf", "article": "264", "law_type": "penal"})
+keep_pl = {"ask_question": PL.ask_question}
+keep_g = {k: getattr(g, k) for k in ("retrieve_g", "to_evidence")}
+
+
+def rapide(judged, docs=(DOC,), judged_mode=True, q="Quelle peine ?"):
+    g.retrieve_g = lambda q_, codes, info=None: list(docs)
+    g.to_evidence = lambda ds: {d.metadata["chunk_id"]: {"source": "PenalFr.pdf", "article": "264", "law_type": "penal", "text": d.page_content} for d in ds}
+    PL.ask_question = lambda *a: ("texte libre", [DOC])
+    keep_j, ANS.judge_answer = ANS.judge_answer, lambda q_, l, e: judged
+    C.FAST_JUDGED, keep_mode = judged_mode, C.FAST_JUDGED
+    me = SimpleNamespace(_vs=object())
+    me._fast_judged = lambda *a: Backend._fast_judged(me, *a)
+    try:
+        return list(Backend.stream_fast(me, q, "t"))
+    finally:
+        ANS.judge_answer, C.FAST_JUDGED = keep_j, keep_mode
+        for k, v in keep_pl.items():
+            setattr(PL, k, v)
+        for k, v in keep_g.items():
+            setattr(g, k, v)
+
+
+CL2 = [Claim(text="Règle.", cited_ids=["PenalFr/s02/264"])]
+ev_ = rapide(J(fit="answers", claims=CL2, caveat="c"))
+fin = ev_[-1][1]
+check("Rapide: one search, one judged answer with its citations, no check", [e[1] for e in ev_[:-1]] == ["retrieve", "answer"]
+      and fin["claims"][0]["cited_ids"] == ["PenalFr/s02/264"] and fin["caveat"] == "c" and fin["mode"] == "fast")
+check("Rapide: articles that do not answer -> said plainly, nothing written", rapide(J(fit="not_found", claims=CL2))[-1][1]["claims"] == []
+      and rapide(J(fit="not_found"))[-1][1]["text"] == g.NOT_FOUND["fr"])
+check("Rapide: no article found -> no model call", rapide(None, docs=())[-1][1]["text"] == g.NOT_FOUND["fr"])
+check("Rapide: unclear -> the question to the user", rapide(J(fit="unclear", clarification_question="Quel contrat ?"))[-1][1]["text"] == "Quel contrat ?")
+check("Rapide: English question -> English message", rapide(J(fit="not_found"), q="What is the punishment for stabbing?")[-1][1]["text"] == g.NOT_FOUND["en"])
+check("FAST_JUDGED off: the free text of the one-pass pipeline", rapide(None, judged_mode=False)[-1][1]["text"] == "texte libre")
+
 # answer style: the prompt sent follows config.ANSWER_STYLE, the evaluated prompts are unchanged
 import hashlib
 import config as C

@@ -40,11 +40,17 @@ class Backend:
         yield "final", dict(self.graph.get_state(cfg).values)
 
     def stream_fast(self, question: str, thread_id: str):
-        """The one-pass pipeline (pipeline.ask_question): rewrite, retrieve, rerank, one answer. No memory, no checks."""
+        """One search, one answer, no memory and no check. config.FAST_JUDGED: the agent's search (reworded question, 8 articles
+        and the linked ones) and its judging step; otherwise pipeline.ask_question."""
+        import config as C
         import pipeline
         yield "step", "retrieve"
         if self._vs is None:
             self._vs = pipeline.load_vectorstore()
+        lang = "ar" if pipeline.detect_arabic(question) else "en" if pipeline.detect_english(question) else "fr"
+        if getattr(C, "FAST_JUDGED", False):
+            yield from self._fast_judged(question, lang)
+            return
         yield "step", "answer"
         text, docs = pipeline.ask_question(self._vs, question, None)
         sources = []
@@ -52,8 +58,24 @@ class Backend:
             m = d.metadata
             sources.append({"id": m.get("chunk_id") or f"{m.get('source')}/{m.get('article')}", "source": m.get("source"),
                             "article": m.get("article"), "text": d.page_content})
-        lang = "ar" if pipeline.detect_arabic(question) else "en" if pipeline.detect_english(question) else "fr"
         yield "final", {"status": "done", "mode": "fast", "language": lang, "text": text, "sources": sources, "degraded": []}
+
+    def _fast_judged(self, question, lang):
+        import agent_graph
+        import answer
+        evidence = agent_graph.to_evidence(agent_graph.retrieve_g(question, [], {}))
+        yield "step", "answer"
+        state = {"status": "done", "mode": "fast", "language": lang, "question": question, "full_question": question,
+                 "evidence": evidence, "claims": [], "caveat": "", "dropped": 0, "degraded": [],
+                 "text": agent_graph.NOT_FOUND[lang]}
+        if evidence:
+            j = answer.judge_answer(question, lang, evidence)
+            if j.claims and j.fit in ("answers", "partly"):
+                ans = answer.as_answer(j.claims, j.caveat)
+                state.update(claims=[c.model_dump() for c in ans.claims], caveat=ans.caveat, text=answer.render(ans, evidence, lang))
+            elif j.fit == "unclear" and j.clarification_question.strip():
+                state["text"] = j.clarification_question.strip()
+        yield "final", state
 
     def remember(self, thread_id: str, state: dict):
         """Write a finished answer (chat.AnswerCache) into a conversation, as if the agent had just given it."""

@@ -477,3 +477,14 @@ complete. One run per question, and costs vary between runs. All six were judged
 incomplete and still judged so. The new-search path was seen once, on a question outside the corpus (speeding): judged not found,
 searched again, said plainly. The post-search clarification was only tested with stubs.
 
+## v2.1: a stabbing question, what was fixed and what is still off (2026-11-25, results/short_check/run5-7)
+On: every step of the agent waits for the provider's per-minute limit (llm_retry), so an answer is no longer shown as not verified
+because the check was refused; seen on the real model (a follow-up right after a question: 95 s, verified).
+Off until tested on other questions: LIST_CASES (the cases listed before writing, 8 sentences: the stabbing answer becomes
+complete, 218, 219 and 208) and FAST_JUDGED (Rapide with the agent's search and judging step). Rapide's error, a penalty for a
+death given for any injury, came from its search: without article 218 the model stretched article 208, in free text (4 runs of 4) and
+with the judging step alone (2 of 2); with the agent's search the answer was right (1 run), at about 5,000 tokens instead of 1,700.
+Rule fixed before any run: the 10 unseen dev questions of results/short_check/heldout_set.json, each system's answers read without
+knowing which system wrote them, graded right, partly right or wrong against the gold articles. A switch is turned on only if it has at
+least as many right answers and no more wrong ones than without it.
+

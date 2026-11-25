@@ -79,7 +79,7 @@ MODE_HELP = {
     "agent": ("Plusieurs étapes : comprend la conversation, demande une précision si besoin, refuse ce qui sort des codes "
               "et vérifie chaque affirmation contre son article. Plus lent."),
     "fast": ("Une seule recherche et une seule réponse. Rapide et économe, mais sans mémoire de la conversation et sans "
-             "vérification."),
+             "vérification : il peut se tromper de cas. Lisez l'article cité."),
 }
 WORDS = {"fr": {"sources": "Sources", "note": "Remarque", "articles": "Articles applicables", "others": "Autres articles consultés ({n})"},
          "en": {"sources": "Sources", "note": "Note", "articles": "Applicable articles", "others": "Other articles consulted ({n})"},
@@ -95,6 +95,7 @@ TOKENS_LINE = "{total} tokens (entrée {tin}, sortie {tout}) · {sec} s · mode 
 TOKENS_CACHED = ", dont {n} en cache"
 TOKENS_REASONING = ", dont {n} de réflexion"
 TOKENS_HIT = "En cache (hors limites)"
+FAST_NOTE = "Mode Rapide : réponse non contrôlée. Vérifiez dans l'article cité à quel cas s'applique la règle."
 FROM_CACHE = "Réponse gardée en mémoire : cette question a déjà été posée. Le modèle n'a pas été appelé (0 token)."
 QUOTA_TITLE = "Tokens restants (24 h)"
 QUOTA_OWNER = "Clé utilisée : celle de l'application"

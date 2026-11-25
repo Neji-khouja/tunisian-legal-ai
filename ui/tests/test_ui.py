@@ -407,6 +407,22 @@ def test_quota():
     check("no key anywhere: a new question is refused and the model is not called", T.ERRORS["no_key"] in out and not seen)
 
 
+def test_fast_judged_view():
+    import chat
+    import store
+    import tempfile
+    st = store.Store(Path(tempfile.mkdtemp()) / "f.db", upload=False)
+    be, pol, cache = stub.DemoBackend(0), keys.KeyPolicy(True, 0, lambda: True), chat.AnswerCache()
+    state = stub.final_state("answer", "x") | {"dropped": 0, "mode": "fast", "full_question": "Q ?"}
+    be.stream_fast = lambda q, t: iter([("step", "retrieve"), ("step", "answer"), ("final", state)])
+    md = list(chat.ask("Q ?", "a", 1, "", be, pol, st, "fast", cache))[-1][1]["markdown"]
+    check("Rapide judged: numbered citations, law sentence, sources, as the agent",
+          "<sup>[1]</sup>" in md and "Ces règles figurent" in md and "<summary>[1] Code pénal, art. 264" in md)
+    check("Rapide says that its answer is not checked", T.FAST_NOTE.split(":")[0] in md)
+    again = list(chat.ask("Q ?", "b", 1, "", be, pol, st, "fast", cache))[-1][1]["markdown"]
+    check("Rapide judged: kept in memory, logged with its articles", again.startswith('<div class="memo">') and "PenalFr/s02/264" in st.rows()[0]["cited"])
+
+
 def test_not_found():
     import chat
     ev = {f"PenalFr/s02/{i}": {"source": "PenalFr.pdf", "article": str(i), "text": f"Article {i}.- texte"} for i in range(1, 9)}
@@ -543,7 +559,7 @@ def test_policy_in_app():
 
 
 if __name__ == "__main__":
-    for t in (test_views, test_errors, test_policy, test_session_key, test_store, test_laws, test_cache, test_quota, test_not_found, test_fast_layout, test_chat, test_app_demo, test_policy_in_app):
+    for t in (test_views, test_errors, test_policy, test_session_key, test_store, test_laws, test_cache, test_quota, test_fast_judged_view, test_not_found, test_fast_layout, test_chat, test_app_demo, test_policy_in_app):
         t()
     print(f"\n{sum(RESULTS)}/{len(RESULTS)} checks passed")
     sys.exit(0 if all(RESULTS) else 1)

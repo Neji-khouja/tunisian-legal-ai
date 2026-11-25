@@ -7,7 +7,7 @@ from retriever import _fuse
 from retrieve_g import retrieve_g
 from grade import grade
 from reformulate import reformulate
-from answer import make_answer, judge_answer, check_answer, render
+from answer import make_answer, judge_answer, check_answer, render, as_answer
 from answer import Answer, Claim
 from verify import verify, bad_claims
 from condense import condense
@@ -196,7 +196,7 @@ def answer_first_node(state: AgentState) -> dict:
         ans = make_answer(state["full_question"], state["language"], state["evidence"])       # never ask twice: answer with what there is
         fit = "partly"
     elif fit in ("answers", "partly") and j.claims:
-        ans = Answer(claims=j.claims, caveat=j.caveat)
+        ans = as_answer(j.claims, j.caveat)
     else:
         return {"fit": "unclear" if fit == "unclear" else "not_found", "missing": j.missing, "claims": [],
                 "clarification_question": j.clarification_question.strip() or None}
@@ -268,7 +268,7 @@ DROPPED = {"fr": "{n} affirmation(s) retirée(s) car non confirmée(s) par les a
 def verify_node(state):
     recheck = (state.get("recheck") or []) if state.get("repairs") else []      # the other claims are already confirmed
     claims = [Claim(**c) for i, c in enumerate(state["claims"], 1) if not recheck or i in recheck]
-    ans = Answer(claims=claims, caveat=state["caveat"])
+    ans = as_answer(claims, state["caveat"])
     import config as C
     question = [state.get("full_question") or ""] if getattr(C, "VERIFY_QUESTION", False) else []
     try:
@@ -320,7 +320,7 @@ def repair_node(state):
         return {"claims": claims, "caveat": caveat, "recheck": recheck, "repairs": state["repairs"] + 1,
                 "bad": state["bad"] if recheck else [],          # [] = nothing new to check (route_after_repair)
                 "dropped": len(state["claims"]) - len(claims),
-                "problems": check_answer(Answer(claims=[Claim(**c) for c in claims], caveat=caveat), state["evidence"])}
+                "problems": check_answer(as_answer(claims, caveat), state["evidence"])}
     ans = make_answer(state["full_question"], state["language"], state["evidence"],
                       feedback=feedback_from(state))
     return {"claims": [c.model_dump() for c in ans.claims], "caveat": ans.caveat,
@@ -338,7 +338,7 @@ def finalize_node(state):
         text = NO_SUPPORT.get(lang, NO_SUPPORT["fr"]) + f" [{seen}]"
         return {"text": text, "claims": [], "caveat": "", "cited": [], "dropped": len(bad) + gone, "status": "done",
                 "history": remember(state, text)}
-    text = render(Answer(claims=kept, caveat=state["caveat"]), state["evidence"], lang)
+    text = render(as_answer(kept, state["caveat"]), state["evidence"], lang)
     if bad or gone:
         text += "\n\n" + DROPPED.get(lang, DROPPED["fr"]).format(n=len(bad) + gone)
     return {"text": text, "claims": [c.model_dump() for c in kept],
