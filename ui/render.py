@@ -119,7 +119,7 @@ def view_v2(state: dict) -> dict:
     view["dropped"] = int(state.get("dropped") or 0)
     view["caveat"] = state.get("caveat") or None
     if not claims:
-        return view | {"kind": "message"}
+        return view | {"kind": "message", "others": [citation(cid, evidence) for cid in list(evidence)[:6]]}
     view["claims"] = [{"text": c.get("text", ""), "rtl": is_rtl(c.get("text", "")),
                        "citations": [citation(cid, evidence) for cid in c.get("cited_ids") or []]} for c in claims]
     return view | {"kind": "answer"}

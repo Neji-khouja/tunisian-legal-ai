@@ -13,7 +13,7 @@ EVIDENCE = {"PenalFr/s02/264": {"source": "PenalFr.pdf", "article": "264", "law_
 FAST_TEXT = ("[Exemple] Réponse courte en un seul passage, sans vérification (article 264). "
              "Elle vaut sauf dans les cas particuliers prévus par le texte.")
 
-ANSWER_STEPS = ["condense", "analyze", "retrieve", "grade", "answer", "verify", "repair", "verify", "finalize"]
+ANSWER_STEPS = ["condense", "analyze", "retrieve", "answer", "verify", "repair", "verify", "finalize"]
 
 
 class DemoRateLimit(Exception):
@@ -59,7 +59,7 @@ def final_state(case: str, question: str) -> dict:
 
 def steps_for(case: str) -> list[str]:
     return {"clarify": ["condense", "analyze", "clarify"], "refuse": ["condense", "analyze", "refuse"],
-            "degraded": ["condense", "analyze", "retrieve", "grade", "answer", "verify", "finalize"]}.get(case, ANSWER_STEPS)
+            "degraded": ["condense", "analyze", "retrieve", "answer", "verify", "finalize"]}.get(case, ANSWER_STEPS)
 
 
 class DemoBackend:

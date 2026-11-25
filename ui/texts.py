@@ -32,7 +32,8 @@ NODE_LABELS = {
     "grade": "Évaluation des articles trouvés",
     "reformulate": "Reformulation de la recherche",
     "retrieve_more": "Recherche complémentaire",
-    "answer": "Rédaction de la réponse",
+    "answer": "Lecture des articles et réponse",
+    "not_found": "Aucun article ne répond",
     "verify": "Vérification de chaque affirmation",
     "repair": "Correction de la réponse",
     "finalize": "Finalisation",
@@ -94,7 +95,14 @@ TOKENS_LINE = "{total} tokens (entrée {tin}, sortie {tout}) · {sec} s · mode 
 TOKENS_CACHED = ", dont {n} en cache"
 TOKENS_REASONING = ", dont {n} de réflexion"
 TOKENS_HIT = "En cache (hors limites)"
-FROM_CACHE = "Réponse déjà calculée pour cette question : 0 token"
+FROM_CACHE = "Réponse gardée en mémoire : cette question a déjà été posée. Le modèle n'a pas été appelé (0 token)."
+QUOTA_TITLE = "Tokens restants (24 h)"
+QUOTA_OWNER = "Clé utilisée : celle de l'application"
+QUOTA_PERSONAL = "Clé utilisée : la vôtre"
+QUOTA_NONE = "Aucune clé. Seules les réponses déjà gardées en mémoire sont possibles ; indiquez votre clé Groq ci-dessous."
+QUOTA_ABOUT = "Environ {agent} questions Agent ou {fast} Rapide"
+QUOTA_QUESTIONS = "Questions autorisées aujourd'hui : {n}"
+QUOTA_HINT = "Estimation d'après l'usage ici sur 24 heures."
 REPEALED = "Attention : {label} est indiqué comme {note}. Vérifiez le texte en vigueur."
 TOKENS_TITLE = "Tokens utilisés"
 TOKENS_CONV = "Cette conversation"
@@ -130,8 +138,9 @@ L'agent enchaîne des étapes et peut revenir en arrière. Chaque encadré bleu 
 - **analyze** : détecte la langue, l'intention (répondre, préciser, refuser) et les codes concernés.
 - **normalize** : traduit la question en français si besoin, puis la reformule en vocabulaire juridique.
 - **retrieve** : lance la recherche du mode Rapide avec la question d'origine et la question reformulée, favorise le code concerné, garde 8 articles et ajoute ceux auxquels ils renvoient.
-- **grade / reformulate** : juge si les articles suffisent ; sinon, nouvelles requêtes (deux fois au plus).
-- **answer** : écrit une courte explication, chaque phrase avec les articles qui la fondent. Demandez « plus de détails » pour une réponse plus complète.
+- **answer** : lit les articles et juge s'ils répondent. Si oui, écrit une courte explication, chaque phrase avec les articles qui la fondent. Si la question est peu claire au vu des articles, vous demande une précision (**clarify**).
+- **reformulate / retrieve_more** : si les articles ne répondent pas, réécrit la recherche, cherche encore une fois et revient à **answer**. Si rien ne répond, l'agent le dit (**not_found**) au lieu d'inventer.
+- **détails** : réponse courte par défaut. Demandez « plus de détails » pour une réponse plus complète.
 - **verify / repair** : contrôle chaque phrase contre son article, puis corrige ou retire seulement celles qui ne sont pas confirmées.
 
 La date de la loi et les mentions « modifié » ou « abrogé » ne viennent pas du modèle : elles sont lues dans les textes."""
@@ -148,7 +157,11 @@ Une seule passe, sans retour en arrière : chercher, classer, répondre. La rech
 Ce que ce mode ne fait pas : il ne se souvient pas de la conversation, ne demande pas de précision, ne relance pas la recherche et ne contrôle pas sa réponse."""
 ABOUT_TOKENS = """### Tokens
 
-Un token est un morceau de mot que le modèle lit ou écrit. Le compteur additionne tous les appels au modèle faits pour une question : l'entrée est ce que le modèle lit (la question et les articles), la sortie ce qu'il écrit, y compris sa réflexion, qui n'est pas affichée. Les tokens en cache sont des débuts de texte identiques d'un appel à l'autre : le fournisseur ne les compte pas dans ses limites. Une question déjà posée telle quelle par quelqu'un reçoit la réponse gardée en mémoire, sans nouveau token."""
+Un token est un morceau de mot que le modèle lit ou écrit. Le compteur additionne tous les appels au modèle faits pour une question : l'entrée est ce que le modèle lit (la question et les articles), la sortie ce qu'il écrit, y compris sa réflexion, qui n'est pas affichée. Les tokens en cache sont des débuts de texte identiques d'un appel à l'autre : le fournisseur ne les compte pas dans ses limites. Une question déjà posée telle quelle par quelqu'un reçoit la réponse gardée en mémoire, sans nouveau token : c'est alors écrit au-dessus de la réponse.
+
+Les tokens restants sont une estimation : le fournisseur ne publie pas ce chiffre. L'application retire de la limite quotidienne les tokens utilisés ici depuis 24 heures ; l'usage de la même clé ailleurs n'est pas compté.
+
+Si vous n'indiquez pas de clé, l'application utilise la sienne, avec un nombre limité de questions par jour. Sans aucune clé, elle ne répond pas à une question nouvelle."""
 ABOUT_DATA = """### Vos données
 
 Les questions et les réponses sont enregistrées sur le serveur pour évaluer le système. La liste des conversations, elle, est gardée dans votre navigateur ; la supprimer n'efface pas cet enregistrement."""

@@ -22,17 +22,26 @@ The main system is an agent built with LangGraph (`agent/agent_graph.py`):
 ```
 question -> condense -> analyze --+--> clarify (vague question, asks the user)
                                   +--> refuse  (out of scope)
-                                  '--> retrieve -> grade -+-> answer -> verify -> finalize
-                                          ^               |              |
-                                          '-- reformulate-'              '-> repair (re-checked)
+                                  '--> retrieve -> answer --+-- they answer -------> verify -> finalize
+                                          ^   (judges the   |                          '-> repair (re-checked)
+                                          |    articles)    +-- they do not (once) -> reformulate --.
+                                          '-----------------------------------------------------------'
+                                                            +-- unclear -> clarify
+                                                            '-- nothing found -> says so
 ```
+
+![Agent](agent/agent_flow_v2.png)
+
+The one-pass mode: ![One-pass mode](agent/fast_flow.png)
 
 - **condense**: rewrites a follow-up question so it stands alone.
 - **analyze**: detects language, intent (answer, clarify, refuse) and which legal codes are concerned.
 - **retrieve**: the query is normalized into French legal wording once (`agent/normalize.py`), then hybrid search runs
   (below).
-- **grade**: checks whether the retrieved articles are enough. If not, **reformulate** writes new queries, at most twice.
-- **answer**: writes short claims, each citing article ids from the evidence.
+- **answer**: reads the articles and judges whether they answer (`config.ANSWER_FIRST`). If they do, writes short claims, each
+  citing article ids from the evidence. If not, **reformulate** writes new queries and the search runs once more; if the
+  question turns out to be unclear, the user is asked; if nothing answers, the agent says so. With `ANSWER_FIRST = False`
+  a separate **grade** step decides before the answer, as in the evaluated versions.
 - **verify / repair**: each claim is checked against the article it cites; unsupported claims are repaired or dropped.
 
 Retrieval (`retriever.py`, `reranker.py`):
@@ -123,6 +132,8 @@ The YAML block at the top of this file configures the Space (`sdk: gradio`, entr
      default, `0` removes the limit; visitors can paste their own key in the page).
    - `UI_ANSWER_CACHE=off`: optional, recomputes every answer. By default the first question of a conversation reuses the
      answer already given to the same question (kept in memory until the next restart).
+   - `UI_TOKENS_PER_DAY`: optional, the provider's daily token limit of the app's key (200000 by default), for the "tokens
+     left" meter. It is an estimate: the limit minus what was used through this app in the last 24 hours.
    - Keeping the log (a Space loses its disk at each restart), one of:
      - `RAG_LOG_BACKUP_DIR`: a folder of a private Storage Bucket mounted read-write in the Space, for example
        `/data/logs` (no token needed). The database is copied there after every question, as one file per start. Do not

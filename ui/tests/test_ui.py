@@ -340,7 +340,8 @@ def test_cache():
     again = run("  quelle peine pour le VOL", "b")
     check("same first question (case, spaces, final punctuation ignored): same answer, 0 token, no step",
           again[-1][1]["tokens_in"] == 0 and T.FROM_CACHE in again[-1][1]["markdown"] and len(again) == 1
-          and again[-1][1]["markdown"].split("<div class=\"usage\">")[0] == first[-1][1]["markdown"].split("<div class=\"usage\">")[0])
+          and again[-1][1]["markdown"].split("</div>", 1)[1].strip() == first[-1][1]["markdown"].split("<div class=\"usage\">")[0].strip())
+    check("an answer from memory says so first, before the answer", again[-1][1]["markdown"].startswith('<div class="memo">' + T.FROM_CACHE))
     check("the conversation is told the answer, for follow-up questions", [x[0] for x in seen] == ["b"])
     check("a reused answer does not use the owner's daily cap, and is logged as 'cache' with 0 token",
           pol.remaining() == 1 and st.rows()[-1]["key_source"] == "cache" and st.rows()[-1]["tokens_in"] == 0 and st.rows()[-1]["answer"] == st.rows()[0]["answer"])
@@ -358,6 +359,60 @@ def test_cache():
         cache.put(f"question {i}", "agent", ok_state)
     check("the oldest answers leave when it is full", cache.get("question 0", "agent") is None and cache.get("question 3", "agent") is not None)
     check("only the cited articles are kept", set(cache.get("question 3", "agent")["evidence"]) == {"PenalFr/s02/264", "PenalFr/s02/264-bis"})
+
+
+def test_quota():
+    import chat
+    import store
+    import quota
+    import tempfile
+    now = [1_000_000.0]
+    b = quota.TokenBudget(200_000, clock=lambda: now[0])
+    b.add(None, 12_000)
+    b.add("gsk_personal", 3_000)
+    check("tokens left: each key has its own count", (b.left(None), b.left("gsk_personal"), b.left("gsk_other")) == (188_000, 197_000, 200_000))
+    check("a personal key is kept only as a hash", not any("gsk_" in k for k in b._used))
+    now[0] += quota.DAY + 1
+    check("tokens older than 24 hours no longer count", b.left(None) == 200_000)
+    b.add(None, 500_000)
+    check("never below zero", b.left(None) == 0)
+    now[0] += quota.DAY + 1
+    msg = "Error code: 429 - Rate limit reached for model `openai/gpt-oss-120b` on tokens per day (TPD): Limit 200000, Used 199990, Requested 900."
+    check("the provider's refusal gives the real figure", b.learn(None, msg) and b.left(None) == 10 and not b.learn(None, "429 tokens per minute (TPM): Limit 8000, Used 7900"))
+    check("cached tokens do not count", quota.counted(4200, 650, 1500) == 3350)
+    from datetime import datetime, timezone
+    c = quota.TokenBudget(100_000)
+    row = {"ts": datetime.now(timezone.utc).isoformat(timespec="seconds"), "session": "s", "turn": 1, "key_source": "owner", "tokens_in": 9000, "tokens_out": 1000, "tokens_cached": 0}
+    c.seed([row, dict(row), dict(row, turn=2, key_source="personal"), dict(row, turn=3, ts="2020-01-01T00:00:00+00:00"), dict(row, turn=4, ts=None)])
+    check("restored from the log: the app's key only, last 24 hours, each row once", c.used(None) == 10_000)
+    st = store.Store(Path(tempfile.mkdtemp()) / "q.db", upload=False)
+    be, pol, cache, bud = stub.DemoBackend(0), keys.KeyPolicy(True, 0, lambda: True), chat.AnswerCache(), quota.TokenBudget(200_000)
+    ok_state = stub.final_state("answer", "x") | {"dropped": 0}
+    be.stream_v2 = lambda q, t: iter([("usage", {"in": 4200, "out": 650, "cached": 1500}), ("final", dict(ok_state, question=q, full_question=q))])
+    list(chat.ask("Q ?", "a", 1, "", be, pol, st, "agent", cache, bud))
+    list(chat.ask("Q ?", "b", 1, "", be, pol, st, "agent", cache, bud))
+    check("a question lowers the app's tokens left; an answer from memory does not", bud.used(None) == 3350)
+    list(chat.ask("Q2 ?", "c", 1, "gsk_mine", be, pol, st, "agent", cache, bud))
+    check("a personal key lowers its own count only", bud.used("gsk_mine") == 3350 and bud.used(None) == 3350)
+    def refuse(q, t):
+        raise stub.DemoRateLimit(msg)
+        yield
+    be.stream_v2 = refuse
+    list(chat.ask("Q3 ?", "d", 1, "", be, pol, st, "agent", cache, bud))
+    check("a daily refusal updates the meter", bud.left(None) == 10)
+    none = keys.KeyPolicy(True, 0, lambda: False)
+    seen = []
+    be.stream_v2 = lambda q, t: seen.append(q) or iter([("final", ok_state)])
+    out = list(chat.ask("Question jamais posée ?", "e", 1, "", be, none, st, "agent", cache, bud))[-1][1]["markdown"]
+    check("no key anywhere: a new question is refused and the model is not called", T.ERRORS["no_key"] in out and not seen)
+
+
+def test_not_found():
+    import chat
+    ev = {f"PenalFr/s02/{i}": {"source": "PenalFr.pdf", "article": str(i), "text": f"Article {i}.- texte"} for i in range(1, 9)}
+    md = chat.view_markdown(R.view_v2({"status": "done", "language": "fr", "claims": [], "text": "Je n'ai pas trouvé.", "evidence": ev}))
+    check("nothing fits: the message, no source, the articles that were read in a closed block",
+          md.startswith("<div") and "Je n" in md and "src-title" not in md and T.WORDS["fr"]["others"].format(n=6) in md)
 
 
 def test_fast_layout():
@@ -488,7 +543,7 @@ def test_policy_in_app():
 
 
 if __name__ == "__main__":
-    for t in (test_views, test_errors, test_policy, test_session_key, test_store, test_laws, test_cache, test_fast_layout, test_chat, test_app_demo, test_policy_in_app):
+    for t in (test_views, test_errors, test_policy, test_session_key, test_store, test_laws, test_cache, test_quota, test_not_found, test_fast_layout, test_chat, test_app_demo, test_policy_in_app):
         t()
     print(f"\n{sum(RESULTS)}/{len(RESULTS)} checks passed")
     sys.exit(0 if all(RESULTS) else 1)

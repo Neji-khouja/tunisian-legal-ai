@@ -8,6 +8,7 @@ import threading
 import unicodedata
 
 import laws
+import quota
 import texts as T
 import render as R
 
@@ -78,6 +79,9 @@ def view_markdown(view: dict) -> str:
         out.append(R.to_html(view["text"]))
         if view["kind"] == "clarify":
             out.append(f'<div class="note">{_esc(T.CLARIFY_HINT)}</div>')
+        if view.get("others"):
+            rest = "\n".join(_source(c["label"], c) for c in view["others"])
+            others = f'<details class="src"><summary>{_esc(word["others"].format(n=len(view["others"])))}</summary>\n\n{rest}\n\n</details>'
     if view.get("caveat"):
         rtl = R.is_rtl(view["caveat"])
         out.append(f'<div class="note" dir="{"rtl" if rtl else "ltr"}">{word["note"]} : {_esc(view["caveat"])}</div>')
@@ -138,10 +142,10 @@ class AnswerCache:
 
 
 def ask(question: str, thread_id: str, turn: int, personal_key: str, backend, policy, store, mode: str = "agent",
-        cache: AnswerCache | None = None):
+        cache: AnswerCache | None = None, budget: "quota.TokenBudget | None" = None):
     """Generator of ("step", label) while the backend works, then ("done", {"markdown", "tokens_in", "tokens_out",
     "tokens_cached"}). Never raises; logs the question. mode: "agent" (stream_v2) or "fast" (stream_fast). cache: used for
-    the first question of a conversation only."""
+    the first question of a conversation only. budget: the tokens left on the key used."""
     import keys
     from langchain_core.callbacks import get_usage_metadata_callback
     mode = "fast" if mode == "fast" else "agent"
@@ -175,6 +179,8 @@ def ask(question: str, thread_id: str, turn: int, personal_key: str, backend, po
                                                   "reasoning": (u.get("output_token_details") or {}).get("reasoning") or 0}))
             except Exception as e:                  # technical detail to the console only
                 LOG.error("question failed: %s", R.technical_detail(e))
+                if budget:
+                    budget.learn(key, R.hc.full_message(e))
                 events.put(("error", R.classify_error(e)))
             events.put(("end", None))
         threading.Thread(target=work, daemon=True).start()
@@ -192,14 +198,16 @@ def ask(question: str, thread_id: str, turn: int, personal_key: str, backend, po
             elif kind == "error":
                 error = value
     seconds = time.time() - started
+    if budget and not known:
+        budget.add(key, quota.counted(used["in"], used["out"], used["cached"]))
     view = R.view_error(error) if error else (R.view_fast(final or {}) if mode == "fast" else R.view_v2(final or {}))
     try:
         store.log(thread_id, turn, question, final, error, seconds, key_source, mode, used)
     except Exception as e:                          # a logging problem must never hide the answer
         LOG.error("logging failed: %s", type(e).__name__)
     md = view_markdown(view)
-    if known:
-        md += f'\n\n<div class="usage">{T.FROM_CACHE}</div>'
+    if known:                                       # said first, so that nobody takes it for a new model call
+        md = f'<div class="memo">{T.FROM_CACHE}</div>\n\n' + md
     elif not error and (used["in"] or used["out"]):
         md += "\n\n" + usage_line(used, seconds, mode)
     if cache and not known and turn == 1 and final and not error:
