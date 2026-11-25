@@ -114,6 +114,27 @@ ABOUT_INTRO = """## Comment ça marche
 Cet assistant répond à des questions sur 14 textes juridiques tunisiens : Constitution, code pénal, code du travail, code des obligations et des contrats, statut personnel, commerce, sociétés, procédure civile et pénale, etc. Il répond à partir de ces textes et affiche sous chaque réponse les articles utilisés ; dépliez un article pour lire son texte.
 
 Aucun des deux modes n'est infaillible : l'article qui répond à la question peut ne pas être trouvé. Lisez toujours l'article cité."""
+ABOUT_STORY = """### En image : le bibliothécaire et le juriste
+
+Imaginez une bibliothèque de droit.
+
+- **Le bibliothécaire** (la recherche) va chercher les articles les plus proches de votre question. Il ne répond pas.
+- **Le juriste** (le modèle) lit ces articles et vous répond.
+- **Le relecteur** (la vérification, en mode Agent seulement) compare chaque phrase du juriste à l'article cité.
+
+**En mode Rapide**, le bibliothécaire apporte 6 articles et le juriste répond tout de suite. Personne ne relit.
+
+**En mode Agent**, le bibliothécaire apporte 8 articles, et le juriste se demande d'abord s'ils répondent vraiment :
+
+- *Ils répondent.* Il rédige, puis le relecteur contrôle chaque phrase.
+- *Ils ne répondent pas.* Il renvoie le bibliothécaire avec une demande reformulée, une seule fois.
+- *La question peut vouloir dire plusieurs choses.* Il vous demande une précision.
+- *Toujours rien.* Il vous le dit, sans inventer.
+
+**Deux exemples en mode Agent**
+
+- « Quelle est la peine pour le vol simple ? » Parmi les articles apportés, l'article 264 du Code pénal répond : le juriste rédige et le relecteur contrôle.
+- « Quelle est la peine pour un excès de vitesse ? » Le code de la route ne fait pas partie de la bibliothèque : le juriste renvoie une fois le bibliothécaire, puis vous dit qu'il n'a rien trouvé."""
 ABOUT_MODES = """### Les deux modes
 
 | | **Agent** | **Rapide** |
@@ -124,7 +145,7 @@ ABOUT_MODES = """### Les deux modes
 | Hors des codes | refuse | essaie de répondre |
 | Mémoire | tient compte des messages précédents | chaque question est traitée seule |
 | Vérification | chaque affirmation est contrôlée contre son article | aucune |
-| Coût | plusieurs appels au modèle (souvent 5 ou plus), environ 10 000 tokens par question | 1 ou 2 appels, environ 2 000 tokens |
+| Coût | 4 appels au modèle ou plus, environ 8 000 à 10 000 tokens par question | 1 ou 2 appels, environ 2 000 tokens |
 | À choisir pour | une question de suivi, une question vague, une réponse dont chaque phrase est contrôlée | une question précise sur une règle ou un article |
 
 L'Agent consomme plus parce qu'il fait plus de choses : chaque étape est un appel au modèle, et plusieurs relisent les articles. Les deux modes cherchent dans les mêmes textes avec le même moteur : si l'article n'est pas trouvé, aucun des deux ne peut répondre."""

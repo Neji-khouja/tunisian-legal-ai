@@ -98,7 +98,7 @@ def quota_card(personal_key):
     left, limit = BUDGET.left(personal_key), BUDGET.limit
     share = round(100 * left / limit)
     level = "low" if share < 15 else "mid" if share < 40 else "ok"
-    lines = [T.QUOTA_PERSONAL if personal else T.QUOTA_OWNER, T.QUOTA_ABOUT.format(agent=left // 11000, fast=left // 2000)]
+    lines = [T.QUOTA_PERSONAL if personal else T.QUOTA_OWNER, T.QUOTA_ABOUT.format(agent=left // 10000, fast=left // 2000)]
     asked = None if personal else POLICY.remaining()
     if asked is not None:
         lines.append(T.QUOTA_QUESTIONS.format(n=asked))
@@ -229,12 +229,17 @@ with gr.Blocks(title=T.TITLE, theme=THEME, head=f"<style>{CSS}</style>") as demo
         with gr.Tab(T.TAB_HOW):
             with gr.Column(elem_id="about"):
                 gr.Markdown(T.ABOUT_INTRO)
+                gr.Markdown(T.ABOUT_STORY, elem_id="story")
                 gr.Markdown(T.ABOUT_MODES)
-                with gr.Tabs(elem_id="about-modes"):
-                    for tab, text, svg in ((T.TAB_AGENT, T.ABOUT_AGENT, "flow_agent.svg"), (T.TAB_FAST, T.ABOUT_FAST, "flow_rapide.svg")):
-                        with gr.Tab(tab):
-                            gr.Markdown(text)
-                            gr.HTML('<div class="flow-wrap">' + (ROOT / "ui" / svg).read_text(encoding="utf-8") + "</div>", padding=False)
+                # a switch, not nested gr.Tabs: Gradio measures those while hidden and can move the second one into a menu
+                about_mode = gr.Radio([(T.TAB_AGENT, "agent"), (T.TAB_FAST, "fast")], value="agent", show_label=False,
+                                      container=False, elem_id="about-modes")
+                about = []
+                for text, svg, shown in ((T.ABOUT_AGENT, "flow_agent.svg", True), (T.ABOUT_FAST, "flow_rapide.svg", False)):
+                    with gr.Column(visible=shown) as part:
+                        gr.Markdown(text)
+                        gr.HTML('<div class="flow-wrap">' + (ROOT / "ui" / svg).read_text(encoding="utf-8") + "</div>", padding=False)
+                    about.append(part)
                 gr.Markdown(T.ABOUT_TOKENS)
                 gr.Markdown(T.ABOUT_DATA)
 
@@ -248,6 +253,7 @@ with gr.Blocks(title=T.TITLE, theme=THEME, head=f"<style>{CSS}</style>") as demo
     history.input(open_conversation, [history, convs], [chatbot, welcome, conv_id, mode, *rest], api_name=False)
     delete_btn.click(delete_conversation, [conv_id, convs], [chatbot, welcome, conv_id, convs, *rest], api_name=False)
     mode.change(mode_help, [mode], [mode_note], api_name=False)
+    about_mode.change(lambda m: (gr.update(visible=m == "agent"), gr.update(visible=m == "fast")), [about_mode], about, api_name=False)
     key_box.change(lambda k: (key_status(k), quota_card(k)), [key_box], [key_note, quota_meter], api_name=False)
     demo.load(start, [convs], [*rest, key_note, quota_meter], api_name=False)
     demo.load(None, None, None, js=CLOSE_ON_PHONE)
