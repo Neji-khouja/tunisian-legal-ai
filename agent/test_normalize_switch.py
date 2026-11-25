@@ -25,6 +25,7 @@ from verify import Verification, ClaimVerdict
 from langchain_core.documents import Document
 
 FAILS, CNT = [], {"n": 0}
+C.ANSWER_FIRST = False             # REF's grade step
 C.VERIFY_QUESTION = False          # REF's verifier call
 C.REPAIR_MODE = "full"              # REF's repair (test_graph_logic.py covers the targeted one)
 AGENT_TOP_K, C.AGENT_TOP_K = C.AGENT_TOP_K, 6      # the comparisons with REF use the limit REF had (6); test_top_k uses the default

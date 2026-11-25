@@ -467,3 +467,13 @@ Tokens per question (cached tokens of analyze not counted twice): 11,840, 11,572
   of private international law still appear in answers about ordinary cases; grade costs 18% of the tokens and its extra
   searches helped in 1 of the 6 runs that had them.
 
+## v2.1: the answer step judges the articles, no separate grade step (2026-11-25, config.ANSWER_FIRST)
+The grade call (about 2,000 tokens) is gone: the answer call first says whether the articles answer, then writes the answer. If
+they do not, the search is rewritten and run once more (MAX_EXTRA_SEARCHES = 1); if the question turns out to be unclear the user
+is asked, once; if nothing answers, the agent says so instead of describing the closest article.
+Real model, 6 of the 10 dev questions (results/short_check/run4_answer_first.jsonl): 7,991 tokens per question against 12,636 for the
+previous version and 11,433 for the old agent on the same 6; 5 right and 1 partly right, as before, and the assault answer is now
+complete. One run per question, and costs vary between runs. All six were judged "answers"; the marriage question in Arabic was
+incomplete and still judged so. The new-search path was seen once, on a question outside the corpus (speeding): judged not found,
+searched again, said plainly. The post-search clarification was only tested with stubs.
+

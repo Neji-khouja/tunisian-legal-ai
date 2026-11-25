@@ -7,7 +7,7 @@ from retriever import _fuse
 from retrieve_g import retrieve_g
 from grade import grade
 from reformulate import reformulate
-from answer import make_answer, check_answer, render
+from answer import make_answer, judge_answer, check_answer, render
 from answer import Answer, Claim
 from verify import verify, bad_claims
 from condense import condense
@@ -22,7 +22,8 @@ def _fresh() -> dict:
     """fresh_state, plus (config.NORMALIZE_QUERY == "v3" only) an empty normalization record for the new turn."""
     import config as C
     return (fresh_state() | ({"normalize": {}} if getattr(C, "NORMALIZE_QUERY", "off") == "v3" else {})
-            | ({"recheck": []} if getattr(C, "REPAIR_MODE", "full") == "targeted" else {}))
+            | ({"recheck": []} if getattr(C, "REPAIR_MODE", "full") == "targeted" else {})
+            | ({"fit": ""} if getattr(C, "ANSWER_FIRST", False) else {}))
 
 REFUSE = {"fr": "Cette question sort du cadre des codes tunisiens que je couvre.",
           "en": "This is outside the Tunisian legal codes I cover.",
@@ -30,6 +31,11 @@ REFUSE = {"fr": "Cette question sort du cadre des codes tunisiens que je couvre.
 NO_ARTICLE = {"fr": "Aucun article pertinent n'a été trouvé dans les codes que je couvre.",
               "en": "No relevant article was found in the codes I cover.",
               "ar": "لم يتم العثور على مادة ذات صلة في القوانين التي أغطيها."}
+NOT_FOUND = {"fr": "Je n'ai pas trouvé, dans les codes que je couvre, d'article qui réponde à cette question. "
+                   "Essayez de décrire la situation autrement ou de préciser le point de droit.",
+             "en": "I did not find an article that answers this question in the codes I cover. "
+                   "Try describing the situation differently or naming the point of law.",
+             "ar": "لم أجد في القوانين التي أغطيها فصلا يجيب عن هذا السؤال. حاول وصف الوضعية بطريقة أخرى أو تحديد المسألة القانونية."}
 CLARIFY_FALLBACK = {"fr": "Pouvez-vous préciser votre question ?",
                     "en": "Could you give more details?",
                     "ar": "هل يمكنك توضيح سؤالك أكثر؟"}
@@ -68,6 +74,8 @@ class AgentState(TypedDict):
     is_followup: bool
     normalize: dict
     recheck: list[int]           # targeted repair: 1-based indexes of the claims the second verify must check
+    fit: str                     # ANSWER_FIRST: the answer step's judgement of the articles
+    clarified: bool              # ANSWER_FIRST: the user already answered a clarification for this question
 
 def remember(state, text) -> list[dict]:
     return (state.get("history", []) + [{"q": state["full_question"], "a": text[:600]}])[-2:]
@@ -86,6 +94,12 @@ def condense_node(state: AgentState) -> dict:
     return out | {"question": s.question, "condensed_from": state["question"], "is_followup": s.is_followup}
 
 def analyze_node(state: AgentState) -> dict:
+    import config as C
+    reply = state.get("status") == "clarify" and bool(state.get("original_question"))
+    out = _analyze(state)
+    return out | ({"clarified": reply} if getattr(C, "ANSWER_FIRST", False) else {})
+
+def _analyze(state: AgentState) -> dict:
     if state.get("status") == "clarify" and state.get("original_question"):
         full_question = state["original_question"] + f"\nUser's answer: {state['question']}"
         degraded = list(state.get("degraded") or [])      # same question, keep earlier events
@@ -172,7 +186,37 @@ def retrieve_more_node(state: AgentState) -> dict:
     docs = _fuse([state["docs"], extra])[:C.AGENT_TOP_K]
     return {"docs": docs, "evidence": to_evidence(docs), "retries": state["retries"] + 1}
 
+def answer_first_node(state: AgentState) -> dict:
+    """config.ANSWER_FIRST: judge the articles and, when they answer, write the answer (one call)."""
+    if not state["evidence"]:
+        return {"fit": "not_found", "missing": "", "claims": []}
+    j = judge_answer(state["full_question"], state["language"], state["evidence"])
+    fit = j.fit
+    if fit == "unclear" and (state.get("clarified") or not j.clarification_question.strip()):
+        ans = make_answer(state["full_question"], state["language"], state["evidence"])       # never ask twice: answer with what there is
+        fit = "partly"
+    elif fit in ("answers", "partly") and j.claims:
+        ans = Answer(claims=j.claims, caveat=j.caveat)
+    else:
+        return {"fit": "unclear" if fit == "unclear" else "not_found", "missing": j.missing, "claims": [],
+                "clarification_question": j.clarification_question.strip() or None}
+    claims = [c.model_dump() for c in ans.claims]
+    text = render(ans, state["evidence"], state["language"])
+    return {"fit": fit, "text": text, "problems": check_answer(ans, state["evidence"]),
+            "cited": sorted({i for c in ans.claims for i in c.cited_ids}), "status": "done",
+            "degraded": state.get("degraded", []), "claims": claims, "caveat": ans.caveat, "draft_claims": claims,
+            "draft_text": text, "repairs": 0, "verdicts": [], "bad": [], "dropped": 0}
+
+def not_found_node(state: AgentState) -> dict:
+    """ANSWER_FIRST: no search found an article that answers. Nothing is written from articles that do not fit."""
+    text = NOT_FOUND.get(state.get("language"), NOT_FOUND["fr"])
+    return {"text": text, "problems": [], "cited": [], "status": "done", "degraded": state.get("degraded", []),
+            "claims": [], "caveat": "", "history": remember(state, text)}
+
 def answer_node(state: AgentState) -> dict:
+    import config as C
+    if getattr(C, "ANSWER_FIRST", False):
+        return answer_first_node(state)
     if not state["evidence"]:                 # nothing retrieved: do not ask the LLM to answer from nothing
         text = NO_ARTICLE.get(state.get("language"), NO_ARTICLE["fr"])
         return {"text": text,
@@ -199,7 +243,14 @@ def route_after_analyze(state: AgentState) -> str:
 def route_after_grade(state: AgentState) -> str:
     return "answer" if state["enough"] or state["retries"] >= 2 else "reformulate"
 
+def route_after_retrieve(state: AgentState) -> str:
+    import config as C
+    return "answer" if getattr(C, "ANSWER_FIRST", False) else "grade"
+
 def route_after_more(state: AgentState) -> str:
+    import config as C
+    if getattr(C, "ANSWER_FIRST", False):
+        return "answer"
     return "answer" if state["retries"] >= 2 else "grade"   # no grade after the last reformulation (as loop_core)
 
 def refuse(state):
@@ -295,6 +346,11 @@ def finalize_node(state):
             "dropped": len(bad) + gone, "status": "done", "history": remember(state, text)}
 
 def route_after_answer(state):
+    import config as C
+    if getattr(C, "ANSWER_FIRST", False) and state.get("fit") in ("not_found", "unclear"):
+        if state["fit"] == "unclear":
+            return "clarify"
+        return "reformulate" if state["retries"] < C.MAX_EXTRA_SEARCHES else "not_found"
     return "verify" if state["claims"] else "end"
 
 def route_after_repair(state):
@@ -319,17 +375,20 @@ builder.add_node("answer", answer_node)
 builder.add_node("verify", verify_node)
 builder.add_node("repair", repair_node)
 builder.add_node("finalize", finalize_node)
+builder.add_node("not_found", not_found_node)
 
 
 builder.add_edge(START, "condense")
 builder.add_edge("condense", "analyze")
-builder.add_conditional_edges("answer", route_after_answer, {"verify": "verify", "end": END})
+builder.add_conditional_edges("answer", route_after_answer, {"verify": "verify", "end": END, "reformulate": "reformulate",
+                                                             "clarify": "clarify", "not_found": "not_found"})
+builder.add_edge("not_found", END)
 builder.add_conditional_edges("verify", route_after_verify, {"repair": "repair", "finalize": "finalize"})
 builder.add_conditional_edges("analyze", route_after_analyze,
                               {"refuse": "refuse", "clarify": "clarify", "retrieve": "retrieve"})
 builder.add_edge("clarify", END)
 builder.add_edge("refuse", END)
-builder.add_edge("retrieve", "grade")
+builder.add_conditional_edges("retrieve", route_after_retrieve, {"grade": "grade", "answer": "answer"})
 builder.add_conditional_edges("grade", route_after_grade, {"answer": "answer", "reformulate": "reformulate"})
 builder.add_edge("reformulate", "retrieve_more")
 builder.add_conditional_edges("retrieve_more", route_after_more, {"answer": "answer", "grade": "grade"})

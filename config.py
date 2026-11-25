@@ -42,6 +42,10 @@ VERIFY_TEXT_ONCE       = False   # True: the verifier gets an article's text onc
 VERIFY_QUESTION        = True    # the verifier also gets the question, so a claim may use the user's own words (False = v2)
 LOW_EFFORT_STEPS       = ("condense", "reformulate")   # these steps reason less (reasoning_effort "low"); () = v2. Not "grade":
                                  # tried, it called good evidence insufficient and the extra searches cost far more
+ANSWER_FIRST           = True    # the answer step judges the articles itself: they answer -> answer; they do not -> new search, then
+                                 # answer again; the question is unclear -> ask the user; still nothing -> say so
+                                 # False (v2): a separate grade step decides before the answer, two extra searches at most
+MAX_EXTRA_SEARCHES     = 1       # ANSWER_FIRST only
 
 DB_DIR   = DB_V12 if INDEX_V12 else DB_V11
 

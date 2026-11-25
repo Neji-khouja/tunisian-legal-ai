@@ -3,6 +3,8 @@ import re
 import sys
 from pathlib import Path
 
+from typing import Literal
+
 from pydantic import BaseModel,Field
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))   # agent/, for analyze
@@ -20,6 +22,14 @@ class Claim(BaseModel):
 class Answer(BaseModel):
     claims: list[Claim]=Field(min_length=1,max_length=6)
     caveat: str=""# filled when the evidence only partly answers
+
+
+class Judged(BaseModel):                       # config.ANSWER_FIRST: the judgement comes before the claims
+    fit: Literal["answers", "partly", "not_found", "unclear"]
+    missing: str = ""                          # not_found: the rule to look for
+    clarification_question: str = ""           # unclear
+    claims: list[Claim] = Field(default_factory=list, max_length=6)
+    caveat: str = ""
 
 
 SYSTEM_PROMPT = """You answer questions about Tunisian law for a legal research assistant.
@@ -59,6 +69,24 @@ Rules:
 5. If the articles answer only part of the question, answer that part and put one sentence in `caveat` saying what the articles shown do not cover. Do not fill the gap yourself.
 6. If none of the articles answers the question, write one claim describing what the most related article actually says (cite it), and put in `caveat` that the articles shown do not answer the question.
 7. Write the claims and the caveat in the answer language given in the request."""
+
+
+# config.ANSWER_FIRST: replaces rule 6 of the answer prompt and is added at its end
+NOT_FOUND_RULE = "6. If none of the articles answers the question, set `fit` to not_found and write no claim."
+JUDGE_PROMPT = """
+
+Before writing, judge the articles and set `fit`:
+- answers: they state the rule the question asks about, even if some details are elsewhere.
+- partly: they answer the main point, but not another point the question explicitly asks.
+- not_found: they do not state the rule the question asks about; they only define terms, announce a chapter, refer to other texts, or are about another situation or subject. Then write NO claim, and put in `missing` ONE short French legal phrase (2 to 8 words, no article number) naming the rule to look for.
+- unclear: the question can mean situations with different rules, nothing in it says which one, and a short answer cannot cover them. Then write NO claim, and put in `clarification_question` ONE short question, in the answer language, asking for the missing fact. Choose it rarely: when the cases can be listed, list them and choose answers.
+Decide from what the articles actually say; do not lean towards any value."""
+
+
+def judged_prompt() -> str:
+    base = system_prompt()
+    rule6 = next(line for line in base.splitlines() if line.startswith("6. "))
+    return base.replace(rule6, NOT_FOUND_RULE) + JUDGE_PROMPT
 
 
 DETAILS = re.compile(r"d[ée]tail|expliqu|en profondeur|approfondi|liste compl[èe]te|\bexplain|\bin depth\b|\bfull list\b|تفاصيل|تفصيل|بالتفصيل|اشرح|شرح", re.I)
@@ -105,6 +133,15 @@ def make_answer(question, language, evidence, feedback="", keep=()) -> Answer:
     for c in ans.claims:
         c.cited_ids = [i.strip().strip("[]").strip() for i in c.cited_ids]
     return ans
+
+
+def judge_answer(question, language, evidence) -> Judged:
+    """config.ANSWER_FIRST: one call that judges the articles and, when they answer, writes the answer."""
+    structured = llm.with_structured_output(Judged, method="json_schema")
+    out = structured.invoke([("system", judged_prompt()), ("human", _user_block(question, language, evidence))])
+    for c in out.claims:
+        c.cited_ids = [i.strip().strip("[]").strip() for i in c.cited_ids]
+    return out
 
 
 def check_answer(answer: Answer, evidence: dict) -> list[str]:

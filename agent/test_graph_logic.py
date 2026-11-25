@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import agent_graph as g
 import config
 LOW_EFFORT_STEPS, config.LOW_EFFORT_STEPS = config.LOW_EFFORT_STEPS, ()     # the fakes below replace the steps' default models
+ANSWER_FIRST, config.ANSWER_FIRST = config.ANSWER_FIRST, False     # the first tests are those of the v2 flow (grade step)
 
 EVIDENCE = {cid: {"source": "PenalFr.pdf", "article": cid.split("/")[-1], "law_type": "penal", "text": "..."}
             for cid in ["PenalFr/s02/218", "PenalFr/s02/219", "PenalFr/s02/220", "PenalFr/s02/221"]}
@@ -401,6 +402,88 @@ C.LOW_EFFORT_STEPS = ("grade",)
 check("a listed step gets its own model, another does not",
       AN.for_step("grade", GR.structured_llm, GR.Grade) is not GR.structured_llm and AN.for_step("analyze", AN.structured_llm, AN.Analysis) is AN.structured_llm)
 C.LOW_EFFORT_STEPS = ()
+
+# answer first (config.ANSWER_FIRST): the whole graph with stubs
+import answer as ANS
+C.ANSWER_FIRST = True
+check("answer first is the default, one extra search", ANSWER_FIRST is True and C.MAX_EXTRA_SEARCHES == 1)
+for st_name in ("natural", "v2"):
+    C.ANSWER_STYLE, keep_style = st_name, C.ANSWER_STYLE
+    pr = ANS.judged_prompt()
+    C.ANSWER_STYLE = keep_style
+    check(f"judged prompt ({st_name}): rule 6 replaced, the judgement added, the rest unchanged",
+          ANS.NOT_FOUND_RULE in pr and "describing what the most related article" not in pr and pr.endswith(ANS.JUDGE_PROMPT) and "1. Use ONLY" in pr)
+check("the judgement is written before the claims", list(ANS.Judged.model_fields)[0] == "fit" and list(ANS.Judged.model_fields).index("claims") > 2)
+J = ANS.Judged
+CL = [Claim(text="Règle.", cited_ids=["PenalFr/s02/218"])]
+OK_J, NO_J = J(fit="answers", claims=CL), J(fit="not_found", missing="sanction du vol")
+ASK_J = J(fit="unclear", clarification_question="Quel contrat ?")
+REAL = {k: getattr(g, k) for k in ("analyze", "retrieve_g", "retrieve_for_plan", "judge_answer", "make_answer", "reformulate", "verify", "to_evidence", "condense", "grade")}
+
+
+def run_first(judgements, turns=("Q ?",), evidence=EVIDENCE, intent="clear"):
+    """Runs the compiled graph; returns the states and what each step received."""
+    log, it = [], iter(judgements)
+    g.analyze = lambda q, hint=None: SimpleNamespace(language="fr", intent=intent, target_codes=[], clarification_question="Quoi ?")
+    g.retrieve_g = lambda q, codes, info=None: (log.append(("search", q)), ["d1"])[1]
+    g.retrieve_for_plan = lambda subs, k, f, soft=True: (log.append(("more", subs)), ["d2"])[1]
+    g._fuse, keep_fuse = (lambda lists: [d for l in lists for d in l]), g._fuse
+    g.to_evidence = lambda docs: dict(evidence)
+    g.judge_answer = lambda q, lang, ev: (log.append(("judge", q)), next(it))[1]
+    g.make_answer = lambda q, lang, ev, feedback="", keep=(): (log.append(("forced", q)), Answer(claims=CL))[1]
+    g.reformulate = lambda q, lang, tried, ev, missing: (log.append(("reformulate", missing)), SimpleNamespace(sub_queries=[SimpleNamespace(text="x", code=None)]))[1]
+    g.verify = lambda a_, e_, *q: Verification(verdicts=[ClaimVerdict(claim_index=i, verdict="supported") for i in range(1, len(a_.claims) + 1)])
+    g.condense = lambda history, q: SimpleNamespace(question=q, is_followup=False)
+    g.grade = lambda *a: (_ for _ in ()).throw(AssertionError("grade called"))
+    out, cfg = [], {"configurable": {"thread_id": f"af-{len(log)}-{id(log)}"}}
+    try:
+        for t in turns:
+            out.append(dict(g.app.invoke({"question": t}, cfg)))
+    finally:
+        g._fuse = keep_fuse
+        for k, v in REAL.items():
+            setattr(g, k, v)
+    return out, log
+
+
+kinds = lambda log: [x[0] for x in log]
+o, log = run_first([OK_J])
+check("articles fit: one search, one answer, no grade, no new search", kinds(log) == ["search", "judge"] and o[0]["status"] == "done"
+      and o[0]["fit"] == "answers" and len(o[0]["claims"]) == 1 and o[0]["retries"] == 0)
+o, log = run_first([J(fit="partly", claims=CL, caveat="reste")])
+check("partly: answered with its remark, no new search", kinds(log) == ["search", "judge"] and o[0]["caveat"] == "reste")
+o, log = run_first([NO_J, OK_J])
+check("articles do not fit: the missing rule goes to the rewriting, new search, then the answer",
+      kinds(log) == ["search", "judge", "reformulate", "more", "judge"] and log[2][1] == "sanction du vol" and o[0]["status"] == "done"
+      and len(o[0]["claims"]) == 1 and o[0]["retries"] == 1)
+o, log = run_first([NO_J, NO_J])
+check("still nothing: said plainly, no claim, remembered for the conversation",
+      kinds(log) == ["search", "judge", "reformulate", "more", "judge"] and o[0]["text"] == g.NOT_FOUND["fr"] and o[0]["claims"] == []
+      and o[0]["status"] == "done" and o[0]["history"][-1]["a"] == g.NOT_FOUND["fr"])
+o, log = run_first([ASK_J, OK_J], turns=("Puis-je annuler ?", "Un bail."))
+check("results show the question is unclear: the user is asked, the reply is merged, searched and answered",
+      o[0]["status"] == "clarify" and o[0]["text"] == "Quel contrat ?" and kinds(log) == ["search", "judge", "search", "judge"]
+      and "Puis-je annuler ?" in log[2][1] and "Un bail." in log[2][1] and o[1]["status"] == "done" and len(o[1]["claims"]) == 1)
+o, log = run_first([ASK_J, ASK_J], turns=("Puis-je annuler ?", "Un bail."))
+check("never asked twice after a search: the reply is answered with what was found",
+      o[1]["status"] == "done" and kinds(log)[-2:] == ["judge", "forced"] and len(o[1]["claims"]) == 1)
+o, log = run_first([J(fit="unclear"), ], turns=("Q ?",))
+check("unclear without a question: answered with what was found", o[0]["status"] == "done" and kinds(log)[-1] == "forced")
+o, log = run_first([J(fit="answers"), OK_J])
+check("'answers' without any claim counts as not found", kinds(log) == ["search", "judge", "reformulate", "more", "judge"] and o[0]["claims"])
+o, log = run_first([J(fit="not_found", claims=CL), NO_J])
+check("claims written although nothing fits are ignored", o[0]["claims"] == [])
+o, log = run_first([], evidence={})
+check("no article at all: new search without a model call to judge, then said plainly",
+      kinds(log) == ["search", "reformulate", "more"] and o[0]["text"] == g.NOT_FOUND["fr"])
+o, log = run_first([OK_J, OK_J], turns=("Q1 ?", "Q2 ?"))
+check("a new question starts clean", o[1]["retries"] == 0 and o[1]["clarified"] is False and o[1]["status"] == "done")
+o, log = run_first([], intent="out_of_scope")
+check("out of scope is still refused before any search", o[0]["status"] == "refuse" and log == [])
+C.ANSWER_FIRST = False
+check("ANSWER_FIRST off: the grade step is back", g.route_after_retrieve({}) == "grade" and g.route_after_more({"retries": 1}) == "grade"
+      and g.route_after_answer({"claims": CLAIMS[:1], "fit": "not_found"}) == "verify" and "fit" not in g._fresh())
+C.ANSWER_FIRST = True
 
 # answer style: the prompt sent follows config.ANSWER_STYLE, the evaluated prompts are unchanged
 import hashlib
