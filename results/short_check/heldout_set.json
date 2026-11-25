@@ -1,5 +1,14 @@
 [
  {
+  "id": "q011",
+  "language": "fr",
+  "concept_id": "penal_attempt",
+  "question": "Que dit la loi sur la tentative de crime ?",
+  "gold": [
+   "PenalFr/s02/59"
+  ]
+ },
+ {
   "id": "q020",
   "language": "fr",
   "concept_id": "cpp_public_action_limitation",
@@ -10,107 +19,12 @@
   ]
  },
  {
-  "id": "q018",
-  "language": "fr",
-  "concept_id": "cpp_custody_duration",
-  "question": "Quelle est la durée maximale de la garde à vue ?",
-  "gold": [
-   "ProcedurepenaleFr/s01/13",
-   "ProcedurepenaleFr/s01/13-bis"
-  ]
- },
- {
-  "id": "q029",
-  "language": "fr",
-  "concept_id": "csp_child_custody",
-  "question": "Comment est attribuée la garde des enfants ?",
-  "gold": [
-   "Statutpersonnel/s01/54",
-   "Statutpersonnel/s01/55",
-   "Statutpersonnel/s01/56",
-   "Statutpersonnel/s01/57",
-   "Statutpersonnel/s01/58",
-   "Statutpersonnel/s01/67"
-  ]
- },
- {
-  "id": "q011",
-  "language": "fr",
-  "concept_id": "penal_attempt",
-  "question": "Que dit la loi sur la tentative de crime ?",
-  "gold": [
-   "PenalFr/s02/59"
-  ]
- },
- {
   "id": "q025",
   "language": "fr",
   "concept_id": "travail_maternity",
   "question": "Quels sont les droits de la femme enceinte au travail ?",
   "gold": [
    "travailFr/s01/64"
-  ]
- },
- {
-  "id": "q063",
-  "language": "ar",
-  "concept_id": "coc_contract_validity",
-  "question": "ما هي شروط صحة العقد؟",
-  "gold": [
-   "COC/s02/2",
-   "COC/s02/3"
-  ]
- },
- {
-  "id": "q057",
-  "language": "ar",
-  "concept_id": "travail_paid_leave",
-  "question": "ما هي مدة الإجازة السنوية المدفوعة؟",
-  "gold": [
-   "travailFr/s01/112",
-   "travailFr/s01/113",
-   "travailFr/s01/115"
-  ]
- },
- {
-  "id": "q068",
-  "language": "en",
-  "concept_id": "penal_theft",
-  "question": "What is the penalty for theft?",
-  "gold": [
-   "PenalFr/s02/258",
-   "PenalFr/s02/260",
-   "PenalFr/s02/261",
-   "PenalFr/s02/262",
-   "PenalFr/s02/263",
-   "PenalFr/s02/264"
-  ]
- },
- {
-  "id": "q073",
-  "language": "en",
-  "concept_id": "csp_marriage_conditions",
-  "question": "What are the conditions for marriage?",
-  "gold": [
-   "Statutpersonnel/s01/14",
-   "Statutpersonnel/s01/3",
-   "Statutpersonnel/s01/5",
-   "Statutpersonnel/s01/6",
-   "Statutpersonnel/s01/8"
-  ]
- },
- {
-  "id": "q085",
-  "language": "en",
-  "concept_id": "penal_theft",
-  "question": "What is the penalty for theft?",
-  "gold": [
-   "PenalFr/s02/258",
-   "PenalFr/s02/260",
-   "PenalFr/s02/261",
-   "PenalFr/s02/262",
-   "PenalFr/s02/263",
-   "PenalFr/s02/264"
   ]
  }
 ]

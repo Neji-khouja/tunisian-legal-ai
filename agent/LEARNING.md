@@ -484,7 +484,7 @@ Off until tested on other questions: LIST_CASES (the cases listed before writing
 complete, 218, 219 and 208) and FAST_JUDGED (Rapide with the agent's search and judging step). Rapide's error, a penalty for a
 death given for any injury, came from its search: without article 218 the model stretched article 208, in free text (4 runs of 4) and
 with the judging step alone (2 of 2); with the agent's search the answer was right (1 run), at about 5,000 tokens instead of 1,700.
-Rule fixed before any run: the 10 unseen dev questions of results/short_check/heldout_set.json, each system's answers read without
+Rule fixed before any run: the 3 dev questions of results/short_check/heldout_set.json (only topics never used for tuning), each system's answers read without
 knowing which system wrote them, graded right, partly right or wrong against the gold articles. A switch is turned on only if it has at
 least as many right answers and no more wrong ones than without it.
 
