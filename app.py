@@ -12,7 +12,7 @@ import copy
 import uuid
 import threading
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 import gradio as gr
 
@@ -212,20 +212,27 @@ def mode_help(mode):
     return T.MODE_HELP.get(mode, "")
 
 
+STEP_NAMES = {label: name for name, label in T.NODE_LABELS.items()}     # chat.ask gives the label: the API also sends the name
+
+
 def api_answer(question: str, mode: str = "agent", conversation_id: str = "", groq_key: str = "",
-               request: gr.Request = None) -> dict[str, Any]:
+               request: gr.Request = None) -> Iterator[dict[str, Any]]:
     """For programs (a voice assistant): send the header X-API-Key with the Space secret API_KEY.
     mode: "agent" or "fast". conversation_id: send back the one you received to ask a follow-up question.
-    groq_key: optional, the caller's own Groq key. Returns status, speech (plain text to read aloud), answer, sources,
-    warnings, language, conversation_id, tokens."""
+    groq_key: optional, the caller's own Groq key. While it works, sends {"status": "working", "step", "label"} for each
+    step (step: retrieve, answer, verify...; label: what the chat page shows). The last message is the answer: status,
+    speech (plain text to read aloud), answer, sources, warnings, language, conversation_id, tokens."""
     given = (request.headers.get("x-api-key", "") if request is not None else "") or ""
     if not API_KEY:
-        return {"status": "error", "error": "api_disabled", "speech": "", "answer": ""}
+        yield {"status": "error", "error": "api_disabled", "speech": "", "answer": ""}
+        return
     if not hmac.compare_digest(given.encode("utf-8"), API_KEY.encode("utf-8")):
-        return {"status": "error", "error": "unauthorized", "speech": "", "answer": ""}
+        yield {"status": "error", "error": "unauthorized", "speech": "", "answer": ""}
+        return
     question = (question or "").strip()
     if not question or len(question) > 1000:
-        return {"status": "error", "error": "question must have 1 to 1000 characters", "speech": "", "answer": ""}
+        yield {"status": "error", "error": "question must have 1 to 1000 characters", "speech": "", "answer": ""}
+        return
     mode = "fast" if mode == "fast" else "agent"
     cid = conversation_id.strip()[:64] if conversation_id and conversation_id.strip() else str(uuid.uuid4())
     turn = API_TURNS.get(cid, 0) + 1
@@ -236,7 +243,9 @@ def api_answer(question: str, mode: str = "agent", conversation_id: str = "", gr
     for kind, value in chat.ask(question, "api-" + cid, turn, groq_key or "", backend(), API_POLICY, STORE, mode, CACHE, BUDGET):
         if kind == "done":
             done = value
-    return voice.reply(done, cid, mode)
+        else:
+            yield {"status": "working", "step": STEP_NAMES.get(value, value), "label": value}
+    yield voice.reply(done, cid, mode)
 
 
 with gr.Blocks(title=T.TITLE) as demo:

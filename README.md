@@ -165,6 +165,9 @@ The page's own events are not part of the API; `/answer` is the only endpoint. E
 caller's own Groq key). It returns `status` (answer, clarify, refuse, not_found or error), `speech` (plain text to read
 aloud: up to four sentences, then the law and its date), `answer` (the full answer, one line per sentence with its
 articles), `sources`, `warnings` (a repealed article, an unverified answer), `language`, `conversation_id`, `tokens`.
+Before that answer it sends one message per step, as the chat page shows them: `{"status": "working", "step": "retrieve",
+"label": "Recherche des articles"}` (steps: condense, analyze, retrieve, grade, reformulate, retrieve_more, answer,
+verify, repair...). `predict` ignores them and returns only the answer.
 
 ```python
 from gradio_client import Client                     # pip install gradio_client
@@ -172,6 +175,9 @@ c = Client("<user>/<space>", headers={"X-API-Key": "<API_KEY>"})   # a private S
 r = c.predict("Quelle est la peine pour le vol simple ?", "agent", "", "", api_name="/answer")
 print(r["speech"])
 r = c.predict("Et la tentative ?", "agent", r["conversation_id"], "", api_name="/answer")   # follow-up
+job = c.submit("Quelle est la peine pour le vol simple ?", "fast", "", "", api_name="/answer")
+for message in job:                                  # the steps as they happen, then the answer
+    print(message.get("label") or message["speech"])
 ```
 
 Without Python, two HTTP calls (the second streams the result):

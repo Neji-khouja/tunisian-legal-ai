@@ -1,0 +1,744 @@
+{
+ "runs_per_question": 3,
+ "temperature_lines": [
+  "agent/analyze.py:25: llm = ChatGroq(model=\"openai/gpt-oss-120b\", temperature=0)"
+ ],
+ "questions": [
+  {
+   "id": "q001",
+   "concept_id": "penal_theft",
+   "language": "fr",
+   "question": "Quelle est la peine pour le vol ?",
+   "runs": [
+    {
+     "status": "done",
+     "intent": "clear",
+     "retries": 1,
+     "tried": [
+      "vol simple peine d'emprisonnement",
+      "vol simple dix ans",
+      "vol simple sanction pénale"
+     ],
+     "evidence_ids": [
+      "PenalFr/s02/263",
+      "PenalFr/s02/261",
+      "PenalFr/s02/260",
+      "PenalFr/s02/262",
+      "PenalFr/s02/265",
+      "PenalFr/s02/264"
+     ],
+     "cited": [
+      "PenalFr/s02/260",
+      "PenalFr/s02/261",
+      "PenalFr/s02/262",
+      "PenalFr/s02/263",
+      "PenalFr/s02/264",
+      "PenalFr/s02/265"
+     ],
+     "claims": [
+      {
+       "text": "Le vol commis avec les cinq circonstances énumérées (violences graves ou menaces, escalade ou effraction, nuit, plusieurs auteurs, port d'armes) est puni d'emprisonnement à vie.",
+       "cited_ids": [
+        "PenalFr/s02/260"
+       ]
+      },
+      {
+       "text": "Le vol commis avec les trois dernières circonstances prévues à l'article 260 (nuit, plusieurs auteurs, port d'armes) est puni de douze ans de prison.",
+       "cited_ids": [
+        "PenalFr/s02/262"
+       ]
+      },
+      {
+       "text": "Le vol commis à l'aide des deux premières circonstances de l'article 260 (violences graves ou menaces, escalade ou effraction) est puni de vingt ans de prison.",
+       "cited_ids": [
+        "PenalFr/s02/261"
+       ]
+      },
+      {
+       "text": "Le vol commis dans les cas prévus à l'article 263 (ex. pendant incendie, par hôteliers, par employés contre leur patron, par habitant de l'habitation) est puni de dix ans d'emprisonnement.",
+       "cited_ids": [
+        "PenalFr/s02/263"
+       ]
+      },
+      {
+       "text": "Tous les autres vols et soustractions, hors des cas des articles 260 à 263, sont punis de cinq ans d'emprisonnement et d'une amende de cent vingt dinars, la tentative étant également punissable.",
+       "cited_ids": [
+        "PenalFr/s02/264"
+       ]
+      },
+      {
+       "text": "Tout individu coupable de vol peut également être condamné aux peines accessoires prévues par l'article 5 du présent code.",
+       "cited_ids": [
+        "PenalFr/s02/265"
+       ]
+      }
+     ],
+     "caveat": "",
+     "degraded": [],
+     "seconds": 54.1
+    },
+    {
+     "status": "done",
+     "intent": "clear",
+     "retries": 1,
+     "tried": [
+      "vol simple peine d'emprisonnement",
+      "vol simple dix ans",
+      "vol simple sanction pénale"
+     ],
+     "evidence_ids": [
+      "PenalFr/s02/263",
+      "PenalFr/s02/261",
+      "PenalFr/s02/260",
+      "PenalFr/s02/262",
+      "PenalFr/s02/265",
+      "PenalFr/s02/264"
+     ],
+     "cited": [
+      "PenalFr/s02/260",
+      "PenalFr/s02/261",
+      "PenalFr/s02/262",
+      "PenalFr/s02/263",
+      "PenalFr/s02/264",
+      "PenalFr/s02/265"
+     ],
+     "claims": [
+      {
+       "text": "Le vol commis avec la réunion des cinq circonstances prévues à l'article 260 est puni d'emprisonnement à vie.",
+       "cited_ids": [
+        "PenalFr/s02/260"
+       ]
+      },
+      {
+       "text": "Le vol commis à l'aide de l'une des deux premières circonstances édictées par l'article précédent est puni de vingt ans de prison.",
+       "cited_ids": [
+        "PenalFr/s02/261"
+       ]
+      },
+      {
+       "text": "Le vol commis avec la réunion des trois dernières circonstances prévues à l'article 260 est puni de douze ans de prison.",
+       "cited_ids": [
+        "PenalFr/s02/262"
+       ]
+      },
+      {
+       "text": "Le vol commis dans les cas énumérés à l'article 263 (incendie, explosion, inondation, naufrage, accident de chemin de fer, révolte, émeute ou tout autre trouble, ou par certains employés, tenanciers ou personnes travaillant habituellement dans l'habitation) est puni de dix ans d'emprisonnement.",
+       "cited_ids": [
+        "PenalFr/s02/263"
+       ]
+      },
+      {
+       "text": "Tout autre vol ou soustraction commis hors des cas prévus aux articles 260 à 263 est puni de cinq ans d'emprisonnement et de cent vingt dinars d'amende, la tentative étant également punissable.",
+       "cited_ids": [
+        "PenalFr/s02/264"
+       ]
+      },
+      {
+       "text": "Le coupable de vol peut également être condamné aux peines accessoires prévues par l'article 5 du présent code, selon l'article 265.",
+       "cited_ids": [
+        "PenalFr/s02/265"
+       ]
+      }
+     ],
+     "caveat": "",
+     "degraded": [],
+     "seconds": 36.7
+    },
+    {
+     "status": "done",
+     "intent": "clear",
+     "retries": 1,
+     "tried": [
+      "vol simple peine d'emprisonnement",
+      "vol simple dix ans",
+      "vol simple sanction pénale"
+     ],
+     "evidence_ids": [
+      "PenalFr/s02/263",
+      "PenalFr/s02/261",
+      "PenalFr/s02/260",
+      "PenalFr/s02/262",
+      "PenalFr/s02/265",
+      "PenalFr/s02/264"
+     ],
+     "cited": [
+      "PenalFr/s02/260",
+      "PenalFr/s02/261",
+      "PenalFr/s02/262",
+      "PenalFr/s02/263",
+      "PenalFr/s02/264",
+      "PenalFr/s02/265"
+     ],
+     "claims": [
+      {
+       "text": "Le vol commis avec la réunion des cinq circonstances prévues à l'article 260 est puni d'emprisonnement à vie.",
+       "cited_ids": [
+        "PenalFr/s02/260"
+       ]
+      },
+      {
+       "text": "Le vol commis avec la réunion des trois dernières circonstances de l'article 260 est puni de douze ans de prison.",
+       "cited_ids": [
+        "PenalFr/s02/262"
+       ]
+      },
+      {
+       "text": "Le vol commis à l'aide des deux premières circonstances de l'article 260 est puni de vingt ans de prison.",
+       "cited_ids": [
+        "PenalFr/s02/261"
+       ]
+      },
+      {
+       "text": "L'auteur du vol commis dans les cas énumérés à l'article 263 est puni de dix ans d'emprisonnement.",
+       "cited_ids": [
+        "PenalFr/s02/263"
+       ]
+      },
+      {
+       "text": "Pour tous les autres vols non couverts par les articles 260 à 263, la peine est de cinq ans d'emprisonnement et de cent vingt dinars d'amende, la tentative étant également punissable.",
+       "cited_ids": [
+        "PenalFr/s02/264"
+       ]
+      },
+      {
+       "text": "Tout individu coupable de vol peut également être condamné aux peines accessoires prévues à l'article 5 du présent code.",
+       "cited_ids": [
+        "PenalFr/s02/265"
+       ]
+      }
+     ],
+     "caveat": "",
+     "degraded": [],
+     "seconds": 55.4
+    }
+   ],
+   "summary": {
+    "same_evidence_ids": true,
+    "mean_pairwise_jaccard_cited": 1.0,
+    "retries_min": 1,
+    "retries_max": 1
+   }
+  },
+  {
+   "id": "q006",
+   "concept_id": "penal_defamation",
+   "language": "fr",
+   "question": "Que dit la loi sur la diffamation ?",
+   "runs": [
+    {
+     "status": "done",
+     "intent": "clear",
+     "retries": 0,
+     "tried": [],
+     "evidence_ids": [
+      "PenalFr/s02/245",
+      "PenalFr/s02/246",
+      "PenalFr/s02/247",
+      "PenalFr/s02/248",
+      "PenalFr/s02/128",
+      "PenalFr/s02/226-ter"
+     ],
+     "cited": [
+      "PenalFr/s02/245",
+      "PenalFr/s02/246",
+      "PenalFr/s02/247"
+     ],
+     "claims": [
+      {
+       "text": "La diffamation consiste en toute allégation ou imputation publique d’un fait qui porte atteinte à l’honneur ou à la considération d’une personne ou d’un corps constitué, la preuve du fait diffamatoire pouvant être établie dans les cas prévus à l’article 57 du code de la presse.",
+       "cited_ids": [
+        "PenalFr/s02/245"
+       ]
+      },
+      {
+       "text": "Quiconque se rend coupable de diffamation est puni de six mois d’emprisonnement et de deux cent quarante dinars d’amende.",
+       "cited_ids": [
+        "PenalFr/s02/247"
+       ]
+      },
+      {
+       "text": "La calomnie, qui est la diffamation lorsque le fait diffamatoire a été judiciairement déclaré non établi ou que le prévenu ne peut rapporter la preuve du fait dans les cas où la loi l’y autorise, est punissable même si les imputations sont faites par écrits non rendus publics mais communiqués à deux ou plusieurs personnes, et son auteur est puni d’un an d’emprisonnement et de deux cent quarante dinars d’amende.",
+       "cited_ids": [
+        "PenalFr/s02/246",
+        "PenalFr/s02/247"
+       ]
+      }
+     ],
+     "caveat": "",
+     "degraded": [],
+     "seconds": 32.5
+    },
+    {
+     "status": "done",
+     "intent": "clear",
+     "retries": 0,
+     "tried": [],
+     "evidence_ids": [
+      "PenalFr/s02/245",
+      "PenalFr/s02/246",
+      "PenalFr/s02/247",
+      "PenalFr/s02/248",
+      "PenalFr/s02/128",
+      "PenalFr/s02/226-ter"
+     ],
+     "cited": [
+      "PenalFr/s02/245",
+      "PenalFr/s02/246",
+      "PenalFr/s02/247"
+     ],
+     "claims": [
+      {
+       "text": "La diffamation consiste en toute allégation ou imputation publique d'un fait portant atteinte à l'honneur ou à la considération d'une personne ou d'un corps constitué.",
+       "cited_ids": [
+        "PenalFr/s02/245"
+       ]
+      },
+      {
+       "text": "La preuve du fait diffamatoire peut être établie dans les cas prévus à l'article 57 du code de la presse.",
+       "cited_ids": [
+        "PenalFr/s02/245"
+       ]
+      },
+      {
+       "text": "La calomnie est la diffamation dont le fait a été judiciairement déclaré non établi ou dont le prévenu ne peut rapporter la preuve lorsque la loi l'y autorise, et elle est punissable même si les imputations sont faites par écrits non rendus publics mais communiqués à deux ou plusieurs personnes.",
+       "cited_ids": [
+        "PenalFr/s02/246"
+       ]
+      },
+      {
+       "text": "La peine pour diffamation est de six mois d'emprisonnement et de deux cent quarante dinars d'amende.",
+       "cited_ids": [
+        "PenalFr/s02/247"
+       ]
+      },
+      {
+       "text": "La peine pour calomnie est d'un an d'emprisonnement et de deux cent quarante dinars d'amende.",
+       "cited_ids": [
+        "PenalFr/s02/247"
+       ]
+      }
+     ],
+     "caveat": "",
+     "degraded": [],
+     "seconds": 40.9
+    },
+    {
+     "status": "done",
+     "intent": "clear",
+     "retries": 0,
+     "tried": [],
+     "evidence_ids": [
+      "PenalFr/s02/245",
+      "PenalFr/s02/246",
+      "PenalFr/s02/247",
+      "PenalFr/s02/248",
+      "PenalFr/s02/128",
+      "PenalFr/s02/226-ter"
+     ],
+     "cited": [
+      "PenalFr/s02/245",
+      "PenalFr/s02/246",
+      "PenalFr/s02/247"
+     ],
+     "claims": [
+      {
+       "text": "Il y a diffamation dans toute allégation ou imputation publique d'un fait qui porte atteinte à l'honneur ou à la considération d'une personne ou d'un corps constitué.",
+       "cited_ids": [
+        "PenalFr/s02/245"
+       ]
+      },
+      {
+       "text": "La preuve du fait diffamatoire peut être établie dans les cas prévus à l'article 57 du code de la presse.",
+       "cited_ids": [
+        "PenalFr/s02/245"
+       ]
+      },
+      {
+       "text": "Il y a calomnie lorsque le fait diffamatoire a été judiciairement déclaré non établi, ou lorsque le prévenu ne peut rapporter la preuve dudit fait dans le cas où la loi l'y autorise, et la calomnie est punissable même si les imputations ont été faites par écrits non rendus publics mais adressées à deux ou plusieurs personnes.",
+       "cited_ids": [
+        "PenalFr/s02/246"
+       ]
+      },
+      {
+       "text": "Quiconque se sera rendu coupable de diffamation est puni de six mois d’emprisonnement et de deux cent quarante dinars d’amende.",
+       "cited_ids": [
+        "PenalFr/s02/247"
+       ]
+      },
+      {
+       "text": "Quiconque se sera rendu coupable de calomnie est puni d'un an d’emprisonnement et de deux cent quarante dinars d’amende.",
+       "cited_ids": [
+        "PenalFr/s02/247"
+       ]
+      }
+     ],
+     "caveat": "",
+     "degraded": [],
+     "seconds": 40.6
+    }
+   ],
+   "summary": {
+    "same_evidence_ids": true,
+    "mean_pairwise_jaccard_cited": 1.0,
+    "retries_min": 0,
+    "retries_max": 0
+   }
+  },
+  {
+   "id": "q010",
+   "concept_id": "penal_arson",
+   "language": "fr",
+   "question": "Comment est puni l'incendie volontaire ?",
+   "runs": [
+    {
+     "status": "done",
+     "intent": "clear",
+     "retries": 0,
+     "tried": [],
+     "evidence_ids": [
+      "PenalFr/s02/307",
+      "PenalFr/s02/304",
+      "PenalFr/s02/204",
+      "PenalFr/s02/208",
+      "PenalFr/s02/308",
+      "PenalFr/s02/201"
+     ],
+     "cited": [
+      "PenalFr/s02/307",
+      "PenalFr/s02/308"
+     ],
+     "claims": [
+      {
+       "text": "L'auteur d'un incendie volontaire porté à des édifices, navires, bateaux, magasins, chantiers habités ou servant à l'habitation, ainsi qu'aux voitures de trains transportant des personnes, est puni d'emprisonnement à vie.",
+       "cited_ids": [
+        "PenalFr/s02/307"
+       ]
+      },
+      {
+       "text": "Si l'incendie volontaire a entraîné la mort, la peine de mort est encourue.",
+       "cited_ids": [
+        "PenalFr/s02/307"
+       ]
+      },
+      {
+       "text": "L'auteur d'un incendie volontaire porté à des cultures, plantations, paille, produits de récolte en tas, bois en tas ou stères, aux voitures ne faisant pas partie d'un train contenant des personnes, ou à tout autre meuble n'appartenant pas à l'auteur, est puni de douze ans d'emprisonnement.",
+       "cited_ids": [
+        "PenalFr/s02/307"
+       ]
+      },
+      {
+       "text": "Lorsque les bâtiments incendiés ne sont pas habités ou ne servent pas d'habitation, la peine encourue est de vingt ans d'emprisonnement.",
+       "cited_ids": [
+        "PenalFr/s02/308"
+       ]
+      },
+      {
+       "text": "Si l'auteur du crime est propriétaire du bâtiment incendié et que celui-ci n'était pas habité, la peine est réduite à dix ans d'emprisonnement.",
+       "cited_ids": [
+        "PenalFr/s02/308"
+       ]
+      }
+     ],
+     "caveat": "",
+     "degraded": [],
+     "seconds": 40.4
+    },
+    {
+     "status": "done",
+     "intent": "clear",
+     "retries": 0,
+     "tried": [],
+     "evidence_ids": [
+      "PenalFr/s02/307",
+      "PenalFr/s02/304",
+      "PenalFr/s02/204",
+      "PenalFr/s02/208",
+      "PenalFr/s02/308",
+      "PenalFr/s02/201"
+     ],
+     "cited": [
+      "PenalFr/s02/307",
+      "PenalFr/s02/308"
+     ],
+     "claims": [
+      {
+       "text": "Voluntary fire set to inhabited buildings, ships, trains, or any places used for habitation is punished by life imprisonment.",
+       "cited_ids": [
+        "PenalFr/s02/307"
+       ]
+      },
+      {
+       "text": "If the voluntary fire results in death, the death penalty is applicable.",
+       "cited_ids": [
+        "PenalFr/s02/307"
+       ]
+      },
+      {
+       "text": "Voluntary fire set to crops, plantations, hay, stacked harvest products, wood piles, non‑passenger cars, or other movable property is punished by twelve years imprisonment.",
+       "cited_ids": [
+        "PenalFr/s02/307"
+       ]
+      },
+      {
+       "text": "Voluntary fire set to buildings that are not inhabited or do not serve as habitation is punished by twenty years imprisonment, reduced to ten years if the author owns the building.",
+       "cited_ids": [
+        "PenalFr/s02/308"
+       ]
+      }
+     ],
+     "caveat": "",
+     "degraded": [],
+     "seconds": 28.8
+    },
+    {
+     "status": "done",
+     "intent": "clear",
+     "retries": 0,
+     "tried": [],
+     "evidence_ids": [
+      "PenalFr/s02/307",
+      "PenalFr/s02/304",
+      "PenalFr/s02/204",
+      "PenalFr/s02/208",
+      "PenalFr/s02/308",
+      "PenalFr/s02/201"
+     ],
+     "cited": [
+      "PenalFr/s02/307",
+      "PenalFr/s02/308"
+     ],
+     "claims": [
+      {
+       "text": "Lorsque l'incendie volontaire est commis sur des édifices, navires, bateaux, magasins, chantiers habités ou servant à l'habitation, ou tout lieu habité ou transportant des personnes, l'auteur est puni d'emprisonnement à vie.",
+       "cited_ids": [
+        "PenalFr/s02/307"
+       ]
+      },
+      {
+       "text": "Lorsque l'incendie volontaire porte sur des cultures, plantations, paille, produits de récolte en tas ou en meules, du bois en tas ou en stères, des voitures ne faisant pas partie d'un train contenant des personnes, ou tout autre meuble n'appartenant pas à l'auteur, l'auteur est puni de douze ans d'emprisonnement.",
+       "cited_ids": [
+        "PenalFr/s02/307"
+       ]
+      },
+      {
+       "text": "Si l'incendie volontaire a entraîné la mort, la peine de mort est encourue.",
+       "cited_ids": [
+        "PenalFr/s02/307"
+       ]
+      },
+      {
+       "text": "Si les bâtiments incendiés n'étaient pas habités ou ne servaient pas d'habitation, la peine encourue est de vingt ans d'emprisonnement.",
+       "cited_ids": [
+        "PenalFr/s02/308"
+       ]
+      },
+      {
+       "text": "Lorsque l'auteur du crime est propriétaire du bâtiment incendié, la peine est réduite à dix ans d'emprisonnement.",
+       "cited_ids": [
+        "PenalFr/s02/308"
+       ]
+      }
+     ],
+     "caveat": "",
+     "degraded": [],
+     "seconds": 34.4
+    }
+   ],
+   "summary": {
+    "same_evidence_ids": true,
+    "mean_pairwise_jaccard_cited": 1.0,
+    "retries_min": 0,
+    "retries_max": 0
+   }
+  },
+  {
+   "id": "q011",
+   "concept_id": "penal_attempt",
+   "language": "fr",
+   "question": "Que dit la loi sur la tentative de crime ?",
+   "runs": [
+    {
+     "status": "done",
+     "intent": "clear",
+     "retries": 0,
+     "tried": [],
+     "evidence_ids": [
+      "PenalFr/s02/228-bis",
+      "PenalFr/s02/92",
+      "PenalFr/s02/59",
+      "PenalFr/s02/264",
+      "PenalFr/s02/278",
+      "EnfantFr/s04/228-bis"
+     ],
+     "cited": [
+      "EnfantFr/s04/228-bis",
+      "PenalFr/s02/228-bis",
+      "PenalFr/s02/264",
+      "PenalFr/s02/278",
+      "PenalFr/s02/59",
+      "PenalFr/s02/92"
+     ],
+     "claims": [
+      {
+       "text": "En principe, toute tentative d'infraction est punissable comme l'infraction elle‑même, sauf si l'infraction prévue ne prévoit pas plus de cinq ans de prison et qu'aucune disposition contraire n'existe.",
+       "cited_ids": [
+        "PenalFr/s02/59"
+       ]
+      },
+      {
+       "text": "L'attentat à la pudeur commis sans violence sur la personne d'un enfant de moins de dix‑huit ans est puni de cinq ans d'emprisonnement, et la tentative est également punissable.",
+       "cited_ids": [
+        "PenalFr/s02/228-bis",
+        "EnfantFr/s04/228-bis"
+       ]
+      },
+      {
+       "text": "Pour tous les autres vols et soustractions non prévus aux articles 260 à 263, la peine est de cinq ans d’emprisonnement et cent vingt dinars d’amende, la tentative étant punissable.",
+       "cited_ids": [
+        "PenalFr/s02/264"
+       ]
+      },
+      {
+       "text": "Quiconque détruit, détourne, dissipe, prête ou dissimule des objets qu’il sait saisis est puni de deux ans d’emprisonnement et d’une amende de mille dinars, et la tentative est punissable; la peine est doublée si l’infraction est commise par la personne à qui les objets ont été confiés.",
+       "cited_ids": [
+        "PenalFr/s02/278"
+       ]
+      },
+      {
+       "text": "La tentative de corruption est punie d’un an d’emprisonnement et de mille dinars d’amende si elle n’a eu aucun effet, et la tentative de contrainte par voies de fait ou menaces est punie de deux ans d’emprisonnement et de deux mille dinars d’amende si elle n’a eu aucun effet.",
+       "cited_ids": [
+        "PenalFr/s02/92"
+       ]
+      }
+     ],
+     "caveat": "",
+     "degraded": [],
+     "seconds": 31.6
+    },
+    {
+     "status": "done",
+     "intent": "clear",
+     "retries": 0,
+     "tried": [],
+     "evidence_ids": [
+      "PenalFr/s02/228-bis",
+      "PenalFr/s02/92",
+      "PenalFr/s02/59",
+      "PenalFr/s02/264",
+      "PenalFr/s02/278",
+      "EnfantFr/s04/228-bis"
+     ],
+     "cited": [
+      "EnfantFr/s04/228-bis",
+      "PenalFr/s02/228-bis",
+      "PenalFr/s02/264",
+      "PenalFr/s02/278",
+      "PenalFr/s02/59",
+      "PenalFr/s02/92"
+     ],
+     "claims": [
+      {
+       "text": "En principe, toute tentative d'infraction est punissable comme l'infraction elle‑même, sauf si l'infraction prévue ne prévoit pas plus de cinq ans de prison et qu'aucune disposition contraire n'existe.",
+       "cited_ids": [
+        "PenalFr/s02/59"
+       ]
+      },
+      {
+       "text": "L'attentat à la pudeur commis sans violence sur la personne d'un enfant de moins de dix‑huit ans est puni de cinq ans d'emprisonnement, et la tentative est également punissable.",
+       "cited_ids": [
+        "PenalFr/s02/228-bis",
+        "EnfantFr/s04/228-bis"
+       ]
+      },
+      {
+       "text": "Pour tous les autres vols et soustractions non prévus aux articles 260 à 263, la peine est de cinq ans d’emprisonnement et cent vingt dinars d’amende, la tentative étant punissable.",
+       "cited_ids": [
+        "PenalFr/s02/264"
+       ]
+      },
+      {
+       "text": "Quiconque détruit, détourne, dissipe, prête ou dissimule des objets qu’il sait saisis est puni de deux ans d’emprisonnement et d’une amende de mille dinars, et la tentative est punissable; la peine est doublée si l’infraction est commise par la personne à qui les objets ont été confiés.",
+       "cited_ids": [
+        "PenalFr/s02/278"
+       ]
+      },
+      {
+       "text": "La tentative de corruption est punie d’un an d’emprisonnement et de mille dinars d’amende si elle n’a eu aucun effet, et la tentative de contrainte par voies de fait ou menaces est punie de deux ans d’emprisonnement et de deux mille dinars d’amende si elle n’a eu aucun effet.",
+       "cited_ids": [
+        "PenalFr/s02/92"
+       ]
+      }
+     ],
+     "caveat": "",
+     "degraded": [],
+     "seconds": 33.4
+    },
+    {
+     "status": "done",
+     "intent": "clear",
+     "retries": 0,
+     "tried": [],
+     "evidence_ids": [
+      "PenalFr/s02/228-bis",
+      "PenalFr/s02/92",
+      "PenalFr/s02/59",
+      "PenalFr/s02/264",
+      "PenalFr/s02/278",
+      "EnfantFr/s04/228-bis"
+     ],
+     "cited": [
+      "EnfantFr/s04/228-bis",
+      "PenalFr/s02/228-bis",
+      "PenalFr/s02/264",
+      "PenalFr/s02/278",
+      "PenalFr/s02/59",
+      "PenalFr/s02/92"
+     ],
+     "claims": [
+      {
+       "text": "En principe, toute tentative d'infraction est punissable comme l'infraction elle‑même, sauf si l'infraction prévue ne prévoit pas plus de cinq ans de prison et qu'aucune disposition contraire n'existe.",
+       "cited_ids": [
+        "PenalFr/s02/59"
+       ]
+      },
+      {
+       "text": "L'attentat à la pudeur commis sans violence sur la personne d'un enfant de moins de dix‑huit ans est puni de cinq ans d'emprisonnement, et la tentative est également punissable.",
+       "cited_ids": [
+        "PenalFr/s02/228-bis",
+        "EnfantFr/s04/228-bis"
+       ]
+      },
+      {
+       "text": "Pour tous les autres vols et soustractions non prévus aux articles 260 à 263, la peine est de cinq ans d’emprisonnement et cent vingt dinars d’amende, la tentative étant punissable.",
+       "cited_ids": [
+        "PenalFr/s02/264"
+       ]
+      },
+      {
+       "text": "Quiconque détruit, détourne, dissipe, prête ou dissimule des objets qu’il sait saisis est puni de deux ans d’emprisonnement et d’une amende de mille dinars, et la tentative est punissable; la peine est doublée si l’infraction est commise par la personne à qui les objets ont été confiés.",
+       "cited_ids": [
+        "PenalFr/s02/278"
+       ]
+      },
+      {
+       "text": "La tentative de corruption est punie d’un an d’emprisonnement et de mille dinars d’amende si elle n’a eu aucun effet, et la tentative de contrainte par voies de fait ou menaces est punie de deux ans d’emprisonnement et de deux mille dinars d’amende si elle n’a eu aucun effet.",
+       "cited_ids": [
+        "PenalFr/s02/92"
+       ]
+      }
+     ],
+     "caveat": "Les articles fournis ne précisent pas la peine applicable à la tentative d'autres crimes non mentionnés.",
+     "degraded": [],
+     "seconds": 44.3
+    }
+   ],
+   "summary": {
+    "same_evidence_ids": true,
+    "mean_pairwise_jaccard_cited": 1.0,
+    "retries_min": 0,
+    "retries_max": 0
+   }
+  }
+ ],
+ "overall_mean_jaccard_cited": 1.0
+}

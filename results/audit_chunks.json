@@ -1,0 +1,1969 @@
+{
+ "seed": 20261022,
+ "n_sample": 150,
+ "extractor": "pypdf",
+ "coverage": {
+  "ArbitrageFr": {
+   "status": "verified",
+   "pdf_labels": 82,
+   "index_labels": 82,
+   "only_pdf": [],
+   "only_index": [],
+   "pdf_sections": 6,
+   "index_sections": 6
+  },
+  "COC": {
+   "status": "verified",
+   "pdf_labels": 1405,
+   "index_labels": 1403,
+   "only_pdf": [
+    "1273",
+    "882"
+   ],
+   "only_index": [],
+   "pdf_sections": 3,
+   "index_sections": 3
+  },
+  "CommerceFr": {
+   "status": "verified",
+   "pdf_labels": 556,
+   "index_labels": 556,
+   "only_pdf": [],
+   "only_index": [],
+   "pdf_sections": 2,
+   "index_sections": 2
+  },
+  "DIPFR": {
+   "status": "verified",
+   "pdf_labels": 76,
+   "index_labels": 75,
+   "only_pdf": [
+    "10"
+   ],
+   "only_index": [],
+   "pdf_sections": 2,
+   "index_sections": 2
+  },
+  "EnfantFr": {
+   "status": "verified",
+   "pdf_labels": 137,
+   "index_labels": 137,
+   "only_pdf": [],
+   "only_index": [],
+   "pdf_sections": 10,
+   "index_sections": 12
+  },
+  "NationaliteFr": {
+   "status": "verified",
+   "pdf_labels": 65,
+   "index_labels": 65,
+   "only_pdf": [],
+   "only_index": [],
+   "pdf_sections": 2,
+   "index_sections": 2
+  },
+  "PenalFr": {
+   "status": "verified",
+   "pdf_labels": 355,
+   "index_labels": 355,
+   "only_pdf": [],
+   "only_index": [],
+   "pdf_sections": 3,
+   "index_sections": 3
+  },
+  "Procedurecivilecom": {
+   "status": "verified",
+   "pdf_labels": 463,
+   "index_labels": 463,
+   "only_pdf": [],
+   "only_index": [],
+   "pdf_sections": 2,
+   "index_sections": 2
+  },
+  "ProcedurepenaleFr": {
+   "status": "verified",
+   "pdf_labels": 371,
+   "index_labels": 371,
+   "only_pdf": [],
+   "only_index": [],
+   "pdf_sections": 5,
+   "index_sections": 5
+  },
+  "Statutpersonnel": {
+   "status": "verified",
+   "pdf_labels": 222,
+   "index_labels": 222,
+   "only_pdf": [],
+   "only_index": [],
+   "pdf_sections": 16,
+   "index_sections": 16
+  },
+  "dtreelFr": {
+   "status": "verified",
+   "pdf_labels": 426,
+   "index_labels": 425,
+   "only_pdf": [
+    "335"
+   ],
+   "only_index": [],
+   "pdf_sections": 8,
+   "index_sections": 8
+  },
+  "societeFr": {
+   "status": "verified",
+   "pdf_labels": 493,
+   "index_labels": 489,
+   "only_pdf": [
+    "193",
+    "194",
+    "212",
+    "221"
+   ],
+   "only_index": [],
+   "pdf_sections": 6,
+   "index_sections": 6
+  },
+  "travailFr": {
+   "status": "verified",
+   "pdf_labels": 493,
+   "index_labels": 492,
+   "only_pdf": [
+    "48"
+   ],
+   "only_index": [],
+   "pdf_sections": 2,
+   "index_sections": 2
+  },
+  "tun_RecAcFreeLi": {
+   "status": "verified",
+   "pdf_labels": 142,
+   "index_labels": 142,
+   "only_pdf": [],
+   "only_index": [],
+   "pdf_sections": 1,
+   "index_sections": 1
+  }
+ },
+ "fidelity": {
+  "counts": {
+   "match": 141,
+   "mismatch": 7,
+   "no_pdf_article": 2
+  },
+  "by_source": {
+   "travailFr": {
+    "match": 12
+   },
+   "PenalFr": {
+    "match": 6
+   },
+   "dtreelFr": {
+    "match": 10,
+    "mismatch": 1
+   },
+   "EnfantFr": {
+    "match": 3,
+    "no_pdf_article": 2
+   },
+   "COC": {
+    "match": 39,
+    "mismatch": 1
+   },
+   "CommerceFr": {
+    "match": 9,
+    "mismatch": 3
+   },
+   "ArbitrageFr": {
+    "match": 6
+   },
+   "NationaliteFr": {
+    "match": 3
+   },
+   "societeFr": {
+    "match": 10,
+    "mismatch": 1
+   },
+   "Statutpersonnel": {
+    "match": 17
+   },
+   "ProcedurepenaleFr": {
+    "match": 8,
+    "mismatch": 1
+   },
+   "Procedurecivilecom": {
+    "match": 11
+   },
+   "tun_RecAcFreeLi": {
+    "match": 6
+   },
+   "DIPFR": {
+    "match": 1
+   }
+  },
+  "rows": [
+   {
+    "cid": "travailFr/s01/226",
+    "status": "match"
+   },
+   {
+    "cid": "PenalFr/s02/94",
+    "status": "match"
+   },
+   {
+    "cid": "dtreelFr/s05/3-bis",
+    "status": "match"
+   },
+   {
+    "cid": "EnfantFr/s03/20",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/827",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/1258",
+    "status": "match"
+   },
+   {
+    "cid": "CommerceFr/s01/630",
+    "status": "match"
+   },
+   {
+    "cid": "CommerceFr/s01/539",
+    "status": "match"
+   },
+   {
+    "cid": "CommerceFr/s01/573",
+    "status": "match"
+   },
+   {
+    "cid": "ArbitrageFr/s01/27",
+    "status": "match"
+   },
+   {
+    "cid": "travailFr/s01/74",
+    "status": "match"
+   },
+   {
+    "cid": "dtreelFr/s01/288",
+    "status": "mismatch"
+   },
+   {
+    "cid": "COC/s02/505",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/1337",
+    "status": "match"
+   },
+   {
+    "cid": "CommerceFr/s01/266",
+    "status": "match"
+   },
+   {
+    "cid": "CommerceFr/s01/223",
+    "status": "match"
+   },
+   {
+    "cid": "NationaliteFr/s01/60",
+    "status": "match"
+   },
+   {
+    "cid": "societeFr/s01/5",
+    "status": "match"
+   },
+   {
+    "cid": "travailFr/s01/398",
+    "status": "match"
+   },
+   {
+    "cid": "societeFr/s05/4",
+    "status": "match"
+   },
+   {
+    "cid": "societeFr/s01/362",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/321",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/643",
+    "status": "match"
+   },
+   {
+    "cid": "Statutpersonnel/s07/13",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/39",
+    "status": "match"
+   },
+   {
+    "cid": "CommerceFr/s01/409",
+    "status": "match"
+   },
+   {
+    "cid": "societeFr/s01/126",
+    "status": "match"
+   },
+   {
+    "cid": "ProcedurepenaleFr/s02/65",
+    "status": "match"
+   },
+   {
+    "cid": "ArbitrageFr/s01/43",
+    "status": "match"
+   },
+   {
+    "cid": "societeFr/s01/116",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/383",
+    "status": "match"
+   },
+   {
+    "cid": "Procedurecivilecom/s01/196",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/574",
+    "status": "match"
+   },
+   {
+    "cid": "dtreelFr/s06/7",
+    "status": "match"
+   },
+   {
+    "cid": "PenalFr/s02/60-ter",
+    "status": "match"
+   },
+   {
+    "cid": "Statutpersonnel/s01/126",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/1321",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/1368",
+    "status": "mismatch"
+   },
+   {
+    "cid": "COC/s02/629",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/618",
+    "status": "match"
+   },
+   {
+    "cid": "ProcedurepenaleFr/s04/101",
+    "status": "mismatch"
+   },
+   {
+    "cid": "COC/s02/1395",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/333",
+    "status": "match"
+   },
+   {
+    "cid": "dtreelFr/s01/400",
+    "status": "match"
+   },
+   {
+    "cid": "CommerceFr/s01/488",
+    "status": "mismatch"
+   },
+   {
+    "cid": "Statutpersonnel/s11/16",
+    "status": "match"
+   },
+   {
+    "cid": "Statutpersonnel/s11/5",
+    "status": "match"
+   },
+   {
+    "cid": "PenalFr/s02/257",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/235",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/865",
+    "status": "match"
+   },
+   {
+    "cid": "ProcedurepenaleFr/s02/31",
+    "status": "match"
+   },
+   {
+    "cid": "societeFr/s01/305",
+    "status": "match"
+   },
+   {
+    "cid": "ProcedurepenaleFr/s02/119",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/191",
+    "status": "match"
+   },
+   {
+    "cid": "ProcedurepenaleFr/s02/2",
+    "status": "match"
+   },
+   {
+    "cid": "ProcedurepenaleFr/s03/8",
+    "status": "match"
+   },
+   {
+    "cid": "travailFr/s01/6",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/1218",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/465",
+    "status": "match"
+   },
+   {
+    "cid": "Procedurecivilecom/s01/36",
+    "status": "match"
+   },
+   {
+    "cid": "dtreelFr/s01/148",
+    "status": "match"
+   },
+   {
+    "cid": "CommerceFr/s01/340",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/1327",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/1446",
+    "status": "match"
+   },
+   {
+    "cid": "Procedurecivilecom/s01/22",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/242",
+    "status": "match"
+   },
+   {
+    "cid": "EnfantFr/s08/17",
+    "status": "no_pdf_article"
+   },
+   {
+    "cid": "Statutpersonnel/s02/60",
+    "status": "match"
+   },
+   {
+    "cid": "CommerceFr/s01/208",
+    "status": "mismatch"
+   },
+   {
+    "cid": "ArbitrageFr/s01/49",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/279",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/1468",
+    "status": "match"
+   },
+   {
+    "cid": "Procedurecivilecom/s01/387",
+    "status": "match"
+   },
+   {
+    "cid": "CommerceFr/s01/454",
+    "status": "mismatch"
+   },
+   {
+    "cid": "dtreelFr/s01/82",
+    "status": "match"
+   },
+   {
+    "cid": "Statutpersonnel/s01/210",
+    "status": "match"
+   },
+   {
+    "cid": "Statutpersonnel/s01/16",
+    "status": "match"
+   },
+   {
+    "cid": "societeFr/s01/383",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/1462",
+    "status": "match"
+   },
+   {
+    "cid": "dtreelFr/s01/186",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/1340",
+    "status": "match"
+   },
+   {
+    "cid": "Procedurecivilecom/s01/181",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/1185",
+    "status": "match"
+   },
+   {
+    "cid": "societeFr/s01/142",
+    "status": "match"
+   },
+   {
+    "cid": "Procedurecivilecom/s01/300",
+    "status": "match"
+   },
+   {
+    "cid": "ArbitrageFr/s01/45",
+    "status": "match"
+   },
+   {
+    "cid": "tun_RecAcFreeLi/s00/41",
+    "status": "match"
+   },
+   {
+    "cid": "Statutpersonnel/s01/165",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/1147",
+    "status": "match"
+   },
+   {
+    "cid": "CommerceFr/s01/6",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/1087",
+    "status": "match"
+   },
+   {
+    "cid": "travailFr/s01/49",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/746",
+    "status": "match"
+   },
+   {
+    "cid": "NationaliteFr/s01/30",
+    "status": "match"
+   },
+   {
+    "cid": "Statutpersonnel/s12/4",
+    "status": "match"
+   },
+   {
+    "cid": "Statutpersonnel/s02/43",
+    "status": "match"
+   },
+   {
+    "cid": "Statutpersonnel/s12/8",
+    "status": "match"
+   },
+   {
+    "cid": "travailFr/s01/142",
+    "status": "match"
+   },
+   {
+    "cid": "Procedurecivilecom/s01/210",
+    "status": "match"
+   },
+   {
+    "cid": "tun_RecAcFreeLi/s00/60",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/1192",
+    "status": "match"
+   },
+   {
+    "cid": "NationaliteFr/s01/58",
+    "status": "match"
+   },
+   {
+    "cid": "ProcedurepenaleFr/s04/8",
+    "status": "match"
+   },
+   {
+    "cid": "ArbitrageFr/s04/36",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/420",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/1107",
+    "status": "match"
+   },
+   {
+    "cid": "EnfantFr/s05/31",
+    "status": "no_pdf_article"
+   },
+   {
+    "cid": "dtreelFr/s06/16-5",
+    "status": "match"
+   },
+   {
+    "cid": "societeFr/s01/125",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/1272",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/1210",
+    "status": "match"
+   },
+   {
+    "cid": "tun_RecAcFreeLi/s00/54",
+    "status": "match"
+   },
+   {
+    "cid": "Statutpersonnel/s02/61",
+    "status": "match"
+   },
+   {
+    "cid": "ArbitrageFr/s04/31",
+    "status": "match"
+   },
+   {
+    "cid": "Procedurecivilecom/s01/362",
+    "status": "match"
+   },
+   {
+    "cid": "Statutpersonnel/s11/8",
+    "status": "match"
+   },
+   {
+    "cid": "EnfantFr/s01/97",
+    "status": "match"
+   },
+   {
+    "cid": "ProcedurepenaleFr/s02/273",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/1023",
+    "status": "match"
+   },
+   {
+    "cid": "ProcedurepenaleFr/s04/29",
+    "status": "match"
+   },
+   {
+    "cid": "tun_RecAcFreeLi/s00/48",
+    "status": "match"
+   },
+   {
+    "cid": "PenalFr/s02/296",
+    "status": "match"
+   },
+   {
+    "cid": "travailFr/s01/148",
+    "status": "match"
+   },
+   {
+    "cid": "CommerceFr/s01/285",
+    "status": "match"
+   },
+   {
+    "cid": "travailFr/s01/287",
+    "status": "match"
+   },
+   {
+    "cid": "PenalFr/s02/138",
+    "status": "match"
+   },
+   {
+    "cid": "societeFr/s01/61",
+    "status": "match"
+   },
+   {
+    "cid": "societeFr/s01/214",
+    "status": "mismatch"
+   },
+   {
+    "cid": "dtreelFr/s01/369",
+    "status": "match"
+   },
+   {
+    "cid": "travailFr/s01/297",
+    "status": "match"
+   },
+   {
+    "cid": "travailFr/s01/17",
+    "status": "match"
+   },
+   {
+    "cid": "Statutpersonnel/s08/7",
+    "status": "match"
+   },
+   {
+    "cid": "tun_RecAcFreeLi/s00/16",
+    "status": "match"
+   },
+   {
+    "cid": "Statutpersonnel/s01/2",
+    "status": "match"
+   },
+   {
+    "cid": "EnfantFr/s01/91",
+    "status": "match"
+   },
+   {
+    "cid": "travailFr/s01/135",
+    "status": "match"
+   },
+   {
+    "cid": "DIPFR/s01/19",
+    "status": "match"
+   },
+   {
+    "cid": "PenalFr/s02/133",
+    "status": "match"
+   },
+   {
+    "cid": "Statutpersonnel/s12/12",
+    "status": "match"
+   },
+   {
+    "cid": "Procedurecivilecom/s01/440",
+    "status": "match"
+   },
+   {
+    "cid": "dtreelFr/s01/349",
+    "status": "match"
+   },
+   {
+    "cid": "dtreelFr/s01/84",
+    "status": "match"
+   },
+   {
+    "cid": "Procedurecivilecom/s01/106",
+    "status": "match"
+   },
+   {
+    "cid": "travailFr/s01/92",
+    "status": "match"
+   },
+   {
+    "cid": "tun_RecAcFreeLi/s00/88",
+    "status": "match"
+   },
+   {
+    "cid": "Procedurecivilecom/s01/121",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/869",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/648",
+    "status": "match"
+   },
+   {
+    "cid": "Statutpersonnel/s02/35",
+    "status": "match"
+   },
+   {
+    "cid": "COC/s02/653",
+    "status": "match"
+   }
+  ],
+  "mismatches": [
+   {
+    "cid": "dtreelFr/s01/288",
+    "chunk": "Article 288.- Les droits réels immobiliers dont le tiers détenteur \navait le bénéfice ou qu'il subissait avant sa possession sur un \nimmeuble délaissé ou adjugé à la suite d'une purge d'hypothèque, \nrenaissent après le délaissement ou après l'adjudication poursuivie \ncontre lui. \nDans le cas où l'im",
+    "pdf": "Article 288.- Les droits réels immobiliers dont le tiers détenteur \navait le bénéfice ou qu'il subissait avant sa possession sur un \nimmeuble délaissé ou adjugé à la suite d'une purge d'hypothèque, \nrenaissent après le délaissement ou après l'adjudication poursuivie \ncontre lui. \nDans le cas où l'im"
+   },
+   {
+    "cid": "COC/s02/1368",
+    "chunk": "Article 1368.- Si l'un des deux associés, après avoir reçu sa part de \nsemence, n'en fait aucun usage, il devra payer le loyer de la part du \nterrain appartenant à son associé. \nParag.I . – De la société à métayage \n)\n\n(",
+    "pdf": "Article 1368.- Si l'un des deux associés, après avoir reçu sa part de \nsemence, n'en fait aucun usage, il devra payer le loyer de la part du \nterrain appartenant à son associé. \nParag.I . – De la société à métayage )1("
+   },
+   {
+    "cid": "ProcedurepenaleFr/s04/101",
+    "chunk": "Article 101 (Modifié par la loi n°2009-65 du 12 août 2009).- Est \npuni de six mois à trois ans d'emprisonnement et d'une amende de \ncinq mille dinars à dix mille dinars les professionnels visés à l’article \n74 de la présente loi, les commerçants de bijoux et de pierres \nprécieuses et autres objets p",
+    "pdf": "Article 101 (Modifié par la loi n°2009-65 du 12 août 2009).- Est \npuni de six mois à trois ans d'emprisonnement et d'une amende de \ncinq mille dinars à dix mille dinars les professionnels visés à l’article \n74 de la présente loi, les commerçants de bijoux et de pierres \nprécieuses et autres objets p"
+   },
+   {
+    "cid": "CommerceFr/s01/488",
+    "chunk": "Article 488 \nEn cas de déclaration de faillite après décès, lorsqu'il n'aura \npoint été fait inventaire antérieurement, il y est procédé \nimmédiatement, dans les formes du précédent article, et en \nprésence des héritiers ou eux dûment appelés par pli \nrecommandé avec accusé de réception.\n\nImprimerie",
+    "pdf": "Article 488 \nEn cas de déclaration de faillite après décès, lorsqu'il n'aura \npoint été fait inventaire antérieurement, il y est procédé \nimmédiatement, dans les formes du précédent article, et en \nprésence des héritiers ou eux dûment appelés par pli \nrecommandé avec accusé de réception. \nIl est pro"
+   },
+   {
+    "cid": "CommerceFr/s01/208",
+    "chunk": "Article 208 \nLes ventes de fonds de commerce, comprenant des marques \nde fabrique ou de commerce, des dessins ou modèles \nindustriels, doivent, en outre, être inscrites au département dont \ndépend le Service de la Propriété Industrielle, sur la production\n\nImprimerie Officielle de la République Tuin",
+    "pdf": "Article 208 \nLes ventes de fonds de commerce, comprenant des marques \nde fabrique ou de commerce, des dessins ou modèles \nindustriels, doivent, en outre, être inscrites au département dont \ndépend le Service de la Propriété Industrielle, sur la production \ndu certificat délivré par le greffier du Tr"
+   },
+   {
+    "cid": "CommerceFr/s01/454",
+    "chunk": "Article 454 \nLes délais légaux de recours courent à compter du prononcé \ndu jugement. Toutefois, pour les jugements soumis aux \nformalités de l'affichage et de l'insertion par extraits dans les \njournaux, ces délais courent du jour suivant l'accomplissement \nde ces formalités. Aucune tierce oppositi",
+    "pdf": "Article 454 \nLes délais légaux de recours courent à compter du prononcé \ndu jugement. Toutefois, pour les jugements soumis aux \nformalités de l'affichage et de l'insertion par extraits dans les \njournaux, ces délais courent du jour suivant l'accomplissement \nde ces formalités. Aucune tierce oppositi"
+   },
+   {
+    "cid": "societeFr/s01/214",
+    "chunk": "Article 214 (Modifié par la loi n°2009-16 du 16 mars 2009).-\nLorsque le règlement judiciaire ou la faillite fait apparaître une \ninsuffisance d’actif, le tribunal peut, à la demande de l’administrateur \njudiciaire, du syndic de la faillite ou de l’un des créanciers, décider \nque les dettes de la soc",
+    "pdf": "Article 214 (Modifié par la loi n°2009-16 du 16 mars 2009).-\nLorsque le règlement judiciaire ou la faillite fait apparaître une \ninsuffisance d’actif, le tribunal peut, à la demande de l’administrateur \njudiciaire, du syndic de la faillite ou de l’un des créanciers, décider \nque les dettes de la soc"
+   }
+  ]
+ },
+ "base_collisions": {
+  "cases": 112,
+  "sources": {
+   "COC": 2,
+   "CommerceFr": 5,
+   "EnfantFr": 4,
+   "PenalFr": 23,
+   "Procedurecivilecom": 6,
+   "ProcedurepenaleFr": 14,
+   "Statutpersonnel": 9,
+   "dtreelFr": 10,
+   "societeFr": 9,
+   "travailFr": 30
+  },
+  "list": [
+   {
+    "stem": "COC",
+    "section": 2,
+    "article": "453",
+    "labels": [
+     "453",
+     "453-bis"
+    ]
+   },
+   {
+    "stem": "COC",
+    "section": 2,
+    "article": "93",
+    "labels": [
+     "93",
+     "93-bis"
+    ]
+   },
+   {
+    "stem": "CommerceFr",
+    "section": 1,
+    "article": "189",
+    "labels": [
+     "189",
+     "189-bis"
+    ]
+   },
+   {
+    "stem": "CommerceFr",
+    "section": 1,
+    "article": "228",
+    "labels": [
+     "228",
+     "228-bis"
+    ]
+   },
+   {
+    "stem": "CommerceFr",
+    "section": 1,
+    "article": "410",
+    "labels": [
+     "410",
+     "410-bis",
+     "410-quarter",
+     "410-quinquies",
+     "410-sexties",
+     "410-ter",
+     "410-ter-bis"
+    ]
+   },
+   {
+    "stem": "CommerceFr",
+    "section": 1,
+    "article": "411",
+    "labels": [
+     "411",
+     "411-bis",
+     "411-quarter",
+     "411-quinquies",
+     "411-septies",
+     "411-sexties",
+     "411-ter"
+    ]
+   },
+   {
+    "stem": "CommerceFr",
+    "section": 1,
+    "article": "412",
+    "labels": [
+     "412",
+     "412-bis",
+     "412-quarter",
+     "412-ter"
+    ]
+   },
+   {
+    "stem": "EnfantFr",
+    "section": 4,
+    "article": "228",
+    "labels": [
+     "228",
+     "228-bis"
+    ]
+   },
+   {
+    "stem": "EnfantFr",
+    "section": 4,
+    "article": "93",
+    "labels": [
+     "93",
+     "93-bis"
+    ]
+   },
+   {
+    "stem": "EnfantFr",
+    "section": 10,
+    "article": "3",
+    "labels": [
+     "3",
+     "3-bis",
+     "3-ter"
+    ]
+   },
+   {
+    "stem": "EnfantFr",
+    "section": 10,
+    "article": "4",
+    "labels": [
+     "4",
+     "4-bis"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "101",
+    "labels": [
+     "101",
+     "101-bis",
+     "101-quater",
+     "101-ter"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "121",
+    "labels": [
+     "121",
+     "121-bis",
+     "121-ter"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "15",
+    "labels": [
+     "15",
+     "15-bis",
+     "15-quater",
+     "15-ter"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "18",
+    "labels": [
+     "18",
+     "18-bis"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "199",
+    "labels": [
+     "199",
+     "199-bis",
+     "199-ter"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "212",
+    "labels": [
+     "212",
+     "212-bis"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "220",
+    "labels": [
+     "220",
+     "220-bis"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "226",
+    "labels": [
+     "226",
+     "226-bis",
+     "226-quater",
+     "226-ter"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "227",
+    "labels": [
+     "227",
+     "227-bis"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "228",
+    "labels": [
+     "228",
+     "228-bis"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "240",
+    "labels": [
+     "240",
+     "240-bis"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "255",
+    "labels": [
+     "255",
+     "255-bis"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "257",
+    "labels": [
+     "257",
+     "257-bis",
+     "257-quater",
+     "257-ter"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "303",
+    "labels": [
+     "303",
+     "303-bis",
+     "303-ter"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "306",
+    "labels": [
+     "306",
+     "306-bis",
+     "306-ter"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "315",
+    "labels": [
+     "315",
+     "315-bis"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "321",
+    "labels": [
+     "321",
+     "321-bis"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "52",
+    "labels": [
+     "52",
+     "52-bis"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "60",
+    "labels": [
+     "60",
+     "60-bis",
+     "60-quater",
+     "60-ter"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "61",
+    "labels": [
+     "61",
+     "61-bis",
+     "61-quater",
+     "61-ter"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "62",
+    "labels": [
+     "62",
+     "62-bis"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "87",
+    "labels": [
+     "87",
+     "87-bis"
+    ]
+   },
+   {
+    "stem": "PenalFr",
+    "section": 2,
+    "article": "97",
+    "labels": [
+     "97",
+     "97-bis",
+     "97-ter"
+    ]
+   },
+   {
+    "stem": "Procedurecivilecom",
+    "section": 1,
+    "article": "11",
+    "labels": [
+     "11",
+     "11-bis"
+    ]
+   },
+   {
+    "stem": "Procedurecivilecom",
+    "section": 1,
+    "article": "113",
+    "labels": [
+     "113",
+     "113-bis"
+    ]
+   },
+   {
+    "stem": "Procedurecivilecom",
+    "section": 1,
+    "article": "287",
+    "labels": [
+     "287",
+     "287-bis"
+    ]
+   },
+   {
+    "stem": "Procedurecivilecom",
+    "section": 1,
+    "article": "38",
+    "labels": [
+     "38",
+     "38-bis"
+    ]
+   },
+   {
+    "stem": "Procedurecivilecom",
+    "section": 1,
+    "article": "394",
+    "labels": [
+     "394",
+     "394-bis"
+    ]
+   },
+   {
+    "stem": "Procedurecivilecom",
+    "section": 1,
+    "article": "67",
+    "labels": [
+     "67",
+     "67-bis"
+    ]
+   },
+   {
+    "stem": "ProcedurepenaleFr",
+    "section": 1,
+    "article": "13",
+    "labels": [
+     "13",
+     "13-bis"
+    ]
+   },
+   {
+    "stem": "ProcedurepenaleFr",
+    "section": 2,
+    "article": "104",
+    "labels": [
+     "104",
+     "104-bis"
+    ]
+   },
+   {
+    "stem": "ProcedurepenaleFr",
+    "section": 2,
+    "article": "132",
+    "labels": [
+     "132",
+     "132-bis"
+    ]
+   },
+   {
+    "stem": "ProcedurepenaleFr",
+    "section": 2,
+    "article": "263",
+    "labels": [
+     "263",
+     "263-bis"
+    ]
+   },
+   {
+    "stem": "ProcedurepenaleFr",
+    "section": 2,
+    "article": "307",
+    "labels": [
+     "307",
+     "307-bis"
+    ]
+   },
+   {
+    "stem": "ProcedurepenaleFr",
+    "section": 2,
+    "article": "335",
+    "labels": [
+     "335",
+     "335-bis",
+     "335-quater",
+     "335-quinquies",
+     "335-septies",
+     "335-sexies",
+     "335-ter"
+    ]
+   },
+   {
+    "stem": "ProcedurepenaleFr",
+    "section": 2,
+    "article": "336",
+    "labels": [
+     "336",
+     "336-bis",
+     "336-ter"
+    ]
+   },
+   {
+    "stem": "ProcedurepenaleFr",
+    "section": 2,
+    "article": "342",
+    "labels": [
+     "342",
+     "342-3",
+     "342-4",
+     "342-5",
+     "342-bis"
+    ]
+   },
+   {
+    "stem": "ProcedurepenaleFr",
+    "section": 2,
+    "article": "346",
+    "labels": [
+     "346",
+     "346-bis"
+    ]
+   },
+   {
+    "stem": "ProcedurepenaleFr",
+    "section": 2,
+    "article": "350",
+    "labels": [
+     "350",
+     "350-bis"
+    ]
+   },
+   {
+    "stem": "ProcedurepenaleFr",
+    "section": 2,
+    "article": "369",
+    "labels": [
+     "369",
+     "369-bis"
+    ]
+   },
+   {
+    "stem": "ProcedurepenaleFr",
+    "section": 4,
+    "article": "72",
+    "labels": [
+     "72",
+     "72-bis",
+     "72-quater",
+     "72-ter"
+    ]
+   },
+   {
+    "stem": "ProcedurepenaleFr",
+    "section": 4,
+    "article": "74",
+    "labels": [
+     "74",
+     "74-bis",
+     "74-quater",
+     "74-quinquies",
+     "74-sexies",
+     "74-ter"
+    ]
+   },
+   {
+    "stem": "ProcedurepenaleFr",
+    "section": 4,
+    "article": "77",
+    "labels": [
+     "77",
+     "77-bis",
+     "77-ter"
+    ]
+   },
+   {
+    "stem": "Statutpersonnel",
+    "section": 1,
+    "article": "143",
+    "labels": [
+     "143",
+     "143-bis"
+    ]
+   },
+   {
+    "stem": "Statutpersonnel",
+    "section": 1,
+    "article": "32",
+    "labels": [
+     "32",
+     "32-bis"
+    ]
+   },
+   {
+    "stem": "Statutpersonnel",
+    "section": 1,
+    "article": "53",
+    "labels": [
+     "53",
+     "53-bis"
+    ]
+   },
+   {
+    "stem": "Statutpersonnel",
+    "section": 1,
+    "article": "56",
+    "labels": [
+     "56",
+     "56-bis"
+    ]
+   },
+   {
+    "stem": "Statutpersonnel",
+    "section": 1,
+    "article": "66",
+    "labels": [
+     "66",
+     "66-bis"
+    ]
+   },
+   {
+    "stem": "Statutpersonnel",
+    "section": 2,
+    "article": "36",
+    "labels": [
+     "36",
+     "36-bis"
+    ]
+   },
+   {
+    "stem": "Statutpersonnel",
+    "section": 5,
+    "article": "4",
+    "labels": [
+     "4",
+     "4-bis"
+    ]
+   },
+   {
+    "stem": "Statutpersonnel",
+    "section": 13,
+    "article": "3",
+    "labels": [
+     "3",
+     "3-bis",
+     "3-ter"
+    ]
+   },
+   {
+    "stem": "Statutpersonnel",
+    "section": 13,
+    "article": "4",
+    "labels": [
+     "4",
+     "4-bis"
+    ]
+   },
+   {
+    "stem": "dtreelFr",
+    "section": 1,
+    "article": "332",
+    "labels": [
+     "332",
+     "332-bis"
+    ]
+   },
+   {
+    "stem": "dtreelFr",
+    "section": 1,
+    "article": "357",
+    "labels": [
+     "357",
+     "357-bis",
+     "357-quater",
+     "357-ter"
+    ]
+   },
+   {
+    "stem": "dtreelFr",
+    "section": 1,
+    "article": "364",
+    "labels": [
+     "364",
+     "364-bis"
+    ]
+   },
+   {
+    "stem": "dtreelFr",
+    "section": 1,
+    "article": "377",
+    "labels": [
+     "377",
+     "377-bis",
+     "377-ter"
+    ]
+   },
+   {
+    "stem": "dtreelFr",
+    "section": 1,
+    "article": "97",
+    "labels": [
+     "97",
+     "97-bis",
+     "97-quater",
+     "97-ter"
+    ]
+   },
+   {
+    "stem": "dtreelFr",
+    "section": 5,
+    "article": "3",
+    "labels": [
+     "3",
+     "3-bis"
+    ]
+   },
+   {
+    "stem": "dtreelFr",
+    "section": 5,
+    "article": "7",
+    "labels": [
+     "7",
+     "7-bis"
+    ]
+   },
+   {
+    "stem": "dtreelFr",
+    "section": 6,
+    "article": "15",
+    "labels": [
+     "15",
+     "15-bis"
+    ]
+   },
+   {
+    "stem": "dtreelFr",
+    "section": 6,
+    "article": "16",
+    "labels": [
+     "16-1",
+     "16-2",
+     "16-3",
+     "16-4",
+     "16-5",
+     "16-6",
+     "16-7"
+    ]
+   },
+   {
+    "stem": "dtreelFr",
+    "section": 6,
+    "article": "27",
+    "labels": [
+     "27",
+     "27-bis"
+    ]
+   },
+   {
+    "stem": "societeFr",
+    "section": 1,
+    "article": "11",
+    "labels": [
+     "11",
+     "11-bis"
+    ]
+   },
+   {
+    "stem": "societeFr",
+    "section": 1,
+    "article": "13",
+    "labels": [
+     "13",
+     "13-bis",
+     "13-quater",
+     "13-quinter",
+     "13-sexis",
+     "13-ter"
+    ]
+   },
+   {
+    "stem": "societeFr",
+    "section": 1,
+    "article": "256",
+    "labels": [
+     "256",
+     "256-bis"
+    ]
+   },
+   {
+    "stem": "societeFr",
+    "section": 1,
+    "article": "266",
+    "labels": [
+     "266",
+     "266-bis"
+    ]
+   },
+   {
+    "stem": "societeFr",
+    "section": 1,
+    "article": "284",
+    "labels": [
+     "284",
+     "284-bis"
+    ]
+   },
+   {
+    "stem": "societeFr",
+    "section": 1,
+    "article": "290",
+    "labels": [
+     "290",
+     "290-bis",
+     "290-ter"
+    ]
+   },
+   {
+    "stem": "societeFr",
+    "section": 4,
+    "article": "5",
+    "labels": [
+     "5",
+     "5-bis"
+    ]
+   },
+   {
+    "stem": "societeFr",
+    "section": 4,
+    "article": "57",
+    "labels": [
+     "57",
+     "57-bis"
+    ]
+   },
+   {
+    "stem": "societeFr",
+    "section": 4,
+    "article": "70",
+    "labels": [
+     "70",
+     "70-bis"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "134",
+    "labels": [
+     "134",
+     "134-2",
+     "134-3"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "14",
+    "labels": [
+     "14",
+     "14-bis",
+     "14-quater",
+     "14-quinter",
+     "14-ter"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "151",
+    "labels": [
+     "151",
+     "151-2"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "152",
+    "labels": [
+     "152",
+     "152-2",
+     "152-3"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "153",
+    "labels": [
+     "153",
+     "153-2"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "154",
+    "labels": [
+     "154",
+     "154-2",
+     "154-3",
+     "154-4",
+     "154-5"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "161",
+    "labels": [
+     "161",
+     "161-bis"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "166",
+    "labels": [
+     "166",
+     "166-bis"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "169",
+    "labels": [
+     "169",
+     "169-bis",
+     "169-ter"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "21",
+    "labels": [
+     "21",
+     "21-10",
+     "21-11",
+     "21-12",
+     "21-13",
+     "21-2",
+     "21-3",
+     "21-4",
+     "21-5",
+     "21-6",
+     "21-7",
+     "21-8",
+     "21-9"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "23",
+    "labels": [
+     "23",
+     "23-bis"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "233",
+    "labels": [
+     "233",
+     "233-bis"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "234",
+    "labels": [
+     "234",
+     "234-bis"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "258",
+    "labels": [
+     "258",
+     "258-2"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "26",
+    "labels": [
+     "26",
+     "26-2"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "268",
+    "labels": [
+     "268",
+     "268-2"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "376",
+    "labels": [
+     "376",
+     "376-bis",
+     "376-ter"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "381",
+    "labels": [
+     "381",
+     "381-bis",
+     "381-ter"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "382",
+    "labels": [
+     "382",
+     "382-bis"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "384",
+    "labels": [
+     "384",
+     "384-bis"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "385",
+    "labels": [
+     "385",
+     "385-bis"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "386",
+    "labels": [
+     "386",
+     "386-bis",
+     "386-ter"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "5",
+    "labels": [
+     "5",
+     "5-bis"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "53",
+    "labels": [
+     "53",
+     "53-2"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "6",
+    "labels": [
+     "6",
+     "6-2",
+     "6-3",
+     "6-4"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "63",
+    "labels": [
+     "63",
+     "63-2"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "68",
+    "labels": [
+     "68",
+     "68-2",
+     "68-3",
+     "68-4"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "76",
+    "labels": [
+     "76",
+     "76-2"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "77",
+    "labels": [
+     "77",
+     "77-2"
+    ]
+   },
+   {
+    "stem": "travailFr",
+    "section": 1,
+    "article": "94",
+    "labels": [
+     "94",
+     "94-10",
+     "94-11",
+     "94-12",
+     "94-13",
+     "94-14",
+     "94-2",
+     "94-3",
+     "94-4",
+     "94-5",
+     "94-6",
+     "94-7",
+     "94-8",
+     "94-9"
+    ]
+   }
+  ]
+ }
+}

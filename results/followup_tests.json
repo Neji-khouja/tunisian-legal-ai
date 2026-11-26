@@ -1,0 +1,205 @@
+{
+ "condense_prompt_sha1": "b2ef6c23aa3b",
+ "min_gap": 3.0,
+ "dialogues": [
+  {
+   "name": "fr-drill",
+   "kind": "drill-down (travail)",
+   "turns": [
+    {
+     "message": "Quelle est la durée maximale de la période d'essai ?",
+     "standalone": "Quelle est la durée maximale de la période d'essai ?",
+     "condensed_from": "",
+     "is_followup": false,
+     "status": "done",
+     "cited": [
+      "COC/s02/862",
+      "travailFr/s01/18",
+      "travailFr/s01/349",
+      "travailFr/s01/370",
+      "travailFr/s01/410"
+     ],
+     "text": "- Lorsque la période d’essai est prévue par les usages, sa durée ne peut en aucun cas dépasser trente jours. [travailFr art. 370]\n- Une période d’essai peut être prévue dans le contrat, mais sa durée ne doit pas être supérieure à trois mois. [travailFr art. 410]\n- Dans les engagements d’ouvriers, de gens de service, de commis de magasin ou de boutique, les quinze premiers jours sont considérés comme période d’essai. [COC art. 862]\n- Pour les apprentissages, les deux premiers mois sont considérés comme temps d’essai, pendant lequel le contrat peut être annulé par l’une ou l’autre des parties. [travailFr art. 349]\n- La durée de la période d’essai résulte des conventions collectives ou particulières, de l’usage ou de la loi. [travailFr art. 18]",
+     "degraded": []
+    },
+    {
+     "message": "Et pour les cadres ?",
+     "standalone": "Quelle est la durée maximale de la période d'essai pour les cadres ?",
+     "condensed_from": "Et pour les cadres ?",
+     "is_followup": true,
+     "status": "done",
+     "cited": [
+      "travailFr/s01/370"
+     ],
+     "text": "- La durée maximale de la période d'essai ne peut en tout état de cause être supérieure à trente jours. [travailFr art. 370]\n\nRemarque: Les articles fournis ne prévoient pas de règle spécifique aux cadres ; la limitation de trente jours s’applique de façon générale.",
+     "degraded": []
+    }
+   ]
+  },
+  {
+   "name": "fr-pronoun",
+   "kind": "follow-up with a pronoun (penal)",
+   "turns": [
+    {
+     "message": "Qu'est-ce que le recel d'objets volés ?",
+     "standalone": "Qu'est-ce que le recel d'objets volés ?",
+     "condensed_from": "",
+     "is_followup": false,
+     "status": "done",
+     "cited": [
+      "PenalFr/s02/296",
+      "PenalFr/s02/34"
+     ],
+     "text": "- Le recel du produit d’une infraction, tel que les objets volés, est puni d’emprisonnement à vie pour les complices. [PenalFr art. 34]\n- Le recel d’objets volés consiste à prétendre connaître le lieu où se trouvent les objets volés et à se faire remettre une somme d’argent sous promesse de les retrouver ou de les ramener, puni des peines prévues à l’article 291. [PenalFr art. 296]",
+     "degraded": []
+    },
+    {
+     "message": "Et quelle est sa peine ?",
+     "standalone": "Quelle est la peine du recel d'objets volés ?",
+     "condensed_from": "Et quelle est sa peine ?",
+     "is_followup": true,
+     "status": "done",
+     "cited": [
+      "PenalFr/s02/278"
+     ],
+     "text": "- La peine pour le recel d'objets volés, c’est‑à‑dire la destruction, le détournement, la dissipation, le prêt ou la dissimulation d’objets dont on sait qu’ils sont saisis, est de deux ans d’emprisonnement et d’une amende de mille dinars. [PenalFr art. 278]\n- Lorsque l’infraction est commise par la personne à qui les objets saisis ont été confiés, la peine est portée au double. [PenalFr art. 278]",
+     "degraded": []
+    }
+   ]
+  },
+  {
+   "name": "en-drill",
+   "kind": "drill-down (statut_personnel)",
+   "turns": [
+    {
+     "message": "Who inherits when a person dies?",
+     "standalone": "Who inherits when a person dies?",
+     "condensed_from": "",
+     "is_followup": false,
+     "status": "done",
+     "cited": [
+      "Statutpersonnel/s01/112",
+      "Statutpersonnel/s01/145",
+      "Statutpersonnel/s01/146",
+      "Statutpersonnel/s01/91",
+      "Statutpersonnel/s01/92"
+     ],
+     "text": "- Succession is first allocated to the reserved heirs (héritiers réservataires). [Statutpersonnel art. 91]\n- The reserved heirs are: for the male sex – father, paternal grandfather (even if a higher degree), uterine brother, and husband; for the female sex – mother, grandmother, daughter, granddaughter (on the son's side), full sister, consanguine sister, uterine sister, and wife. [Statutpersonnel art. 91]\n- The quote‑parts of the succession are limited to six fractions: one half, one quarter, one eighth, two thirds, one third and one sixth. [Statutpersonnel art. 92]\n- If the reserved heirs’ shares exceed the estate, the estate is divided among them proportionally to their respective shares. [Statutpersonnel art. 112]\n- When a woman dies leaving a husband, a mother, a full or consanguine sister and a grandfather, the husband receives one half, the mother one third, the sister one half and the grandfather one sixth, with the sister’s and grandfather’s parts combined and allocated according to the rule that a male heir receives double the share of a female heir. [Statutpersonnel art. 146]\n- When a woman dies leaving a husband, a mother or grandmother, uterine brothers, one or more full brothers and a grandfather, the husband receives one half, the mother or grandmother one sixth, the grandfather one sixth, the full brother(s) receive the remaining sixth as agnat, and uterine brothers receive nothing. [Statutpersonnel art. 145]",
+     "degraded": []
+    },
+    {
+     "message": "And if there are no children?",
+     "standalone": "Who inherits when a person dies and there are no children?",
+     "condensed_from": "And if there are no children?",
+     "is_followup": true,
+     "status": "done",
+     "cited": [
+      "Statutpersonnel/s01/114"
+     ],
+     "text": "- When there are no children, the father is the first heir under the “aceb” order of inheritance. [Statutpersonnel art. 114]\n- If the father is not alive, the next heirs are the ascendants (parents, grandparents, etc.). [Statutpersonnel art. 114]\n- If neither father nor ascendants exist, the brother (frère germain ou consanguin) inherits. [Statutpersonnel art. 114]\n- If the brother is absent, his descendants inherit in the same rank. [Statutpersonnel art. 114]\n- If none of the above exist, the inheritance passes to the uncle, then the cousin, and finally to the Treasury. [Statutpersonnel art. 114]\n\nNote: The articles provide the order of heirs but do not specify the exact shares or portions each heir receives in the absence of children.",
+     "degraded": [
+      "verify_failed: RateLimitError"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "en-switch",
+   "kind": "topic switch: the follow-up must stay unchanged",
+   "turns": [
+    {
+     "message": "What are the formalities to create a limited liability company?",
+     "standalone": "What are the formalities to create a limited liability company?",
+     "condensed_from": "",
+     "is_followup": false,
+     "status": "done",
+     "cited": [
+      "societeFr/s01/90",
+      "societeFr/s01/96"
+     ],
+     "text": "- A limited liability company is constituted by a written instrument signed by all the associates or their duly authorized representatives, as required by article 96. [societeFr art. 96]\n- The incorporation deed must include, for natural persons, their names, first names, civil status, domicile and nationality, and for legal persons, their corporate name, nationality and registered office, as well as the corporate purpose, duration, capital amount and its allocation, the bank authorized to receive cash contributions, the allocation and valuation of cash and in‑kind contributions, the manager(s) if any, the payment terms, and the annual financial‑statement closing date, according to article 96. [societeFr art. 96]\n- The company must be formed by at least two persons, although it may be formed by a single associate as a “société unipersonnelle à responsabilité limitée”, per article 90. [societeFr art. 90]",
+     "degraded": []
+    },
+    {
+     "message": "Can a judgment given abroad be enforced in Tunisia?",
+     "standalone": "Can a judgment given abroad be enforced in Tunisia?",
+     "condensed_from": "Can a judgment given abroad be enforced in Tunisia?",
+     "is_followup": false,
+     "status": "done",
+     "cited": [
+      "DIPFR/s01/11",
+      "DIPFR/s01/12",
+      "DIPFR/s01/16",
+      "DIPFR/s01/18"
+     ],
+     "text": "- Foreign judgments that have become enforceable in Tunisia are executed in accordance with Tunisian law and only if reciprocity applies. [DIPFR art. 18]\n- A foreign judgment is eligible for exequatur and will be enforceable unless one of the refusal grounds set out in article 11 applies. [DIPFR art. 12, DIPFR art. 11]\n- Exequatur may be refused when the dispute falls under the exclusive jurisdiction of Tunisian courts, when Tunisian courts have already rendered a final decision on the same matter, when the foreign decision violates public order or the right of defence, when it has been annulled or is not yet enforceable in its country, or when the state of origin does not respect reciprocity. [DIPFR art. 11]\n- Requests for exequatur, non‑recognition or declaration of non‑opposability of foreign judgments are brought before the first‑instance court of the domicile of the party against whom the foreign decision is invoked, or before the Tunis first‑instance court if there is no domicile in Tunisia. [DIPFR art. 16]",
+     "degraded": []
+    }
+   ]
+  },
+  {
+   "name": "ar-drill",
+   "kind": "drill-down (nationalite)",
+   "turns": [
+    {
+     "message": "ما هي شروط اكتساب الجنسية التونسية بالتجنس؟",
+     "standalone": "ما هي شروط اكتساب الجنسية التونسية بالتجنس؟",
+     "condensed_from": "",
+     "is_followup": false,
+     "status": "done",
+     "cited": [
+      "NationaliteFr/s01/2",
+      "NationaliteFr/s01/20",
+      "NationaliteFr/s01/21"
+     ],
+     "text": "- لا يمكن منح الجنسية التونسية بالتجنس إلا للغريب الذي يثبت إقامته المعتادة في تونس لمدة خمس سنوات قبل تقديم طلبه. [NationaliteFr art. 20]\n- يُستثنى من شرط الإقامة الأصلية المواطن الذي كانت جنسيته الأصلية تونسية. [NationaliteFr art. 21]\n- يُستثنى من شرط الإقامة الغريب المتزوج من تونسية إذا كان المنزل مقيمًا في تونس عند تقديم الطلب. [NationaliteFr art. 21]\n- يُستثنى من شرط الإقامة الغريب الذي قدم خدمات استثنائية لتونس أو تكون تجنيسه ذا مصلحة استثنائية لتونس، ويُمنح التجنيس بناءً على تقرير مبرر من سكرتير الدولة إلى العدل. [NationaliteFr art. 21]\n- تُحدد شروط اكتساب وفقدان الجنسية التونسية وفقًا للقانون الساري وقت حدوث الوقائع والأفعال. [NationaliteFr art. 2]",
+     "degraded": []
+    },
+    {
+     "message": "وبالنسبة للقصّر؟",
+     "standalone": "ما هي شروط اكتساب الجنسية التونسية بالتجنس للقصّر؟",
+     "condensed_from": "وبالنسبة للقصّر؟",
+     "is_followup": true,
+     "status": "done",
+     "cited": [
+      "NationaliteFr/s01/18",
+      "NationaliteFr/s01/20",
+      "NationaliteFr/s01/25"
+     ],
+     "text": "- يكتسب القاصر الأجنبي الجنسية التونسية إذا تم تبنيه من قبل شخص تونسي، بشرط ألا يكون متزوجاً، وتصبح الجنسية سارية اعتباراً من تاريخ حكم التبني. [NationaliteFr art. 18]\n- يصبح القاصر غير المتزوج تونسيًا تلقائيًا إذا كان والده أو والدته (في حالة كونها أرملة) قد اكتسب الجنسية التونسية، ما لم ينص مرسوم التجنس على خلاف ذلك. [NationaliteFr art. 25]\n- بشكل عام، لا يمكن منح التجنس إلا للغريب الذي يثبت إقامته المعتادة في تونس لمدة خمس سنوات قبل تقديم طلبه، باستثناء الحالات المنصوص عليها في المادة 21. [NationaliteFr art. 20]\n\nملاحظة: المواد لا توضح ما إذا كان شرط الإقامة لمدة خمس سنوات يطبق على القصر أو ما إذا كانت هناك شروط إجرائية إضافية خاصة بالتجنس للقصّر غير المذكورة في النصوص المتاحة.",
+     "degraded": []
+    }
+   ]
+  },
+  {
+   "name": "ar-lang",
+   "kind": "follow-up that changes language (ar -> fr)",
+   "turns": [
+    {
+     "message": "ما هي مدة عطلة الأمومة؟",
+     "standalone": "ما هي مدة عطلة الأمومة؟",
+     "condensed_from": "",
+     "is_followup": false,
+     "status": "done",
+     "cited": [
+      "travailFr/s01/64"
+     ],
+     "text": "- عطلة الأمومة هي إجازة راحة مدتها 30 يوماً، ويمكن تمديدها كل مرة لمدة 15 يوماً إضافية بناءً على شهادات طبية. [travailFr art. 64]",
+     "degraded": []
+    },
+    {
+     "message": "Et pour le père ?",
+     "standalone": "Quelle est la durée du congé paternité ?",
+     "condensed_from": "Et pour le père ?",
+     "is_followup": true,
+     "status": "done",
+     "cited": [
+      "travailFr/s01/122"
+     ],
+     "text": "- Le congé paternité accordé à l’époux salarié est d’une durée d’un jour à l’occasion de chaque naissance. [travailFr art. 122]",
+     "degraded": []
+    }
+   ]
+  }
+ ]
+}

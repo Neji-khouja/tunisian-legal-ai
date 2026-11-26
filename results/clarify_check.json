@@ -1,0 +1,110 @@
+{
+ "tried_turn1": [
+  {
+   "id": "q055",
+   "question": "ما هي مدة الاحتفاظ؟",
+   "intent": "ambiguous"
+  }
+ ],
+ "question": "ما هي مدة الاحتفاظ؟",
+ "reply": "أقصد الاحتفاظ بالمشتبه فيه لدى الضابطة العدلية",
+ "turn1": {
+  "status": "clarify",
+  "text": "ما هو نوع الوثائق أو المعلومات التي تريد معرفة مدة الاحتفاظ بها؟",
+  "original_question": "User: ما هي مدة الاحتفاظ؟\nAgent asked: ما هو نوع الوثائق أو المعلومات التي تريد معرفة مدة الاحتفاظ بها؟"
+ },
+ "turn2": {
+  "status": "done",
+  "full_question": "User: ما هي مدة الاحتفاظ؟\nAgent asked: ما هو نوع الوثائق أو المعلومات التي تريد معرفة مدة الاحتفاظ بها؟\nUser's answer: أقصد الاحتفاظ بالمشتبه فيه لدى الضابطة العدلية",
+  "intent": "clear",
+  "target_codes": [
+   "procedure_penale"
+  ],
+  "retries": 0,
+  "tried": [],
+  "degraded": [],
+  "text": "- يمكن للضابط الشرطي الاحتفاظ بالمشتبه فيه في حالة الحبس الاحتياطي (garde à vue) لمدة لا تتجاوز ثلاثة أيام. [ProcedurepenaleFr art. 57, ProcedurepenaleFr art. 13-bis]\n- يمكن للقاضي التحقيقي، بقرار مكتوب ومبرر، تمديد مدة الحبس الاحتياطي مرة واحدة فقط لنفس الفترة (ثلاثة أيام إضافية). [ProcedurepenaleFr art. 57]\n- يمكن للمدعي العام، بقرار مكتوب ومبرر، تمديد مدة الحبس الاحتياطي مرة واحدة فقط لنفس الفترة (ثلاثة أيام إضافية). [ProcedurepenaleFr art. 13-bis]",
+  "cited": [
+   "ProcedurepenaleFr/s01/13-bis",
+   "ProcedurepenaleFr/s02/57"
+  ],
+  "claims": [
+   {
+    "text": "يمكن للضابط الشرطي الاحتفاظ بالمشتبه فيه في حالة الحبس الاحتياطي (garde à vue) لمدة لا تتجاوز ثلاثة أيام.",
+    "cited_ids": [
+     "ProcedurepenaleFr/s02/57",
+     "ProcedurepenaleFr/s01/13-bis"
+    ]
+   },
+   {
+    "text": "يمكن للقاضي التحقيقي، بقرار مكتوب ومبرر، تمديد مدة الحبس الاحتياطي مرة واحدة فقط لنفس الفترة (ثلاثة أيام إضافية).",
+    "cited_ids": [
+     "ProcedurepenaleFr/s02/57"
+    ]
+   },
+   {
+    "text": "يمكن للمدعي العام، بقرار مكتوب ومبرر، تمديد مدة الحبس الاحتياطي مرة واحدة فقط لنفس الفترة (ثلاثة أيام إضافية).",
+    "cited_ids": [
+     "ProcedurepenaleFr/s01/13-bis"
+    ]
+   }
+  ],
+  "caveat": "",
+  "evidence_ids": [
+   "ProcedurepenaleFr/s02/57",
+   "ProcedurepenaleFr/s01/13-bis",
+   "ProcedurepenaleFr/s04/48",
+   "ProcedurepenaleFr/s02/97",
+   "ProcedurepenaleFr/s01/9",
+   "ProcedurepenaleFr/s04/75"
+  ]
+ },
+ "calls_turn2": [
+  {
+   "turn": 2,
+   "function": "retrieve_g(question, target_codes)",
+   "args": [
+    "User: ما هي مدة الاحتفاظ؟\nAgent asked: ما هو نوع الوثائق أو المعلومات التي تريد معرفة مدة الاحتفاظ بها؟\nUser's answer: أقصد الاحتفاظ بالمشتبه فيه لدى الضابطة العدلية",
+    [
+     "procedure_penale"
+    ]
+   ]
+  },
+  {
+   "turn": 2,
+   "function": "retrieve_g: step_query(question)",
+   "args": [
+    "User: ما هي مدة الاحتفاظ؟\nAgent asked: ما هو نوع الوثائق أو المعلومات التي تريد معرفة مدة الاحتفاظ بها؟\nUser's answer: أقصد الاحتفاظ بالمشتبه فيه لدى الضابطة العدلية"
+   ]
+  },
+  {
+   "turn": 2,
+   "function": "retrieve_g: step_rerank(french_query, candidates)",
+   "args": [
+    "Je veux dire la conservation du suspect par la police judiciaire.",
+    "<20 documents>"
+   ]
+  },
+  {
+   "turn": 2,
+   "function": "retrieve_g: step_rerank(french_query, candidates)",
+   "args": [
+    "Je veux dire la conservation du suspect par la police judiciaire.",
+    "<20 documents>"
+   ]
+  }
+ ],
+ "http": {
+  "turn1": {
+   "200": 1,
+   "429": 0,
+   "other": 0
+  },
+  "turn2": {
+   "200": 4,
+   "429": 0,
+   "other": 0
+  }
+ },
+ "seconds": 54.5
+}

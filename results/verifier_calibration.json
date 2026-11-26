@@ -1,0 +1,1507 @@
+{
+ "seed": 20261022,
+ "n": 24,
+ "verify_prompt_sha1": "6568dc934538",
+ "verify_chars": 3000,
+ "http": {
+  "200": 24,
+  "429": 20,
+  "other": 0
+ },
+ "chunk_mismatch": [
+  "ProcedurepenaleFr/s02/377"
+ ],
+ "no_eligible_sentence": 170,
+ "sample": [
+  {
+   "cid": "ProcedurepenaleFr/s02/90",
+   "stem": "ProcedurepenaleFr",
+   "section": 2,
+   "label": "90",
+   "sentence": "L'ordonnance de mise en liberté provisoire détermine la somme affectée à chacune des deux parties du cautionnement.",
+   "other": "ProcedurepenaleFr/s04/5"
+  },
+  {
+   "cid": "Statutpersonnel/s02/63",
+   "stem": "Statutpersonnel",
+   "section": 2,
+   "label": "63",
+   "sentence": "Sera passible d'une peine d'emprisonnement d'un an et d'une amende de deux cent quarante dinars (240d,000) quiconque aura sciemment menti en vue d'obtenir un jugement rectificatif d'un acte de l'état civil.",
+   "other": "Statutpersonnel/s07/23"
+  },
+  {
+   "cid": "CommerceFr/s01/261",
+   "stem": "CommerceFr",
+   "section": 1,
+   "label": "261",
+   "sentence": "La convocation doit être adressée vingt jours au moins avant la date de la réunion.",
+   "other": "CommerceFr/s01/255"
+  },
+  {
+   "cid": "Procedurecivilecom/s01/477",
+   "stem": "Procedurecivilecom",
+   "section": 1,
+   "label": "477",
+   "sentence": "Le greffier convoque à cette réunion, huit jours au moins à l'avance et par lettres recommandées avec avis de réception:",
+   "other": "Procedurecivilecom/s01/447"
+  },
+  {
+   "cid": "ArbitrageFr/s01/48",
+   "stem": "ArbitrageFr",
+   "section": 1,
+   "label": "48",
+   "sentence": "a) Si les parties à une convention d'arbitrage ont, au moment de la conclusion de ladite convention, leur établissement dans deux Etats différents.",
+   "other": "ArbitrageFr/s04/39"
+  },
+  {
+   "cid": "travailFr/s01/344",
+   "stem": "travailFr",
+   "section": 1,
+   "label": "344",
+   "sentence": "Il doit être établi en trois originaux, un pour l'employeur, un pour l'apprenti ou pour son représentant légal, le troisième pour le service compétent du secrétariat d'Etat à la Jeunesse, aux Sports et aux Affaires Sociales.",
+   "other": "travailFr/s01/124"
+  },
+  {
+   "cid": "societeFr/s01/291",
+   "stem": "societeFr",
+   "section": 1,
+   "label": "291",
+   "sentence": "Elle statue à la majorité des deux tiers des voix des actionnaires présents ou des représentants ayant droit au vote.",
+   "other": "societeFr/s04/28"
+  },
+  {
+   "cid": "travailFr/s01/139",
+   "stem": "travailFr",
+   "section": 1,
+   "label": "139",
+   "sentence": "(1) La version originale paru au JORT contenait 3 alinéas seulement.",
+   "other": "travailFr/s01/94-11"
+  },
+  {
+   "cid": "Procedurecivilecom/s01/358",
+   "stem": "Procedurecivilecom",
+   "section": 1,
+   "label": "358",
+   "sentence": "Dans ces deux cas, les primes sont cessibles et saisissables en totalité, selon les règles du droit commun.",
+   "other": "Procedurecivilecom/s01/314"
+  },
+  {
+   "cid": "travailFr/s01/362",
+   "stem": "travailFr",
+   "section": 1,
+   "label": "362",
+   "sentence": "Ils s'adressent aux jeunes gens âgés de plus de 18 ans au 1er janvier qui précède l'entrée dans le centre.",
+   "other": "travailFr/s01/211"
+  },
+  {
+   "cid": "travailFr/s01/218",
+   "stem": "travailFr",
+   "section": 1,
+   "label": "218",
+   "sentence": "(1) La version originale paru au JORT contenait 1 seul alinéa.",
+   "other": "travailFr/s01/101"
+  },
+  {
+   "cid": "societeFr/s01/281",
+   "stem": "societeFr",
+   "section": 1,
+   "label": "281",
+   "sentence": "Le président de l'assemblée générale est assisté de deux scrutateurs, et d'un secrétaire, désignés par les actionnaires présents.",
+   "other": "societeFr/s03/3"
+  },
+  {
+   "cid": "ArbitrageFr/s01/77",
+   "stem": "ArbitrageFr",
+   "section": 1,
+   "label": "77",
+   "sentence": "2- Dans les trente jours qui suivent la réception de la sentence, à moins que les parties ne soient convenues d'un autre délai, le tribunal arbitral, à la demande d'une partie moyennant notification de sa demande à l'autre peut procéder aux opérations suivantes :",
+   "other": "ArbitrageFr/s04/12"
+  },
+  {
+   "cid": "ProcedurepenaleFr/s04/66",
+   "stem": "ProcedurepenaleFr",
+   "section": 4,
+   "label": "66",
+   "sentence": "Elles encourent de ce fait une amende égale à cinq fois la valeur de l'amende prévue pour les personnes physiques.",
+   "other": "ProcedurepenaleFr/s02/154"
+  },
+  {
+   "cid": "ArbitrageFr/s04/30",
+   "stem": "ArbitrageFr",
+   "section": 4,
+   "label": "30",
+   "sentence": "2.- Toutefois, les mesures provisoires ou conservatoires prévues par la législation de chaque Etat, pourront, en cas d'urgence, être requises des juridictions de chacun des deux Etats, quelle que soit la juridiction saisie du fond du litige.",
+   "other": "ArbitrageFr/s01/4"
+  },
+  {
+   "cid": "ProcedurepenaleFr/s04/62",
+   "stem": "ProcedurepenaleFr",
+   "section": 4,
+   "label": "62",
+   "sentence": "Les dispositions des deux alinéas précédents sont applicables même si l'infraction dont proviennent les fonds objet du blanchiment n'a pas été commise sur le territoire tunisien .",
+   "other": "ProcedurepenaleFr/s02/215"
+  },
+  {
+   "cid": "EnfantFr/s03/9",
+   "stem": "EnfantFr",
+   "section": 3,
+   "label": "9",
+   "sentence": "- Les Etats parties respectent le droit de l'enfant séparé de ses parents et de l'un d'eux d'entretenir régulièrement des relations personnelles et des contacts directs avec ses deux parents, sauf si cela est contraire à l'intérêt supérieur de l'enfant.",
+   "other": "EnfantFr/s01/34"
+  },
+  {
+   "cid": "societeFr/s01/225",
+   "stem": "societeFr",
+   "section": 1,
+   "label": "225",
+   "sentence": "Dans les sociétés anonymes dont le capital est inférieur à cent mille dinars, les fonctions dévolues au directoire peuvent être exercées par une seule personne.",
+   "other": "societeFr/s01/305"
+  },
+  {
+   "cid": "PenalFr/s02/199-bis",
+   "stem": "PenalFr",
+   "section": 2,
+   "label": "199-bis",
+   "sentence": "La peine est élevée à deux ans d'emprisonnement et l'amende à deux mille dinars lorsqu'il en résulte, même sans intention, une altération ou la destruction du fonctionnement des données existantes dans le système indiqué.",
+   "other": "PenalFr/s02/82"
+  },
+  {
+   "cid": "Procedurecivilecom/s01/200",
+   "stem": "Procedurecivilecom",
+   "section": 1,
+   "label": "200",
+   "sentence": "Le demandeur débouté est condamné à une amende de vingt à cinquante dinars, sans préjudice de tous dommages-intérêts du magistrat.",
+   "other": "Procedurecivilecom/s01/1"
+  },
+  {
+   "cid": "EnfantFr/s01/42",
+   "stem": "EnfantFr",
+   "section": 1,
+   "label": "42",
+   "sentence": "Dans le cas où aucun accord n'est établi dans un délai de vingt jours à partir du moment où le délégué à la protection de l'enfance s'est saisi du cas, le dossier est soumis au juge de la famille.",
+   "other": "EnfantFr/s01/56"
+  },
+  {
+   "cid": "COC/s02/273",
+   "stem": "COC",
+   "section": 2,
+   "label": "273",
+   "sentence": "à défaut, il pourra demander la résolution du contrat ainsi que des dommages-intérêts dans les deux cas.",
+   "other": "COC/s02/54"
+  },
+  {
+   "cid": "societeFr/s01/177",
+   "stem": "societeFr",
+   "section": 1,
+   "label": "177",
+   "sentence": "Les actions en responsabilité contre les fondateurs se prescrivent par trois années à compter de la date de la constitution de la société.",
+   "other": "societeFr/s01/147"
+  },
+  {
+   "cid": "Statutpersonnel/s01/31",
+   "stem": "Statutpersonnel",
+   "section": 1,
+   "label": "31",
+   "sentence": "Il est statué sur la réparation du préjudice matériel et moral subi par l'un ou l'autre des époux et résultant du divorce prononcé dans les deux cas prévus aux 2ème et 3ème alinéas ci-dessus.",
+   "other": "Statutpersonnel/s01/134"
+  }
+ ],
+ "rows": [
+  {
+   "type": "added_condition",
+   "cid": "ProcedurepenaleFr/s02/90",
+   "stem": "ProcedurepenaleFr",
+   "label": "90",
+   "cited": [
+    "ProcedurepenaleFr/s02/90"
+   ],
+   "claim": "L'ordonnance de mise en liberté provisoire détermine la somme affectée à chacune des deux parties du cautionnement à condition que la personne concernée soit mineure.",
+   "position": 1,
+   "verdict": "partly",
+   "problem": "the condition that the person is a minor is not mentioned in the cited text"
+  },
+  {
+   "type": "number_changed",
+   "cid": "ProcedurepenaleFr/s02/90",
+   "stem": "ProcedurepenaleFr",
+   "label": "90",
+   "cited": [
+    "ProcedurepenaleFr/s02/90"
+   ],
+   "claim": "L'ordonnance de mise en liberté provisoire détermine la somme affectée à chacune des trois parties du cautionnement.",
+   "position": 2,
+   "verdict": "unsupported",
+   "problem": "the cited text states two parties, not three"
+  },
+  {
+   "type": "good",
+   "cid": "ProcedurepenaleFr/s02/90",
+   "stem": "ProcedurepenaleFr",
+   "label": "90",
+   "cited": [
+    "ProcedurepenaleFr/s02/90"
+   ],
+   "claim": "L'ordonnance de mise en liberté provisoire détermine la somme affectée à chacune des deux parties du cautionnement.",
+   "position": 3,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "wrong_article",
+   "cid": "ProcedurepenaleFr/s02/90",
+   "stem": "ProcedurepenaleFr",
+   "label": "90",
+   "cited": [
+    "ProcedurepenaleFr/s04/5"
+   ],
+   "claim": "L'ordonnance de mise en liberté provisoire détermine la somme affectée à chacune des deux parties du cautionnement.",
+   "position": 4,
+   "verdict": "unsupported",
+   "problem": "the cited article does not contain the statement about the ordonnance"
+  },
+  {
+   "type": "added_condition",
+   "cid": "Statutpersonnel/s02/63",
+   "stem": "Statutpersonnel",
+   "label": "63",
+   "cited": [
+    "Statutpersonnel/s02/63"
+   ],
+   "claim": "Sera passible d'une peine d'emprisonnement d'un an et d'une amende de deux cent quarante dinars (240d,000) quiconque aura sciemment menti en vue d'obtenir un jugement rectificatif d'un acte de l'état civil à condition que la personne concernée soit mineure.",
+   "position": 1,
+   "verdict": "partly",
+   "problem": "the condition that the person concerned be a minor is not mentioned"
+  },
+  {
+   "type": "wrong_article",
+   "cid": "Statutpersonnel/s02/63",
+   "stem": "Statutpersonnel",
+   "label": "63",
+   "cited": [
+    "Statutpersonnel/s07/23"
+   ],
+   "claim": "Sera passible d'une peine d'emprisonnement d'un an et d'une amende de deux cent quarante dinars (240d,000) quiconque aura sciemment menti en vue d'obtenir un jugement rectificatif d'un acte de l'état civil.",
+   "position": 2,
+   "verdict": "unsupported",
+   "problem": "the cited article does not contain the stated penalty for lying to obtain a rectification"
+  },
+  {
+   "type": "number_changed",
+   "cid": "Statutpersonnel/s02/63",
+   "stem": "Statutpersonnel",
+   "label": "63",
+   "cited": [
+    "Statutpersonnel/s02/63"
+   ],
+   "claim": "Sera passible d'une peine d'emprisonnement d'un an et d'une amende de trois cent quarante dinars (240d,000) quiconque aura sciemment menti en vue d'obtenir un jugement rectificatif d'un acte de l'état civil.",
+   "position": 3,
+   "verdict": "partly",
+   "problem": "the amount of the fine (three hundred forty dinars) is not supported"
+  },
+  {
+   "type": "good",
+   "cid": "Statutpersonnel/s02/63",
+   "stem": "Statutpersonnel",
+   "label": "63",
+   "cited": [
+    "Statutpersonnel/s02/63"
+   ],
+   "claim": "Sera passible d'une peine d'emprisonnement d'un an et d'une amende de deux cent quarante dinars (240d,000) quiconque aura sciemment menti en vue d'obtenir un jugement rectificatif d'un acte de l'état civil.",
+   "position": 4,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "good",
+   "cid": "CommerceFr/s01/261",
+   "stem": "CommerceFr",
+   "label": "261",
+   "cited": [
+    "CommerceFr/s01/261"
+   ],
+   "claim": "La convocation doit être adressée vingt jours au moins avant la date de la réunion.",
+   "position": 1,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "number_changed",
+   "cid": "CommerceFr/s01/261",
+   "stem": "CommerceFr",
+   "label": "261",
+   "cited": [
+    "CommerceFr/s01/261"
+   ],
+   "claim": "La convocation doit être adressée trente jours au moins avant la date de la réunion.",
+   "position": 2,
+   "verdict": "partly",
+   "problem": "the required notice period is twenty days, not thirty"
+  },
+  {
+   "type": "wrong_article",
+   "cid": "CommerceFr/s01/261",
+   "stem": "CommerceFr",
+   "label": "261",
+   "cited": [
+    "CommerceFr/s01/255"
+   ],
+   "claim": "La convocation doit être adressée vingt jours au moins avant la date de la réunion.",
+   "position": 3,
+   "verdict": "unsupported",
+   "problem": "article 255 does not mention convocation timing"
+  },
+  {
+   "type": "added_condition",
+   "cid": "CommerceFr/s01/261",
+   "stem": "CommerceFr",
+   "label": "261",
+   "cited": [
+    "CommerceFr/s01/261"
+   ],
+   "claim": "La convocation doit être adressée vingt jours au moins avant la date de la réunion à condition que la personne concernée soit mineure.",
+   "position": 4,
+   "verdict": "partly",
+   "problem": "no condition about the person being a minor is stated"
+  },
+  {
+   "type": "wrong_article",
+   "cid": "Procedurecivilecom/s01/477",
+   "stem": "Procedurecivilecom",
+   "label": "477",
+   "cited": [
+    "Procedurecivilecom/s01/447"
+   ],
+   "claim": "Le greffier convoque à cette réunion, huit jours au moins à l'avance et par lettres recommandées avec avis de réception:",
+   "position": 1,
+   "verdict": "unsupported",
+   "problem": "article does not state greffier summons eight days in advance"
+  },
+  {
+   "type": "number_changed",
+   "cid": "Procedurecivilecom/s01/477",
+   "stem": "Procedurecivilecom",
+   "label": "477",
+   "cited": [
+    "Procedurecivilecom/s01/477"
+   ],
+   "claim": "Le greffier convoque à cette réunion, neuf jours au moins à l'avance et par lettres recommandées avec avis de réception:",
+   "position": 2,
+   "verdict": "partly",
+   "problem": "the cited text specifies eight days, not nine"
+  },
+  {
+   "type": "added_condition",
+   "cid": "Procedurecivilecom/s01/477",
+   "stem": "Procedurecivilecom",
+   "label": "477",
+   "cited": [
+    "Procedurecivilecom/s01/477"
+   ],
+   "claim": "Le greffier convoque à cette réunion, huit jours au moins à l'avance et par lettres recommandées avec avis de réception à condition que la personne concernée soit mineure:",
+   "position": 3,
+   "verdict": "partly",
+   "problem": "adds condition that the person be minor, which is not in the article"
+  },
+  {
+   "type": "good",
+   "cid": "Procedurecivilecom/s01/477",
+   "stem": "Procedurecivilecom",
+   "label": "477",
+   "cited": [
+    "Procedurecivilecom/s01/477"
+   ],
+   "claim": "Le greffier convoque à cette réunion, huit jours au moins à l'avance et par lettres recommandées avec avis de réception:",
+   "position": 4,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "number_changed",
+   "cid": "ArbitrageFr/s01/48",
+   "stem": "ArbitrageFr",
+   "label": "48",
+   "cited": [
+    "ArbitrageFr/s01/48"
+   ],
+   "claim": "a) Si les parties à une convention d'arbitrage ont, au moment de la conclusion de ladite convention, leur établissement dans trois Etats différents.",
+   "position": 1,
+   "verdict": "partly",
+   "problem": "the number of states (three) is not stated"
+  },
+  {
+   "type": "wrong_article",
+   "cid": "ArbitrageFr/s01/48",
+   "stem": "ArbitrageFr",
+   "label": "48",
+   "cited": [
+    "ArbitrageFr/s04/39"
+   ],
+   "claim": "a) Si les parties à une convention d'arbitrage ont, au moment de la conclusion de ladite convention, leur établissement dans deux Etats différents.",
+   "position": 2,
+   "verdict": "unsupported",
+   "problem": "article does not address establishment condition"
+  },
+  {
+   "type": "good",
+   "cid": "ArbitrageFr/s01/48",
+   "stem": "ArbitrageFr",
+   "label": "48",
+   "cited": [
+    "ArbitrageFr/s01/48"
+   ],
+   "claim": "a) Si les parties à une convention d'arbitrage ont, au moment de la conclusion de ladite convention, leur établissement dans deux Etats différents.",
+   "position": 3,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "added_condition",
+   "cid": "ArbitrageFr/s01/48",
+   "stem": "ArbitrageFr",
+   "label": "48",
+   "cited": [
+    "ArbitrageFr/s01/48"
+   ],
+   "claim": "a) Si les parties à une convention d'arbitrage ont, au moment de la conclusion de ladite convention, leur établissement dans deux Etats différents à condition que la personne concernée soit mineure.",
+   "position": 4,
+   "verdict": "partly",
+   "problem": "condition of minority is not mentioned"
+  },
+  {
+   "type": "number_changed",
+   "cid": "travailFr/s01/344",
+   "stem": "travailFr",
+   "label": "344",
+   "cited": [
+    "travailFr/s01/344"
+   ],
+   "claim": "Il doit être établi en quatre originaux, un pour l'employeur, un pour l'apprenti ou pour son représentant légal, le troisième pour le service compétent du secrétariat d'Etat à la Jeunesse, aux Sports et aux Affaires Sociales.",
+   "position": 1,
+   "verdict": "partly",
+   "problem": "the claim says four originals instead of the three stated in the article"
+  },
+  {
+   "type": "good",
+   "cid": "travailFr/s01/344",
+   "stem": "travailFr",
+   "label": "344",
+   "cited": [
+    "travailFr/s01/344"
+   ],
+   "claim": "Il doit être établi en trois originaux, un pour l'employeur, un pour l'apprenti ou pour son représentant légal, le troisième pour le service compétent du secrétariat d'Etat à la Jeunesse, aux Sports et aux Affaires Sociales.",
+   "position": 2,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "added_condition",
+   "cid": "travailFr/s01/344",
+   "stem": "travailFr",
+   "label": "344",
+   "cited": [
+    "travailFr/s01/344"
+   ],
+   "claim": "Il doit être établi en trois originaux, un pour l'employeur, un pour l'apprenti ou pour son représentant légal, le troisième pour le service compétent du secrétariat d'Etat à la Jeunesse, aux Sports et aux Affaires Sociales à condition que la personne concernée soit mineure.",
+   "position": 3,
+   "verdict": "partly",
+   "problem": "the claim adds a condition that the person must be a minor, which is not in the article"
+  },
+  {
+   "type": "wrong_article",
+   "cid": "travailFr/s01/344",
+   "stem": "travailFr",
+   "label": "344",
+   "cited": [
+    "travailFr/s01/124"
+   ],
+   "claim": "Il doit être établi en trois originaux, un pour l'employeur, un pour l'apprenti ou pour son représentant légal, le troisième pour le service compétent du secrétariat d'Etat à la Jeunesse, aux Sports et aux Affaires Sociales.",
+   "position": 4,
+   "verdict": "unsupported",
+   "problem": "the cited article concerns leave entitlements and does not mention contract originals"
+  },
+  {
+   "type": "number_changed",
+   "cid": "societeFr/s01/291",
+   "stem": "societeFr",
+   "label": "291",
+   "cited": [
+    "societeFr/s01/291"
+   ],
+   "claim": "Elle statue à la majorité des trois tiers des voix des actionnaires présents ou des représentants ayant droit au vote.",
+   "position": 1,
+   "verdict": "unsupported",
+   "problem": "the claim states a majority of three thirds, but the article specifies a majority of two thirds"
+  },
+  {
+   "type": "wrong_article",
+   "cid": "societeFr/s01/291",
+   "stem": "societeFr",
+   "label": "291",
+   "cited": [
+    "societeFr/s04/28"
+   ],
+   "claim": "Elle statue à la majorité des deux tiers des voix des actionnaires présents ou des représentants ayant droit au vote.",
+   "position": 2,
+   "verdict": "unsupported",
+   "problem": "the cited article does not mention any voting majority rule"
+  },
+  {
+   "type": "good",
+   "cid": "societeFr/s01/291",
+   "stem": "societeFr",
+   "label": "291",
+   "cited": [
+    "societeFr/s01/291"
+   ],
+   "claim": "Elle statue à la majorité des deux tiers des voix des actionnaires présents ou des représentants ayant droit au vote.",
+   "position": 3,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "added_condition",
+   "cid": "societeFr/s01/291",
+   "stem": "societeFr",
+   "label": "291",
+   "cited": [
+    "societeFr/s01/291"
+   ],
+   "claim": "Elle statue à la majorité des deux tiers des voix des actionnaires présents ou des représentants ayant droit au vote à condition que la personne concernée soit mineure.",
+   "position": 4,
+   "verdict": "partly",
+   "problem": "the claim adds a condition that the person be a minor, which is not in the cited article"
+  },
+  {
+   "type": "number_changed",
+   "cid": "travailFr/s01/139",
+   "stem": "travailFr",
+   "label": "139",
+   "cited": [
+    "travailFr/s01/139"
+   ],
+   "claim": "(1) La version originale paru au JORT contenait 4 alinéas seulement.",
+   "position": 1,
+   "verdict": "unsupported",
+   "problem": "the cited text says 3 alinéas, not 4"
+  },
+  {
+   "type": "added_condition",
+   "cid": "travailFr/s01/139",
+   "stem": "travailFr",
+   "label": "139",
+   "cited": [
+    "travailFr/s01/139"
+   ],
+   "claim": "(1) La version originale paru au JORT contenait 3 alinéas seulement à condition que la personne concernée soit mineure.",
+   "position": 2,
+   "verdict": "partly",
+   "problem": "adds condition that the person be a minor, which is not in the cited text"
+  },
+  {
+   "type": "good",
+   "cid": "travailFr/s01/139",
+   "stem": "travailFr",
+   "label": "139",
+   "cited": [
+    "travailFr/s01/139"
+   ],
+   "claim": "(1) La version originale paru au JORT contenait 3 alinéas seulement.",
+   "position": 3,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "wrong_article",
+   "cid": "travailFr/s01/139",
+   "stem": "travailFr",
+   "label": "139",
+   "cited": [
+    "travailFr/s01/94-11"
+   ],
+   "claim": "(1) La version originale paru au JORT contenait 3 alinéas seulement.",
+   "position": 4,
+   "verdict": "unsupported",
+   "problem": "cited text does not mention the number of alinéas"
+  },
+  {
+   "type": "wrong_article",
+   "cid": "Procedurecivilecom/s01/358",
+   "stem": "Procedurecivilecom",
+   "label": "358",
+   "cited": [
+    "Procedurecivilecom/s01/314"
+   ],
+   "claim": "Dans ces deux cas, les primes sont cessibles et saisissables en totalité, selon les règles du droit commun.",
+   "position": 1,
+   "verdict": "unsupported",
+   "problem": "Article 314 does not mention primes being cessible and saisissable."
+  },
+  {
+   "type": "number_changed",
+   "cid": "Procedurecivilecom/s01/358",
+   "stem": "Procedurecivilecom",
+   "label": "358",
+   "cited": [
+    "Procedurecivilecom/s01/358"
+   ],
+   "claim": "Dans ces trois cas, les primes sont cessibles et saisissables en totalité, selon les règles du droit commun.",
+   "position": 2,
+   "verdict": "partly",
+   "problem": "The article refers to \"deux cas\" while the claim says \"trois cas\"."
+  },
+  {
+   "type": "added_condition",
+   "cid": "Procedurecivilecom/s01/358",
+   "stem": "Procedurecivilecom",
+   "label": "358",
+   "cited": [
+    "Procedurecivilecom/s01/358"
+   ],
+   "claim": "Dans ces deux cas, les primes sont cessibles et saisissables en totalité, selon les règles du droit commun à condition que la personne concernée soit mineure.",
+   "position": 3,
+   "verdict": "partly",
+   "problem": "The article does not include the condition that the person must be a minor."
+  },
+  {
+   "type": "good",
+   "cid": "Procedurecivilecom/s01/358",
+   "stem": "Procedurecivilecom",
+   "label": "358",
+   "cited": [
+    "Procedurecivilecom/s01/358"
+   ],
+   "claim": "Dans ces deux cas, les primes sont cessibles et saisissables en totalité, selon les règles du droit commun.",
+   "position": 4,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "good",
+   "cid": "travailFr/s01/362",
+   "stem": "travailFr",
+   "label": "362",
+   "cited": [
+    "travailFr/s01/362"
+   ],
+   "claim": "Ils s'adressent aux jeunes gens âgés de plus de 18 ans au 1er janvier qui précède l'entrée dans le centre.",
+   "position": 1,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "wrong_article",
+   "cid": "travailFr/s01/362",
+   "stem": "travailFr",
+   "label": "362",
+   "cited": [
+    "travailFr/s01/211"
+   ],
+   "claim": "Ils s'adressent aux jeunes gens âgés de plus de 18 ans au 1er janvier qui précède l'entrée dans le centre.",
+   "position": 2,
+   "verdict": "unsupported",
+   "problem": "The cited text does not mention the age condition."
+  },
+  {
+   "type": "added_condition",
+   "cid": "travailFr/s01/362",
+   "stem": "travailFr",
+   "label": "362",
+   "cited": [
+    "travailFr/s01/362"
+   ],
+   "claim": "Ils s'adressent aux jeunes gens âgés de plus de 18 ans au 1er janvier qui précède l'entrée dans le centre à condition que la personne concernée soit mineure.",
+   "position": 3,
+   "verdict": "partly",
+   "problem": "The condition that the person be a minor is not stated in the cited text."
+  },
+  {
+   "type": "number_changed",
+   "cid": "travailFr/s01/362",
+   "stem": "travailFr",
+   "label": "362",
+   "cited": [
+    "travailFr/s01/362"
+   ],
+   "claim": "Ils s'adressent aux jeunes gens âgés de plus de 19 ans au 1er janvier qui précède l'entrée dans le centre.",
+   "position": 4,
+   "verdict": "partly",
+   "problem": "The cited text specifies age over 18, not over 19."
+  },
+  {
+   "type": "wrong_article",
+   "cid": "travailFr/s01/218",
+   "stem": "travailFr",
+   "label": "218",
+   "cited": [
+    "travailFr/s01/101"
+   ],
+   "claim": "(1) La version originale paru au JORT contenait 1 seul alinéa.",
+   "position": 1,
+   "verdict": "unsupported",
+   "problem": "the cited text does not mention the number of paragraphs"
+  },
+  {
+   "type": "added_condition",
+   "cid": "travailFr/s01/218",
+   "stem": "travailFr",
+   "label": "218",
+   "cited": [
+    "travailFr/s01/218"
+   ],
+   "claim": "(1) La version originale paru au JORT contenait 1 seul alinéa à condition que la personne concernée soit mineure.",
+   "position": 2,
+   "verdict": "unsupported",
+   "problem": "the cited text does not mention a condition about the person being a minor"
+  },
+  {
+   "type": "number_changed",
+   "cid": "travailFr/s01/218",
+   "stem": "travailFr",
+   "label": "218",
+   "cited": [
+    "travailFr/s01/218"
+   ],
+   "claim": "(1) La version originale paru au JORT contenait 2 seul alinéa.",
+   "position": 3,
+   "verdict": "unsupported",
+   "problem": "the cited text states the original had 1 paragraph, not 2"
+  },
+  {
+   "type": "good",
+   "cid": "travailFr/s01/218",
+   "stem": "travailFr",
+   "label": "218",
+   "cited": [
+    "travailFr/s01/218"
+   ],
+   "claim": "(1) La version originale paru au JORT contenait 1 seul alinéa.",
+   "position": 4,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "number_changed",
+   "cid": "societeFr/s01/281",
+   "stem": "societeFr",
+   "label": "281",
+   "cited": [
+    "societeFr/s01/281"
+   ],
+   "claim": "Le président de l'assemblée générale est assisté de trois scrutateurs, et d'un secrétaire, désignés par les actionnaires présents.",
+   "position": 1,
+   "verdict": "partly",
+   "problem": "number of scrutateurs is three instead of two"
+  },
+  {
+   "type": "added_condition",
+   "cid": "societeFr/s01/281",
+   "stem": "societeFr",
+   "label": "281",
+   "cited": [
+    "societeFr/s01/281"
+   ],
+   "claim": "Le président de l'assemblée générale est assisté de deux scrutateurs, et d'un secrétaire, désignés par les actionnaires présents à condition que la personne concernée soit mineure.",
+   "position": 2,
+   "verdict": "partly",
+   "problem": "adds condition that the person must be minor"
+  },
+  {
+   "type": "good",
+   "cid": "societeFr/s01/281",
+   "stem": "societeFr",
+   "label": "281",
+   "cited": [
+    "societeFr/s01/281"
+   ],
+   "claim": "Le président de l'assemblée générale est assisté de deux scrutateurs, et d'un secrétaire, désignés par les actionnaires présents.",
+   "position": 3,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "wrong_article",
+   "cid": "societeFr/s01/281",
+   "stem": "societeFr",
+   "label": "281",
+   "cited": [
+    "societeFr/s03/3"
+   ],
+   "claim": "Le président de l'assemblée générale est assisté de deux scrutateurs, et d'un secrétaire, désignés par les actionnaires présents.",
+   "position": 4,
+   "verdict": "unsupported",
+   "problem": "cited text does not mention the president's assistants"
+  },
+  {
+   "type": "wrong_article",
+   "cid": "ArbitrageFr/s01/77",
+   "stem": "ArbitrageFr",
+   "label": "77",
+   "cited": [
+    "ArbitrageFr/s04/12"
+   ],
+   "claim": "2- Dans les trente jours qui suivent la réception de la sentence, à moins que les parties ne soient convenues d'un autre délai, le tribunal arbitral, à la demande d'une partie moyennant notification de sa demande à l'autre peut procéder aux opérations suivantes :",
+   "position": 1,
+   "verdict": "unsupported",
+   "problem": "The cited article does not contain the rule about 30 days after receipt of the award."
+  },
+  {
+   "type": "number_changed",
+   "cid": "ArbitrageFr/s01/77",
+   "stem": "ArbitrageFr",
+   "label": "77",
+   "cited": [
+    "ArbitrageFr/s01/77"
+   ],
+   "claim": "2- Dans les quarante jours qui suivent la réception de la sentence, à moins que les parties ne soient convenues d'un autre délai, le tribunal arbitral, à la demande d'une partie moyennant notification de sa demande à l'autre peut procéder aux opérations suivantes :",
+   "position": 2,
+   "verdict": "partly",
+   "problem": "The cited text specifies thirty days, not forty days."
+  },
+  {
+   "type": "added_condition",
+   "cid": "ArbitrageFr/s01/77",
+   "stem": "ArbitrageFr",
+   "label": "77",
+   "cited": [
+    "ArbitrageFr/s01/77"
+   ],
+   "claim": "2- Dans les trente jours qui suivent la réception de la sentence, à moins que les parties ne soient convenues d'un autre délai, le tribunal arbitral, à la demande d'une partie moyennant notification de sa demande à l'autre peut procéder aux opérations suivantes  à condition que la personne concernée soit mineure:",
+   "position": 3,
+   "verdict": "partly",
+   "problem": "The condition that the person be a minor is not stated in the cited article."
+  },
+  {
+   "type": "good",
+   "cid": "ArbitrageFr/s01/77",
+   "stem": "ArbitrageFr",
+   "label": "77",
+   "cited": [
+    "ArbitrageFr/s01/77"
+   ],
+   "claim": "2- Dans les trente jours qui suivent la réception de la sentence, à moins que les parties ne soient convenues d'un autre délai, le tribunal arbitral, à la demande d'une partie moyennant notification de sa demande à l'autre peut procéder aux opérations suivantes :",
+   "position": 4,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "good",
+   "cid": "ProcedurepenaleFr/s04/66",
+   "stem": "ProcedurepenaleFr",
+   "label": "66",
+   "cited": [
+    "ProcedurepenaleFr/s04/66"
+   ],
+   "claim": "Elles encourent de ce fait une amende égale à cinq fois la valeur de l'amende prévue pour les personnes physiques.",
+   "position": 1,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "number_changed",
+   "cid": "ProcedurepenaleFr/s04/66",
+   "stem": "ProcedurepenaleFr",
+   "label": "66",
+   "cited": [
+    "ProcedurepenaleFr/s04/66"
+   ],
+   "claim": "Elles encourent de ce fait une amende égale à six fois la valeur de l'amende prévue pour les personnes physiques.",
+   "position": 2,
+   "verdict": "partly",
+   "problem": "the multiplier is six instead of five"
+  },
+  {
+   "type": "wrong_article",
+   "cid": "ProcedurepenaleFr/s04/66",
+   "stem": "ProcedurepenaleFr",
+   "label": "66",
+   "cited": [
+    "ProcedurepenaleFr/s02/154"
+   ],
+   "claim": "Elles encourent de ce fait une amende égale à cinq fois la valeur de l'amende prévue pour les personnes physiques.",
+   "position": 3,
+   "verdict": "unsupported",
+   "problem": "the cited article does not mention any fine for persons morales"
+  },
+  {
+   "type": "added_condition",
+   "cid": "ProcedurepenaleFr/s04/66",
+   "stem": "ProcedurepenaleFr",
+   "label": "66",
+   "cited": [
+    "ProcedurepenaleFr/s04/66"
+   ],
+   "claim": "Elles encourent de ce fait une amende égale à cinq fois la valeur de l'amende prévue pour les personnes physiques à condition que la personne concernée soit mineure.",
+   "position": 4,
+   "verdict": "partly",
+   "problem": "the condition that the person be a minor is not stated in the cited text"
+  },
+  {
+   "type": "added_condition",
+   "cid": "ArbitrageFr/s04/30",
+   "stem": "ArbitrageFr",
+   "label": "30",
+   "cited": [
+    "ArbitrageFr/s04/30"
+   ],
+   "claim": "2.- Toutefois, les mesures provisoires ou conservatoires prévues par la législation de chaque Etat, pourront, en cas d'urgence, être requises des juridictions de chacun des deux Etats, quelle que soit la juridiction saisie du fond du litige à condition que la personne concernée soit mineure.",
+   "position": 1,
+   "verdict": "partly",
+   "problem": "adds condition that the person must be a minor"
+  },
+  {
+   "type": "wrong_article",
+   "cid": "ArbitrageFr/s04/30",
+   "stem": "ArbitrageFr",
+   "label": "30",
+   "cited": [
+    "ArbitrageFr/s01/4"
+   ],
+   "claim": "2.- Toutefois, les mesures provisoires ou conservatoires prévues par la législation de chaque Etat, pourront, en cas d'urgence, être requises des juridictions de chacun des deux Etats, quelle que soit la juridiction saisie du fond du litige.",
+   "position": 2,
+   "verdict": "unsupported",
+   "problem": "cited text does not contain the provision about provisional measures"
+  },
+  {
+   "type": "good",
+   "cid": "ArbitrageFr/s04/30",
+   "stem": "ArbitrageFr",
+   "label": "30",
+   "cited": [
+    "ArbitrageFr/s04/30"
+   ],
+   "claim": "2.- Toutefois, les mesures provisoires ou conservatoires prévues par la législation de chaque Etat, pourront, en cas d'urgence, être requises des juridictions de chacun des deux Etats, quelle que soit la juridiction saisie du fond du litige.",
+   "position": 3,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "number_changed",
+   "cid": "ArbitrageFr/s04/30",
+   "stem": "ArbitrageFr",
+   "label": "30",
+   "cited": [
+    "ArbitrageFr/s04/30"
+   ],
+   "claim": "2.- Toutefois, les mesures provisoires ou conservatoires prévues par la législation de chaque Etat, pourront, en cas d'urgence, être requises des juridictions de chacun des trois Etats, quelle que soit la juridiction saisie du fond du litige.",
+   "position": 4,
+   "verdict": "partly",
+   "problem": "states three states instead of two"
+  },
+  {
+   "type": "number_changed",
+   "cid": "ProcedurepenaleFr/s04/62",
+   "stem": "ProcedurepenaleFr",
+   "label": "62",
+   "cited": [
+    "ProcedurepenaleFr/s04/62"
+   ],
+   "claim": "Les dispositions des trois alinéas précédents sont applicables même si l'infraction dont proviennent les fonds objet du blanchiment n'a pas été commise sur le territoire tunisien .",
+   "position": 1,
+   "verdict": "partly",
+   "problem": "the claim says three alinéas whereas the article mentions two"
+  },
+  {
+   "type": "added_condition",
+   "cid": "ProcedurepenaleFr/s04/62",
+   "stem": "ProcedurepenaleFr",
+   "label": "62",
+   "cited": [
+    "ProcedurepenaleFr/s04/62"
+   ],
+   "claim": "Les dispositions des deux alinéas précédents sont applicables même si l'infraction dont proviennent les fonds objet du blanchiment n'a pas été commise sur le territoire tunisien  à condition que la personne concernée soit mineure.",
+   "position": 2,
+   "verdict": "partly",
+   "problem": "adds a condition that the person be a minor, which is not in the article"
+  },
+  {
+   "type": "good",
+   "cid": "ProcedurepenaleFr/s04/62",
+   "stem": "ProcedurepenaleFr",
+   "label": "62",
+   "cited": [
+    "ProcedurepenaleFr/s04/62"
+   ],
+   "claim": "Les dispositions des deux alinéas précédents sont applicables même si l'infraction dont proviennent les fonds objet du blanchiment n'a pas été commise sur le territoire tunisien .",
+   "position": 3,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "wrong_article",
+   "cid": "ProcedurepenaleFr/s04/62",
+   "stem": "ProcedurepenaleFr",
+   "label": "62",
+   "cited": [
+    "ProcedurepenaleFr/s02/215"
+   ],
+   "claim": "Les dispositions des deux alinéas précédents sont applicables même si l'infraction dont proviennent les fonds objet du blanchiment n'a pas été commise sur le territoire tunisien .",
+   "position": 4,
+   "verdict": "unsupported",
+   "problem": "the cited text is unrelated and does not contain the stated rule"
+  },
+  {
+   "type": "number_changed",
+   "cid": "EnfantFr/s03/9",
+   "stem": "EnfantFr",
+   "label": "9",
+   "cited": [
+    "EnfantFr/s03/9"
+   ],
+   "claim": "- Les Etats parties respectent le droit de l'enfant séparé de ses parents et de l'un d'eux d'entretenir régulièrement des relations personnelles et des contacts directs avec ses trois parents, sauf si cela est contraire à l'intérêt supérieur de l'enfant.",
+   "position": 1,
+   "verdict": "unsupported",
+   "problem": "the claim mentions three parents instead of two"
+  },
+  {
+   "type": "added_condition",
+   "cid": "EnfantFr/s03/9",
+   "stem": "EnfantFr",
+   "label": "9",
+   "cited": [
+    "EnfantFr/s03/9"
+   ],
+   "claim": "- Les Etats parties respectent le droit de l'enfant séparé de ses parents et de l'un d'eux d'entretenir régulièrement des relations personnelles et des contacts directs avec ses deux parents, sauf si cela est contraire à l'intérêt supérieur de l'enfant à condition que la personne concernée soit mineure.",
+   "position": 2,
+   "verdict": "partly",
+   "problem": "adds a condition that the child must be a minor, which is not in the cited text"
+  },
+  {
+   "type": "wrong_article",
+   "cid": "EnfantFr/s03/9",
+   "stem": "EnfantFr",
+   "label": "9",
+   "cited": [
+    "EnfantFr/s01/34"
+   ],
+   "claim": "- Les Etats parties respectent le droit de l'enfant séparé de ses parents et de l'un d'eux d'entretenir régulièrement des relations personnelles et des contacts directs avec ses deux parents, sauf si cela est contraire à l'intérêt supérieur de l'enfant.",
+   "position": 3,
+   "verdict": "unsupported",
+   "problem": "the cited article does not contain the stated right about parental contact"
+  },
+  {
+   "type": "good",
+   "cid": "EnfantFr/s03/9",
+   "stem": "EnfantFr",
+   "label": "9",
+   "cited": [
+    "EnfantFr/s03/9"
+   ],
+   "claim": "- Les Etats parties respectent le droit de l'enfant séparé de ses parents et de l'un d'eux d'entretenir régulièrement des relations personnelles et des contacts directs avec ses deux parents, sauf si cela est contraire à l'intérêt supérieur de l'enfant.",
+   "position": 4,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "added_condition",
+   "cid": "societeFr/s01/225",
+   "stem": "societeFr",
+   "label": "225",
+   "cited": [
+    "societeFr/s01/225"
+   ],
+   "claim": "Dans les sociétés anonymes dont le capital est inférieur à cent mille dinars, les fonctions dévolues au directoire peuvent être exercées par une seule personne à condition que la personne concernée soit mineure.",
+   "position": 1,
+   "verdict": "partly",
+   "problem": "the condition that the person be minor is not stated"
+  },
+  {
+   "type": "wrong_article",
+   "cid": "societeFr/s01/225",
+   "stem": "societeFr",
+   "label": "225",
+   "cited": [
+    "societeFr/s01/305"
+   ],
+   "claim": "Dans les sociétés anonymes dont le capital est inférieur à cent mille dinars, les fonctions dévolues au directoire peuvent être exercées par une seule personne.",
+   "position": 2,
+   "verdict": "unsupported",
+   "problem": "the cited article does not mention the directoire or single person rule"
+  },
+  {
+   "type": "good",
+   "cid": "societeFr/s01/225",
+   "stem": "societeFr",
+   "label": "225",
+   "cited": [
+    "societeFr/s01/225"
+   ],
+   "claim": "Dans les sociétés anonymes dont le capital est inférieur à cent mille dinars, les fonctions dévolues au directoire peuvent être exercées par une seule personne.",
+   "position": 3,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "number_changed",
+   "cid": "societeFr/s01/225",
+   "stem": "societeFr",
+   "label": "225",
+   "cited": [
+    "societeFr/s01/225"
+   ],
+   "claim": "Dans les sociétés anonymes dont le capital est inférieur à mille mille dinars, les fonctions dévolues au directoire peuvent être exercées par une seule personne.",
+   "position": 4,
+   "verdict": "partly",
+   "problem": "the capital threshold is 100,000 dinars, not 1,000,000 dinars"
+  },
+  {
+   "type": "wrong_article",
+   "cid": "PenalFr/s02/199-bis",
+   "stem": "PenalFr",
+   "label": "199-bis",
+   "cited": [
+    "PenalFr/s02/82"
+   ],
+   "claim": "La peine est élevée à deux ans d'emprisonnement et l'amende à deux mille dinars lorsqu'il en résulte, même sans intention, une altération ou la destruction du fonctionnement des données existantes dans le système indiqué.",
+   "position": 1,
+   "verdict": "unsupported",
+   "problem": "The cited article does not mention this penalty."
+  },
+  {
+   "type": "added_condition",
+   "cid": "PenalFr/s02/199-bis",
+   "stem": "PenalFr",
+   "label": "199-bis",
+   "cited": [
+    "PenalFr/s02/199-bis"
+   ],
+   "claim": "La peine est élevée à deux ans d'emprisonnement et l'amende à deux mille dinars lorsqu'il en résulte, même sans intention, une altération ou la destruction du fonctionnement des données existantes dans le système indiqué à condition que la personne concernée soit mineure.",
+   "position": 2,
+   "verdict": "partly",
+   "problem": "Adds condition that the person is a minor, which is not in the article."
+  },
+  {
+   "type": "number_changed",
+   "cid": "PenalFr/s02/199-bis",
+   "stem": "PenalFr",
+   "label": "199-bis",
+   "cited": [
+    "PenalFr/s02/199-bis"
+   ],
+   "claim": "La peine est élevée à trois ans d'emprisonnement et l'amende à deux mille dinars lorsqu'il en résulte, même sans intention, une altération ou la destruction du fonctionnement des données existantes dans le système indiqué.",
+   "position": 3,
+   "verdict": "partly",
+   "problem": "Specifies three years imprisonment instead of two years as in the article."
+  },
+  {
+   "type": "good",
+   "cid": "PenalFr/s02/199-bis",
+   "stem": "PenalFr",
+   "label": "199-bis",
+   "cited": [
+    "PenalFr/s02/199-bis"
+   ],
+   "claim": "La peine est élevée à deux ans d'emprisonnement et l'amende à deux mille dinars lorsqu'il en résulte, même sans intention, une altération ou la destruction du fonctionnement des données existantes dans le système indiqué.",
+   "position": 4,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "wrong_article",
+   "cid": "Procedurecivilecom/s01/200",
+   "stem": "Procedurecivilecom",
+   "label": "200",
+   "cited": [
+    "Procedurecivilecom/s01/1"
+   ],
+   "claim": "Le demandeur débouté est condamné à une amende de vingt à cinquante dinars, sans préjudice de tous dommages-intérêts du magistrat.",
+   "position": 1,
+   "verdict": "unsupported",
+   "problem": "The cited article does not state the fine."
+  },
+  {
+   "type": "number_changed",
+   "cid": "Procedurecivilecom/s01/200",
+   "stem": "Procedurecivilecom",
+   "label": "200",
+   "cited": [
+    "Procedurecivilecom/s01/200"
+   ],
+   "claim": "Le demandeur débouté est condamné à une amende de trente à cinquante dinars, sans préjudice de tous dommages-intérêts du magistrat.",
+   "position": 2,
+   "verdict": "partly",
+   "problem": "Amount range differs (30-50 dinars vs 20-50 dinars)."
+  },
+  {
+   "type": "good",
+   "cid": "Procedurecivilecom/s01/200",
+   "stem": "Procedurecivilecom",
+   "label": "200",
+   "cited": [
+    "Procedurecivilecom/s01/200"
+   ],
+   "claim": "Le demandeur débouté est condamné à une amende de vingt à cinquante dinars, sans préjudice de tous dommages-intérêts du magistrat.",
+   "position": 3,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "added_condition",
+   "cid": "Procedurecivilecom/s01/200",
+   "stem": "Procedurecivilecom",
+   "label": "200",
+   "cited": [
+    "Procedurecivilecom/s01/200"
+   ],
+   "claim": "Le demandeur débouté est condamné à une amende de vingt à cinquante dinars, sans préjudice de tous dommages-intérêts du magistrat à condition que la personne concernée soit mineure.",
+   "position": 4,
+   "verdict": "partly",
+   "problem": "Adds a condition about the person being a minor not in the article."
+  },
+  {
+   "type": "wrong_article",
+   "cid": "EnfantFr/s01/42",
+   "stem": "EnfantFr",
+   "label": "42",
+   "cited": [
+    "EnfantFr/s01/56"
+   ],
+   "claim": "Dans le cas où aucun accord n'est établi dans un délai de vingt jours à partir du moment où le délégué à la protection de l'enfance s'est saisi du cas, le dossier est soumis au juge de la famille.",
+   "position": 1,
+   "verdict": "unsupported",
+   "problem": "the article does not mention the 20‑day deadline or referral by the delegate"
+  },
+  {
+   "type": "good",
+   "cid": "EnfantFr/s01/42",
+   "stem": "EnfantFr",
+   "label": "42",
+   "cited": [
+    "EnfantFr/s01/42"
+   ],
+   "claim": "Dans le cas où aucun accord n'est établi dans un délai de vingt jours à partir du moment où le délégué à la protection de l'enfance s'est saisi du cas, le dossier est soumis au juge de la famille.",
+   "position": 2,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "number_changed",
+   "cid": "EnfantFr/s01/42",
+   "stem": "EnfantFr",
+   "label": "42",
+   "cited": [
+    "EnfantFr/s01/42"
+   ],
+   "claim": "Dans le cas où aucun accord n'est établi dans un délai de trente jours à partir du moment où le délégué à la protection de l'enfance s'est saisi du cas, le dossier est soumis au juge de la famille.",
+   "position": 3,
+   "verdict": "partly",
+   "problem": "the article specifies a twenty‑day deadline, not thirty days"
+  },
+  {
+   "type": "added_condition",
+   "cid": "EnfantFr/s01/42",
+   "stem": "EnfantFr",
+   "label": "42",
+   "cited": [
+    "EnfantFr/s01/42"
+   ],
+   "claim": "Dans le cas où aucun accord n'est établi dans un délai de vingt jours à partir du moment où le délégué à la protection de l'enfance s'est saisi du cas, le dossier est soumis au juge de la famille à condition que la personne concernée soit mineure.",
+   "position": 4,
+   "verdict": "partly",
+   "problem": "the article does not state the condition that the person must be a minor"
+  },
+  {
+   "type": "good",
+   "cid": "COC/s02/273",
+   "stem": "COC",
+   "label": "273",
+   "cited": [
+    "COC/s02/273"
+   ],
+   "claim": "à défaut, il pourra demander la résolution du contrat ainsi que des dommages-intérêts dans les deux cas.",
+   "position": 1,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "wrong_article",
+   "cid": "COC/s02/273",
+   "stem": "COC",
+   "label": "273",
+   "cited": [
+    "COC/s02/54"
+   ],
+   "claim": "à défaut, il pourra demander la résolution du contrat ainsi que des dommages-intérêts dans les deux cas.",
+   "position": 2,
+   "verdict": "unsupported",
+   "problem": "Article 54 does not contain that provision."
+  },
+  {
+   "type": "added_condition",
+   "cid": "COC/s02/273",
+   "stem": "COC",
+   "label": "273",
+   "cited": [
+    "COC/s02/273"
+   ],
+   "claim": "à défaut, il pourra demander la résolution du contrat ainsi que des dommages-intérêts dans les deux cas à condition que la personne concernée soit mineure.",
+   "position": 3,
+   "verdict": "partly",
+   "problem": "The condition about the person being a minor is not in article 273."
+  },
+  {
+   "type": "number_changed",
+   "cid": "COC/s02/273",
+   "stem": "COC",
+   "label": "273",
+   "cited": [
+    "COC/s02/273"
+   ],
+   "claim": "à défaut, il pourra demander la résolution du contrat ainsi que des dommages-intérêts dans les trois cas.",
+   "position": 4,
+   "verdict": "partly",
+   "problem": "Article 273 specifies \"dans les deux cas\", not three."
+  },
+  {
+   "type": "wrong_article",
+   "cid": "societeFr/s01/177",
+   "stem": "societeFr",
+   "label": "177",
+   "cited": [
+    "societeFr/s01/147"
+   ],
+   "claim": "Les actions en responsabilité contre les fondateurs se prescrivent par trois années à compter de la date de la constitution de la société.",
+   "position": 1,
+   "verdict": "unsupported",
+   "problem": "citation does not state a three-year prescription period"
+  },
+  {
+   "type": "number_changed",
+   "cid": "societeFr/s01/177",
+   "stem": "societeFr",
+   "label": "177",
+   "cited": [
+    "societeFr/s01/177"
+   ],
+   "claim": "Les actions en responsabilité contre les fondateurs se prescrivent par quatre années à compter de la date de la constitution de la société.",
+   "position": 2,
+   "verdict": "partly",
+   "problem": "incorrect prescription period (four years instead of three)"
+  },
+  {
+   "type": "good",
+   "cid": "societeFr/s01/177",
+   "stem": "societeFr",
+   "label": "177",
+   "cited": [
+    "societeFr/s01/177"
+   ],
+   "claim": "Les actions en responsabilité contre les fondateurs se prescrivent par trois années à compter de la date de la constitution de la société.",
+   "position": 3,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "added_condition",
+   "cid": "societeFr/s01/177",
+   "stem": "societeFr",
+   "label": "177",
+   "cited": [
+    "societeFr/s01/177"
+   ],
+   "claim": "Les actions en responsabilité contre les fondateurs se prescrivent par trois années à compter de la date de la constitution de la société à condition que la personne concernée soit mineure.",
+   "position": 4,
+   "verdict": "unsupported",
+   "problem": "adds a condition about minority not present in the cited text"
+  },
+  {
+   "type": "good",
+   "cid": "Statutpersonnel/s01/31",
+   "stem": "Statutpersonnel",
+   "label": "31",
+   "cited": [
+    "Statutpersonnel/s01/31"
+   ],
+   "claim": "Il est statué sur la réparation du préjudice matériel et moral subi par l'un ou l'autre des époux et résultant du divorce prononcé dans les deux cas prévus aux 2ème et 3ème alinéas ci-dessus.",
+   "position": 1,
+   "verdict": "supported",
+   "problem": ""
+  },
+  {
+   "type": "wrong_article",
+   "cid": "Statutpersonnel/s01/31",
+   "stem": "Statutpersonnel",
+   "label": "31",
+   "cited": [
+    "Statutpersonnel/s01/134"
+   ],
+   "claim": "Il est statué sur la réparation du préjudice matériel et moral subi par l'un ou l'autre des époux et résultant du divorce prononcé dans les deux cas prévus aux 2ème et 3ème alinéas ci-dessus.",
+   "position": 2,
+   "verdict": "unsupported",
+   "problem": "The cited article does not mention repair of material and moral prejudice in divorce."
+  },
+  {
+   "type": "added_condition",
+   "cid": "Statutpersonnel/s01/31",
+   "stem": "Statutpersonnel",
+   "label": "31",
+   "cited": [
+    "Statutpersonnel/s01/31"
+   ],
+   "claim": "Il est statué sur la réparation du préjudice matériel et moral subi par l'un ou l'autre des époux et résultant du divorce prononcé dans les deux cas prévus aux 2ème et 3ème alinéas ci-dessus à condition que la personne concernée soit mineure.",
+   "position": 3,
+   "verdict": "partly",
+   "problem": "The condition that the person must be a minor is not stated in the cited text."
+  },
+  {
+   "type": "number_changed",
+   "cid": "Statutpersonnel/s01/31",
+   "stem": "Statutpersonnel",
+   "label": "31",
+   "cited": [
+    "Statutpersonnel/s01/31"
+   ],
+   "claim": "Il est statué sur la réparation du préjudice matériel et moral subi par l'un ou l'autre des époux et résultant du divorce prononcé dans les trois cas prévus aux 2ème et 3ème alinéas ci-dessus.",
+   "position": 4,
+   "verdict": "partly",
+   "problem": "The claim says \"three cases\" whereas the cited text specifies \"two cases\"."
+  }
+ ],
+ "summary": {
+  "good": {
+   "n": 24,
+   "flagged": 0,
+   "wilson95": [
+    0.0,
+    0.13798057582897535
+   ],
+   "verdicts": {
+    "supported": 24
+   }
+  },
+  "number_changed": {
+   "n": 24,
+   "flagged": 24,
+   "wilson95": [
+    0.8620194241710247,
+    1.0
+   ],
+   "verdicts": {
+    "unsupported": 5,
+    "partly": 19
+   }
+  },
+  "wrong_article": {
+   "n": 24,
+   "flagged": 24,
+   "wilson95": [
+    0.8620194241710247,
+    1.0
+   ],
+   "verdicts": {
+    "unsupported": 24
+   }
+  },
+  "added_condition": {
+   "n": 24,
+   "flagged": 24,
+   "wilson95": [
+    0.8620194241710247,
+    1.0
+   ],
+   "verdicts": {
+    "partly": 22,
+    "unsupported": 2
+   }
+  }
+ }
+}
