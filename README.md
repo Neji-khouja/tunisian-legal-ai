@@ -3,7 +3,7 @@ title: Tunisian Legal RAG
 colorFrom: blue
 colorTo: gray
 sdk: gradio
-sdk_version: 5.23.1
+sdk_version: 6.17.3
 app_file: app.py
 pinned: false
 ---
@@ -73,7 +73,7 @@ baseline in evaluation.
 ```bash
 conda create -n rag-app python=3.11
 conda activate rag-app
-pip install -r requirements.txt gradio==5.23.1 torch   # requirements.lock.txt is the full lock of the dev machine
+pip install -r requirements.txt gradio==6.17.3 torch   # requirements.lock.txt is the full lock of the dev machine
 ```
 
 Put your Groq key in a `.env` file at the root (never commit it):
@@ -200,8 +200,9 @@ The `Dockerfile` (Streamlit interface) is for self-hosting on a VM or a containe
   like a browser does; the caps above apply to it.
 - The log holds visitors' questions: keep the log bucket or dataset private. The page tells visitors that questions are
   recorded and not to enter personal data.
-- Gradio is pinned to 5.23.1 (requirements.txt); check its security advisories before a public launch, and update it if
-  one applies.
+- Gradio is 6.17.3 (the `sdk_version` above): 5.23.1 had 16 published advisories (file copy through flagging, origin
+  checks, SSRF, cookie injection, path traversal), fixed by 6.16. Check its advisories again before each release
+  (`pip-audit`), and keep the page's events private (`api_visibility="private"`).
 
 ## Evaluation
 

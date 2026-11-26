@@ -65,7 +65,14 @@ EXAMPLES = ["Quelle est la peine pour le vol simple ?",
             "ما هي شروط صحة العقد؟",
             "What are the conditions for a valid marriage contract?"]
 # on a phone the open sidebar covers the page: start closed
-CLOSE_ON_PHONE = """() => { if (window.innerWidth < 768) document.querySelector('.sidebar.open .toggle-button')?.click(); }"""
+CLOSE_ON_PHONE = """() => {
+  if (window.innerWidth >= 768) return;
+  let tries = 0;                                    // the sidebar may be drawn after this runs: wait for it (3 s at most)
+  const t = setInterval(() => {
+    const b = document.querySelector('.sidebar.open .toggle-button');
+    if (b) { b.click(); clearInterval(t); } else if (++tries > 30) clearInterval(t);
+  }, 100);
+}"""
 CSS = (ROOT / "ui" / "style.css").read_text(encoding="utf-8")
 THEME = gr.themes.Base(primary_hue=gr.themes.colors.slate, neutral_hue=gr.themes.colors.slate,
                        font=[gr.themes.GoogleFont("Inter"), "system-ui", "sans-serif"], radius_size="md")
@@ -232,7 +239,7 @@ def api_answer(question: str, mode: str = "agent", conversation_id: str = "", gr
     return voice.reply(done, cid, mode)
 
 
-with gr.Blocks(title=T.TITLE, theme=THEME, head=f"<style>{CSS}</style>") as demo:
+with gr.Blocks(title=T.TITLE) as demo:
     convs = gr.BrowserState([], storage_key="tunisian_legal_rag_conversations", secret=BROWSER_SECRET)
     conv_id = gr.State(None)
 
@@ -260,7 +267,7 @@ with gr.Blocks(title=T.TITLE, theme=THEME, head=f"<style>{CSS}</style>") as demo
                 gr.HTML(f'<div class="hello"><h1>{T.TITLE}</h1><p>{T.SUBTITLE}</p></div>')
                 with gr.Row(elem_id="examples"):
                     example_btns = [gr.Button(e, elem_classes="example", min_width=220) for e in EXAMPLES]
-            chatbot = gr.Chatbot(type="messages", height="66vh", show_label=False, show_copy_button=True, visible=False,
+            chatbot = gr.Chatbot(height="66vh", show_label=False, buttons=["copy"], visible=False,
                                  elem_id="chat", group_consecutive_messages=False)
             with gr.Row(elem_id="ask"):
                 box = gr.Textbox(placeholder=T.INPUT_PLACEHOLDER, max_length=1000, show_label=False, autofocus=True,
@@ -287,19 +294,19 @@ with gr.Blocks(title=T.TITLE, theme=THEME, head=f"<style>{CSS}</style>") as demo
 
     rest = [history, history_empty, delete_btn, token_meter]
     ins, outs = [box, chatbot, conv_id, convs, mode, key_box], [chatbot, welcome, box, conv_id, convs, *rest, quota_meter, key_acc]
-    # the page's own events are not part of the public API (api_name=False); programs use /answer
-    box.submit(respond, ins, outs, api_name=False)
-    send.click(respond, ins, outs, api_name=False)
+    # the page's own events are private: hidden from the API and not callable by API clients; programs use /answer
+    box.submit(respond, ins, outs, api_visibility="private")
+    send.click(respond, ins, outs, api_visibility="private")
     for b in example_btns:
-        b.click(respond, [b, *ins[1:]], outs, api_name=False)
-    new_btn.click(new_conversation, [convs], [chatbot, welcome, conv_id, *rest], api_name=False)
-    history.input(open_conversation, [history, convs], [chatbot, welcome, conv_id, mode, *rest], api_name=False)
-    delete_btn.click(delete_conversation, [conv_id, convs], [chatbot, welcome, conv_id, convs, *rest], api_name=False)
-    mode.change(mode_help, [mode], [mode_note], api_name=False)
-    about_mode.change(lambda m: (gr.update(visible=m == "agent"), gr.update(visible=m == "fast")), [about_mode], about, api_name=False)
-    key_box.change(lambda k: (key_status(k), quota_card(k)), [key_box], [key_note, quota_meter], api_name=False)
-    demo.load(start, [convs], [*rest, key_note, quota_meter, key_acc], api_name=False)
-    demo.load(None, None, None, js=CLOSE_ON_PHONE)
+        b.click(respond, [b, *ins[1:]], outs, api_visibility="private")
+    new_btn.click(new_conversation, [convs], [chatbot, welcome, conv_id, *rest], api_visibility="private")
+    history.input(open_conversation, [history, convs], [chatbot, welcome, conv_id, mode, *rest], api_visibility="private")
+    delete_btn.click(delete_conversation, [conv_id, convs], [chatbot, welcome, conv_id, convs, *rest], api_visibility="private")
+    mode.change(mode_help, [mode], [mode_note], api_visibility="private")
+    about_mode.change(lambda m: (gr.update(visible=m == "agent"), gr.update(visible=m == "fast")), [about_mode], about, api_visibility="private")
+    key_box.change(lambda k: (key_status(k), quota_card(k)), [key_box], [key_note, quota_meter], api_visibility="private")
+    demo.load(start, [convs], [*rest, key_note, quota_meter, key_acc], api_visibility="private")
+    demo.load(None, None, None, js=CLOSE_ON_PHONE, api_visibility="private")
     gr.api(api_answer, api_name="answer")
 
 demo.queue(default_concurrency_limit=2)
@@ -308,4 +315,4 @@ if not DEMO:
     threading.Thread(target=backend, daemon=True).start()          # load models and index while the page opens
 
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(theme=THEME, head=f"<style>{CSS}</style>")     # Gradio 6: theme and styles are given to launch()
