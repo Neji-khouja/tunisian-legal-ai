@@ -101,7 +101,8 @@ uvicorn api.api:app --port 8000    # HTTP API
 curl -X POST localhost:8000/ask -H "Content-Type: application/json" -d "{\"question\": \"Quelle est la peine pour le vol ?\"}"
 ```
 
-Set `API_KEY` to require an `X-API-Key` header on `/ask`; without it the endpoint is open, so don't expose it that way.
+For the FastAPI service, set `API_KEY` to require an `X-API-Key` header on `/ask`; without it the endpoint is open, so don't
+expose it that way. On the Space, use `/answer` (below).
 Questions are limited to 1000 characters. The API response has `answer` and `sources` (id, source, article). Set
 `HF_HUB_OFFLINE=1` once the models are cached.
 
@@ -127,35 +128,80 @@ The YAML block at the top of this file configures the Space (`sdk: gradio`, entr
        git remote add space git@hf.co:spaces/<user>/<name>
        git push space <branch>:main
 
-3. In the Space settings, add these secrets:
-   - `GROQ_API_KEY`: your key (shared by all visitors; `UI_OWNER_DAILY_CAP` limits the questions per day on it, 30 by
-     default, `0` removes the limit; visitors can paste their own key in the page).
-   - `UI_ANSWER_CACHE=off`: optional, recomputes every answer. By default the first question of a conversation reuses the
-     answer already given to the same question (kept in memory until the next restart).
-   - `UI_TOKENS_PER_DAY`: optional, the provider's daily token limit of the app's key (200000 by default), for the "tokens
-     left" meter. It is an estimate: the limit minus what was used through this app in the last 24 hours.
+3. In the Space settings, under **Secrets** (never under Variables, which anyone can read once the Space is public):
+   - `GROQ_API_KEY`: the shared key every visitor uses until its limits are reached; after that, the page asks visitors
+     for their own (free) Groq key and opens the box for it.
+   - `API_KEY`: a long random password for the `/answer` API (below). Without it the API refuses every call.
+
+   And under **Variables** (all optional):
+   - `UI_OWNER_DAILY_CAP`: questions per day on the shared key, for everyone together (30 by default, `0` = no limit).
+   - `UI_VISITOR_HOURLY_CAP`: questions per hour for one visitor on the shared key (10 by default, `0` = no limit). A
+     visitor's own key is never limited.
+   - `UI_OWNER_KEY`: `off` makes every visitor use their own key; leave it unset otherwise.
+   - `UI_ANSWER_CACHE`: `off` recomputes every answer (for testing). By default the first question of a conversation
+     reuses the answer already given to the same question, kept in memory until the next restart.
+   - `UI_TOKENS_PER_DAY`: the daily token limit of the shared key (200000 by default), for the "tokens left" meter. It is
+     an estimate: the limit minus what was used through this app in the last 24 hours.
+   - `API_DAILY_CAP`: questions per day through the API (no limit by default).
    - Keeping the log (a Space loses its disk at each restart), one of:
      - `RAG_LOG_BACKUP_DIR`: a folder of a private Storage Bucket mounted read-write in the Space, for example
        `/data/logs` (no token needed). The database is copied there after every question, as one file per start. Do not
        point `RAG_LOG_DB` at the bucket: the mount takes whole-file writes, not SQLite's in-place ones.
-     - `HF_LOG_REPO` and `HF_TOKEN`: a private dataset repo (`user/rag-logs`) and a write token; copied at most every
-       5 minutes.
+     - `HF_LOG_REPO` and `HF_TOKEN` (a secret): a private dataset repo (`user/rag-logs`) and a write token; copied at most
+       every 5 minutes.
 
      `ui/store.py: load_all(folder)` merges the downloaded copies.
 4. The Space installs `requirements.txt` and starts; the first question waits for the models to load (a minute or two).
+
+Making the Space public: Settings, "Change Space visibility", Public. Before that, check that `GROQ_API_KEY` and `API_KEY`
+are Secrets, that a log bucket or dataset is private, and that the Space branch carries no file you would not publish (the
+branch pushed to the Space leaves out `eval/` exam files and `results/`). Commits show their author's name and e-mail.
+
+### The `/answer` API (for programs, such as a voice assistant)
+
+The page's own events are not part of the API; `/answer` is the only endpoint. Every call needs the header
+`X-API-Key: <API_KEY>`. Parameters: `question` (1 to 1000 characters), `mode` (`agent` or `fast`), `conversation_id`
+(send back the one you received to ask a follow-up question; empty for a new conversation), `groq_key` (optional, the
+caller's own Groq key). It returns `status` (answer, clarify, refuse, not_found or error), `speech` (plain text to read
+aloud: up to four sentences, then the law and its date), `answer` (the full answer, one line per sentence with its
+articles), `sources`, `warnings` (a repealed article, an unverified answer), `language`, `conversation_id`, `tokens`.
+
+```python
+from gradio_client import Client                     # pip install gradio_client
+c = Client("<user>/<space>", headers={"X-API-Key": "<API_KEY>"})   # a private Space also needs hf_token="hf_..."
+r = c.predict("Quelle est la peine pour le vol simple ?", "agent", "", "", api_name="/answer")
+print(r["speech"])
+r = c.predict("Et la tentative ?", "agent", r["conversation_id"], "", api_name="/answer")   # follow-up
+```
+
+Without Python, two HTTP calls (the second streams the result):
+
+```bash
+curl -s -X POST https://<user>-<space>.hf.space/gradio_api/call/answer -H "X-API-Key: <API_KEY>" \
+     -H "Content-Type: application/json" -d '{"data": ["Quelle est la peine pour le vol simple ?", "agent", "", ""]}'
+# -> {"event_id": "..."}
+curl -s -N https://<user>-<space>.hf.space/gradio_api/call/answer/<event_id> -H "X-API-Key: <API_KEY>"
+```
 
 The `Dockerfile` (Streamlit interface) is for self-hosting on a VM or a container service.
 
 ## Security notes
 
-- Secrets live only in the `.env` file (git-ignored, excluded from the Docker image) or in the Space's secrets. A scan of
-  the working tree and all 163 commits found no API key or token.
-- The interface escapes the HTML in user and model text before showing it, caps questions at 1000 characters, and never stores
-  or logs an API key. The container runs as a non-root user.
-- The owner's Groq key is capped per day (`UI_OWNER_DAILY_CAP`), and visitors can use their own key instead.
-- The log database holds visitors' questions: keep the log dataset private, and don't enter personal data (the page says so).
-- Commits carry the author's email address, and `results/*run_log*` contain a local Windows path. Both become public if the
-  repository is public.
+- Secrets live only in the `.env` file (git-ignored, excluded from the Docker image) or in the Space's Secrets. A scan of
+  the working tree and all commits found no API key or token.
+- The page escapes the HTML in user and model text, caps questions at 1000 characters, and never stores or logs an API
+  key; a visitor's own key stays in their session only (the token meter knows it by a hash).
+- Spending on the shared key is capped three ways: questions per visitor per hour, questions per day for everyone, and
+  the provider's own daily limit. When it runs out, the page asks for the visitor's own key.
+- The hourly limit identifies a visitor by the forwarded address chain; someone who forges it can get around that limit,
+  but not around the daily cap.
+- The `/answer` API refuses every call without the `X-API-Key` secret (compared in constant time) and is closed when
+  `API_KEY` is not set. The page's own events are hidden from the API description, but a program can still drive the page
+  like a browser does; the caps above apply to it.
+- The log holds visitors' questions: keep the log bucket or dataset private. The page tells visitors that questions are
+  recorded and not to enter personal data.
+- Gradio is pinned to 5.23.1 (requirements.txt); check its security advisories before a public launch, and update it if
+  one applies.
 
 ## Evaluation
 

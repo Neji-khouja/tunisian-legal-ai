@@ -423,6 +423,44 @@ def test_fast_judged_view():
     check("Rapide judged: kept in memory, logged with its articles", again.startswith('<div class="memo">') and "PenalFr/s02/264" in st.rows()[0]["cited"])
 
 
+def test_visitor_limit_and_voice():
+    import chat
+    import quota
+    import store
+    import voice
+    import tempfile
+    now = [0.0]
+    lim = quota.VisitorLimit(2, clock=lambda: now[0])
+    check("visitor limit: 2 per hour, per visitor", [lim.allow("a"), lim.allow("a"), lim.allow("a"), lim.allow("b")] == [True, True, False, True])
+    now[0] += 3601
+    check("visitor limit: free again after an hour; 0 means no limit", lim.allow("a") and all(quota.VisitorLimit(0).allow("x") for _ in range(50)))
+    st = store.Store(Path(tempfile.mkdtemp()) / "v.db", upload=False)
+    be, pol, cache = stub.DemoBackend(0), keys.KeyPolicy(True, 0, lambda: True), chat.AnswerCache()
+    ok_state = stub.final_state("answer", "x") | {"dropped": 0}
+    calls = []
+    be.stream_v2 = lambda q, t: calls.append(q) or iter([("final", dict(ok_state, question=q, full_question=q))])
+    one = quota.VisitorLimit(1)
+    run = lambda q, key="", visitor="v1": list(chat.ask(q, "t", 1, key, be, pol, st, "agent", cache, None, one, visitor))[-1][1]
+    first, second = run("Q1 ?"), run("Q2 ?")
+    check("over the visitor limit: friendly message, model not called", T.ERRORS["visitor_cap"] in second["markdown"] and calls == ["Q1 ?"]
+          and second["error"] == "visitor_cap")
+    check("the limit does not apply to an answer from memory or to a personal key",
+          T.FROM_CACHE in run("Q1 ?")["markdown"] and T.ERRORS["visitor_cap"] not in run("Q3 ?", key="gsk_mine")["markdown"])
+    check("another visitor is not affected", T.ERRORS["visitor_cap"] not in run("Q4 ?", visitor="v2")["markdown"])
+    r = voice.reply(first, "c1", "agent")
+    check("API reply: status, plain spoken text with the law sentence, full answer, sources, no HTML or [n]",
+          r["status"] == "answer" and r["speech"].startswith("[Exemple] Première affirmation") and "Ces règles figurent" in r["speech"]
+          and "<" not in r["speech"] + r["answer"] and "[1]" not in r["speech"] and "(Code pénal, art. 264" in r["answer"]
+          and [x["id"] for x in r["sources"]] == ["PenalFr/s02/264", "PenalFr/s02/264-bis"] and r["conversation_id"] == "c1", r)
+    r = voice.reply(second, "c1", "agent")
+    check("API reply on a refusal: status error, the reason in plain text", r["status"] == "error" and r["error"] == "visitor_cap" and "clé" in r["speech"])
+    for case, status in (("clarify", "clarify"), ("refuse", "refuse")):
+        st_ = stub.final_state(case, "q")
+        r = voice.reply({"view": R.view_v2(st_), "error": None}, "c", "agent")
+        check(f"API reply, {case}: status {status} and the text to read", r["status"] == status and r["speech"] == voice.plain(st_["text"]))
+    check("plain text: markdown and tags removed", voice.plain("**Réponse** <b>x</b> [2]\n- point") == "Réponse x\npoint")
+
+
 def test_not_found():
     import chat
     ev = {f"PenalFr/s02/{i}": {"source": "PenalFr.pdf", "article": str(i), "text": f"Article {i}.- texte"} for i in range(1, 9)}
@@ -559,7 +597,7 @@ def test_policy_in_app():
 
 
 if __name__ == "__main__":
-    for t in (test_views, test_errors, test_policy, test_session_key, test_store, test_laws, test_cache, test_quota, test_fast_judged_view, test_not_found, test_fast_layout, test_chat, test_app_demo, test_policy_in_app):
+    for t in (test_views, test_errors, test_policy, test_session_key, test_store, test_laws, test_cache, test_quota, test_fast_judged_view, test_visitor_limit_and_voice, test_not_found, test_fast_layout, test_chat, test_app_demo, test_policy_in_app):
         t()
     print(f"\n{sum(RESULTS)}/{len(RESULTS)} checks passed")
     sys.exit(0 if all(RESULTS) else 1)

@@ -142,17 +142,20 @@ class AnswerCache:
 
 
 def ask(question: str, thread_id: str, turn: int, personal_key: str, backend, policy, store, mode: str = "agent",
-        cache: AnswerCache | None = None, budget: "quota.TokenBudget | None" = None):
+        cache: AnswerCache | None = None, budget: "quota.TokenBudget | None" = None, limit: "quota.VisitorLimit | None" = None,
+        visitor: str = ""):
     """Generator of ("step", label) while the backend works, then ("done", {"markdown", "tokens_in", "tokens_out",
     "tokens_cached"}). Never raises; logs the question. mode: "agent" (stream_v2) or "fast" (stream_fast). cache: used for
-    the first question of a conversation only. budget: the tokens left on the key used."""
+    the first question of a conversation only. budget: the tokens left on the key used. limit: questions per hour and visitor
+    on the shared key (an answer from memory and a personal key are not limited)."""
     import keys
     from langchain_core.callbacks import get_usage_metadata_callback
     mode = "fast" if mode == "fast" else "agent"
     started, final, error = time.time(), None, None
     used = {"in": 0, "out": 0, "cached": 0, "reasoning": 0}
     known = cache.get(question, mode) if cache and turn == 1 else None
-    key, refused = (None, None) if known else policy.resolve(personal_key)
+    over = bool(limit and not known and not (personal_key or "").strip() and not limit.allow(visitor))
+    key, refused = (None, None) if known else (None, "visitor_cap") if over else policy.resolve(personal_key)
     key_source = "cache" if known else "personal" if key else "owner"
     if known:
         final = known
@@ -214,4 +217,5 @@ def ask(question: str, thread_id: str, turn: int, personal_key: str, backend, po
         md += "\n\n" + usage_line(used, seconds, mode)
     if cache and not known and turn == 1 and final and not error:
         cache.put(question, mode, final)
-    yield "done", {"markdown": md, "tokens_in": used["in"], "tokens_out": used["out"], "tokens_cached": used["cached"]}
+    yield "done", {"markdown": md, "tokens_in": used["in"], "tokens_out": used["out"], "tokens_cached": used["cached"],
+                   "view": view, "error": error, "from_memory": bool(known)}

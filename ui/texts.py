@@ -1,7 +1,10 @@
 """French interface texts (and the disclaimer in Arabic and English). No logic here."""
 
 TITLE = "Codes tunisiens"
-SUBTITLE = "Posez une question de droit en français, arabe ou anglais. Les articles utilisés sont affichés sous la réponse."
+SUBTITLE = "Une question de droit tunisien, en français, en arabe ou en anglais. Les articles utilisés s'affichent sous la réponse."
+FOOT = ("Information juridique, pas un conseil · Vérifiez toujours l'article cité · Les questions sont enregistrées, "
+        "n'y mettez pas de données personnelles")
+FOOT_OTHER = "معلومات قانونية وليست استشارة قانونية · Legal information, not legal advice"
 
 DISCLAIMER_FR = ("**Information juridique, pas un conseil juridique.** Les réponses proviennent des textes codifiés indexés et "
                  "peuvent être incomplètes ou erronées. Vérifiez toujours l'article cité, et consultez un professionnel du "
@@ -18,7 +21,7 @@ LOG_NOTICE = ("Les questions et les réponses sont enregistrées pour évaluer l
               "personnelles. Votre clé API n'est jamais enregistrée.")
 
 NEW_CONVERSATION = "Nouvelle conversation"
-INPUT_PLACEHOLDER = "Posez votre question (français, arabe ou anglais)…"
+INPUT_PLACEHOLDER = "Posez votre question…"
 STEPS_TITLE = "Étapes de l'agent"
 STEPS_DONE = "Étapes terminées"
 STEPS_STOPPED = "Étapes interrompues"
@@ -61,13 +64,16 @@ ERRORS = {
     "network": "Le service du modèle est momentanément injoignable. Vérifiez la connexion, puis reposez la question.",
     "no_key": ("Aucune clé API n'est disponible pour cette question. Indiquez votre propre clé Groq dans le panneau "
                "latéral."),
+    "visitor_cap": ("Vous avez atteint la limite de questions par heure avec la clé partagée. Réessayez plus tard, ou ajoutez "
+                    "votre propre clé Groq, gratuite, dans le panneau latéral."),
     "owner_cap": ("Le nombre de questions autorisé aujourd'hui avec la clé du propriétaire est atteint. Indiquez votre propre "
                   "clé Groq dans le panneau latéral, ou réessayez demain."),
     "other": "Une erreur est survenue. Réessayez ; si elle se répète, signalez-la au propriétaire de l'application.",
 }
 
-KEY_LABEL = "Votre clé Groq (facultatif)"
-KEY_HELP = "Gardée en mémoire le temps de la session, jamais enregistrée."
+KEY_LABEL = "Votre clé Groq"
+KEY_HELP = "Facultative. Gardée le temps de la session, jamais enregistrée."
+KEY_GET = "Pas de clé ? Créez-en une gratuitement sur [console.groq.com/keys](https://console.groq.com/keys)."
 KEY_FORGET = "Oublier ma clé"
 KEY_PERSONAL_ACTIVE = "Votre clé est utilisée."
 KEY_OWNER_REMAINING = "Questions restantes aujourd'hui : {n}."
@@ -76,10 +82,8 @@ KEY_NONE = "Aucune clé disponible : indiquez votre clé Groq pour poser une que
 MODE_CHOICES = [("Agent", "agent"), ("Rapide", "fast")]
 MODE_NAMES = {"agent": "agent", "fast": "rapide"}
 MODE_HELP = {
-    "agent": ("Plusieurs étapes : comprend la conversation, demande une précision si besoin, refuse ce qui sort des codes "
-              "et vérifie chaque affirmation contre son article. Plus lent."),
-    "fast": ("Une seule recherche et une seule réponse. Rapide et économe, mais sans mémoire de la conversation et sans "
-             "vérification : il peut se tromper de cas. Lisez l'article cité."),
+    "agent": "Vérifie chaque phrase contre son article et se souvient de la conversation. Plus lent.",
+    "fast": "Une recherche, une réponse, sans vérification ni mémoire. Plus économe.",
 }
 WORDS = {"fr": {"sources": "Sources", "note": "Remarque", "articles": "Articles applicables", "others": "Autres articles consultés ({n})"},
          "en": {"sources": "Sources", "note": "Note", "articles": "Applicable articles", "others": "Other articles consulted ({n})"},
@@ -97,13 +101,14 @@ TOKENS_REASONING = ", dont {n} de réflexion"
 TOKENS_HIT = "En cache (hors limites)"
 FAST_NOTE = "Mode Rapide : réponse non contrôlée. Vérifiez dans l'article cité à quel cas s'applique la règle."
 FROM_CACHE = "Réponse gardée en mémoire : cette question a déjà été posée. Le modèle n'a pas été appelé (0 token)."
-QUOTA_TITLE = "Tokens restants (24 h)"
-QUOTA_OWNER = "Clé utilisée : celle de l'application"
-QUOTA_PERSONAL = "Clé utilisée : la vôtre"
-QUOTA_NONE = "Aucune clé. Seules les réponses déjà gardées en mémoire sont possibles ; indiquez votre clé Groq ci-dessous."
-QUOTA_ABOUT = "Environ {agent} questions Agent ou {fast} Rapide"
-QUOTA_QUESTIONS = "Questions autorisées aujourd'hui : {n}"
-QUOTA_HINT = "Estimation d'après l'usage ici sur 24 heures."
+QUOTA_OWNER = "Clé partagée"
+QUOTA_PERSONAL = "Votre clé"
+QUOTA_LEFT = "{n} tokens restants"
+QUOTA_ABOUT = "≈ {agent} questions Agent ou {fast} Rapide · estimation sur 24 h"
+QUOTA_QUESTIONS = "{n} questions encore possibles aujourd'hui"
+QUOTA_EMPTY = "La clé partagée est épuisée pour aujourd'hui. Ajoutez votre clé Groq, gratuite, pour continuer."
+QUOTA_NONE = "Pas de clé partagée. Ajoutez votre clé Groq, gratuite, pour poser une question."
+USED_LINE = "Utilisés : {conv} dans cette conversation · {device} au total"
 REPEALED = "Attention : {label} est indiqué comme {note}. Vérifiez le texte en vigueur."
 TOKENS_TITLE = "Tokens utilisés"
 TOKENS_CONV = "Cette conversation"

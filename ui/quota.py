@@ -74,3 +74,26 @@ class TokenBudget:
                 continue
             if when >= self._clock() - DAY:
                 self.add(None, counted(r.get("tokens_in"), r.get("tokens_out"), r.get("tokens_cached")), when)
+
+
+class VisitorLimit:
+    """At most `per_hour` questions per visitor in any hour (0 = no limit). Kept in memory only."""
+    def __init__(self, per_hour: int, clock=time.time):
+        self.per_hour, self._clock, self._lock, self._seen = max(0, int(per_hour)), clock, threading.Lock(), {}
+
+    def allow(self, visitor: str) -> bool:
+        """True, and counted, when this visitor may ask one more question now."""
+        if not self.per_hour:
+            return True
+        with self._lock:
+            now = self._clock()
+            q = self._seen.setdefault(visitor or "?", deque())
+            while q and q[0] < now - 3600:
+                q.popleft()
+            if len(q) >= self.per_hour:
+                return False
+            q.append(now)
+            if len(self._seen) > 5000:              # forget visitors who stopped asking
+                for v in [v for v, d in self._seen.items() if not d]:
+                    del self._seen[v]
+            return True
